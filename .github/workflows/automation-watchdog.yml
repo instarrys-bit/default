@@ -908,7 +908,7 @@ jobs:
       GITHUB_MANUAL_AUDIT_REQUEST: ${{ inputs.request_deterministic_audit }}
       PYTHONDONTWRITEBYTECODE: "1"
     needs: [health-check, stale-run-watch, manifest-integrity]
-    if: ${{ always() && needs.health-check.result == 'success' && ((github.event_name != 'schedule' && github.event_name != 'workflow_dispatch') || needs.stale-run-watch.result == 'success') && (needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped') && (github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.path == '.github/workflows/auto_sync.yml' || github.event.workflow_run.path == '.github/workflows/source-discovery.yml'))) && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[assessment-canary]')) }}
+    if: ${{ always() && needs.health-check.result == 'success' && (github.event_name == 'workflow_run' || needs.stale-run-watch.result == 'success') && (needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped') && (github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.path == '.github/workflows/auto_sync.yml' || github.event.workflow_run.path == '.github/workflows/source-discovery.yml'))) && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[assessment-canary]')) }}
     permissions:
       actions: write
       contents: read
@@ -2062,7 +2062,7 @@ jobs:
       actions: write
       contents: read
       issues: write
-    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     steps:
@@ -2079,8 +2079,51 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
+          CURRENT_WATCHDOG_RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
+          # A wedged Watchdog run can retain the task-supervision concurrency
+          # slot indefinitely. Queue state is durable, so cancel only stale
+          # main-branch Watchdog runs and let the next pass recover expired leases.
+          watchdog_runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/automation-watchdog.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
+          watchdog_stale_lines="$(jq -r --arg current "$CURRENT_WATCHDOG_RUN_ID" '
+            .workflow_runs[]
+            | select(.status != "completed" and .head_branch == "main" and (.id | tostring) != $current)
+            | ((.run_started_at // .created_at // "") | try fromdateiso8601 catch null) as $started
+            | select($started != null and (now - $started) > 1800)
+            | [.id, (.head_sha // ""), (.event // "")] | @tsv
+          ' <<< "$watchdog_runs")"
+          watchdog_cancelled_ids=()
+          if [ -n "$watchdog_stale_lines" ]; then
+            while IFS=$'\t' read -r stale_id stale_sha stale_event; do
+              [ -n "$stale_id" ] || continue
+              echo "Cancelling orphaned Watchdog run $stale_id (event=$stale_event, sha=$stale_sha); durable queue state will be recovered by the next pass."
+              gh run cancel "$stale_id" --repo "$REPO" || true
+              status=""
+              for attempt in {1..30}; do
+                status="$(gh api "repos/$REPO/actions/runs/$stale_id" --jq .status)"
+                if [ "$status" = "completed" ]; then
+                  break
+                fi
+                sleep 2
+              done
+              if [ "$status" != "completed" ]; then
+                echo "Stale Watchdog run $stale_id cancellation is not confirmed; queue supervision remains blocked." >&2
+                exit 1
+              fi
+              watchdog_cancelled_ids+=("$stale_id")
+            done <<< "$watchdog_stale_lines"
+          fi
+          if [ "${#watchdog_cancelled_ids[@]}" -gt 0 ]; then
+            {
+              echo "### Recovered stale Watchdog runs"
+              echo
+              printf '%s\n' "${watchdog_cancelled_ids[@]}" | sed 's/^/- Run /'
+              echo
+              echo "The durable task queue remains authoritative; expired worker/resource leases are reconciled by queue supervision."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
           current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"
           runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
 

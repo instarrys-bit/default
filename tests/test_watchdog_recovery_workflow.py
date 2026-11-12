@@ -579,5 +579,25 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('"disposition": "stale_input_safely_superseded"', workflow)
         self.assertIn('raise SystemExit("Selected production task was cancelled for a reason requiring diagnosis:', workflow)
 
+
+class WatchdogStaleRunRecoveryTests(unittest.TestCase):
+    def test_push_and_scheduled_runs_recover_orphaned_watchdog_workers(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        stale = workflow.split("  stale-run-watch:", 1)[1].split("  manifest-integrity:", 1)[0]
+        self.assertIn("github.event_name == 'push'", stale)
+        self.assertIn("CURRENT_WATCHDOG_RUN_ID: ${{ github.run_id }}", stale)
+        self.assertIn("actions/workflows/automation-watchdog.yml/runs?per_page=100", stale)
+        self.assertIn("(.id | tostring) != $current", stale)
+        self.assertIn("(now - $started) > 1800", stale)
+        self.assertIn('gh run cancel "$stale_id"', stale)
+        self.assertIn('if [ "$status" != "completed" ]; then', stale)
+        self.assertIn("cancellation is not confirmed", stale)
+
+    def test_queue_supervision_fails_closed_when_stale_run_recovery_fails(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        queue = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
+        self.assertIn("(github.event_name == 'workflow_run' || needs.stale-run-watch.result == 'success')", queue)
+        self.assertIn("needs: [health-check, stale-run-watch, manifest-integrity]", queue)
+
 if __name__ == "__main__":
     unittest.main()
