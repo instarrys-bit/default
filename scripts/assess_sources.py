@@ -480,10 +480,28 @@ def compact_assessment_result(result: dict) -> dict:
     return compact
 
 
+def has_valid_domain_fingerprints(item: dict) -> bool:
+    """Only ephemeral assessments with complete fingerprints may be reused."""
+    if not isinstance(item, dict):
+        return False
+    if item.get("parser_candidate") not in {"domain-only", "adblock-domain-rules", "shadowrocket-domain-rules", "quantumult-domain-rules"}:
+        return True
+    fingerprints=item.get("domain_fingerprints")
+    if (not isinstance(fingerprints,list) or len(fingerprints)!=len(set(fingerprints))
+            or any(not isinstance(value,str) or not re.fullmatch(r"[0-9a-f]{32}",value)
+                   for value in fingerprints)):
+        return False
+    domain_count=sum(int(item.get(key,0) or 0) for key in (
+        "exact_domain_count","suffix_domain_count","adblock_domain_count","domain_only_count"
+    ))
+    return domain_count==0 or bool(fingerprints)
+
+
 def assessment_cache_hit(previous: dict | None, content_sha256: str, policy_claims: list[str]) -> bool:
-    """Reuse parser output only when source bytes, policy claims, and parser version match."""
+    """Reuse parser output only when bytes, policy, parser version and ephemeral fingerprints match."""
     return bool(
         previous
+        and has_valid_domain_fingerprints(previous)
         and previous.get("parser_version") == PARSER_VERSION
         and previous.get("sha256") == content_sha256
         and sorted(previous.get("readme_policy_claims", [])) == sorted(policy_claims)
@@ -780,7 +798,7 @@ def main(argv: list[str] | None = None) -> int:
     for candidate in batch:
         repository = candidate["repository"]
         url = candidate["url"]
-        if url in completed_checkpoint:
+        if url in completed_checkpoint and has_valid_domain_fingerprints(completed_checkpoint[url]):
             item = dict(completed_checkpoint[url])
             restored_bytes = item.get("bytes", 0)
             if isinstance(restored_bytes, int) and not isinstance(restored_bytes, bool) and restored_bytes >= 0:
