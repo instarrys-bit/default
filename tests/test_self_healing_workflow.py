@@ -110,9 +110,10 @@ class SelfHealingWorkflowTests(unittest.TestCase):
 
 
 
-    def test_stale_watch_cancels_superseded_audits_before_timeout(self):
+    def test_stale_watch_prioritizes_runtime_timeout_before_supersession(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
-        self.assertIn('if .head_sha != $sha then [.id, "superseded"', workflow)
+        self.assertIn('if $started != null and (now - $started) > 21600 then', workflow)
+        self.assertIn('elif .head_sha != $sha then [.id, "superseded"', workflow)
         self.assertIn("fromdateiso8601", workflow)
         self.assertIn('repos/$REPO/compare/$run_sha...$current_main', workflow)
         self.assertIn('only docs/ changed after its audited commit', workflow)
