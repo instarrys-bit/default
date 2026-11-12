@@ -33,6 +33,8 @@ def candidate(repo="new/direct", policy="DIRECT", drift="unchanged", evidence="R
         "policy": policy,
         "activation_eligible": True,
         "archived": archived,
+        "fingerprints_complete": True,
+        "domain_fingerprint_count": count,
         "domain_set_sha256": "a" * 64,
         "lineage_status": "unverified",
         "lineage_warning": "lineage_not_verified",
@@ -43,6 +45,7 @@ def candidate(repo="new/direct", policy="DIRECT", drift="unchanged", evidence="R
             "policy_evidence": evidence,
             "domain_count": count,
             "domain_fingerprint_count": count,
+            "domain_fingerprints_valid": True,
             "sha256": hashlib.sha256(payload).hexdigest(),
             "leading_dot_domain_count": count if leading_dot else 0,
             "drift": {"status": drift}
@@ -59,7 +62,10 @@ class AutoActivationTests(unittest.TestCase):
             def __exit__(self, *args): return False
             def read(self): return payload
         mocked_urlopen.return_value = Response()
-        registry, activated, decisions = activate(base_registry(), {"candidates": [candidate()]}, "2026-11-01T00:00:00+00:00")
+        registry, activated, decisions = activate(base_registry(), {
+            "policy_summary": {"DIRECT": {"activation_ready": True, "independent_eligible_groups": 2}},
+            "candidates": [candidate()],
+        }, "2026-11-01T00:00:00+00:00")
         self.assertEqual(len(activated), 1)
         source = next(x for x in registry["sources"] if x["id"] == activated[0]["id"])
         self.assertEqual(source["lineage_status"], "unverified")
@@ -75,39 +81,50 @@ class AutoActivationTests(unittest.TestCase):
             def __exit__(self, *args): return False
             def read(self): return payload
         mocked_urlopen.return_value = Response()
-        registry, activated, _ = activate(base_registry(), {"candidates": [candidate(leading_dot=True)]})
+        registry, activated, _ = activate(base_registry(), {
+            "policy_summary": {"DIRECT": {"activation_ready": True, "independent_eligible_groups": 2}},
+            "candidates": [candidate(leading_dot=True)],
+        })
         self.assertEqual(len(activated), 1)
         source = next(x for x in registry["sources"] if x["id"] == activated[0]["id"])
         self.assertTrue(source["allow_leading_dot"])
 
     def test_first_observation_is_not_activated(self):
-        _, activated, _ = activate(base_registry(), {"candidates": [candidate(drift="baseline_initialized")]})
+        _, activated, _ = activate(base_registry(), {"policy_summary": {"DIRECT": {"activation_ready": True, "independent_eligible_groups": 2}}, "candidates": [candidate(drift="baseline_initialized")]})
         self.assertEqual(activated, [])
 
     def test_weak_policy_evidence_is_not_activated(self):
-        _, activated, _ = activate(base_registry(), {"candidates": [candidate(evidence="none")]})
+        _, activated, _ = activate(base_registry(), {"policy_summary": {"DIRECT": {"activation_ready": True, "independent_eligible_groups": 2}}, "candidates": [candidate(evidence="none")]})
         self.assertEqual(activated, [])
 
     def test_small_candidate_is_not_activated(self):
-        _, activated, _ = activate(base_registry(), {"candidates": [candidate(count=99)]})
+        _, activated, _ = activate(base_registry(), {"policy_summary": {"DIRECT": {"activation_ready": True, "independent_eligible_groups": 2}}, "candidates": [candidate(count=99)]})
         self.assertEqual(activated, [])
 
     def test_archived_publisher_is_not_activated(self):
-        _, activated, _ = activate(base_registry(), {"candidates": [candidate(archived=True)]})
+        _, activated, _ = activate(base_registry(), {"policy_summary": {"DIRECT": {"activation_ready": True, "independent_eligible_groups": 2}}, "candidates": [candidate(archived=True)]})
         self.assertEqual(activated, [])
 
     @patch("auto_activate_sources.urlopen")
-    def test_new_reject_sources_always_require_human_approval(self, mocked_urlopen):
-        _, activated, decisions = activate(base_registry(), {"candidates": [candidate(repo="new/reject", policy="REJECT")]})
-        self.assertEqual(activated, [])
-        self.assertEqual(decisions[0]["decision"], "held_manual_approval_required")
-        mocked_urlopen.assert_not_called()
+    def test_new_reject_sources_use_the_same_deterministic_admission_gates(self, mocked_urlopen):
+        payload = "\\n".join(f"d{i}.example" for i in range(150)).encode()
+        class Response:
+            def __enter__(self): return self
+            def __exit__(self, *args): return False
+            def read(self): return payload
+        mocked_urlopen.return_value = Response()
+        _, activated, decisions = activate(base_registry(), {
+            "policy_summary": {"REJECT": {"activation_ready": True, "independent_eligible_groups": 2}},
+            "candidates": [candidate(repo="new/reject", policy="REJECT")],
+        })
+        self.assertEqual(len(activated), 1)
+        self.assertEqual(decisions[0]["decision"], "activated")
 
     def test_same_publisher_is_not_registered_twice(self):
         registry = base_registry()
         registry["sources"].append({"id":"existing-new","publisher":"new/direct","role":"independent_policy_corroboration","url":"https://raw.githubusercontent.com/new/direct/old/list","format":"domain-only","weight":0.4,"classification":"DIRECT","minimum_entries":1,"independence_group":"new/direct","lineage_status":"unverified","upstream_repositories":[]})
         registry["scoring"]["source_weights"]["existing-new"] = 0.4
-        _, activated, _ = activate(registry, {"candidates": [candidate()]})
+        _, activated, _ = activate(registry, {"policy_summary": {"DIRECT": {"activation_ready": True, "independent_eligible_groups": 2}}, "candidates": [candidate()]})
         self.assertEqual(activated, [])
 
 
