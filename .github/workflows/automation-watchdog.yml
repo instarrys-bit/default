@@ -2100,7 +2100,7 @@ jobs:
               echo "Cancelling orphaned Watchdog run $stale_id (event=$stale_event, sha=$stale_sha); durable queue state will be recovered by the next pass."
               gh run cancel "$stale_id" --repo "$REPO" || true
               status=""
-              for attempt in {1..30}; do
+              for _ in {1..30}; do
                 status="$(gh api "repos/$REPO/actions/runs/$stale_id" --jq .status)"
                 if [ "$status" = "completed" ]; then
                   break
