@@ -8,7 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from resolve_source_artifacts import extract, list_watchdog_runs, resolve_task, verify_manifest
+from resolve_source_artifacts import extract, list_assessment_artifact_run_ids, resolve_task, verify_manifest
 
 
 class SourceArtifactHandoffTests(unittest.TestCase):
@@ -21,30 +21,35 @@ class SourceArtifactHandoffTests(unittest.TestCase):
             manifest_sha = hashlib.sha256(json.dumps(files, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
             verify_manifest(root, {"files": files, "artifact_sha256": manifest_sha}, "proof.json")
 
-    def test_watchdog_artifact_lookup_scans_beyond_first_two_pages(self):
+    def test_assessment_artifact_lookup_scans_artifact_pages_and_filters_provenance(self):
         calls = []
 
         def fake_api_json(url, token):
             page = int(url.rsplit("page=", 1)[1])
             calls.append(page)
-            if page < 3:
-                return {"workflow_runs": [{"id": (page - 1) * 100 + i} for i in range(100)]}
-            return {"workflow_runs": [{"id": 201}]}
+            if page == 1:
+                return {"artifacts": [
+                    {"name": "other-output", "expired": False, "workflow_run": {"id": 10, "head_branch": "main"}},
+                    {"name": "source-assessment-output", "expired": True, "workflow_run": {"id": 11, "head_branch": "main"}},
+                    {"name": "source-assessment-output", "expired": False, "workflow_run": {"id": 12, "head_branch": "feature"}},
+                ] + [{"name": "other-output"}] * 97}
+            return {"artifacts": [
+                {"name": "source-assessment-output", "expired": False, "workflow_run": {"id": 201, "head_branch": "main"}}
+            ]}
 
         with patch("resolve_source_artifacts.api_json", side_effect=fake_api_json):
-            runs = list_watchdog_runs("owner/repo", "token")
+            run_ids = list_assessment_artifact_run_ids("owner/repo", "token")
 
-        self.assertEqual(calls, [1, 2, 3])
-        self.assertEqual(len(runs), 201)
-        self.assertEqual(runs[-1]["id"], 201)
+        self.assertEqual(calls, [1, 2])
+        self.assertEqual(run_ids, ["201"])
 
-    def test_watchdog_artifact_lookup_fails_closed_at_pagination_limit(self):
+    def test_assessment_artifact_lookup_fails_closed_at_pagination_limit(self):
         with patch(
             "resolve_source_artifacts.api_json",
-            return_value={"workflow_runs": [{"id": 1}] * 100},
+            return_value={"artifacts": [{"name": "other-output"}] * 100},
         ):
-            with self.assertRaisesRegex(ValueError, "10,000-run"):
-                list_watchdog_runs("owner/repo", "token")
+            with self.assertRaisesRegex(ValueError, "10,000-artifact"):
+                list_assessment_artifact_run_ids("owner/repo", "token")
 
     def test_resolver_uses_last_verified_assessment_when_newer_discovery_is_pending(self):
         older = {

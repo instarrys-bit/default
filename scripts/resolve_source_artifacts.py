@@ -40,23 +40,30 @@ def api_json(url,token):
     if not isinstance(value,dict): raise ValueError("GitHub API response is not an object")
     return value
 
-MAX_WATCHDOG_RUN_PAGES = 100
-WORKFLOW_RUN_PAGE_SIZE = 100
+MAX_ARTIFACT_PAGES = 100
+ARTIFACT_PAGE_SIZE = 100
 
 
-def list_watchdog_runs(repo, token):
-    """Read the bounded 10,000-run Watchdog history needed to locate old Assessment artifacts."""
-    url = f"{API}/repos/{repo}/actions/workflows/automation-watchdog.yml/runs?branch=main&per_page={WORKFLOW_RUN_PAGE_SIZE}"
-    runs = []
-    for page in range(1, MAX_WATCHDOG_RUN_PAGES + 1):
+def list_assessment_artifact_run_ids(repo, token):
+    """Index the bounded 10,000-artifact history instead of scanning every Watchdog run."""
+    url = f"{API}/repos/{repo}/actions/artifacts?per_page={ARTIFACT_PAGE_SIZE}"
+    run_ids = set()
+    for page in range(1, MAX_ARTIFACT_PAGES + 1):
         response = api_json(url + f"&page={page}", token)
-        batch = response.get("workflow_runs")
-        if not isinstance(batch, list):
-            raise ValueError("Watchdog workflow-run page is malformed")
-        runs.extend(batch)
-        if len(batch) < WORKFLOW_RUN_PAGE_SIZE:
-            return runs
-    raise ValueError("Watchdog workflow history exceeds the bounded 10,000-run artifact lookup window")
+        artifacts = response.get("artifacts")
+        if not isinstance(artifacts, list):
+            raise ValueError("GitHub artifact page is malformed")
+        for artifact in artifacts:
+            if not isinstance(artifact, dict) or artifact.get("name") != "source-assessment-output" or artifact.get("expired") is not False:
+                continue
+            workflow_run = artifact.get("workflow_run")
+            run_id = workflow_run.get("id") if isinstance(workflow_run, dict) else None
+            if (isinstance(run_id, int) and not isinstance(run_id, bool) and run_id > 0
+                    and workflow_run.get("head_branch") == "main"):
+                run_ids.add(str(run_id))
+        if len(artifacts) < ARTIFACT_PAGE_SIZE:
+            return sorted(run_ids, key=int, reverse=True)
+    raise ValueError("GitHub artifact history exceeds the bounded 10,000-artifact lookup window")
 
 def extract(data,destination):
     destination.mkdir(parents=True,exist_ok=True)
@@ -149,13 +156,15 @@ def main():
         if not discovery_doc.is_file(): discovery_doc=unique(discovery,"discovered_sources.json")
         discovery_root=discovery_doc.parent.parent
         if read_only_resource_digests(discovery_root,["sources/discovered_sources.json"])["sources/discovered_sources.json"]!=pred["artifact_sha256"]: raise ValueError("Discovery logical document digest mismatch")
-        runs = list_watchdog_runs(repo, token)
+        assessment_run_ids = list_assessment_artifact_run_ids(repo, token)
         matches=[]
-        for run in runs:
-            if run.get("head_branch")!="main" or run.get("status")!="completed" or run.get("conclusion")!="success" or run.get("path")!=".github/workflows/automation-watchdog.yml": continue
-            rid=str(run.get("id",""))
-            if not rid.isdigit(): continue
+        for rid in assessment_run_ids:
             try:
+                run = api_json(f"{API}/repos/{repo}/actions/runs/{rid}", token)
+                if (run.get("head_branch")!="main" or run.get("status")!="completed"
+                        or run.get("conclusion")!="success"
+                        or run.get("path")!=".github/workflows/automation-watchdog.yml"):
+                    continue
                 root,_=download_artifact(repo,rid,"source-assessment-output",token,dest/("assessment-"+rid))
                 ap=unique(root,"source-assessment-proof.json"); assessment_proof=json.loads(ap.read_text())
                 if (assessment_proof.get("assessment_task_id")!=task.get("task_id") or assessment_proof.get("predecessor")!=pred or assessment_proof.get("producer_workflow_path")!=".github/workflows/automation-watchdog.yml" or str(assessment_proof.get("producer_workflow_run_id"))!=rid or assessment_proof.get("producer_workflow_head_sha")!=run.get("head_sha") or assessment_proof.get("task_status")!="SUCCEEDED" or assessment_proof.get("verification_status")!="passed" or (assessment_proof.get("artifact_verification") or {}).get("valid") is not True or (assessment_proof.get("artifact_verification") or {}).get("activation_count")!=0):
