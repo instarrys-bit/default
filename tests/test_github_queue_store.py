@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from io import BytesIO
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -187,6 +187,36 @@ class GitHubIssueQueueStoreTests(unittest.TestCase):
         with patch("github_queue_store.urlopen", side_effect=forbidden):
             with self.assertRaisesRegex(GitHubAPIError, "HTTP 403"):
                 self.store.read()
+
+    def test_transient_get_network_failure_retries_with_bounded_backoff(self):
+        attempts = {"count": 0}
+
+        def flaky_get(request, timeout=20):
+            attempts["count"] += 1
+            if attempts["count"] == 1:
+                raise URLError("temporary network interruption")
+            return self.fake_urlopen(request, timeout)
+
+        with patch("github_queue_store.urlopen", side_effect=flaky_get), patch("github_queue_store.time.sleep") as sleep:
+            snapshot = self.store.read()
+
+        self.assertEqual(snapshot.document, self.document)
+        self.assertEqual(attempts["count"], 2)
+        sleep.assert_called_once()
+
+    def test_ambiguous_post_failure_is_not_retried(self):
+        attempts = {"count": 0}
+
+        def failed_post(request, timeout=20):
+            attempts["count"] += 1
+            raise URLError("connection lost after request submission")
+
+        with patch("github_queue_store.urlopen", side_effect=failed_post), patch("github_queue_store.time.sleep") as sleep:
+            with self.assertRaisesRegex(GitHubAPIError, "failed or timed out"):
+                self.store._post_comment("snapshot")
+
+        self.assertEqual(attempts["count"], 1)
+        sleep.assert_not_called()
 
     def test_malformed_snapshot_fails_closed(self):
         self.comments.append({"id": 1, "body": "<!-- shadowrocket-automation-queue:v1 -->\nnot-json"})
