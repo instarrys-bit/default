@@ -326,6 +326,48 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
 
             if adapter.get("adapter_type") == "github_actions_workflow":
                 observation = workflow_observations.get(task["task_id"])
+                if isinstance(observation, dict) and observation.get("state") == "stale":
+                    workflow_contract = adapter.get("workflow", {})
+                    contract_sha = hashlib.sha256(
+                        json.dumps(workflow_contract, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+                    ).hexdigest()
+                    task["result"] = {
+                        **(task.get("dispatch_intent") or task.get("result") or {}),
+                        "dispatch_state": "stale_ref_rejected",
+                        "run_evidence": observation.get("evidence"),
+                    }
+                    task["verification"] = {
+                        "verifier_program_id": VERIFIER_ID,
+                        "verified_at": stamp(now),
+                        "contract_sha256": contract_sha,
+                        "status": "failed",
+                    }
+                    task["last_error"] = {
+                        "type": "workflow_dispatch_stale_ref",
+                        "message": "The correlated workflow ran on a main revision outside the exact authorized queue-intent SHA relationship; it was rejected and cannot publish.",
+                        "evidence": observation.get("evidence"),
+                    }
+                    if task.get("resource_lease", {}).get("status") == "ACTIVE":
+                        try:
+                            release_resource_leases_in_queue(queue, task, now)
+                        except ValueError:
+                            task["resource_lease"]["status"] = "LOST"
+                            task["resource_lease"]["lost_at"] = stamp(now)
+                    task["lease"] = None
+                    task["state_history"].append("FAILED")
+                    if task["attempts"] < task["max_attempts"]:
+                        task["status"] = "QUEUED"
+                        task.pop("dispatch_intent", None)
+                        task["state_history"].append("QUEUED")
+                        task["not_before"] = stamp(now + timedelta(
+                            seconds=min(900, 30 * (2 ** max(0, task["attempts"] - 1)))
+                        ))
+                    else:
+                        task["status"] = "DEAD_LETTER"
+                        task["state_history"].append("DEAD_LETTER")
+                    rejected.append(task["task_id"])
+                    changed = True
+                    continue
                 if isinstance(observation, dict) and observation.get("state") == "timed_out":
                     workflow_contract = adapter.get("workflow", {})
                     contract_sha = hashlib.sha256(
