@@ -107,7 +107,7 @@ class AutoActivationTests(unittest.TestCase):
 
     @patch("auto_activate_sources.urlopen")
     def test_new_reject_sources_use_the_same_deterministic_admission_gates(self, mocked_urlopen):
-        payload = "\\n".join(f"d{i}.example" for i in range(150)).encode()
+        payload = "\n".join(f"d{i}.example" for i in range(150)).encode()
         class Response:
             def __enter__(self): return self
             def __exit__(self, *args): return False
