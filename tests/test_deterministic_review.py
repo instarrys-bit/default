@@ -729,7 +729,7 @@ class SourceCandidateMatrixTests(unittest.TestCase):
         shared = [f"{i:032x}" for i in range(100)]
         assessments = {"assessments": [
             {"repository":"one/rules","policy_candidate":"DIRECT","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"explicit_third_field","exact_domain_count":100,"suffix_domain_count":0,"adblock_domain_count":0,"domain_only_count":0,"domain_fingerprints":shared,"url":"https://raw.githubusercontent.com/one/rules/main/a.list","archived":False},
-            {"repository":"two/rules","policy_candidate":"DIRECT","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"explicit_third_field","exact_domain_count":3,"suffix_domain_count":0,"adblock_domain_count":0,"domain_only_count":0,"domain_fingerprints":shared,"url":"https://raw.githubusercontent.com/two/rules/main/a.list","archived":False},
+            {"repository":"two/rules","policy_candidate":"DIRECT","parser_candidate":"shadowrocket-domain-rules","policy_evidence":"explicit_third_field","exact_domain_count":100,"suffix_domain_count":0,"adblock_domain_count":0,"domain_only_count":0,"domain_fingerprints":shared,"url":"https://raw.githubusercontent.com/two/rules/main/a.list","archived":False},
         ]}
         lineage = {"candidate_sources":[
             {"repository":"one/rules","lineage_status":"verified","status":"audited_reference_inventory","reference_count":0},
@@ -749,7 +749,7 @@ class SourceCandidateMatrixTests(unittest.TestCase):
         ]}
         lineage = {"candidate_sources":[]}
         result = build_matrix(assessments, lineage)
-        self.assertEqual(result["cross_policy_conflicts"][0]["shared_domain_count"], 1)
+        self.assertEqual(result["cross_policy_conflicts"][0]["shared_domain_count"], 100)
         self.assertNotIn("domain_fingerprints", result["candidates"][0])
 
 
