@@ -186,7 +186,7 @@ class AssessSourcesArtifactVerifierTests(unittest.TestCase):
             report = root / "report.md"
             item = {"url": "https://raw.githubusercontent.com/example/repo/main/list.txt",
                     "repository": "example/repo", "parser_candidate": "domain-only",
-                    "policy_candidate": "DIRECT", "domain_fingerprints": ["ephemeral"]}
+                    "policy_candidate": "DIRECT", "domain_fingerprints": ["a" * 32]}
             runtime.write_text(json.dumps({
                 "assessment_count": 1, "assessed_this_run_count": 1,
                 "total_bytes_read": 123, "activation_count": 0,
