@@ -904,7 +904,7 @@ class RejectQueueAuthorizationTests(unittest.TestCase):
         line = "DOMAIN,ads.example"
         self.assertTrue(reject_queue_entry_authorized(line, set(), {line}))
 
-    def test_without_current_secondary_pass_rule_is_held_for_exception_review(self):
+    def test_without_current_secondary_pass_rule_is_held_for_automated_recheck(self):
         line = "DOMAIN,ads.example"
         self.assertFalse(reject_queue_entry_authorized(line, set(), set()))
 

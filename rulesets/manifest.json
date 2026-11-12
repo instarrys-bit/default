@@ -828,8 +828,7 @@
   },
   "held_total": 148832,
   "reject_manual_approval_required": false,
-  "manual_review_scope": "exceptions_only",
-  "reject_exception_review_count": 111289,
+  "manual_review_scope": "runtime_exceptions_only",
   "reject_secondary_review": {
     "candidate_count": 127916,
     "first_stage_held_by_status": {
@@ -839,7 +838,6 @@
       "RISK_HOLD": 9
     },
     "automatically_eligible_count": 16117,
-    "pending_exception_review_count": 111289,
     "held_reason_counts": {
       "first_stage_conflict": 36271,
       "first_stage_policy_conflict": 397,
@@ -855,7 +853,9 @@
       "sr-adblock-domain-lite"
     ],
     "manual_approval_required": false,
-    "queue_path": "rulesets/reject_review_queue.json"
+    "queue_path": "rulesets/reject_review_queue.json",
+    "held_for_automated_recheck_count": 111289,
+    "queue_role": "automated_candidate_recheck_holds"
   },
   "status_count": {
     "ALREADY_COVERED": 9584,
@@ -895,5 +895,6 @@
     "protected_retained_count": 982,
     "suffix_retained_count": 3403
   },
-  "lifecycle_last_audit_at": "2026-11-12T08:40:49.920065+00:00"
+  "lifecycle_last_audit_at": "2026-11-12T08:40:49.920065+00:00",
+  "reject_automated_hold_count": 111289
 }
