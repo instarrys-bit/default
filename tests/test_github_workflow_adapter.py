@@ -15,6 +15,7 @@ from github_workflow_adapter import (
 class FakeGitHub:
     def __init__(self):
         self.dispatched = []
+        self.cancelled = []
         self.runs = []
         self.run_pages = {}
         self.list_pages_requested = []
@@ -49,6 +50,9 @@ class FakeGitHub:
 
     def get_commit(self, commit_sha):
         return self.commits[commit_sha]
+
+    def cancel_run(self, run_id):
+        self.cancelled.append(run_id)
 
 
 class WorkflowAdapterTests(unittest.TestCase):
@@ -239,9 +243,31 @@ class WorkflowAdapterTests(unittest.TestCase):
         self.client.run_detail[88] = dict(listed, status="completed", conclusion="failure")
         self.assertEqual(inspect_correlated_run(self.client, intent)["state"], "failure")
         self.client.run_detail[88] = dict(listed, status="completed", conclusion="success", head_sha="b" * 40)
-        with self.assertRaisesRegex(WorkflowAPIError, "identity"):
-            inspect_correlated_run(self.client, intent)
+        result = inspect_correlated_run(self.client, intent)
+        self.assertEqual(result["state"], "stale")
+        self.assertEqual(result["evidence"]["head_sha_relationship"], "rejected")
 
+
+    def test_stale_in_progress_run_is_cancelled_and_keeps_fence_pending(self):
+        intent = self.prepare()
+        actual_sha = "b" * 40
+        listed = {
+            "id": 88, "workflow_id": 1234, "event": "workflow_dispatch",
+            "head_branch": "main", "head_sha": actual_sha,
+            "display_title": intent["correlation_title"],
+        }
+        self.client.commits[actual_sha] = {
+            "commit": {"message": "unrelated main update"},
+            "parents": [{"sha": intent["requested_head_sha"]}],
+            "files": [{"filename": "README.md", "status": "modified"}],
+        }
+        self.client.runs = [listed]
+        self.client.run_detail[88] = dict(listed, status="in_progress", conclusion=None)
+        result = inspect_correlated_run(self.client, intent)
+        self.assertEqual(result["state"], "pending")
+        self.assertEqual(result["run_id"], 88)
+        self.assertEqual(self.client.cancelled, [88])
+        self.assertTrue(result["stale_identity"]["cancel_requested"])
 
     def test_allows_only_single_queue_intent_commit_after_prepared_ref(self):
         intent = self.prepare()
@@ -281,8 +307,8 @@ class WorkflowAdapterTests(unittest.TestCase):
         }
         self.client.runs = [listed]
         self.client.run_detail[88] = dict(listed, status="completed", conclusion="success")
-        with self.assertRaisesRegex(WorkflowAPIError, "only the exact single-parent queue-intent commit"):
-            inspect_correlated_run(self.client, intent)
+        result = inspect_correlated_run(self.client, intent)
+        self.assertEqual(result["state"], "stale")
 
     def test_rejects_queue_commit_with_unexpected_parent(self):
         intent = self.prepare()
