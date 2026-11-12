@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "f16ec3183a1652815f20bbd8f1398610baf4a228"
+      "git_blob_sha": "4f3f4519458bbcc3631e438e87edf4eb75148032"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -110,7 +110,7 @@
     },
     "task_queue_store": {
       "path": "scripts/github_queue_store.py",
-      "git_blob_sha": "67555fd22f3294530ded8f78f848d82cba9e38d1"
+      "git_blob_sha": "c04ca72f130809b8812c7272241e997d5b836663"
     },
     "import_request_observations": {
       "path": "scripts/import_request_observations.py",
