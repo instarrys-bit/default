@@ -674,9 +674,20 @@ def persist_assessment_checkpoint(batch_id: str, predecessor: dict, result: dict
             task["assessment_checkpoint"] = checkpoint
         existing = checkpoint["completed"].get(result["url"])
         if existing is not None:
-            if existing.get("result_sha256") != result_sha:
-                raise ValueError("assessment checkpoint URL already has a different completed result")
-            return queue, {"stored": False, "url": result["url"]}
+            if existing.get("result_sha256") == result_sha:
+                return queue, {"stored": False, "url": result["url"]}
+            previous_result = existing.get("result") if isinstance(existing, dict) else None
+            # Old checkpoints created before fingerprint validation may contain a
+            # compact/incomplete parser result. Replace only that invalid record
+            # with a freshly fetched and fully fingerprinted result.
+            if has_valid_domain_fingerprints(previous_result) or not has_valid_domain_fingerprints(result):
+                raise ValueError("assessment checkpoint URL already has a different valid completed result")
+            checkpoint["completed"][result["url"]] = {"result": json.loads(result_json), "result_sha256": result_sha}
+            checkpoint["last_successful_url"] = result["url"]
+            checkpoint["updated_at"] = stamp(now_utc())
+            queue["revision"] += 1
+            validate_candidate(queue, registry)
+            return queue, {"stored": True, "replaced_invalid_checkpoint": True, "url": result["url"]}
         if len(checkpoint["completed"]) >= 20:
             raise ValueError("assessment checkpoint reached the bounded 20-URL limit")
         checkpoint["completed"][result["url"]] = {"result": json.loads(result_json), "result_sha256": result_sha}
