@@ -170,7 +170,7 @@
     },
     "source_artifact_resolver": {
       "path": "scripts/resolve_source_artifacts.py",
-      "git_blob_sha": "0fddee7d9c95d11f4c0e88abee1f9f5bfc8ed45c"
+      "git_blob_sha": "612cae8546c1837bfa0b365b41c8c515723ee3f8"
     },
     "source_candidate_builder": {
       "path": "scripts/build_source_candidates.py",
