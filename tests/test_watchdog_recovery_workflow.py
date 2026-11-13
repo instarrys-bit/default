@@ -619,9 +619,7 @@ class WatchdogStaleRunRecoveryTests(unittest.TestCase):
         self.assertIn("(github.event_name == 'workflow_run' || needs.stale-run-watch.result == 'success')", queue)
         self.assertIn("needs: [health-check, stale-run-watch, manifest-integrity]", queue)
 
-if __name__ == "__main__":
-    unittest.main()
-
+class WatchdogAssessmentHandoffRegressionTests(unittest.TestCase):
     def test_assessment_selector_uses_exact_mounted_discovery_run(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         worker = workflow.split("name: Recover leases, verify results, and dispatch one task before artifact upload", 1)[1].split("name: Upload verified source assessment outputs as immutable artifact", 1)[0]
@@ -642,6 +640,17 @@ if __name__ == "__main__":
         self.assertIn("discovery_pipeline_revision", discovery)
         self.assertIn("source-discovery:$discovery_day:$discovery_revision", discovery)
 
+    def test_first_assessment_recovery_uses_smaller_batch_after_timeout(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        enqueue = workflow.split("name: Enqueue source assessment after successful discovery workflow", 1)[1].split(
+            "name: Enqueue one artifact-recovery Assessment", 1
+        )[0]
+        self.assertIn('assessment_max_urls=20', enqueue)
+        self.assertIn('assessment_max_urls=8', enqueue)
+        self.assertIn('assessment_max_urls=4', enqueue)
+        self.assertLess(enqueue.index('assessment_key="$recovery_one_key"'), enqueue.index('assessment_max_urls=8'))
+        self.assertLess(enqueue.index('assessment_key="$recovery_two_key"'), enqueue.index('assessment_max_urls=4'))
+
 class WatchdogRateLimitResilienceTests(unittest.TestCase):
     def test_stale_run_scans_are_single_page_and_rate_limit_safe(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
@@ -652,3 +661,6 @@ class WatchdogRateLimitResilienceTests(unittest.TestCase):
         self.assertIn("Stale-run scan deferred", stale)
         self.assertIn("auto-sync-refresh.err", stale)
         self.assertIn("no replacement will be dispatched in this pass", stale)
+
+if __name__ == "__main__":
+    unittest.main()

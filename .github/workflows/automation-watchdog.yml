@@ -1642,6 +1642,10 @@ jobs:
               exit 0
             else
               assessment_key="$recovery_one_key"
+              # The initial 20-URL batch exceeded the 300-second adapter
+              # budget. Resume its durable checkpoints with a smaller first
+              # recovery batch; the final recovery remains capped at four.
+              assessment_max_urls=8
             fi
           else
             assessment_key="$base_key"
