@@ -67,7 +67,7 @@ class WorkflowNativeWriteInventoryTests(unittest.TestCase):
         mutations = [
             line.strip()
             for line in watchdog.splitlines()
-            if re.search(r"\\bgit\\s+(?:add|commit|push)\\b", line)
+            if re.search(r"\bgit\s+(?:add|commit|push)\b", line)
         ]
         self.assertEqual(mutations, [
             "git add -- rulesets/manifest.json",
