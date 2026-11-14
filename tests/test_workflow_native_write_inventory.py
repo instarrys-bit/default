@@ -76,6 +76,10 @@ class WorkflowNativeWriteInventoryTests(unittest.TestCase):
         ])
         self.assertNotIn("contents: write", watchdog.split("  manifest-integrity:", 1)[0])
 
+    def test_watchdog_artifact_recovery_uses_reviewed_four_url_budget(self):
+        watchdog = (ROOT / ".github/workflows/automation-watchdog.yml").read_text(encoding="utf-8")
+        self.assertIn("'{max_urls:4,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}'", watchdog)
+
     def test_scan_covers_every_registered_workflow_file(self):
         inventory = json.loads((ROOT / "automation/resource_write_sets.json").read_text(encoding="utf-8"))
         self.assertEqual(inventory["workflow_native_scan"]["workflow_count"], len(WORKFLOWS))
