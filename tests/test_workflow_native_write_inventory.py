@@ -60,6 +60,22 @@ class WorkflowNativeWriteInventoryTests(unittest.TestCase):
         }
         self.assertEqual(declared_shell_sites, discovered)
 
+    def test_watchdog_repository_writes_are_limited_to_rulesets(self):
+        watchdog = (ROOT / ".github/workflows/automation-watchdog.yml").read_text(encoding="utf-8")
+        self.assertNotIn("baseline-sync:", watchdog)
+        self.assertNotIn("Apply owner-verified metadata-only baseline synchronization", watchdog)
+        mutations = [
+            line.strip()
+            for line in watchdog.splitlines()
+            if re.search(r"\\bgit\\s+(?:add|commit|push)\\b", line)
+        ]
+        self.assertEqual(mutations, [
+            "git add -- rulesets/manifest.json",
+            'git commit -m "Reconcile published RULE-SET manifest metadata"',
+            "git push origin HEAD:main",
+        ])
+        self.assertNotIn("contents: write", watchdog.split("  manifest-integrity:", 1)[0])
+
     def test_scan_covers_every_registered_workflow_file(self):
         inventory = json.loads((ROOT / "automation/resource_write_sets.json").read_text(encoding="utf-8"))
         self.assertEqual(inventory["workflow_native_scan"]["workflow_count"], len(WORKFLOWS))
