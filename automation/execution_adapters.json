@@ -2049,12 +2049,18 @@
       "target_kind": "github_actions_workflow",
       "adapter_type": "github_actions_workflow",
       "enabled": false,
-      "interface_status": "event_only",
+      "interface_status": "workflow_dispatch_reviewed",
       "allowed_callers": [],
       "workflow": {
         "path": ".github/workflows/queue-snapshot-artifact.yml",
-        "dispatchable": false,
-        "inputs": [],
+        "dispatchable": true,
+        "inputs": [
+          {
+            "name": "automation_task_id",
+            "type": "string",
+            "required": false
+          }
+        ],
         "allowed_refs": [
           "main"
         ],

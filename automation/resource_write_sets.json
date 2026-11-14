@@ -1359,8 +1359,8 @@
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
     "release_manifest_blob_sha": "9e9247ea206b106154e4a1f8a274d4c2de9714f3",
-    "program_registry_blob_sha": "2e3f25f6059b274fb5b28e0310e4e3e521eb7b67",
-    "execution_adapters_blob_sha": "12ce5aefc754d7b6e8486dddc7e94a9628fd1715",
+    "program_registry_blob_sha": "d9958268cf57c5d2ba507bf61a5ef8fc56b3240a",
+    "execution_adapters_blob_sha": "6abc3d7031e3da2daf48b936769f0a6bd8064db5",
     "added_after_release_baseline": true,
     "note": "Independent Source Discovery and non-activating Assessment are enabled through Watchdog-owned tasks. Discovery/Assessment outputs are isolated immutable RUNNER_TEMP artifacts; Assessment's only shared mutation is the fenced Issue #423 checkpoint. Repository mutations are governed per capability by explicit exclusive resource_contract.resource_keys; control-plane metadata is separately inventoried. The production auto_sync publisher stages only the three rule-set deliverables under rulesets/**. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07"
@@ -1570,16 +1570,6 @@
       ],
       "file_writes": [],
       "control_plane_boundary": "Mutates GitHub Issue #423 comments only; no repository filesystem or Contents API writes. Snapshot integrity is hash chained and queue state is re-read and validated before/after append. Concurrency/fencing proof for all concurrent queue writers remains an open Issue #193 acceptance item."
-    },
-    {
-      "program_id": "workflow_queue_snapshot_artifact",
-      "source": ".github/workflows/queue-snapshot-artifact.yml",
-      "classification": "immutable_run_scoped_github_actions_artifact_backup",
-      "side_effects": [
-        "Uploads the validated full Issue #423 queue snapshot to the current GitHub Actions run as durable-queue-snapshot-<run_id>."
-      ],
-      "file_writes": [],
-      "control_plane_boundary": "Writes only an immutable run-scoped Actions artifact using actions:write. Reads Issue #423 with issues:read. It does not mutate issue comments, repository contents, refs, rulesets, modules/uu.conf, task state or dispatch state."
     }
   ],
   "direct_mutation_scan": {
@@ -1744,6 +1734,18 @@
       ],
       "fence": "The callback is emitted only after the exact Discovery artifact is uploaded. Watchdog validates the exact Discovery run ID, workflow path, main branch, completed successful conclusion and immutable artifact provenance before queue reconciliation.",
       "boundary": "External workflow_dispatch wake-up only; no repository contents, source catalog, rulesets or modules/uu.conf are written by the callback."
+    },
+    {
+      "workflow_path": ".github/workflows/queue-snapshot-artifact.yml",
+      "step_name": "Upload durable queue snapshot artifact",
+      "mutation_kinds": [
+        "github_actions_artifact_upload"
+      ],
+      "resources": [
+        "GitHub Actions artifact durable-queue-snapshot-<run_id>"
+      ],
+      "fence": "The artifact name is bound to the exact unique GitHub Actions run ID; upload-artifact finalizes an immutable run-scoped artifact and cannot overwrite another run's snapshot.",
+      "boundary": "External GitHub Actions artifact storage only. No repository contents, refs, queue comments, task state, rulesets or modules/uu.conf are modified."
     }
   ],
   "workflow_native_scan": {
@@ -1756,7 +1758,8 @@
       "GitHub Issue comments POST",
       "GitHub Pages deploy action",
       "GitHub issue PATCH",
-      "git add/commit/push/reset/checkout"
+      "git add/commit/push/reset/checkout",
+      "GitHub Actions artifact upload action"
     ],
     "limitations": [
       "dynamic command construction",

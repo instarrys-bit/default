@@ -1920,7 +1920,8 @@
       "invocation": "15-minute schedule and completion of Watchdog, config-validation or Source Discovery workflows; manual dispatch is available for recovery",
       "inputs": [
         "canonical append-only durable queue state in GitHub Issue #423",
-        "repository identity and triggering workflow run identity"
+        "repository identity and triggering workflow run identity",
+        "optional automation_task_id for correlated manual backup runs"
       ],
       "outputs": [
         "run-scoped durable-queue-snapshot-<run_id> Actions artifact containing the validated full queue snapshot, revision and task count"
