@@ -4,8 +4,8 @@
   "status": "partial_static_audit",
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
-    "registry_blob_sha": "4ccc4f98a5d90a5dd0dd4d07fb912455c64e627f",
-    "adapters_blob_sha": "71d2ba5061d9f0b7cbca3961dd0d85e8e0ad5a45",
+    "registry_blob_sha": "d9958268cf57c5d2ba507bf61a5ef8fc56b3240a",
+    "adapters_blob_sha": "6abc3d7031e3da2daf48b936769f0a6bd8064db5",
     "inspected_sources": [
       ".github/workflow_helpers/check_source_assessment_artifact.py",
       ".github/workflows/assessment-completion-relay.yml",
@@ -84,7 +84,8 @@
       "tests/test_task_scheduler.py",
       "tests/test_watchdog_recovery_workflow.py",
       "tests/test_workflow_config_guard_order.py",
-      "tests/test_workflow_native_write_inventory.py"
+      "tests/test_workflow_native_write_inventory.py",
+      ".github/workflows/queue-snapshot-artifact.yml"
     ],
     "limitation": "The active Source Discovery → Assessment DAG remains scoped to runner-local immutable artifacts and a fenced Issue #423 checkpoint. A separate durable non-activating source-candidate registry is committed only as rulesets/source_candidate_registry.json by the existing single auto_sync publisher under the Watchdog logical/production-pipeline fence. Protected modules/** and JavaScript remain unwritable. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
     "reviewed_at": "2026-11-07",
@@ -576,6 +577,19 @@
       "required_mode": "exclusive_live_resource_lease",
       "status": "fenced_single_publisher_rulesets_only",
       "note": "Stores every discovered candidate repository and each supported rule-list file as typed JSONL records in a durable, non-activating registry. Schema-v1 inline JSON is migrated on the next successful write; schema-v2 readers verify the adjacent manifest, each shard SHA-256 and record count. Shard files are content-addressed; the adjacent manifest is atomically replaced only after all shards are complete. The per-file limit remains 40,000,000 bytes with a 35,000,000-byte target. Source identity is repository+URL; discovery provenance and first/last-seen run IDs are retained. External intelligence is excluded. The registry is never treated as an active policy source."
+    },
+    {
+      "id": "durable_queue_snapshot_artifacts",
+      "status": "immutable_run_scoped_actions_artifacts",
+      "paths": [
+        "GitHub Actions artifacts durable-queue-snapshot-<run_id>"
+      ],
+      "known_writers": [
+        "workflow_queue_snapshot_artifact"
+      ],
+      "lock_key": "unique GitHub Actions run ID; immutable artifact name durable-queue-snapshot-<run_id>",
+      "required_mode": "immutable_run_scoped_artifact",
+      "note": "The backup workflow reads the canonical Issue #423 queue snapshot and uploads one immutable artifact per run. This is external Actions artifact storage, not a repository file writer or queue mutator."
     }
   ],
   "scheduling_gates": {

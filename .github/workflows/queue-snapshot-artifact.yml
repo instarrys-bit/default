@@ -1,4 +1,5 @@
 name: Durable queue snapshot artifact
+run-name: Queue snapshot ${{ inputs.automation_task_id || 'scheduled' }}
 
 on:
   schedule:
@@ -6,10 +7,15 @@ on:
   workflow_run:
     workflows:
       - "Shadowrocket automation watchdog"
-      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
+      - "Validate Shadowrocket config against user baseline"
       - "Shadowrocket Source Discovery (Watchdog)"
     types: [completed]
   workflow_dispatch:
+    inputs:
+      automation_task_id:
+        description: Optional correlation label for a manually requested backup
+        required: false
+        type: string
 
 permissions:
   contents: read

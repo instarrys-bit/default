@@ -1907,6 +1907,37 @@
         "max_attempts": 0,
         "timeout_seconds": 300
       }
+    },
+    {
+      "id": "workflow_queue_snapshot_artifact",
+      "path": ".github/workflows/queue-snapshot-artifact.yml",
+      "kind": "github_actions_workflow",
+      "responsibility": "periodically export the canonical durable queue snapshot from Issue #423 and retain it as an immutable Actions artifact for disaster recovery",
+      "capabilities": [
+        "durable_queue_snapshot_export",
+        "queue_disaster_recovery"
+      ],
+      "invocation": "15-minute schedule and completion of Watchdog, config-validation or Source Discovery workflows; manual dispatch is available for recovery",
+      "inputs": [
+        "canonical append-only durable queue state in GitHub Issue #423",
+        "repository identity and triggering workflow run identity",
+        "optional automation_task_id for correlated manual backup runs"
+      ],
+      "outputs": [
+        "run-scoped durable-queue-snapshot-<run_id> Actions artifact containing the validated full queue snapshot, revision and task count"
+      ],
+      "depends_on": [
+        "script_remote_task_queue_runtime"
+      ],
+      "dispatches": [],
+      "permission_boundary": "contents:read and issues:read only to read and validate the canonical queue; actions:write only to upload a run-scoped immutable Actions artifact. No repository contents writes, commits, branch updates, queue mutations, task dispatch, source activation, ruleset publication, or writes to modules/uu.conf.",
+      "health_check": "The snapshot CLI must validate the canonical Issue #423 envelope and report revision/task count; the exact output file must be uploaded under a unique run ID. Missing or invalid snapshots fail the job; the upload step cannot turn a failed export into a successful run.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 600
+      }
     }
   ]
 }
