@@ -1755,23 +1755,6 @@
       ],
       "fence": "The callback is emitted only after the exact Discovery artifact is uploaded. Watchdog validates the exact Discovery run ID, workflow path, main branch, completed successful conclusion and immutable artifact provenance before queue reconciliation.",
       "boundary": "External workflow_dispatch wake-up only; no repository contents, source catalog, rulesets or modules/uu.conf are written by the callback."
-    },
-    {
-      "workflow_path": ".github/workflows/automation-watchdog.yml",
-      "step_name": "Apply owner-verified metadata-only baseline synchronization",
-      "mutation_kinds": [
-        "git_add",
-        "git_commit",
-        "git_push"
-      ],
-      "resources": [
-        "sources/policy.json",
-        "automation/release_manifest.json",
-        "automation/production_workflow_map.json",
-        "automation/resource_write_sets.json"
-      ],
-      "fence": "Static shadowrocket-config-baseline-sync job concurrency; owner-verified config commit history; exact four-path staging allowlist; modules/uu.conf before/after blob check; exact origin/main == GITHUB_SHA compare before non-force push.",
-      "boundary": "Metadata-only synchronization. modules/uu.conf is never staged, committed, rewritten or restored. No ruleset outputs are published by this job."
     }
   ],
   "workflow_native_scan": {
