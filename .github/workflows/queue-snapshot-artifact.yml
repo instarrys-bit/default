@@ -7,7 +7,7 @@ on:
   workflow_run:
     workflows:
       - "Shadowrocket automation watchdog"
-      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
+      - "Validate Shadowrocket config against user baseline"
       - "Shadowrocket Source Discovery (Watchdog)"
     types: [completed]
   workflow_dispatch:
