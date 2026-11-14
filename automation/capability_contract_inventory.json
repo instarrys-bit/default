@@ -2,9 +2,9 @@
   "schema_version": 1,
   "audit_id": "capability-contract-inventory-source-dag-active-2026-11-07",
   "status": "baseline_inventory",
-  "source_registry_blob_sha": "4ccc4f98a5d90a5dd0dd4d07fb912455c64e627f",
+  "source_registry_blob_sha": "2e3f25f6059b274fb5b28e0310e4e3e521eb7b67",
   "summary": {
-    "registered_programs": 64,
+    "registered_programs": 65,
     "python_components": 56,
     "python_components_with_concrete_io_contract": 1,
     "python_components_with_declared_registry_dependencies": 6,
@@ -1865,6 +1865,32 @@
         "logical/source-dag-supervision"
       ],
       "verifier": "The relay verifies completed successful producer identity and exact unique non-expired artifact metadata; the Watchdog then performs the existing independent artifact-content verification, queue CAS, lease/fencing and production authorization."
+    },
+    {
+      "id": "workflow_queue_snapshot_artifact",
+      "path": ".github/workflows/queue-snapshot-artifact.yml",
+      "declared_capabilities": [
+        "durable_queue_snapshot_export",
+        "queue_disaster_recovery"
+      ],
+      "registry_dependencies": [
+        "script_remote_task_queue_runtime"
+      ],
+      "current_invocation": "15-minute scheduled backup and workflow_run completion callback; non-dispatchable",
+      "current_registry_inputs": [
+        "canonical GitHub Issue #423 append-only snapshot chain",
+        "exact current repository main checkout"
+      ],
+      "current_registry_outputs": [
+        "validated RUNNER_TEMP/task_queue.json",
+        "durable-queue-snapshot-<run_id> immutable Actions artifact with GitHub-provided ZIP SHA-256"
+      ],
+      "contract_status": "read_only_event_triggered_disaster_recovery_backup",
+      "dispatch_status": "disabled",
+      "resource_keys": [
+        "GitHub Actions artifact durable-queue-snapshot-<run_id>"
+      ],
+      "verifier": "Export step validates the complete queue envelope and task schema before upload; artifact metadata is bound to the exact producer run ID and head SHA. The backup job cannot mutate the queue or repository."
     }
   ],
   "review_context": {

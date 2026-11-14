@@ -2,7 +2,7 @@
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
   "workflow_blob_sha": "7a18801c347a6f530c7953896b02d6d0709fb328",
-  "registry_blob_sha": "4ccc4f98a5d90a5dd0dd4d07fb912455c64e627f",
+  "registry_blob_sha": "2e3f25f6059b274fb5b28e0310e4e3e521eb7b67",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 7,
@@ -363,12 +363,12 @@
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
     "release_manifest_blob_sha": "9e9247ea206b106154e4a1f8a274d4c2de9714f3",
-    "program_registry_blob_sha": "4ccc4f98a5d90a5dd0dd4d07fb912455c64e627f",
+    "program_registry_blob_sha": "2e3f25f6059b274fb5b28e0310e4e3e521eb7b67",
     "execution_adapters_blob_sha": "71d2ba5061d9f0b7cbca3961dd0d85e8e0ad5a45",
     "added_after_release_baseline": true,
     "note": "The independent source DAG is enabled under the scoped release allowlist. The production deliverables are exactly DIRECT, PROXY and REJECT; queue/checkpoint state and immutable runner-local artifacts are separate control-plane/runtime resources. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07",
-    "registry_blob_sha": "cedd1d7a8410a920a6c598f55cdb556f7c7dd7",
+    "registry_blob_sha": "2e3f25f6059b274fb5b28e0310e4e3e521eb7b67",
     "source_dag_scope": "End-to-end Watchdog-owned Discovery → immutable artifact verification → non-activating Assessment → immutable Assessment artifact proof → production artifact re-verification → source matrix → deterministic admission → production collection. REJECT is automatically published after deterministic first-stage review, stricter secondary evidence gates and config-conflict checks; human review is exception-only; uu.conf is read-only."
   },
   "independent_dags": [

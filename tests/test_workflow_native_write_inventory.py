@@ -14,6 +14,7 @@ WORKFLOWS = [
     ".github/workflows/self-healing-tests.yml",
     ".github/workflows/validate-config.yml",
     ".github/workflows/source-discovery.yml",
+    ".github/workflows/queue-snapshot-artifact.yml",
 ]
 PATTERNS = {
     "git_add": re.compile(r"\bgit\s+add\b"),
