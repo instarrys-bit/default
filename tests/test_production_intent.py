@@ -228,6 +228,7 @@ class ProductionIntentTests(unittest.TestCase):
             "automation/resource_write_sets.json",
             "automation/capability_contract_inventory.json",
             "automation/resource_ownership_audit.json",
+            ".github/workflows/queue-snapshot-artifact.yml",
         ]
         for path in paths:
             with self.subTest(path=path):

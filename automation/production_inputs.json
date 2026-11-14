@@ -106,7 +106,8 @@
     "sources/source_candidates.json*",
     "sources/source_snapshots/**",
     "tests/**",
-    "automation/task_queue_rebuild_seed.json"
+    "automation/task_queue_rebuild_seed.json",
+    ".github/workflows/queue-snapshot-artifact.yml"
   ],
   "unknown_path_policy": "review_required",
   "monitoring_path_patterns": [
