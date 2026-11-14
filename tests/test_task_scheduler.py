@@ -899,12 +899,18 @@ class TaskSchedulerTests(unittest.TestCase):
         self.assertEqual(store.document["tasks"][0]["last_error"]["type"], "stale_production_input_superseded")
 
 
-    def test_explicit_resource_contract_allows_control_plane_paths_without_global_rulesets_only_cap(self):
+    def test_repository_write_contract_allows_rulesets_and_rejects_control_plane_paths(self):
         validate_repository_write_scope(
-            ["automation/production_control.json", "rulesets/direct.list"],
+            ["rulesets/direct.list", "rulesets/proxy.list"],
             ["rulesets/direct.list"],
-            ["automation/production_control.json", "rulesets/direct.list", "logical/production-pipeline"],
+            ["rulesets/direct.list", "rulesets/proxy.list", "logical/production-pipeline"],
         )
+        with self.assertRaisesRegex(ValueError, "outside the authorized rulesets"):
+            validate_repository_write_scope(
+                ["automation/production_control.json", "rulesets/direct.list"],
+                ["rulesets/direct.list"],
+                ["automation/production_control.json", "rulesets/direct.list", "logical/production-pipeline"],
+            )
 
     def test_explicit_resource_contract_still_rejects_modules_javascript_and_undeclared_paths(self):
         keys = ["modules/uu.conf", "modules/AdBlock.sgmodule", "scripts/Clean_Pro.js", "automation/production_control.json"]

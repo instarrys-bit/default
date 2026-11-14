@@ -242,8 +242,6 @@ class GitHubContentsQueueStore:
             if len(result) < 100:
                 break
             page += 1
-            if page > 100:
-                raise GitHubAPIError("durable queue comment history exceeds the pagination safety limit")
         return comments
 
     def _post_comment(self, body: str) -> int:
