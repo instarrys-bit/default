@@ -881,7 +881,7 @@
       ],
       "depends_on": [],
       "dispatches": [],
-      "permission_boundary": "The --apply mode is callable only by the serialized automation-watchdog.yml baseline-sync job with contents:write. It verifies repository-owner identity and every intervening uu.conf-changing commit, then writes only sources/policy.json, automation/release_manifest.json, automation/production_workflow_map.json and automation/resource_write_sets.json. Default mode remains runner-local proposal-only. It never writes modules/uu.conf; no independent dispatch is enabled.",
+      "permission_boundary": "Default mode only: reads modules/uu.conf and emits a runner-local review proposal under RUNNER_TEMP. No workflow has contents:write permission to apply baseline metadata, and the script is not authorized to write repository files. It never modifies modules/uu.conf; no independent dispatch is enabled.",
       "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
       "orchestration": {
         "enabled": false,
