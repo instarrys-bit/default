@@ -11,15 +11,11 @@
       "access": "read_only",
       "writers_allowed": [],
       "metadata_only_sync": {
-        "writer": "script_register_config_baseline --apply via automation-watchdog.yml baseline-sync",
-        "allowed_paths": [
-          "sources/policy.json",
-          "automation/release_manifest.json",
-          "automation/production_workflow_map.json",
-          "automation/resource_write_sets.json"
-        ],
-        "authorization": "Owner-associated GitHub author identity for every uu.conf-changing commit since the registered anchor",
-        "fence": "Static baseline-sync job concurrency plus exact main-head compare-and-push and exact staged-path allowlist",
+        "writer": null,
+        "allowed_paths": [],
+        "authorization": "No automated repository metadata synchronization is authorized.",
+        "fence": "No Watchdog job has contents:write permission for baseline metadata.",
+        "proposal_only": "scripts/register_config_baseline.py may emit a runner-local proposal artifact; it cannot write repository files.",
         "never_write": [
           "modules/uu.conf"
         ]
@@ -1160,23 +1156,6 @@
       "note": "Shared coarse mutex serializes workflow_auto_sync with the independently scheduled source assessor; each JSON/report output also has its own logical resource lease. The allowlisted publish restore is invoked by workflow_auto_sync and is implemented by script_restore_automation_state under this same mutex."
     },
     {
-      "resource": "owner-approved config baseline metadata",
-      "paths": [
-        "sources/policy.json",
-        "automation/release_manifest.json",
-        "automation/production_workflow_map.json",
-        "automation/resource_write_sets.json"
-      ],
-      "writers": [
-        "script_register_config_baseline",
-        "workflow_automation_watchdog"
-      ],
-      "lock_key": "shadowrocket-config-baseline-sync",
-      "mode": "exclusive",
-      "enforcement": "The dedicated Watchdog baseline-sync job is serialized by the shadowrocket-config-baseline-sync concurrency group. It verifies every intervening uu.conf-changing commit against the repository owner, stages exactly the four metadata paths, verifies modules/uu.conf is unchanged, and requires origin/main to equal the exact triggering SHA before a non-force push. auto_sync retains proposal-only behavior and cannot write this metadata.",
-      "note": "Baseline bookkeeping only. modules/uu.conf remains read-only; automation may update only approved_git_blob_sha, the owner-history registration record and derived release-manifest pins in the four exact metadata paths."
-    },
-    {
       "id": "rulesets/config_conflict_archive.json",
       "resource": "rulesets/config_conflict_archive.json",
       "paths": [
@@ -1380,7 +1359,7 @@
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
     "release_manifest_blob_sha": "9e9247ea206b106154e4a1f8a274d4c2de9714f3",
-    "program_registry_blob_sha": "bc05f1c0419ac784fae1cceb0314ad9339f141ed",
+    "program_registry_blob_sha": "4ccc4f98a5d90a5dd0dd4d07fb912455c64e627f",
     "execution_adapters_blob_sha": "71d2ba5061d9f0b7cbca3961dd0d85e8e0ad5a45",
     "added_after_release_baseline": true,
     "note": "Independent Source Discovery and non-activating Assessment are enabled through Watchdog-owned tasks. Discovery/Assessment outputs are isolated immutable RUNNER_TEMP artifacts; Assessment's only shared mutation is the fenced Issue #423 checkpoint. Repository mutations are governed per capability by explicit exclusive resource_contract.resource_keys; control-plane metadata is separately inventoried. The production auto_sync publisher stages only the three rule-set deliverables under rulesets/**. The global static/transitive inventory remains partial for unrelated capabilities.",
