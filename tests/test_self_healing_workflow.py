@@ -136,6 +136,18 @@ class SelfHealingWorkflowTests(unittest.TestCase):
 
 
 
+    def test_failed_log_download_retries_only_transient_api_rate_limits(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        download = workflow.split("      - name: Download failed workflow logs", 1)[1].split(
+            "      - name: Diagnose failed workflow", 1
+        )[0]
+        self.assertIn("for attempt in 1 2 3 4 5", download)
+        self.assertIn("API rate limit exceeded|secondary rate limit|abuse detection", download)
+        self.assertIn('sleep "$delay"', download)
+        self.assertIn("cat /tmp/failed-run-error.log >&2", download)
+        self.assertIn('gh run view "$RUN_ID" --repo "$REPO" --log-failed', download)
+        self.assertIn("exit 1", download)
+
     def test_run_history_checks_follow_all_api_pages(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         self.assertGreaterEqual(workflow.count("gh api --paginate --slurp"), 2)
