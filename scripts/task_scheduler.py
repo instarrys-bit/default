@@ -656,11 +656,11 @@ def generated_python_cache_paths(paths) -> list[str]:
 
 
 def validate_repository_write_scope(write_resources: list, publish_resources: list, resource_keys: list) -> None:
-    """Require every repository mutation to be explicitly fenced and non-protected.
+    """Allow persistent repository writes only below rulesets/.
 
-    This is a per-capability resource contract, not a global rulesets/** write
-    restriction. The production auto_sync publisher separately stages only the
-    three declared ruleset deliverables under its own workflow-level path fence.
+    Logical resource keys may still coordinate runner-local work, but every
+    repository path declared as writable or publishable must remain inside the
+    user's sole automation write boundary: rulesets/**.
     """
     if not isinstance(write_resources, list) or not isinstance(publish_resources, list):
         raise ValueError("repository write and publish resources must be lists")
@@ -683,6 +683,8 @@ def validate_repository_write_scope(write_resources: list, publish_resources: li
             raise ValueError("repository write resource targets protected modules or JavaScript")
         if path not in resource_keys:
             raise ValueError("repository write resource is not declared in the exclusive resource contract")
+        if not path.startswith("rulesets/"):
+            raise ValueError("repository write resource is outside the authorized rulesets/** boundary")
 
 
 def publishable_resource_path(path: str, resources: list[str]) -> bool:
