@@ -90,6 +90,22 @@ class GitHubIssueQueueStoreTests(unittest.TestCase):
         self.assertEqual(snapshot.content_sha, "")
         self.assertEqual(len(self.comments), 0)
 
+    def test_queue_history_reads_continue_past_one_hundred_pages(self):
+        requested_pages = []
+
+        def paginated_urlopen(request, timeout=20):
+            from urllib.parse import parse_qs, urlparse
+            page = int(parse_qs(urlparse(request.full_url).query)["page"][0])
+            requested_pages.append(page)
+            count = 100 if page <= 101 else 7
+            return FakeResponse([{"id": page * 100 + index, "body": "ordinary comment"} for index in range(count)])
+
+        with patch("github_queue_store.urlopen", side_effect=paginated_urlopen):
+            comments = self.store._all_comments()
+
+        self.assertEqual(requested_pages, list(range(1, 103)))
+        self.assertEqual(len(comments), 10107)
+
     def test_read_only_consumer_does_not_bootstrap_or_write(self):
         with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
             snapshot = self.store.read()
