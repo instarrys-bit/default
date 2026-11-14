@@ -135,19 +135,19 @@
   },
   "managed_config_guard": {
     "path": "modules/uu.conf",
-    "approved_git_blob_sha": "dd874bdac9f5985dd9a738407b10234d64f1a1a0",
+    "approved_git_blob_sha": "803f9f25b8e7323a43185b088a10f82255f0cb2a",
     "description": "Authoritative owner-managed Shadowrocket config. Automation may read, identify, hash, diff, and register baseline metadata only after owner verification; it must never rewrite file contents, user-authored rules, or existing functionality.",
     "last_user_approved_baseline_update": {
-      "previous_blob_sha": "c8b270afa574e1f03e2aac76c2d4e5a9c9599603",
-      "new_blob_sha": "dd874bdac9f5985dd9a738407b10234d64f1a1a0",
+      "previous_blob_sha": "dd874bdac9f5985dd9a738407b10234d64f1a1a0",
+      "new_blob_sha": "803f9f25b8e7323a43185b088a10f82255f0cb2a",
       "reason": "Watchdog synchronized the exact main-branch uu.conf Git blob after verifying every intervening config-changing commit is associated with the repository owner. Only baseline metadata and derived release pins are updated; uu.conf bytes are immutable to automation.",
       "approval_mode": "recovered_owner_authored_config_history",
       "config_change_commits": [
-        "da9dbe03ba0068cb92d064a2da3f67879fef11a1"
+        "4244cbbdada19ecb919e8338886d94fd3e1c85ed"
       ],
       "actor": "instarrys-bit",
-      "commit_sha": "da9dbe03ba0068cb92d064a2da3f67879fef11a1",
-      "registered_at": "2026-11-14T19:20:24.020389+00:00"
+      "commit_sha": "4244cbbdada19ecb919e8338886d94fd3e1c85ed",
+      "registered_at": "2026-11-14T19:22:35.398605+00:00"
     },
     "content_immutable_to_automation": true,
     "content_protection": {
