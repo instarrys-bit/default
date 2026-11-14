@@ -57,10 +57,9 @@ jobs:
           python3 -c "import json; d=json.load(open('$RUNNER_TEMP/task_queue.json')); print('revision', d.get('revision'), 'tasks', len(d.get('tasks', [])))"
 
       - name: Upload durable queue snapshot artifact
-        if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: durable-queue-snapshot-${{ github.run_id }}
           path: ${{ runner.temp }}/task_queue.json
           retention-days: 30
-          if-no-files-found: ignore
+          if-no-files-found: error
