@@ -1,5 +1,5 @@
 name: Shadowrocket automation watchdog
-run-name: Automation task ${{ inputs.automation_task_id || 'manual' }}
+run-name: Automation task ${{ inputs.automation_task_id || 'manual' }} | Assessment reconcile ${{ inputs.assessment_producer_run_id || 'none' }} | Discovery reconcile ${{ inputs.source_discovery_run_id || 'none' }} | Production reconcile ${{ inputs.production_producer_run_id || 'none' }}
 
 on:
   schedule:
