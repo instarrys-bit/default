@@ -9,12 +9,13 @@ WATCHDOG = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
 
 
 class SelfHealingWorkflowTests(unittest.TestCase):
-    def test_repository_mutating_workflows_share_the_main_writer_concurrency_group(self):
+    def test_read_only_self_healing_does_not_block_the_main_writer(self):
         healing = WORKFLOW.read_text(encoding="utf-8")
         audit = AUTO_SYNC.read_text(encoding="utf-8")
-        for workflow in (healing, audit):
-            self.assertIn("group: shadowrocket-main-writer", workflow)
-            self.assertIn("cancel-in-progress: false", workflow)
+        self.assertIn("group: shadowrocket-main-writer", audit)
+        self.assertIn("group: shadowrocket-self-healing-diagnostics", healing)
+        self.assertNotIn("group: shadowrocket-main-writer", healing)
+        self.assertIn("cancel-in-progress: false", healing)
         self.assertFalse((ROOT / ".github" / "workflows" / "request-intake.yml").exists())
 
     def test_self_healing_is_diagnostic_only_and_never_writes_repository_code(self):
