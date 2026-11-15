@@ -340,7 +340,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("GITHUB_MANUAL_AUDIT_REQUEST: ${{ inputs.request_deterministic_audit }}", supervision)
         self.assertIn("GITHUB_REF_NAME: main", supervision)
         self.assertIn("GITHUB_REPOSITORY: ${{ github.repository }}", supervision)
-        self.assertIn("timeout-minutes: 15", supervision)
+        self.assertIn("timeout-minutes: 30", supervision)
         self.assertIn("--max-tasks 1 run-once", supervision)
         self.assertIn('--task-id "$selected_task_id"', supervision)
         self.assertIn("select_source_worker_task", supervision)
