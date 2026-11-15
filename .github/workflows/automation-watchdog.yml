@@ -1078,6 +1078,8 @@ jobs:
           EVENT_SOURCE_RUN_ID: ${{ github.event.workflow_run.path == '.github/workflows/source-discovery.yml' && github.event.workflow_run.id || '' }}
         run: |
           set -euo pipefail
+          echo "assessment_artifact_verified=false" >> "$GITHUB_OUTPUT"
+          echo "assessment_task_id=" >> "$GITHUB_OUTPUT"
           python3 - <<'PY'
           import json, os, sys, urllib.request
           from pathlib import Path
@@ -1113,12 +1115,21 @@ jobs:
                   task.get("status") == "QUEUED"
                   or (
                       task.get("status") == "SUCCEEDED"
-                      and isinstance(task.get("idempotency_key"), str)
-                      and task.get("idempotency_key").endswith(":recovery:2")
-                      and task.get("idempotency_key").rsplit(":recovery:2", 1)[0] + ":artifact-recovery:1" not in existing_artifact_recovery_keys
+                      and (task.get("verification") or {}).get("status") == "passed"
                   )
               )
           ]
+          # Prefer a successful Assessment proof over a newer queued attempt.
+          # This lets the supervisor verify an already-uploaded artifact, or
+          # enqueue the one bounded artifact-recovery task if upload was missed.
+          assessment_tasks.sort(
+              key=lambda task: (
+                  task.get("status") == "SUCCEEDED",
+                  str(task.get("created_at") or ""),
+                  str(task.get("task_id") or ""),
+              ),
+              reverse=True,
+          )
           print(json.dumps({
               "queue_revision": queue.get("revision"),
               "queue_snapshot": str(queue_path),
@@ -1175,7 +1186,16 @@ jobs:
                   "artifact_sha256": proof["artifact_sha256"],
               })
               handoff = classify_assessment_handoff(tasks, run_id)
-              handoff_state = "assessment_artifact_verified" if matching_assessment.get("found") else handoff["state"]
+              if matching_assessment.get("found"):
+                  handoff_state = "assessment_artifact_verified"
+                  with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+                      output.write("assessment_artifact_verified=true\\n")
+              else:
+                  handoff_state = handoff["state"]
+                  if assessment_task.get("status") == "SUCCEEDED" and (assessment_task.get("verification") or {}).get("status") == "passed":
+                      handoff_state = "already_assessed"
+                      with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+                          output.write(f"assessment_task_id={assessment_task['task_id']}\\n")
               resolved = (assessment_task, run)
               break
 
@@ -1509,6 +1529,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           SOURCE_RUN_ID: ${{ steps.resolve-discovery-run.outputs.run_id }}
+          VERIFIED_TASK_ID: ${{ steps.resolve-discovery-run.outputs.assessment_task_id }}
           AUTOMATION_QUEUE_SNAPSHOT: ${{ runner.temp }}/task_queue.json
         run: |
           set -euo pipefail
@@ -1516,10 +1537,12 @@ jobs:
           recovery_two_key="$base_key:recovery:2"
           artifact_recovery_key="$base_key:artifact-recovery:1"
           recovery_two="$(jq -c --arg key "$recovery_two_key" '[.tasks[]? | select(.idempotency_key == $key)] | last // empty' "$AUTOMATION_QUEUE_SNAPSHOT")"
-          if [ -z "$recovery_two" ] || [ "$(jq -r '.status // ""' <<< "$recovery_two")" != "SUCCEEDED" ] || [ "$(jq -r '.verification.status // ""' <<< "$recovery_two")" != "passed" ] || [ "$(jq -r '.result.artifact_verification.valid // false' <<< "$recovery_two")" != "true" ] || [ "$(jq -r '.result.artifact_verification.activation_count // -1' <<< "$recovery_two")" != "0" ]; then
-            echo "No independently verified recovery:2 task requires artifact recovery."
+          verified_task="$(jq -c --arg task "$VERIFIED_TASK_ID" '[.tasks[]? | select(.task_id == $task)] | last // empty' "$AUTOMATION_QUEUE_SNAPSHOT")"
+          if [ -z "$verified_task" ] || [ "$(jq -r '.status // ""' <<< "$verified_task")" != "SUCCEEDED" ] || [ "$(jq -r '.verification.status // ""' <<< "$verified_task")" != "passed" ] || [ "$(jq -r '.result.artifact_verification.valid // false' <<< "$verified_task")" != "true" ] || [ "$(jq -r '.result.artifact_verification.activation_count // -1' <<< "$verified_task")" != "0" ]; then
+            echo "No exact independently verified Assessment task requires artifact recovery."
             exit 0
           fi
+          recovery_two="$verified_task"
           existing="$(jq -r --arg key "$artifact_recovery_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .task_id // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
           if [ -n "$existing" ]; then
             echo "The single artifact-recovery task already exists ($existing); no duplicate will be enqueued."
@@ -1593,6 +1616,8 @@ jobs:
           AUTOMATION_ARTIFACT_ROOT: ${{ runner.temp }}/source-assessment-output
           SOURCE_RUN_ID: ${{ steps.resolve-discovery-run.outputs.run_id }}
           SOURCE_ASSESSMENT_RETRY_EXHAUSTED: ${{ steps.enqueue-assessment.outputs.retry_exhausted }}
+          SOURCE_DISCOVERY_MODE: ${{ steps.source-mode.outputs.mode }}
+          ASSESSMENT_ARTIFACT_VERIFIED: ${{ steps.resolve-discovery-run.outputs.assessment_artifact_verified }}
         run: |
           set -euo pipefail
           rm -rf "$AUTOMATION_ARTIFACT_ROOT"
@@ -1614,15 +1639,25 @@ jobs:
           tasks = queue.get("tasks", [])
           current_fingerprint = compute_fingerprint(Path("."), load_manifest(Path("automation/production_inputs.json")))
           production_task_id = select_production_worker_task(tasks, current_fingerprint)
+          source_mode = os.environ.get("SOURCE_DISCOVERY_MODE", "independent")
+          artifact_verified = os.environ.get("ASSESSMENT_ARTIFACT_VERIFIED") == "true"
+          if source_mode == "independent" and not artifact_verified:
+              production_task_id = ""
           active_production = any(
               isinstance(task, dict)
               and task.get("target_program_id") == "workflow_auto_sync"
-              and task.get("status") in {"QUEUED", "CLAIMED", "VERIFYING"}
+              and (
+                  task.get("status") in {"CLAIMED", "VERIFYING"}
+                  or (task.get("status") == "QUEUED" and isinstance(task.get("dispatch_intent"), dict))
+              )
               for task in tasks
           )
           if production_task_id:
               print(production_task_id)
               print("Deferring the next source worker while the eligible production task is dispatched.", file=sys.stderr)
+          elif active_production:
+              print("")
+              print("An active production run owns the pipeline; deferring source workers until its exact result is reconciled.", file=sys.stderr)
           else:
               predecessor_run_id = os.environ.get("SOURCE_RUN_ID", "").strip()
               if os.environ.get("SOURCE_ASSESSMENT_RETRY_EXHAUSTED") == "true":
