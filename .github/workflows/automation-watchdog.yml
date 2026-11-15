@@ -1115,21 +1115,12 @@ jobs:
                   task.get("status") == "QUEUED"
                   or (
                       task.get("status") == "SUCCEEDED"
-                      and (task.get("verification") or {}).get("status") == "passed"
+                      and isinstance(task.get("idempotency_key"), str)
+                      and task.get("idempotency_key").endswith(":recovery:2")
+                      and task.get("idempotency_key").rsplit(":recovery:2", 1)[0] + ":artifact-recovery:1" not in existing_artifact_recovery_keys
                   )
               )
           ]
-          # Prefer a successful Assessment proof over a newer queued attempt.
-          # This lets the supervisor verify an already-uploaded artifact, or
-          # enqueue the one bounded artifact-recovery task if upload was missed.
-          assessment_tasks.sort(
-              key=lambda task: (
-                  task.get("status") == "SUCCEEDED",
-                  str(task.get("created_at") or ""),
-                  str(task.get("task_id") or ""),
-              ),
-              reverse=True,
-          )
           print(json.dumps({
               "queue_revision": queue.get("revision"),
               "queue_snapshot": str(queue_path),
@@ -1338,6 +1329,75 @@ jobs:
                   summary.write("Historical duplicate Assessment task IDs: " + ", ".join(handoff["duplicate_task_ids"]) + "\n")
           print(json.dumps({"resolved":True,"task_id":task["task_id"],"run_id":run_id,"head_sha":head_sha,"handoff_state":handoff_state,"assessment_task_ids":handoff.get("task_ids",[]),"duplicate_assessment_task_ids":handoff.get("duplicate_task_ids",[])}))
           PY
+      - name: Verify latest successful Assessment artifact before production queue selection
+        id: verify-latest-assessment-artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SOURCE_DISCOVERY_MODE: ${{ steps.source-mode.outputs.mode }}
+          RESOLVER_RUN_ID: ${{ steps.resolve-discovery-run.outputs.run_id }}
+          RESOLVER_ARTIFACT_VERIFIED: ${{ steps.resolve-discovery-run.outputs.assessment_artifact_verified }}
+          AUTOMATION_QUEUE_SNAPSHOT: ${{ runner.temp }}/task_queue.json
+        run: |
+          set -euo pipefail
+          echo "valid=false" >> "$GITHUB_OUTPUT"
+          echo "discovery_run_id=" >> "$GITHUB_OUTPUT"
+          echo "assessment_task_id=" >> "$GITHUB_OUTPUT"
+          if [ "$SOURCE_DISCOVERY_MODE" != "independent" ]; then
+            echo "valid=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          sys.path.insert(0, ".github/workflow_helpers")
+          from source_handoff_policy import latest_verified_assessed_discovery
+          from check_source_assessment_artifact import find_matching_assessment_artifact
+
+          queue = json.loads(Path(os.environ["AUTOMATION_QUEUE_SNAPSHOT"]).read_text(encoding="utf-8"))
+          tasks = queue.get("tasks", [])
+          latest = latest_verified_assessed_discovery(tasks)
+          if not isinstance(latest, dict):
+              print("No independently verified Assessment predecessor exists yet; production remains gated.")
+              raise SystemExit(0)
+          evidence = (latest.get("result") or {}).get("run_evidence") or {}
+          run_id = evidence.get("run_id")
+          if isinstance(run_id, int) and not isinstance(run_id, bool):
+              run_id = str(run_id)
+          if not isinstance(run_id, str) or not run_id.isdigit():
+              raise SystemExit("Latest verified Discovery has no exact numeric producer run ID.")
+          candidates = [
+              task for task in tasks
+              if isinstance(task, dict)
+              and task.get("target_program_id") == "script_assess_sources"
+              and task.get("status") == "SUCCEEDED"
+              and (task.get("verification") or {}).get("status") == "passed"
+              and isinstance((task.get("input") or {}).get("predecessor"), dict)
+              and (task["input"]["predecessor"].get("workflow_run_id") == run_id)
+          ]
+          candidates.sort(key=lambda task: (str(task.get("created_at") or ""), str(task.get("task_id") or "")), reverse=True)
+          if not candidates:
+              print("Verified Discovery has no exact successful Assessment task; production remains gated.")
+              raise SystemExit(0)
+          assessment_task = candidates[0]
+          predecessor = assessment_task["input"]["predecessor"]
+          if (os.environ.get("RESOLVER_ARTIFACT_VERIFIED") == "true"
+                  and os.environ.get("RESOLVER_RUN_ID", "").strip() == run_id):
+              found = True
+          else:
+              result = find_matching_assessment_artifact(os.environ["REPO"], os.environ["GH_TOKEN"], predecessor)
+              found = result.get("found") is True
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write(f"discovery_run_id={run_id}\\n")
+              output.write(f"assessment_task_id={assessment_task['task_id']}\\n")
+              output.write(f"valid={'true' if found else 'false'}\\n")
+          if found:
+              print(f"Verified immutable non-activating Assessment artifact for Discovery run {run_id}.")
+          else:
+              print(f"Assessment task {assessment_task['task_id']} succeeded, but its immutable artifact is missing; production remains gated.")
+          PY
+
       - name: Download artifact from the exact discovery workflow run
         if: ${{ steps.resolve-discovery-run.outputs.run_id != '' }}
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
@@ -1524,12 +1584,12 @@ jobs:
           unset queue_token
 
       - name: Enqueue one artifact-recovery Assessment after verified success without supervisor upload
-        if: ${{ steps.resolve-discovery-run.outputs.run_id != '' && steps.resolve-discovery-run.outputs.handoff_state == 'already_assessed' && steps.verify-discovery-artifact.outputs.valid == 'true' && steps.source-mode.outputs.mode == 'independent' }}
+        if: ${{ steps.verify-latest-assessment-artifact.outputs.valid == 'false' && steps.verify-latest-assessment-artifact.outputs.assessment_task_id != '' && steps.source-mode.outputs.mode == 'independent' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          SOURCE_RUN_ID: ${{ steps.resolve-discovery-run.outputs.run_id }}
-          VERIFIED_TASK_ID: ${{ steps.resolve-discovery-run.outputs.assessment_task_id }}
+          SOURCE_RUN_ID: ${{ steps.verify-latest-assessment-artifact.outputs.discovery_run_id }}
+          VERIFIED_TASK_ID: ${{ steps.verify-latest-assessment-artifact.outputs.assessment_task_id }}
           AUTOMATION_QUEUE_SNAPSHOT: ${{ runner.temp }}/task_queue.json
         run: |
           set -euo pipefail
@@ -1538,6 +1598,8 @@ jobs:
           artifact_recovery_key="$base_key:artifact-recovery:1"
           recovery_two="$(jq -c --arg key "$recovery_two_key" '[.tasks[]? | select(.idempotency_key == $key)] | last // empty' "$AUTOMATION_QUEUE_SNAPSHOT")"
           verified_task="$(jq -c --arg task "$VERIFIED_TASK_ID" '[.tasks[]? | select(.task_id == $task)] | last // empty' "$AUTOMATION_QUEUE_SNAPSHOT")"
+          # "already_assessed" without a matching immutable artifact is the only
+          # condition that can enqueue this one bounded artifact-recovery task.
           if [ -z "$verified_task" ] || [ "$(jq -r '.status // ""' <<< "$verified_task")" != "SUCCEEDED" ] || [ "$(jq -r '.verification.status // ""' <<< "$verified_task")" != "passed" ] || [ "$(jq -r '.result.artifact_verification.valid // false' <<< "$verified_task")" != "true" ] || [ "$(jq -r '.result.artifact_verification.activation_count // -1' <<< "$verified_task")" != "0" ]; then
             echo "No exact independently verified Assessment task requires artifact recovery."
             exit 0
@@ -1614,7 +1676,7 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REF_NAME: main
           AUTOMATION_ARTIFACT_ROOT: ${{ runner.temp }}/source-assessment-output
-          SOURCE_RUN_ID: ${{ steps.resolve-discovery-run.outputs.run_id }}
+          SOURCE_RUN_ID: ${{ (steps.verify-latest-assessment-artifact.outputs.valid == 'false' && steps.verify-latest-assessment-artifact.outputs.assessment_task_id != '' && steps.verify-latest-assessment-artifact.outputs.discovery_run_id) || steps.resolve-discovery-run.outputs.run_id }}
           SOURCE_ASSESSMENT_RETRY_EXHAUSTED: ${{ steps.enqueue-assessment.outputs.retry_exhausted }}
           SOURCE_DISCOVERY_MODE: ${{ steps.source-mode.outputs.mode }}
           ASSESSMENT_ARTIFACT_VERIFIED: ${{ steps.resolve-discovery-run.outputs.assessment_artifact_verified }}
