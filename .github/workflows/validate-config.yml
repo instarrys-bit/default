@@ -107,9 +107,13 @@ jobs:
           python3 scripts/verify_baseline.py --verify-registration --base "$base_sha" --head "$head_sha"
       - name: Verify owner-approved config baseline
         if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: python scripts/verify_baseline.py --allow-owner-push-change
       - name: Audit config drift against the approved baseline
         if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: python scripts/audit_config_drift.py --allow-owner-push-change
       - run: python scripts/audit_ruleset_references.py
       - run: python scripts/audit_ruleset_config_overlap.py
