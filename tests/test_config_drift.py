@@ -4,7 +4,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from audit_config_drift import build_report, git_blob_sha, parse_config
+from audit_config_drift import audit_exit_code, build_report, git_blob_sha, parse_config
 
 
 class ConfigBaselineTests(unittest.TestCase):
@@ -27,10 +27,28 @@ class ConfigBaselineTests(unittest.TestCase):
         self.assertTrue(report["mitm_enabled"])
         self.assertEqual(report["rule_line_count"], 1)
 
+
+    def test_dns_drift_is_reported_but_does_not_fail_registered_baseline(self):
+        content = b"[General]\\ndns-server = quad9, cloudflare, google\\n[Rule]\\nDOMAIN,example.com,DIRECT\\n"
+        report = build_report(
+            content,
+            git_blob_sha(content),
+            "modules/uu.conf",
+            expected_dns={
+                "dns-server": "system",
+                "fallback-dns-server": "192.168.2.1, 10.0.1.3",
+            },
+        )
+        self.assertTrue(report["baseline_matches_registered_blob"])
+        self.assertFalse(report["dns_invariants_match"])
+        self.assertEqual(set(report["dns_drift"]), {"dns-server", "fallback-dns-server"})
+        self.assertEqual(audit_exit_code(report), 0)
+
     def test_unregistered_config_change_is_detected(self):
         content = b"[General]\ndns-server = changed\n"
         report = build_report(content, "not-the-current-sha", "modules/uu.conf")
         self.assertFalse(report["baseline_matches_registered_blob"])
+        self.assertEqual(audit_exit_code(report), 1)
 
 
 if __name__ == "__main__":
