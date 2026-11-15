@@ -4,12 +4,6 @@ run-name: Queue snapshot ${{ inputs.automation_task_id || 'scheduled' }}
 on:
   schedule:
     - cron: "*/15 * * * *"
-  workflow_run:
-    workflows:
-      - "Shadowrocket automation watchdog"
-      - "Validate Shadowrocket config against user baseline"
-      - "Shadowrocket Source Discovery (Watchdog)"
-    types: [completed]
   workflow_dispatch:
     inputs:
       automation_task_id:
