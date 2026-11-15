@@ -329,6 +329,24 @@ class TaskSchedulerTests(unittest.TestCase):
         first["last_error"] = {"type": "lease_expired", "message": "Worker lease expired before completion."}
         first["lease"] = None
         first["resource_lease"] = resource_lease
+        if isinstance(resource_lease, dict):
+            resource_records = store.document.setdefault("resource_leases", {})
+            worker_id = "worker-verified-expired-assessment"
+            task_lease_token = "task-token-verified-expired-assessment"
+            acquired_at = "2026-11-15T05:12:35Z"
+            for resource, proof in resource_lease["resources"].items():
+                resource_records[resource] = {
+                    "status": "RELEASED",
+                    "task_id": first["task_id"],
+                    "worker_id": worker_id,
+                    "task_lease_token": task_lease_token,
+                    "lease_id": proof["lease_id"],
+                    "fencing_token": proof["fencing_token"],
+                    "acquired_at": acquired_at,
+                    "renewed_at": acquired_at,
+                    "expires_at": resource_lease["expires_at"],
+                    "released_at": resource_lease["released_at"],
+                }
         first["state_history"].extend(["CLAIMED", "DEAD_LETTER"])
         store.document["revision"] += 1
         return store, registry, adapters, source_root, payload
@@ -336,12 +354,13 @@ class TaskSchedulerTests(unittest.TestCase):
     def test_source_assessment_allows_second_recovery_after_verified_expired_worker_lease(self):
         lease_proof = {
             "status": "RELEASED",
+            "lease_seconds": 3600,
             "expires_at": "2026-11-15T05:27:35Z",
             "released_at": "2026-11-15T05:33:59Z",
             "resources": {
-                "logical/production-pipeline": {"fencing_token": 60},
-                "logical/source-assessment-checkpoints": {"fencing_token": 26},
-                "logical/source-dag-supervision": {"fencing_token": 44},
+                "logical/production-pipeline": {"lease_id": "lease-verified-expired-assessment", "fencing_token": 60},
+                "logical/source-assessment-checkpoints": {"lease_id": "lease-verified-expired-assessment", "fencing_token": 26},
+                "logical/source-dag-supervision": {"lease_id": "lease-verified-expired-assessment", "fencing_token": 44},
             },
         }
         store, registry, adapters, source_root, payload = self._prepare_lease_expired_assessment_recovery(
