@@ -1320,7 +1320,9 @@ jobs:
           run_id, head_sha = str(run["id"]), str(run["head_sha"])
           handoff_state = handoff_state or "ready"
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
-              output.write(f"run_id={run_id}\nhead_sha={head_sha}\ntask_id={task['task_id']}\nhandoff_state={handoff_state}\n")
+              predecessor = (task.get("input") or {}).get("predecessor") or {}
+              artifact_sha256 = predecessor.get("artifact_sha256", "")
+              output.write(f"run_id={run_id}\nhead_sha={head_sha}\nartifact_sha256={artifact_sha256}\ntask_id={task['task_id']}\nhandoff_state={handoff_state}\n")
               output.write("assessment_task_ids=" + ",".join(handoff.get("task_ids", [])) + "\n")
               output.write("duplicate_assessment_task_ids=" + ",".join(handoff.get("duplicate_task_ids", [])) + "\n")
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
@@ -1472,7 +1474,7 @@ jobs:
 
       - name: Enqueue source assessment after successful discovery workflow
         id: enqueue-assessment
-        if: ${{ steps.resolve-discovery-run.outputs.run_id != '' && (steps.resolve-discovery-run.outputs.handoff_state == 'ready' || steps.resolve-discovery-run.outputs.handoff_state == 'assessment_retry_required') && steps.verify-discovery-artifact.outputs.valid == 'true' }}
+        if: ${{ steps.resolve-discovery-run.outputs.run_id != '' && (steps.resolve-discovery-run.outputs.handoff_state == 'ready' || steps.resolve-discovery-run.outputs.handoff_state == 'assessment_retry_required') && steps.verify-discovery-artifact.outputs.valid == 'true' && !(steps.verify-latest-assessment-artifact.outputs.valid == 'false' && steps.verify-latest-assessment-artifact.outputs.assessment_task_id != '') }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -1681,6 +1683,7 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REF_NAME: main
           AUTOMATION_ARTIFACT_ROOT: ${{ runner.temp }}/source-assessment-output
+          RESOLVER_SOURCE_RUN_ID: ${{ steps.resolve-discovery-run.outputs.run_id }}
           SOURCE_RUN_ID: ${{ (steps.verify-latest-assessment-artifact.outputs.valid == 'false' && steps.verify-latest-assessment-artifact.outputs.assessment_task_id != '' && steps.verify-latest-assessment-artifact.outputs.discovery_run_id) || steps.resolve-discovery-run.outputs.run_id }}
           SOURCE_ASSESSMENT_RETRY_EXHAUSTED: ${{ steps.enqueue-assessment.outputs.retry_exhausted }}
           SOURCE_DISCOVERY_MODE: ${{ steps.source-mode.outputs.mode }}
