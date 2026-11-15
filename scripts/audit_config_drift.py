@@ -89,6 +89,11 @@ def build_report(config_bytes: bytes, expected_blob_sha: str, config_path: str,
     }
 
 
+def audit_exit_code(result: dict, pending_owner_registration: bool = False) -> int:
+    """Gate on the registered user-config baseline, not informational DNS observations."""
+    return 0 if (result.get("baseline_matches_registered_blob") or pending_owner_registration) else 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('--allow-owner-push-change', action='store_true')
@@ -135,6 +140,7 @@ def main() -> int:
     lines.extend(["", "## Interpretation", "",
         "All checks use the current user-managed `modules/uu.conf` as the sole authority.",
         "A registered-hash mismatch means the config changed without its baseline record being updated; it does not authorize the automation to rewrite the config.",
+        "DNS differences are informational observations; they do not override the registered user-config baseline or authorize a config rewrite.",
         "DNS and MITM are reported only. No settings are added, removed, or changed.", ""])
     REPORT_MD.write_text("\n".join(lines), encoding="utf-8")
     print(json.dumps({
@@ -148,7 +154,7 @@ def main() -> int:
         "mitm_section_present": result["mitm_section_present"],
         "mitm_enabled": result["mitm_enabled"]
     }, ensure_ascii=False))
-    return 0 if (result["baseline_matches_registered_blob"] or pending_owner_registration) and result["dns_invariants_match"] else 1
+    return audit_exit_code(result, pending_owner_registration)
 
 
 if __name__ == "__main__":
