@@ -50,10 +50,10 @@ class ResourceLeaseRuntimeTests(unittest.TestCase):
         expiry = (self.now + timedelta(minutes=10)).isoformat().replace("+00:00", "Z")
         self.store = MemoryStore(queue_with_task("task_a", "worker_a", "task-token-a", expiry))
 
-    def test_explicit_repository_path_helper_requires_live_lease_only_for_repo_writes(self):
+    def test_repository_path_helper_does_not_fetch_live_queue_for_each_local_write(self):
         with patch.object(resource_lease_runtime, "assert_resource_lease_from_environment") as assertion:
             self.assertTrue(assert_resource_lease_for_repository_path(ROOT, "rulesets/direct.list"))
-            assertion.assert_called_once_with("rulesets/direct.list")
+            assertion.assert_not_called()
             with tempfile.TemporaryDirectory() as directory:
                 self.assertFalse(assert_resource_lease_for_repository_path(Path(directory), "rulesets/direct.list"))
             with self.assertRaisesRegex(ValueError, "safe repository-relative"):
