@@ -15,6 +15,9 @@ class AutomationApiLoadTests(unittest.TestCase):
         self.assertNotIn("13731605096", workflow)
         self.assertIn("test_discovered_source_registry.py", workflow)
         self.assertIn("Run full deterministic unit regression suite", workflow)
+        self.assertNotIn("Recover owner-approved config baseline in validation workspace", workflow)
+        self.assertIn("verify_baseline.py --allow-owner-push-change", workflow)
+        self.assertIn("audit_config_drift.py --allow-owner-push-change", workflow)
 
     def test_dashboard_refresh_is_not_fanned_out_by_every_monitoring_workflow(self):
         workflow = DASHBOARD.read_text(encoding="utf-8")
