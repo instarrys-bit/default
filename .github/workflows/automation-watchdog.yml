@@ -1,24 +1,57 @@
 name: Shadowrocket automation watchdog
-run-name: Automation task ${{ inputs.automation_task_id || 'manual' }}
+run-name: Automation task ${{ inputs.automation_task_id || 'manual' }} | Assessment reconcile ${{ inputs.assessment_producer_run_id || 'none' }}
 
 on:
   schedule:
     - cron: "*/15 * * * *"
+    - cron: "30 22 * * *"
   workflow_dispatch:
     inputs:
       request_deterministic_audit:
-        description: 'Explicitly authorize one deterministic production audit'
+        description: "Explicitly authorize one deterministic production audit through the durable Watchdog queue"
         required: false
         default: false
         type: boolean
+      automation_task_id:
+        description: "Internal task correlation ID; leave blank for manual runs"
+        required: false
+        type: string
+      source_discovery_run_id:
+        description: "Exact Discovery run to reconcile"
+        required: false
+        type: string
+      assessment_producer_run_id:
+        description: "Exact Assessment producer run"
+        required: false
+        type: string
+      production_producer_run_id:
+        description: "Exact auto_sync run to reconcile"
+        required: false
+        type: string
+  workflow_run:
+    workflows:
+      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
+      - "Shadowrocket Source Discovery (Watchdog)"
+      - "Validate Shadowrocket config against user baseline"
+      - "Validate self-healing agent"
+    types: [completed]
   push:
     branches: [main]
     paths:
       - ".github/workflows/**"
       - "sources/policy.json"
-      - "modules/uu.conf"
+      - "sources/domain_sources.json"
+      - "sources/policy_approvals.json"
+      - "sources/protected_domains.json"
+      - "sources/request_domain_observations.json"
       - "scripts/**"
-      - "automation/**"
+      - "tests/**"
+      - "modules/uu.conf"
+      - "automation/program_registry.json"
+      - "automation/execution_adapters.json"
+      - "automation/unregistered_path_registry.json"
+      - "automation/production_inputs.json"
+      - "automation/production_control.json"
 
 permissions:
   actions: write
@@ -31,12 +64,28 @@ concurrency:
 
 jobs:
   health-check:
+    if: >-
+      ${
+        github.event_name != 'workflow_run' ||
+        (github.event.workflow_run.head_branch == 'main' &&
+         (github.event.workflow_run.path == '.github/workflows/auto_sync.yml' ||
+          github.event.workflow_run.path == '.github/workflows/source-discovery.yml' ||
+          github.event.workflow_run.path == '.github/workflows/validate-config.yml' ||
+          github.event.workflow_run.path == '.github/workflows/self-healing-agent.yml'))
+      }
+    concurrency:
+      group: shadowrocket-watchdog-control-plane-main
+      cancel-in-progress: false
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     permissions:
       actions: write
       contents: read
       issues: write
+    env:
+      GITHUB_MANUAL_AUDIT_REQUEST: ${{ inputs.request_deterministic_audit }}
+    outputs:
+      wake_production: ${{ steps.decide.outputs.wake_production }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -45,18 +94,49 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: "3.11"
-      - name: Snapshot note
+      - name: Export durable queue snapshot
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
-          echo "Temporary minimal Watchdog after accidental placeholder overwrite."
-          echo "Full workflow with config-baseline-sync must be restored from local artifacts or prior commit 042251f + job."
+          set -euo pipefail
+          if [ -f scripts/remote_task_queue_runtime.py ]; then
+            python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue.json" || echo '{"tasks":[]}' > "$RUNNER_TEMP/task_queue.json"
+          else
+            echo '{"tasks":[]}' > "$RUNNER_TEMP/task_queue.json"
+          fi
+      - name: Decide production wake
+        id: decide
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          EVENT_NAME: ${{ github.event_name }}
+          MANUAL_AUDIT: ${{ inputs.request_deterministic_audit }}
+        run: |
+          set -euo pipefail
+          echo "wake_production=false" >> "$GITHUB_OUTPUT"
+          if [ "${MANUAL_AUDIT:-false}" = "true" ]; then
+            echo "wake_production=true" >> "$GITHUB_OUTPUT"
+            echo "Manual deterministic audit requested."
+          fi
+          if [ "$EVENT_NAME" = "schedule" ]; then
+            open_count="$(gh issue list --repo "$REPO" --state open --search "Shadowrocket automation incident in:title" --json number --jq 'length' 2>/dev/null || echo 0)"
+            echo "Open automation incident issues: $open_count"
+          fi
 
   config-baseline-sync:
     needs: [health-check]
-    if: ${{ github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    if: >-
+      ${
+        github.event_name == 'push' ||
+        github.event_name == 'schedule' ||
+        github.event_name == 'workflow_dispatch'
+      }
     concurrency:
       group: shadowrocket-main-writer
       cancel-in-progress: false
     permissions:
+      actions: read
       contents: write
       issues: write
     runs-on: ubuntu-24.04
@@ -70,7 +150,8 @@ jobs:
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: "3.11"
-      - name: Apply owner-verified uu.conf baseline metadata only
+      - name: Detect whether owner uu.conf baseline needs metadata registration
+        id: need_sync
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -78,24 +159,130 @@ jobs:
           GITHUB_REF: refs/heads/main
           GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_BEFORE: ${{ github.event.before || '' }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from register_config_baseline import git_blob_sha, owner_approved_config_history
+          root = Path(".")
+          policy = json.loads((root / "sources/policy.json").read_text(encoding="utf-8"))
+          guard = policy["managed_config_guard"]
+          if guard.get("path") != "modules/uu.conf":
+              raise SystemExit("managed_config_guard.path must remain modules/uu.conf")
+          actual = git_blob_sha((root / "modules/uu.conf").read_bytes())
+          registered = str(guard.get("approved_git_blob_sha", ""))
+          out = open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8")
+          if actual == registered:
+              print("Baseline already matches current uu.conf blob.")
+              print("needed=false", file=out)
+              raise SystemExit(0)
+          commits = owner_approved_config_history(guard)
+          if not commits:
+              print("uu.conf differs but owner history not verified; leave pending.")
+              print("needed=false", file=out)
+              raise SystemExit(0)
+          print(f"Owner-verified history ({len(commits)} commits); metadata sync required.")
+          print("needed=true", file=out)
+          PY
+      - name: Apply owner-verified baseline metadata only
+        if: steps.need_sync.outputs.needed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          GITHUB_REF: refs/heads/main
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_BEFORE: ${{ github.event.before || '' }}
           GITHUB_SHA: ${{ github.sha }}
           BASELINE_SOURCE_EVENT: ${{ github.event_name }}
           BASELINE_SOURCE_SHA: ${{ github.sha }}
           BASELINE_SOURCE_REF: refs/heads/main
         run: |
           set -euo pipefail
-          PRE="$(python3 -c \"import hashlib,pathlib; print(hashlib.sha256(pathlib.Path('modules/uu.conf').read_bytes()).hexdigest())\")"
-          python3 scripts/register_config_baseline.py --apply || {
-            echo "No apply needed or history not owner-verified; exiting cleanly."
-            exit 0
-          }
-          POST="$(python3 -c \"import hashlib,pathlib; print(hashlib.sha256(pathlib.Path('modules/uu.conf').read_bytes()).hexdigest())\")"
-          test "$PRE" = "$POST"
-          git add sources/policy.json automation/release_manifest.json automation/production_workflow_map.json automation/resource_write_sets.json || true
+          PRE_SHA="$(git rev-parse HEAD:modules/uu.conf)"
+          PRE_HASH="$(python3 -c "import hashlib,pathlib; print(hashlib.sha256(pathlib.Path('modules/uu.conf').read_bytes()).hexdigest())")"
+          python3 scripts/register_config_baseline.py --apply
+          POST_SHA="$(git rev-parse HEAD:modules/uu.conf)"
+          POST_HASH="$(python3 -c "import hashlib,pathlib; print(hashlib.sha256(pathlib.Path('modules/uu.conf').read_bytes()).hexdigest())")"
+          if [ "$PRE_SHA" != "$POST_SHA" ] || [ "$PRE_HASH" != "$POST_HASH" ]; then
+            echo "FATAL: modules/uu.conf content was altered during baseline metadata sync" >&2
+            exit 1
+          fi
+          git add sources/policy.json automation/release_manifest.json automation/production_workflow_map.json automation/resource_write_sets.json
           if git diff --cached --quiet; then
-            echo "No metadata changes."
+            echo "No metadata changes to commit after apply."
             exit 0
+          fi
+          STAGED="$(git diff --cached --name-only)"
+          if echo "$STAGED" | grep -E -v '^(sources/policy\.json|automation/release_manifest\.json|automation/production_workflow_map\.json|automation/resource_write_sets\.json)$'; then
+            echo "FATAL: unexpected paths staged:" >&2
+            echo "$STAGED" >&2
+            exit 1
           fi
           git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
             commit -m "chore(automation): register owner-approved uu.conf baseline metadata (content unchanged)"
           git push origin HEAD:main
+          echo "Baseline metadata committed. uu.conf content preserved."
+      - name: Confirm post-sync baseline integrity
+        if: steps.need_sync.outputs.needed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          python3 scripts/verify_baseline.py --baseline-only
+          echo "Post-sync baseline verification completed."
+
+  wake-production:
+    needs: [health-check, config-baseline-sync]
+    if: >-
+      ${
+        always() &&
+        needs.health-check.result == 'success' &&
+        (needs.config-baseline-sync.result == 'success' || needs.config-baseline-sync.result == 'skipped') &&
+        needs.health-check.outputs.wake_production == 'true'
+      }
+    concurrency:
+      group: shadowrocket-main-writer
+      cancel-in-progress: false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Dispatch deterministic production audit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          gh workflow run auto_sync.yml --repo "$REPO" -f automation_task_id="${{ inputs.automation_task_id || '' }}"
+          echo "Dispatched auto_sync.yml for unattended production audit."
+
+  supervision-summary:
+    needs: [health-check, config-baseline-sync]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      issues: write
+      actions: read
+    steps:
+      - name: Publish run summary
+        run: |
+          {
+            echo "## Watchdog unattended summary"
+            echo ""
+            echo "- event: \`${{ github.event_name }}\`"
+            echo "- health-check: \`${{ needs.health-check.result }}\`"
+            echo "- config-baseline-sync: \`${{ needs.config-baseline-sync.result }}\`"
+            echo "- wake_production: \`${{ needs.health-check.outputs.wake_production }}\`"
+            echo ""
+            echo "uu.conf content remains immutable to automation. Baseline metadata is reconciled on push/schedule."
+          } >> "$GITHUB_STEP_SUMMARY"
