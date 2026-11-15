@@ -1642,8 +1642,22 @@ jobs:
           recovery_two="$verified_task"
           existing="$(jq -r --arg key "$artifact_recovery_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .task_id // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
           if [ -n "$existing" ]; then
-            echo "The single artifact-recovery task already exists ($existing); no duplicate will be enqueued."
-            exit 0
+            existing_status="$(jq -r --arg task "$existing" '[.tasks[]? | select(.task_id == $task)] | last | .status // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
+            case "$existing_status" in
+              QUEUED|CLAIMED|VERIFYING)
+                echo "Artifact-recovery task $existing is $existing_status; no duplicate will be enqueued."
+                exit 0
+                ;;
+              SUCCEEDED|DEAD_LETTER|CANCELLED|FAILED)
+                echo "Artifact-recovery task $existing ended in $existing_status without a matching immutable artifact; production remains blocked."
+                printf '%s\n' "Artifact recovery task $existing reached $existing_status, but no matching source-assessment-output artifact was found for Discovery run $SOURCE_RUN_ID." >> "$GITHUB_STEP_SUMMARY"
+                exit 1
+                ;;
+              *)
+                echo "Artifact-recovery task $existing has unknown status '$existing_status'; production remains blocked."
+                exit 1
+                ;;
+            esac
           fi
           verified_task_id="$(jq -r '.task_id' <<< "$verified_task")"
           predecessor="$(jq -c '.input.predecessor' <<< "$recovery_two")"
