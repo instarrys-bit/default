@@ -206,7 +206,7 @@ jobs:
 
           recovery_kind=""
           case "$SOURCE_CONCLUSION" in
-            timed_out|startup_failure)
+            timed_out|startup_failure|cancelled)
               recovery_kind="infrastructure"
               ;;
             failure)
@@ -1593,6 +1593,25 @@ jobs:
             printf '%s\n' '{"processed":[],"scheduler_skipped":"no safe non-production task while the independent Assessment gate is closed"}' | tee /tmp/task-scheduler-report.json
           fi
           GITHUB_TOKEN="$queue_token" python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue_after.json"
+          if [ -n "$selected_task_id" ]; then
+            python3 - "$selected_task_id" "$RUNNER_TEMP/task_queue_after.json" <<'PY'
+          import json, sys
+          from pathlib import Path
+          task_id, queue_path = sys.argv[1], Path(sys.argv[2])
+          queue = json.loads(queue_path.read_text(encoding="utf-8"))
+          task = next((item for item in queue.get("tasks", []) if item.get("task_id") == task_id), None)
+          if task is not None and task.get("status") == "CANCELLED":
+              error = task.get("last_error") or {}
+              if error.get("type") == "stale_production_input_superseded":
+                  print(json.dumps({
+                      "task_id": task_id,
+                      "disposition": "stale_input_safely_superseded",
+                      "message": "A newer production input fingerprint safely superseded this queued task; no dispatch was attempted.",
+                  }, sort_keys=True))
+              else:
+                  raise SystemExit("Selected production task was cancelled for a reason requiring diagnosis: " + str(error.get("type") or "unknown"))
+          PY
+          fi
           unset queue_token
           cat /tmp/task-scheduler-report.json >> "$GITHUB_STEP_SUMMARY"
           python3 - <<'PY'
