@@ -105,6 +105,8 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertIn("Check whether a newer run supersedes this failure", workflow)
         self.assertIn("FAILED_SHA: ${{ github.event.workflow_run.head_sha }}", workflow)
         self.assertIn("repos/$REPO/compare/$FAILED_SHA...$current_main", workflow)
+        self.assertIn("Current-main lookup unavailable; continuing with bounded read-only diagnosis.", workflow)
+        self.assertIn("Supersession lookup unavailable; continuing with bounded read-only diagnosis.", workflow)
         self.assertIn('select(.head_branch == "main" and .id > $failed)', workflow)
         self.assertIn('select(.status != "completed" or .conclusion == "success")', workflow)
         self.assertIn("steps.supersession.outputs.stale != 'true'", workflow)
