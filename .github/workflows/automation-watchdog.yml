@@ -64,15 +64,7 @@ concurrency:
 
 jobs:
   health-check:
-    if: >-
-      ${
-        github.event_name != 'workflow_run' ||
-        (github.event.workflow_run.head_branch == 'main' &&
-         (github.event.workflow_run.path == '.github/workflows/auto_sync.yml' ||
-          github.event.workflow_run.path == '.github/workflows/source-discovery.yml' ||
-          github.event.workflow_run.path == '.github/workflows/validate-config.yml' ||
-          github.event.workflow_run.path == '.github/workflows/self-healing-agent.yml'))
-      }
+    if: ${{ github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.path == '.github/workflows/auto_sync.yml' || github.event.workflow_run.path == '.github/workflows/source-discovery.yml' || github.event.workflow_run.path == '.github/workflows/validate-config.yml' || github.event.workflow_run.path == '.github/workflows/self-healing-agent.yml')) }}
     concurrency:
       group: shadowrocket-watchdog-control-plane-main
       cancel-in-progress: false
@@ -126,12 +118,7 @@ jobs:
 
   config-baseline-sync:
     needs: [health-check]
-    if: >-
-      ${
-        github.event_name == 'push' ||
-        github.event_name == 'schedule' ||
-        github.event_name == 'workflow_dispatch'
-      }
+    if: ${{ github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
     concurrency:
       group: shadowrocket-main-writer
       cancel-in-progress: false
@@ -189,7 +176,7 @@ jobs:
           print("needed=true", file=out)
           PY
       - name: Apply owner-verified baseline metadata only
-        if: steps.need_sync.outputs.needed == 'true'
+        if: ${{ steps.need_sync.outputs.needed == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -229,7 +216,7 @@ jobs:
           git push origin HEAD:main
           echo "Baseline metadata committed. uu.conf content preserved."
       - name: Confirm post-sync baseline integrity
-        if: steps.need_sync.outputs.needed == 'true'
+        if: ${{ steps.need_sync.outputs.needed == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -240,13 +227,7 @@ jobs:
 
   wake-production:
     needs: [health-check, config-baseline-sync]
-    if: >-
-      ${
-        always() &&
-        needs.health-check.result == 'success' &&
-        (needs.config-baseline-sync.result == 'success' || needs.config-baseline-sync.result == 'skipped') &&
-        needs.health-check.outputs.wake_production == 'true'
-      }
+    if: ${{ always() && needs.health-check.result == 'success' && (needs.config-baseline-sync.result == 'success' || needs.config-baseline-sync.result == 'skipped') && needs.health-check.outputs.wake_production == 'true' }}
     concurrency:
       group: shadowrocket-main-writer
       cancel-in-progress: false
@@ -267,7 +248,7 @@ jobs:
 
   supervision-summary:
     needs: [health-check, config-baseline-sync]
-    if: always()
+    if: ${{ always() }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
@@ -279,10 +260,10 @@ jobs:
           {
             echo "## Watchdog unattended summary"
             echo ""
-            echo "- event: \`${{ github.event_name }}\`"
-            echo "- health-check: \`${{ needs.health-check.result }}\`"
-            echo "- config-baseline-sync: \`${{ needs.config-baseline-sync.result }}\`"
-            echo "- wake_production: \`${{ needs.health-check.outputs.wake_production }}\`"
+            echo "- event: ${{ github.event_name }}"
+            echo "- health-check: ${{ needs.health-check.result }}"
+            echo "- config-baseline-sync: ${{ needs.config-baseline-sync.result }}"
+            echo "- wake_production: ${{ needs.health-check.outputs.wake_production }}"
             echo ""
             echo "uu.conf content remains immutable to automation. Baseline metadata is reconciled on push/schedule."
           } >> "$GITHUB_STEP_SUMMARY"
