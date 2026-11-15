@@ -176,9 +176,9 @@
         "script_restore_automation_state"
       ],
       "lock_key": "logical/production-pipeline + data/domain_candidates.json",
-      "required_mode": "exclusive_exact_document_lease",
-      "status": "fenced_at_each_document_store_mutation",
-      "note": "collect_domains and import_request_observations now call write_document(..., lease_required=True) for the shared data/domain_candidates.json document; collect_domains also fences data/candidates.json, data/source_pending.json and dynamic source snapshots. restore_automation_state restores only into the isolated workspace and never publishes these files."
+      "required_mode": "single_watchdog_production_worker_with_phase_boundary_lease",
+      "status": "workflow_phase_boundary_fence",
+      "note": "collect_domains and import_request_observations write candidate documents in the isolated audit workspace. The Watchdog production lease is checked at workflow phase boundaries; local document-store mutations do not issue remote queue reads. restore_automation_state restores prior state only to the isolated workspace and does not publish these files."
     },
     {
       "id": "domain_review_ledger",
@@ -193,9 +193,9 @@
         "script_restore_automation_state"
       ],
       "lock_key": "logical/production-pipeline + sources/domain_reviews.json",
-      "required_mode": "exclusive_exact_document_lease",
-      "status": "fenced_at_each_document_store_mutation",
-      "note": "deterministic_review writes the logical review ledger through write_document(..., lease_required=True); restore_automation_state restores prior state only to the isolated audit workspace and does not publish it."
+      "required_mode": "single_watchdog_production_worker_with_phase_boundary_lease",
+      "status": "workflow_phase_boundary_fence",
+      "note": "deterministic_review writes its ledger and cursor only in the isolated audit workspace. The Watchdog production lease is checked before audit and before publication; local document-store mutations do not issue remote queue reads. restore_automation_state restores prior state only to the isolated workspace and does not publish these files."
     },
     {
       "id": "durable_task_queue_control_plane",
