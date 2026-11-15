@@ -217,8 +217,10 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("release_manifest_blob_sha", verifier)
         self.assertIn("automation/resource_write_sets.json", verifier)
         self.assertIn("github.event_name == 'pull_request'", validation)
-        self.assertIn("python scripts/register_config_baseline.py", validation)
-        self.assertIn("python scripts/verify_baseline.py --baseline-only", validation)
+        self.assertNotIn("Recover owner-approved config baseline in validation workspace", validation)
+        self.assertNotIn("run: python scripts/register_config_baseline.py", validation)
+        self.assertIn("python scripts/verify_baseline.py --allow-owner-push-change", validation)
+        self.assertIn("python scripts/audit_config_drift.py --allow-owner-push-change", validation)
         self.assertIn("Audit config drift against the approved baseline", validation)
 
 
