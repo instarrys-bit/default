@@ -937,7 +937,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import json, os, time, urllib.error, urllib.request
+          import json, os, sys, time, urllib.error, urllib.request
           from pathlib import Path
           import sys
           sys.path.insert(0, "scripts")
@@ -1437,6 +1437,7 @@ jobs:
           recovery_two_key="$base_key:recovery:2"
           recovery_one_status="$(jq -r --arg key "$recovery_one_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .status // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
           recovery_two_status="$(jq -r --arg key "$recovery_two_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .status // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
+          assessment_max_urls=20
           assessment_error_type="$(jq -r --arg key "$base_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .last_error.type // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
           recovery_one_error_type="$(jq -r --arg key "$recovery_one_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .last_error.type // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
           recovery_two_error_type="$(jq -r --arg key "$recovery_two_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .last_error.type // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
@@ -1488,7 +1489,6 @@ jobs:
             fi
           else
             assessment_key="$base_key"
-            assessment_max_urls=20
           fi
           task_input="$(jq -cn --argjson max_urls "$assessment_max_urls" --argjson predecessor "$predecessor" \
             '{max_urls:$max_urls,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}')"
