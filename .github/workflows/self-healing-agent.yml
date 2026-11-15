@@ -78,6 +78,7 @@ jobs:
         run: echo "This failed run is superseded by a newer queued, active, or successful run." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Download failed workflow logs
+        id: download
         if: ${{ steps.supersession.outputs.stale != 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
@@ -85,27 +86,30 @@ jobs:
           RUN_ID: ${{ github.event.workflow_run.id }}
         run: |
           set -euo pipefail
+          echo "available=false" >> "$GITHUB_OUTPUT"
           for attempt in 1 2 3 4 5; do
             if gh run view "$RUN_ID" --repo "$REPO" --log-failed > /tmp/failed-run.log 2>/tmp/failed-run-error.log; then
               echo "Downloaded failed workflow logs on attempt $attempt."
+              echo "available=true" >> "$GITHUB_OUTPUT"
               exit 0
             fi
-            if ! grep -qiE "API rate limit exceeded|secondary rate limit|abuse detection" /tmp/failed-run-error.log; then
-              cat /tmp/failed-run-error.log >&2
-              exit 1
+            if ! grep -qiE "API rate limit exceeded|secondary rate limit|abuse detection|HTTP 403|HTTP 429" /tmp/failed-run-error.log; then
+              echo "Failed workflow logs are unavailable; continuing in read-only degraded mode." >> "$GITHUB_STEP_SUMMARY"
+              echo "The log endpoint returned a non-retryable error. No repository repair or mutation was attempted." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
             fi
             if [ "$attempt" -lt 5 ]; then
-              delay=$((5 * (2 ** (attempt - 1))))
-              echo "GitHub API rate limit encountered; retrying in ${delay}s (attempt $attempt/5)." >&2
+              delay=$((10 * (2 ** (attempt - 1))))
+              echo "GitHub Actions API is rate-limited; retrying in ${delay}s (attempt $attempt/5)." >> "$GITHUB_STEP_SUMMARY"
               sleep "$delay"
             fi
           done
-          cat /tmp/failed-run-error.log >&2
-          echo "Failed to download workflow logs after five bounded rate-limit retries." >&2
-          exit 1
+          echo "Failed workflow logs could not be downloaded after bounded retries because the GitHub Actions API remained rate-limited." >> "$GITHUB_STEP_SUMMARY"
+          echo "Diagnosis was skipped safely; no repository repair or mutation was attempted." >> "$GITHUB_STEP_SUMMARY"
+          exit 0
 
       - name: Diagnose failed workflow
-        if: ${{ steps.supersession.outputs.stale != 'true' }}
+        if: ${{ steps.supersession.outputs.stale != 'true' && steps.download.outputs.available == 'true' }}
         id: diagnosis
         env:
           RUN_ID: ${{ github.event.workflow_run.id }}
