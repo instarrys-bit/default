@@ -274,6 +274,99 @@ class TaskSchedulerTests(unittest.TestCase):
         self.assertEqual(self.store.document["tasks"][0]["requester_program_id"], "workflow_automation_watchdog")
         self.assertEqual(self.store.document["tasks"][0]["target_program_id"], "script_assess_sources")
 
+    def _prepare_lease_expired_assessment_recovery(self, run_id, resource_lease):
+        source_root = self.root
+        (source_root / "sources").mkdir(exist_ok=True)
+        artifact = source_root / "sources" / "discovered_sources.json"
+        artifact.write_text('{"candidates":[]}\\n', encoding="utf-8")
+        registry = {"programs": [
+            {"id": "workflow_automation_watchdog", "capabilities": ["top_level_supervision"]},
+            {"id": "script_assess_sources", "capabilities": ["source_assessment"],
+             "orchestration": {"enabled": True, "allowed_callers": ["workflow_automation_watchdog"],
+                               "max_attempts": 1, "timeout_seconds": 480}},
+            {"id": "script_verify_assess_sources_artifacts", "capabilities": ["source_assessment_artifact_verification"]},
+        ]}
+        adapters = {"schema_version": 1, "adapters": [{
+            "target_program_id": "script_assess_sources", "enabled": True,
+            "adapter_type": "python_cli", "interface_status": "reviewed",
+            "timeout_seconds": 300,
+            "input_contract": {"type": "object", "required": ["predecessor"],
+                               "properties": {"predecessor": {"type": "object"}}},
+        }]}
+        from task_scheduler import read_only_resource_digests
+        digest = read_only_resource_digests(
+            source_root, ["sources/discovered_sources.json"]
+        )["sources/discovered_sources.json"]
+        payload = {"max_urls": 20, "max_file_bytes": 1000000, "max_total_bytes": 10000000,
+                   "predecessor": {
+                       "program_id": "script_discover_sources",
+                       "workflow_name": "Shadowrocket Source Discovery (Watchdog)",
+                       "workflow_run_id": str(run_id),
+                       "workflow_head_sha": "c" * 40,
+                       "artifact_path": "sources/discovered_sources.json",
+                       "artifact_sha256": digest,
+                   }}
+        store = MemoryStore()
+        enqueue_source_assessment_task(
+            store, registry, adapters,
+            idempotency_key=f"source-assessment:{run_id}:parser-v2",
+            input_payload=payload, root=source_root,
+        )
+        base = store.document["tasks"][0]
+        base["status"] = "DEAD_LETTER"
+        base["last_error"] = {"type": "execution_timeout"}
+        base["state_history"].extend(["CLAIMED", "FAILED", "DEAD_LETTER"])
+        store.document["revision"] += 1
+
+        first_payload = dict(payload, max_urls=8)
+        enqueue_source_assessment_task(
+            store, registry, adapters,
+            idempotency_key=f"source-assessment:{run_id}:parser-v2:recovery:1",
+            input_payload=first_payload, root=source_root,
+        )
+        first = store.document["tasks"][1]
+        first["status"] = "DEAD_LETTER"
+        first["last_error"] = {"type": "lease_expired", "message": "Worker lease expired before completion."}
+        first["lease"] = None
+        first["resource_lease"] = resource_lease
+        first["state_history"].extend(["CLAIMED", "DEAD_LETTER"])
+        store.document["revision"] += 1
+        return store, registry, adapters, source_root, payload
+
+    def test_source_assessment_allows_second_recovery_after_verified_expired_worker_lease(self):
+        lease_proof = {
+            "status": "RELEASED",
+            "expires_at": "2026-11-15T05:27:35Z",
+            "released_at": "2026-11-15T05:33:59Z",
+            "resources": {
+                "logical/production-pipeline": {"fencing_token": 60},
+                "logical/source-assessment-checkpoints": {"fencing_token": 26},
+                "logical/source-dag-supervision": {"fencing_token": 44},
+            },
+        }
+        store, registry, adapters, source_root, payload = self._prepare_lease_expired_assessment_recovery(
+            "41770000005", lease_proof
+        )
+        second = enqueue_source_assessment_task(
+            store, registry, adapters,
+            idempotency_key="source-assessment:41770000005:parser-v2:recovery:2",
+            input_payload=dict(payload, max_urls=4), root=source_root,
+        )
+        self.assertTrue(second["created"])
+        self.assertEqual(second["status"], "QUEUED")
+        self.assertEqual(store.document["tasks"][2]["input"]["max_urls"], 4)
+
+    def test_source_assessment_rejects_second_recovery_after_unproven_lease_expiry(self):
+        store, registry, adapters, source_root, payload = self._prepare_lease_expired_assessment_recovery(
+            "41770000006", None
+        )
+        with self.assertRaisesRegex(ValueError, "released expired worker resource lease proof"):
+            enqueue_source_assessment_task(
+                store, registry, adapters,
+                idempotency_key="source-assessment:41770000006:parser-v2:recovery:2",
+                input_payload=dict(payload, max_urls=4), root=source_root,
+            )
+
     def test_source_assessment_allows_one_timeout_corrected_second_recovery(self):
         source_root = self.root
         (source_root / "sources").mkdir(exist_ok=True)
@@ -312,7 +405,7 @@ class TaskSchedulerTests(unittest.TestCase):
         self.store.document["tasks"][0]["status"] = "DEAD_LETTER"
         self.store.document["tasks"][0]["attempts"] = self.store.document["tasks"][0]["max_attempts"]
         self.store.document["tasks"][0]["state_history"].extend(["CLAIMED", "FAILED", "DEAD_LETTER"])
-        self.store.document["tasks"][0]["last_error"] = {"type": "test_dead_letter"}
+        self.store.document["tasks"][0]["last_error"] = {"type": "execution_timeout"}
         self.store.document["revision"] += 1
         recovery = enqueue_source_assessment_task(
             self.store, registry, adapters,

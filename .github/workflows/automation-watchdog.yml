@@ -853,7 +853,8 @@ jobs:
       contents: read
       issues: write
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    # Allow queue reconciliation and the adapter to persist timeout/DEAD_LETTER outcomes.
+    timeout-minutes: 30
     steps:
       - name: Checkout scheduler code without persisted credentials
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -1564,6 +1565,8 @@ jobs:
           recovery_two_key="$base_key:recovery:2"
           recovery_one_status="$(jq -r --arg key "$recovery_one_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .status // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
           recovery_two_status="$(jq -r --arg key "$recovery_two_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .status // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
+          assessment_error_type="$(jq -r --arg key "$base_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .last_error.type // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
+          recovery_one_error_type="$(jq -r --arg key "$recovery_one_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .last_error.type // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
           if [ "$assessment_status" = "DEAD_LETTER" ]; then
             if [ -n "$recovery_two_status" ]; then
               if [ "$recovery_two_status" = "DEAD_LETTER" ]; then
@@ -1574,8 +1577,22 @@ jobs:
               fi
               exit 0
             elif [ "$recovery_one_status" = "DEAD_LETTER" ]; then
-              assessment_key="$recovery_two_key"
-              assessment_max_urls=4
+              if [ "$assessment_error_type" != "execution_timeout" ]; then
+                echo "The original Assessment did not fail with an execution timeout; second recovery is not eligible."
+                echo "assessment_recovery_blocked=true" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+              case "$recovery_one_error_type" in
+                execution_timeout|lease_expired)
+                  assessment_key="$recovery_two_key"
+                  assessment_max_urls=4
+                  ;;
+                *)
+                  echo "The first bounded Assessment recovery is DEAD_LETTER with non-recoverable error type '$recovery_one_error_type'; no second recovery will be enqueued."
+                  echo "assessment_recovery_blocked=true" >> "$GITHUB_OUTPUT"
+                  exit 0
+                  ;;
+              esac
             elif [ -n "$recovery_one_status" ]; then
               echo "The first bounded Assessment recovery is already $recovery_one_status; waiting for its terminal evidence."
               exit 0

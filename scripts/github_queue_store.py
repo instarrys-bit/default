@@ -13,6 +13,7 @@ import hashlib
 import json
 import os
 import time
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
@@ -26,6 +27,7 @@ MARKER_V2 = "<!-- shadowrocket-automation-queue:v2 -->"
 DEFAULT_ISSUE_NUMBER = 423
 MAX_COMMENT_BYTES = 60_000
 CHUNK_DATA_CHARS = 40_000
+COMMENT_PAGE_BATCH_SIZE = 4
 
 
 class QueueStoreError(RuntimeError):
@@ -230,18 +232,39 @@ class GitHubContentsQueueStore:
         except (KeyError, TypeError, ValueError, UnicodeDecodeError, json.JSONDecodeError, OSError) as exc:
             raise GitHubAPIError(f"invalid durable queue snapshot comment: {exc}") from None
 
+    def _fetch_comment_page(self, page: int) -> list[Any]:
+        query = urlencode({"per_page": 100, "page": page})
+        result = self._request("GET", f"{self.comments_endpoint}?{query}")
+        if not isinstance(result, list):
+            raise GitHubAPIError("GitHub Issue comments response must be an array")
+        return result
+
     def _all_comments(self) -> list[dict[str, Any]]:
-        comments: list[dict[str, Any]] = []
-        page = 1
-        while True:
-            query = urlencode({"per_page": 100, "page": page})
-            result = self._request("GET", f"{self.comments_endpoint}?{query}")
-            if not isinstance(result, list):
-                raise GitHubAPIError("GitHub Issue comments response must be an array")
-            comments.extend(item for item in result if isinstance(item, dict))
-            if len(result) < 100:
-                break
-            page += 1
+        """Read the complete append-only history without serial page latency.
+
+        The hash chain is still validated over every returned comment. Fetching
+        bounded page batches concurrently keeps each CAS read practical as the
+        durable Issue history grows, while preserving ascending page order.
+        """
+        first_page = self._fetch_comment_page(1)
+        comments = [item for item in first_page if isinstance(item, dict)]
+        if len(first_page) < 100:
+            return comments
+
+        page = 2
+        with ThreadPoolExecutor(max_workers=COMMENT_PAGE_BATCH_SIZE) as executor:
+            while True:
+                pages = range(page, page + COMMENT_PAGE_BATCH_SIZE)
+                results = list(executor.map(self._fetch_comment_page, pages))
+                reached_end = False
+                for result in results:
+                    comments.extend(item for item in result if isinstance(item, dict))
+                    if len(result) < 100:
+                        reached_end = True
+                        break
+                if reached_end:
+                    break
+                page += COMMENT_PAGE_BATCH_SIZE
         return comments
 
     def _post_comment(self, body: str) -> int:

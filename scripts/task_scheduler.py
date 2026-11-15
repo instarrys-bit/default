@@ -1156,8 +1156,39 @@ def enqueue_source_assessment_task(store, registry: dict, adapters: dict, *,
                     raise ValueError("assessment recovery predecessor proof differs from prior task evidence")
             prior_input = first.get("input") if isinstance(first.get("input"), dict) else {}
             prior_error = first.get("last_error") if isinstance(first.get("last_error"), dict) else {}
-            if prior_error.get("type") != "execution_timeout" or prior_input.get("max_urls", 0) <= 4:
-                raise ValueError("second assessment recovery is reserved for an oversized batch execution timeout")
+            base_input = base.get("input") if isinstance(base.get("input"), dict) else {}
+            base_error = base.get("last_error") if isinstance(base.get("last_error"), dict) else {}
+            if base_error.get("type") != "execution_timeout" or base_input.get("max_urls", 0) <= 4:
+                raise ValueError("second assessment recovery requires the original oversized batch execution timeout")
+            if prior_input.get("max_urls", 0) <= 4:
+                raise ValueError("second assessment recovery requires a prior oversized recovery batch")
+            if prior_error.get("type") == "lease_expired":
+                resource_lease = first.get("resource_lease")
+                expires_at = resource_lease.get("expires_at") if isinstance(resource_lease, dict) else None
+                released_at = resource_lease.get("released_at") if isinstance(resource_lease, dict) else None
+                resources = resource_lease.get("resources") if isinstance(resource_lease, dict) else None
+                has_fencing_proofs = (
+                    isinstance(resources, dict)
+                    and bool(resources)
+                    and all(
+                        isinstance(proof, dict) and isinstance(proof.get("fencing_token"), int)
+                        for proof in resources.values()
+                    )
+                )
+                if (
+                    first.get("lease") is not None
+                    or not isinstance(resource_lease, dict)
+                    or resource_lease.get("status") != "RELEASED"
+                    or not isinstance(expires_at, str)
+                    or not expires_at.endswith("Z")
+                    or not isinstance(released_at, str)
+                    or not released_at.endswith("Z")
+                    or released_at < expires_at
+                    or not has_fencing_proofs
+                ):
+                    raise ValueError("lease-expired second recovery requires a released expired worker resource lease proof")
+            elif prior_error.get("type") != "execution_timeout":
+                raise ValueError("second assessment recovery requires an execution timeout or a verified expired worker lease")
             if input_payload.get("max_urls", 21) > 4:
                 raise ValueError("second assessment recovery must use a batch of at most four URLs")
             if adapter.get("timeout_seconds", 0) < 300:
