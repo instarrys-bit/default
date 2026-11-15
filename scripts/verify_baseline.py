@@ -20,20 +20,64 @@ def git_blob_sha(data: bytes) -> str:
 
 
 def owner_approved_push_changed_config() -> bool:
+    """Allow validation only when every config commit since the approved anchor is owner-authored.
+
+    Use one path-filtered GitHub API request rather than one request per commit.
+    This validates historical owner changes even when the current push only
+    changes automation code, without registering or modifying any config data.
+    """
     if os.environ.get("GITHUB_EVENT_NAME") != "push":
         return False
-    actor = os.environ.get("GITHUB_ACTOR", "")
-    owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "")
-    before = os.environ.get("GITHUB_BEFORE", "")
-    after = os.environ.get("GITHUB_SHA", "")
-    if not actor or actor != owner or not before or not after or set(before) == {"0"}:
+    if os.environ.get("GITHUB_REF") != "refs/heads/main":
         return False
-    result = subprocess.run(
-        ["git", "diff", "--name-only", before, after],
+    owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "")
+    repository = os.environ.get("GITHUB_REPOSITORY", "")
+    after = os.environ.get("GITHUB_SHA", "")
+    if not owner or not repository or "/" not in repository or not after or set(after) == {"0"}:
+        return False
+
+    policy = json.loads(POLICY.read_text(encoding="utf-8"))
+    guard = policy.get("managed_config_guard", {})
+    config_path = guard.get("path")
+    anchor = str(guard.get("last_user_approved_baseline_update", {}).get("commit_sha", ""))
+    if config_path != "modules/uu.conf" or len(anchor) != 40:
+        return False
+
+    ancestry = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", anchor, after],
+        cwd=ROOT, check=False, capture_output=True, text=True,
+    )
+    if ancestry.returncode != 0:
+        return False
+    history = subprocess.run(
+        ["git", "log", "--format=%H", f"{anchor}..{after}", "--", config_path],
         cwd=ROOT, check=True, capture_output=True, text=True,
     )
-    policy = json.loads(POLICY.read_text(encoding="utf-8"))
-    return policy["managed_config_guard"]["path"] in result.stdout.splitlines()
+    local_commits = [line.strip() for line in history.stdout.splitlines() if line.strip()]
+    if not local_commits:
+        return False
+
+    api = subprocess.run(
+        ["gh", "api", f"repos/{repository}/commits?path={config_path}&per_page=100"],
+        cwd=ROOT, check=True, capture_output=True, text=True,
+    )
+    commits = json.loads(api.stdout)
+    if not isinstance(commits, list):
+        return False
+    anchor_index = next((i for i, item in enumerate(commits)
+                         if isinstance(item, dict) and item.get("sha") == anchor), None)
+    if anchor_index is None:
+        return False
+    verified = commits[:anchor_index]
+    api_shas = [str(item.get("sha", "")) for item in verified if isinstance(item, dict)]
+    if api_shas != local_commits:
+        return False
+    return all(
+        isinstance(item, dict)
+        and isinstance(item.get("author"), dict)
+        and item["author"].get("login") == owner
+        for item in verified
+    )
 
 
 
