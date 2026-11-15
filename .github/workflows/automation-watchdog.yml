@@ -1903,7 +1903,7 @@ jobs:
       actions: write
       contents: read
       issues: write
-    if: ${{ github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    if: ${{ github.ref_name == 'main' && (github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     steps:
@@ -1922,6 +1922,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           CURRENT_WATCHDOG_RUN_ID: ${{ github.run_id }}
+          EXPECTED_COMPLETION_RUN_ID: ${{ inputs.production_producer_run_id || '' }}
         run: |
           set -euo pipefail
           echo "queue_blocked=false" >> "$GITHUB_OUTPUT"
@@ -1965,9 +1966,9 @@ jobs:
           fi
           runs="$(jq '{workflow_runs: .workflow_runs}' <<< "$runs_response")"
 
-          stale_lines="$(jq -r --arg sha "$current_main" '
+          stale_lines="$(jq -r --arg sha "$current_main" --arg expected "$EXPECTED_COMPLETION_RUN_ID" '
             .workflow_runs[]
-            | select(.status != "completed" and .head_branch == "main" and .id != null)
+            | select(.status != "completed" and .head_branch == "main" and .id != null and ((.id | tostring) != $expected))
             | ((.run_started_at // .created_at // "") | try fromdateiso8601 catch null) as $started
             | if $started != null and (now - $started) > 21600 then
                 [.id, "timeout", (.head_sha // "")]
@@ -2024,7 +2025,7 @@ jobs:
             done
           fi
 
-          active_count="$(jq '[.workflow_runs[] | select(.head_branch == "main" and .status != "completed")] | length' <<< "$runs")"
+          active_count="$(jq --arg expected "$EXPECTED_COMPLETION_RUN_ID" '[.workflow_runs[] | select(.head_branch == "main" and .status != "completed" and ((.id | tostring) != $expected))] | length' <<< "$runs")"
           if [ "$active_count" -gt 0 ]; then
             echo "An audit is still queued, cancelling, or running; queue supervision is held and no replacement will be dispatched."
             echo "queue_blocked=true" >> "$GITHUB_OUTPUT"
