@@ -13,12 +13,9 @@ on:
       - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
       - "Shadowrocket automation watchdog"
       - "Shadowrocket Source Discovery (Watchdog)"
-      - "Validate Shadowrocket config against user baseline"
-      - "Shadowrocket self-healing agent"
-      - "Automation task manual"
     types: [completed]
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "*/30 * * * *"
 permissions:
   contents: read
   actions: read
