@@ -1745,7 +1745,7 @@ jobs:
         run: |
           set -euo pipefail
           payload="$(jq -cn --arg run_id "$PRODUCER_RUN_ID" '{ref:"main",inputs:{producer_run_id:$run_id}}')"
-          gh api --method POST "repos/$REPO/actions/workflows/assessment-completion-relay.yml/dispatches" --input - <<< "$payload"
+          gh api -X POST "repos/$REPO/actions/workflows/assessment-completion-relay.yml/dispatches" --input - <<< "$payload"
 
   stale-run-watch:
     permissions:
