@@ -882,7 +882,7 @@ jobs:
       GITHUB_MANUAL_AUDIT_REQUEST: ${{ inputs.request_deterministic_audit }}
       PYTHONDONTWRITEBYTECODE: "1"
     needs: [health-check, stale-run-watch, manifest-integrity]
-    if: ${{ always() && needs.health-check.result == 'success' && ((github.event_name != 'schedule' && github.event_name != 'workflow_dispatch') || needs.stale-run-watch.result == 'success') && (needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped') && (github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.path == '.github/workflows/auto_sync.yml' || github.event.workflow_run.path == '.github/workflows/source-discovery.yml'))) && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[assessment-canary]')) }}
+    if: ${{ always() && needs.health-check.result == 'success' && (github.event_name == 'workflow_run' || needs.stale-run-watch.result == 'success') && (needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped') && (github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.path == '.github/workflows/auto_sync.yml' || github.event.workflow_run.path == '.github/workflows/source-discovery.yml'))) && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[assessment-canary]')) }}
     permissions:
       actions: write
       contents: read
@@ -985,8 +985,8 @@ jobs:
           token = os.environ["GITHUB_TOKEN"]
           queue = json.loads(Path(os.environ["AUTOMATION_QUEUE_SNAPSHOT"]).read_text(encoding="utf-8"))
           tasks = queue.get("tasks", [])
-          # A newer unassessed Discovery is only pending evidence; it does not close
-          # the production gate while a prior Discovery has a verified Assessment.
+          # Newer unassessed Discovery tasks do not close the production gate while
+          # a prior Discovery still has a verified Assessment.
           latest_verified = latest_verified_assessed_discovery(tasks)
           gate_open = latest_verified is not None
           if gate_open:
@@ -1436,7 +1436,7 @@ jobs:
             elif [ "$recovery_one_status" = "DEAD_LETTER" ]; then
               assessment_key="$recovery_two_key"
               assessment_max_urls=4
-            elif [ "$recovery_one_status" != "" ]; then
+            elif [ -n "$recovery_one_status" ]; then
               echo "The first bounded Assessment recovery is already $recovery_one_status; waiting for its terminal evidence."
               exit 0
             else
@@ -1514,7 +1514,14 @@ jobs:
           discovery_day="$(date -u +%F)"
           # A changed discovery implementation must get a fresh daily task key;
           # otherwise an earlier successful run would suppress the expanded scan.
-          discovery_revision="$(printf '%s\n%s\n' "$(git rev-parse HEAD:scripts/discover_sources.py)" "$(git rev-parse HEAD:.github/workflows/source-discovery.yml)" | sha256sum | cut -c1-12)"
+          discovery_revision="$(python3 - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from source_handoff_policy import discovery_pipeline_revision
+          print(discovery_pipeline_revision(Path.cwd()))
+          PY
+          )"
           base_key="source-discovery:$discovery_day:$discovery_revision"
           base_status="$(jq -r --arg key "$base_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .status // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
           recovery_key="$(jq -r --arg prefix "$base_key:recovery:" '[.tasks[]? | select((.idempotency_key // "") | startswith($prefix))] | last | .idempotency_key // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
