@@ -2053,7 +2053,7 @@ jobs:
     concurrency:
       group: shadowrocket-main-writer
       cancel-in-progress: false
-    if: ${{ github.ref_name == 'main' && (github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && github.event.schedule == '30 22 * * *')) && needs.health-check.outputs.block_manifest != 'true' }}
+    if: ${{ github.ref_name == 'main' && ((github.event_name == 'workflow_dispatch' && inputs.source_discovery_run_id == '' && inputs.assessment_producer_run_id == '' && inputs.production_producer_run_id == '') || (github.event_name == 'schedule' && github.event.schedule == '30 22 * * *')) && needs.health-check.outputs.block_manifest != 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     permissions:
