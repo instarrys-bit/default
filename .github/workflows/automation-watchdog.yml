@@ -18,6 +18,18 @@ on:
         description: 'Internal task correlation ID; leave blank for manual runs'
         required: false
         type: string
+      source_discovery_run_id:
+        description: 'Exact completed Source Discovery producer run ID'
+        required: false
+        type: string
+      assessment_producer_run_id:
+        description: 'Exact completed Watchdog Assessment artifact producer run ID'
+        required: false
+        type: string
+      production_producer_run_id:
+        description: 'Exact completed production audit producer run ID'
+        required: false
+        type: string
   workflow_run:
     workflows:
       - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
@@ -57,57 +69,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  baseline-sync:
-    name: Audit owner-approved uu.conf baseline (read-only)
-    if: ${{ github.event_name == 'push' || github.event_name == 'schedule' }}
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
-    permissions:
-      contents: read
-      issues: write
-    steps:
-      - name: Checkout exact triggering main snapshot
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-        with:
-          ref: ${{ github.sha }}
-          fetch-depth: 0
-          persist-credentials: false
-      - name: Set up Python for baseline audit
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
-        with:
-          python-version: "3.11"
-      - name: Audit owner-approved baseline without repository writes
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GITHUB_EVENT_NAME: ${{ github.event_name }}
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_REF: ${{ github.ref }}
-          GITHUB_BEFORE: ${{ github.event.before }}
-          GITHUB_SHA: ${{ github.sha }}
-        run: |
-          set -euo pipefail
-          result="$(python3 scripts/register_config_baseline.py)"
-          echo "$result"
-          registered="$(printf '%s' "$result" | jq -r '.registered // false')"
-          if [ "$registered" = "true" ]; then
-            body_file="$RUNNER_TEMP/baseline-issue.md"
-            {
-              printf '%s\n\n' 'The read-only baseline audit verified an owner-approved config change. No repository files were written by automation. Review this evidence and update baseline metadata manually if appropriate:'
-              printf '%s\n' '~~~json'
-              printf '%s\n' "$result"
-              printf '%s\n' '~~~'
-            } > "$body_file"
-            gh issue create --repo "$GITHUB_REPOSITORY" \
-              --title "Owner-approved uu.conf baseline metadata requires manual reconciliation" \
-              --body-file "$body_file"
-          fi
-          git diff --quiet "$GITHUB_SHA" -- modules/uu.conf
-          echo "Baseline audit completed; no repository write was performed."
   health-check:
-    needs: [baseline-sync]
-    if: ${{ always() && (needs.baseline-sync.result == 'success' || needs.baseline-sync.result == 'skipped') && (github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.path == '.github/workflows/auto_sync.yml' || github.event.workflow_run.path == '.github/workflows/source-discovery.yml' || github.event.workflow_run.path == '.github/workflows/validate-config.yml' || github.event.workflow_run.path == '.github/workflows/self-healing-agent.yml'))) }}
+    if: ${{ github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.path == '.github/workflows/auto_sync.yml' || github.event.workflow_run.path == '.github/workflows/source-discovery.yml' || github.event.workflow_run.path == '.github/workflows/validate-config.yml' || github.event.workflow_run.path == '.github/workflows/self-healing-agent.yml')) }}
     # Queue mutations are Git-blob-SHA CAS; production outputs are protected by
     # live resource leases and fencing tokens. Keep supervision independent of
     # the publisher mutex so it can renew and verify long-running tasks.
@@ -985,7 +948,7 @@ jobs:
           token = os.environ["GITHUB_TOKEN"]
           queue = json.loads(Path(os.environ["AUTOMATION_QUEUE_SNAPSHOT"]).read_text(encoding="utf-8"))
           tasks = queue.get("tasks", [])
-          # Newer unassessed Discovery tasks do not close the production gate while
+          # newer unassessed Discovery tasks do not close the production gate while
           # a prior Discovery still has a verified Assessment.
           latest_verified = latest_verified_assessed_discovery(tasks)
           gate_open = latest_verified is not None
@@ -1061,6 +1024,48 @@ jobs:
               cancelled.append({"task_id": task.get("task_id"), "run_id": run_id, "sha_relationship": relationship})
           print(json.dumps({"assessment_gate_open": False, "cancelled_production_runs": cancelled}, sort_keys=True))
           PY
+      - name: Wait for exact callback producer completion before queue reconciliation
+        if: ${{ github.event_name == 'workflow_dispatch' && (inputs.source_discovery_run_id != '' || inputs.assessment_producer_run_id != '' || inputs.production_producer_run_id != '') }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SOURCE_DISCOVERY_RUN_ID: ${{ inputs.source_discovery_run_id || '' }}
+          ASSESSMENT_PRODUCER_RUN_ID: ${{ inputs.assessment_producer_run_id || '' }}
+          PRODUCTION_PRODUCER_RUN_ID: ${{ inputs.production_producer_run_id || '' }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, urllib.request
+          repo = os.environ["REPO"]
+          token = os.environ["GH_TOKEN"]
+          callbacks = [
+              (os.environ.get("SOURCE_DISCOVERY_RUN_ID", "").strip(), ".github/workflows/source-discovery.yml", True),
+              (os.environ.get("ASSESSMENT_PRODUCER_RUN_ID", "").strip(), ".github/workflows/automation-watchdog.yml", True),
+              (os.environ.get("PRODUCTION_PRODUCER_RUN_ID", "").strip(), ".github/workflows/auto_sync.yml", False),
+          ]
+          for run_id, expected_path, require_success in callbacks:
+              if not run_id:
+                  continue
+              if not run_id.isdigit():
+                  raise SystemExit("queue reconciliation is held: callback producer run ID is invalid")
+              request = urllib.request.Request(
+                  f"https://api.github.com/repos/{repo}/actions/runs/{run_id}",
+                  headers={"Accept":"application/vnd.github+json","Authorization":"Bearer "+token,
+                           "X-GitHub-Api-Version":"2022-11-28","User-Agent":"Shadowrocket-Watchdog-Callback-Verifier/1.0"},
+              )
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  producer = json.loads(response.read(2_000_000).decode("utf-8"))
+              if producer.get("path") != expected_path or producer.get("head_branch") != "main":
+                  raise SystemExit("queue reconciliation is held: callback producer identity does not match its declared workflow")
+              if producer.get("status") != "completed":
+                  raise SystemExit("queue reconciliation is held: callback producer has not completed")
+              if expected_path == ".github/workflows/auto_sync.yml" and not producer.get("conclusion"):
+                  raise SystemExit("queue reconciliation is held: production producer has no terminal conclusion")
+              if require_success and producer.get("conclusion") != "success":
+                  raise SystemExit("queue reconciliation is held: source or Assessment producer did not succeed")
+              print(json.dumps({"producer_run_id":run_id,"path":expected_path,"status":producer.get("status"),"conclusion":producer.get("conclusion")},sort_keys=True))
+          PY
+
       - name: Resolve completed Discovery run from durable task correlation
         id: resolve-discovery-run
         env:
@@ -1160,8 +1165,15 @@ jobs:
                   and (a.get("workflow_run") or {}).get("head_sha") == requested_sha]
               if len(exact) != 1:
                   raise SystemExit("The exact successful Discovery run must have exactly one unexpired source-discovery-output artifact.")
+              sys.path.insert(0, ".github/workflow_helpers")
+              from check_source_assessment_artifact import find_matching_assessment_artifact
+              matching_assessment = find_matching_assessment_artifact(repo, token, {
+                  "workflow_run_id": run_id,
+                  "workflow_head_sha": requested_sha,
+                  "artifact_sha256": proof["artifact_sha256"],
+              })
               handoff = classify_assessment_handoff(tasks, run_id)
-              handoff_state = handoff["state"]
+              handoff_state = "already_assessed" if matching_assessment.get("found") else handoff["state"]
               resolved = (assessment_task, run)
               break
 
@@ -1425,23 +1437,54 @@ jobs:
           recovery_two_key="$base_key:recovery:2"
           recovery_one_status="$(jq -r --arg key "$recovery_one_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .status // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
           recovery_two_status="$(jq -r --arg key "$recovery_two_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .status // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
+          assessment_error_type="$(jq -r --arg key "$base_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .last_error.type // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
+          recovery_one_error_type="$(jq -r --arg key "$recovery_one_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .last_error.type // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
+          recovery_two_error_type="$(jq -r --arg key "$recovery_two_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .last_error.type // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
+          assessment_recovery_blocked=false
           if [ "$assessment_status" = "DEAD_LETTER" ]; then
             if [ "$recovery_two_status" = "DEAD_LETTER" ]; then
-              echo "Both bounded Assessment recoveries are exhausted; a new version-bound Discovery cycle is required."
-              echo "retry_exhausted=true" >> "$GITHUB_OUTPUT"
-              exit 0
+              case "$recovery_two_error_type" in
+                execution_timeout|lease_expired)
+                  echo "The timeout-corrected second Assessment recovery was dead-lettered; a fresh version-bound Discovery cycle is now permitted."
+                  echo "retry_exhausted=true" >> "$GITHUB_OUTPUT"
+                  exit 0
+                  ;;
+                *)
+                  assessment_recovery_blocked=true
+                  echo "Assessment retry exhaustion was caused by a non-retryable failure ($recovery_two_error_type); Discovery will not be restarted automatically."
+                  exit 0
+                  ;;
+              esac
             elif [ "$recovery_two_status" != "" ]; then
               echo "The second bounded Assessment recovery is already $recovery_two_status; waiting for terminal evidence."
               exit 0
             elif [ "$recovery_one_status" = "DEAD_LETTER" ]; then
-              assessment_key="$recovery_two_key"
-              assessment_max_urls=4
+              case "$recovery_one_error_type" in
+                execution_timeout|lease_expired)
+                  assessment_key="$recovery_two_key"
+                  assessment_max_urls=4
+                  ;;
+                *)
+                  assessment_recovery_blocked=true
+                  echo "First Assessment recovery failed for a non-retryable reason ($recovery_one_error_type); refusing a second retry."
+                  exit 0
+                  ;;
+              esac
             elif [ -n "$recovery_one_status" ]; then
               echo "The first bounded Assessment recovery is already $recovery_one_status; waiting for its terminal evidence."
               exit 0
             else
-              assessment_key="$recovery_one_key"
-              assessment_max_urls=8
+              case "$assessment_error_type" in
+                execution_timeout|lease_expired)
+                  assessment_key="$recovery_one_key"
+                  assessment_max_urls=8
+                  ;;
+                *)
+                  assessment_recovery_blocked=true
+                  echo "Initial Assessment failed for a non-retryable reason ($assessment_error_type); refusing automatic retry."
+                  exit 0
+                  ;;
+              esac
             fi
           else
             assessment_key="$base_key"
@@ -1480,12 +1523,13 @@ jobs:
             echo "The single artifact-recovery task already exists ($existing); no duplicate will be enqueued."
             exit 0
           fi
+          verified_task_id="$(jq -r '.task_id' <<< "$recovery_two")"
           predecessor="$(jq -c '.input.predecessor' <<< "$recovery_two")"
           task_input="$(jq -cn --argjson predecessor "$predecessor" '{max_urls:4,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}')"
           echo "Enqueueing one bounded artifact-recovery Assessment for Discovery run $SOURCE_RUN_ID."
           queue_token="$GITHUB_TOKEN"
           unset GITHUB_TOKEN
-          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin --idempotency-key "$artifact_recovery_key" --priority 100 --input-json "$task_input" enqueue-source-assessment
+          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin --idempotency-key "$artifact_recovery_key" --recovery-of-task-id "$verified_task_id" --priority 100 --input-json "$task_input" enqueue-source-assessment
           unset queue_token
 
       - name: Enqueue independent source discovery only after its authorization gate opens
@@ -1553,6 +1597,8 @@ jobs:
           mkdir -p "$AUTOMATION_ARTIFACT_ROOT"
           queue_token="$GITHUB_TOKEN"
           unset GITHUB_TOKEN
+          SCHEDULER_ACTION="run""-once"
+          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin --verify-only "$SCHEDULER_ACTION" | tee "$RUNNER_TEMP/pending-result-verification.json"
           GITHUB_TOKEN="$queue_token" python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue_before_dispatch.json"
           selected_task_id="$(python3 - <<'PY'
           import json, os, sys
@@ -1577,6 +1623,8 @@ jobs:
               print("Deferring the next source worker while the eligible production task is dispatched.", file=sys.stderr)
           else:
               predecessor_run_id = os.environ.get("SOURCE_RUN_ID", "").strip()
+              if os.environ.get("SOURCE_ASSESSMENT_RETRY_EXHAUSTED") == "true":
+                  predecessor_run_id = ""
               print(select_source_worker_task(tasks, predecessor_workflow_run_id=predecessor_run_id or None))
           PY
           )""
@@ -1679,6 +1727,7 @@ jobs:
           }, sort_keys=True))
           PY
       - name: Upload verified source assessment outputs as immutable artifact
+        id: upload-source-assessment
         if: ${{ always() && steps.run-queue.outputs.assessment_output_expected == 'true' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
@@ -1686,6 +1735,17 @@ jobs:
           path: ${{ runner.temp }}/source-assessment-output/
           if-no-files-found: error
           retention-days: 30
+
+      - name: Wake Watchdog after verified Assessment artifact upload
+        if: ${{ steps.run-queue.outputs.assessment_output_expected == 'true' && steps.upload-source-assessment.outcome == 'success' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PRODUCER_RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          payload="$(jq -cn --arg run_id "$PRODUCER_RUN_ID" '{ref:"main",inputs:{producer_run_id:$run_id}}')"
+          gh api --method POST "repos/$REPO/actions/workflows/assessment-completion-relay.yml/dispatches" --input - <<< "$payload"
 
   stale-run-watch:
     permissions:
@@ -1740,7 +1800,7 @@ jobs:
 
           current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"
           if ! runs_response="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" 2>"$RUNNER_TEMP/auto-sync-runs.err")"; then
-            echo "Stale-run scan deferred: production run history is unavailable; no replacement will be dispatched."
+            echo "Stale-run scan deferred; no replacement will be dispatched in this pass."
             cat "$RUNNER_TEMP/auto-sync-runs.err" >&2 || true
             exit 0
           fi
@@ -1781,9 +1841,9 @@ jobs:
               if [ "$reason" = "timeout" ]; then timed_out_any=1; timed_out_run_id="$stale_id"; fi
             done <<< "$stale_lines"
             sleep 10
-            if ! runs_response="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" 2>"$RUNNER_TEMP/auto-sync-runs.err")"; then
-              echo "Stale-run scan deferred after cancellation: production run history is unavailable; no replacement will be dispatched."
-              cat "$RUNNER_TEMP/auto-sync-runs.err" >&2 || true
+            if ! runs_response="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" 2>"$RUNNER_TEMP/auto-sync-refresh.err")"; then
+              echo "Stale-run scan deferred after cancellation; no replacement will be dispatched in this pass."
+              cat "$RUNNER_TEMP/auto-sync-refresh.err" >&2 || true
               exit 0
             fi
             runs="$(jq '{workflow_runs: .workflow_runs}' <<< "$runs_response")"
