@@ -1735,7 +1735,7 @@ jobs:
                   predecessor_run_id = ""
               print(select_source_worker_task(tasks, predecessor_workflow_run_id=predecessor_run_id or None))
           PY
-          )""
+          )"
           if [ -n "$selected_task_id" ]; then
             printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --token-stdin --repository "$GITHUB_REPOSITORY" --branch main --task-id "$selected_task_id" --max-tasks 1 run-once | tee /tmp/task-scheduler-report.json
           else
