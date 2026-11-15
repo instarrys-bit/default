@@ -1,1 +1,174 @@
-{"schema_version":1,"allowed_policy_outputs":["DIRECT","PROXY","REJECT"],"external_source_mode":"policy-labelled-domain-sources","external_sources":[{"id":"sr-adblock-domain-lite","enabled":true,"capture_enabled":true,"format":"domain-only","url":"https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list","classification":"REJECT","role":"primary_candidate_source","policy_evidence":"documented_policy","import_enabled":false,"policy_assignment_enabled":true,"note":"仅采集域名并按登记策略核验；不采纳来源脚本、模块、MITM、DNS 或 Rewrite。"},{"id":"hagezi-domains-pro","enabled":true,"capture_enabled":true,"format":"adblock-domain-rules","url":"https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt","classification":"REJECT","role":"independent_adblock_corroboration","policy_evidence":"documented_policy","import_enabled":false,"policy_assignment_enabled":true,"note":"仅采集域名并按登记策略核验；不采纳来源脚本、模块、MITM、DNS 或 Rewrite。"},{"id":"acl4ssr-china-domain","enabled":true,"capture_enabled":true,"format":"shadowrocket-domain-rules","url":"https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list","classification":"DIRECT","role":"primary_candidate_source","policy_evidence":"documented_policy","import_enabled":false,"policy_assignment_enabled":true,"note":"仅采集域名并按登记策略核验；不采纳来源脚本、模块、MITM、DNS 或 Rewrite。"},{"id":"clashfx-cn-apps-direct","enabled":true,"capture_enabled":true,"format":"shadowrocket-domain-rules","url":"https://raw.githubusercontent.com/ClashFX/ClashFX/master/RuleSet/ChinaApps.list","classification":"DIRECT","role":"primary_candidate_source","policy_evidence":"documented_policy","import_enabled":false,"policy_assignment_enabled":true,"note":"仅采集域名并按登记策略核验；不采纳来源脚本、模块、MITM、DNS 或 Rewrite。"},{"id":"sve1r-global-proxy","enabled":true,"capture_enabled":true,"format":"shadowrocket-domain-rules","url":"https://raw.githubusercontent.com/sve1r/Rules-for-Surge/main/Ruleset/Global.list","classification":"PROXY","role":"primary_candidate_source","policy_evidence":"documented_policy","import_enabled":false,"policy_assignment_enabled":true,"note":"仅采集域名并按登记策略核验；不采纳来源脚本、模块、MITM、DNS 或 Rewrite。"},{"id":"acl4ssr-proxy-lite","enabled":true,"capture_enabled":true,"format":"shadowrocket-domain-rules","url":"https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list","classification":"PROXY","role":"primary_candidate_source","policy_evidence":"documented_policy","import_enabled":false,"policy_assignment_enabled":true,"note":"仅采集域名并按登记策略核验；不采纳来源脚本、模块、MITM、DNS 或 Rewrite。"}],"dns_invariants":{"dns-server":"system","fallback-dns-server":"192.168.2.1, 10.0.1.3","direct-dns-server":"https://doh.pub/dns-query","proxy-dns-server":"https://dns.quad9.net/dns-query, https://cloudflare-dns.com/dns-query","dns-direct-system":"false","dns-direct-fallback-proxy":"false","hijack-dns":":53"},"release_policy":{"schema_version":1},"managed_config_guard":{"path":"modules/uu.conf","approved_git_blob_sha":"08e7add5a15414e703ed17bdeb5ae639c8afb835","description":"Authoritative owner-managed Shadowrocket config. Automation may read, identify, hash, diff, and register baseline metadata only after owner verification; it must never rewrite file contents, user-authored rules, or existing functionality. Watchdog performs near-real-time (push-driven) metadata reconciliation when the owner changes this file so automation is never permanently blocked by a legitimate user update. Sub-second polling is not used; reaction latency is bounded by GitHub Actions start-up after the push event, with a 15-minute schedule as safety net.","last_user_approved_baseline_update":{"previous_blob_sha":"803f9f25b8e7323a43185b088a10f82255f0cb2a","new_blob_sha":"08e7add5a15414e703ed17bdeb5ae639c8afb835","reason":"Watchdog synchronized the exact main-branch uu.conf Git blob after verifying every intervening config-changing commit is associated with the repository owner. Only baseline metadata and derived release pins are updated; uu.conf bytes are immutable to automation.","approval_mode":"recovered_owner_authored_config_history","config_change_commits":["488c15341213c3bdaf1eb26b573c0294a5bba0b9"],"actor":"instarrys-bit","commit_sha":"488c15341213c3bdaf1eb26b573c0294a5bba0b9","registered_at":"2026-11-14T19:23:28.581169+00:00"},"content_immutable_to_automation":true,"content_protection":{"owner_may_edit":true,"automation_may_modify_content":false,"protected_scope":"All bytes in modules/uu.conf, including user-authored rules, section contents, DNS settings, and existing code or feature behavior.","watchdog_near_realtime_reconciliation":true,"reaction_model":"push_event_immediate_job + 15min_schedule_safety_net; never rewrite uu.conf bytes"},"baseline_metadata_policy":{"automation_may_read_file":true,"automation_may_identify_file":true,"automation_may_hash_file":true,"automation_may_diff_file":true,"automation_may_update_registered_blob_sha":true,"update_authorization":"Owner-verified registration only. Verify repository owner identity and every intervening uu.conf-changing commit before updating baseline metadata.","registration_must_not_write_config_content":true}}}
+{
+  "schema_version": 1,
+  "allowed_policy_outputs": [
+    "DIRECT",
+    "PROXY",
+    "REJECT"
+  ],
+  "external_source_mode": "policy-labelled-domain-sources",
+  "external_sources": [
+    {
+      "id": "sr-adblock-domain-lite",
+      "enabled": true,
+      "capture_enabled": true,
+      "format": "domain-only",
+      "url": "https://raw.githubusercontent.com/ithtelab/sr-adblock/release/ruleset/ad-domain-lite.list",
+      "classification": "REJECT",
+      "role": "primary_candidate_source",
+      "policy_evidence": "documented_policy",
+      "import_enabled": false,
+      "policy_assignment_enabled": true,
+      "note": "仅采集域名并按登记策略核验；不采纳来源脚本、模块、MITM、DNS 或 Rewrite。"
+    },
+    {
+      "id": "hagezi-domains-pro",
+      "enabled": true,
+      "capture_enabled": true,
+      "format": "adblock-domain-rules",
+      "url": "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/pro.txt",
+      "classification": "REJECT",
+      "role": "independent_adblock_corroboration",
+      "policy_evidence": "documented_policy",
+      "import_enabled": false,
+      "policy_assignment_enabled": true,
+      "note": "仅采集域名并按登记策略核验；不采纳来源脚本、模块、MITM、DNS 或 Rewrite。"
+    },
+    {
+      "id": "acl4ssr-china-domain",
+      "enabled": true,
+      "capture_enabled": true,
+      "format": "shadowrocket-domain-rules",
+      "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list",
+      "classification": "DIRECT",
+      "role": "primary_candidate_source",
+      "policy_evidence": "documented_policy",
+      "import_enabled": false,
+      "policy_assignment_enabled": true,
+      "note": "仅采集域名并按登记策略核验；不采纳来源脚本、模块、MITM、DNS 或 Rewrite。"
+    },
+    {
+      "id": "clashfx-cn-apps-direct",
+      "enabled": true,
+      "capture_enabled": true,
+      "format": "shadowrocket-domain-rules",
+      "url": "https://raw.githubusercontent.com/ClashFX/ClashFX/master/RuleSet/ChinaApps.list",
+      "classification": "DIRECT",
+      "role": "primary_candidate_source",
+      "policy_evidence": "documented_policy",
+      "import_enabled": false,
+      "policy_assignment_enabled": true,
+      "note": "仅采集域名并按登记策略核验；不采纳来源脚本、模块、MITM、DNS 或 Rewrite。"
+    },
+    {
+      "id": "sve1r-global-proxy",
+      "enabled": true,
+      "capture_enabled": true,
+      "format": "shadowrocket-domain-rules",
+      "url": "https://raw.githubusercontent.com/sve1r/Rules-for-Surge/main/Ruleset/Global.list",
+      "classification": "PROXY",
+      "role": "primary_candidate_source",
+      "policy_evidence": "documented_policy",
+      "import_enabled": false,
+      "policy_assignment_enabled": true,
+      "note": "仅采集域名并按登记策略核验；不采纳来源脚本、模块、MITM、DNS 或 Rewrite。"
+    },
+    {
+      "id": "acl4ssr-proxy-lite",
+      "enabled": true,
+      "capture_enabled": true,
+      "format": "shadowrocket-domain-rules",
+      "url": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ProxyLite.list",
+      "classification": "PROXY",
+      "role": "primary_candidate_source",
+      "policy_evidence": "documented_policy",
+      "import_enabled": false,
+      "policy_assignment_enabled": true,
+      "note": "仅采集域名并按登记策略核验；不采纳来源脚本、模块、MITM、DNS 或 Rewrite。"
+    }
+  ],
+  "dns_invariants": {
+    "dns-server": "system",
+    "fallback-dns-server": "192.168.2.1, 10.0.1.3",
+    "direct-dns-server": "https://doh.pub/dns-query",
+    "proxy-dns-server": "https://dns.quad9.net/dns-query, https://cloudflare-dns.com/dns-query",
+    "dns-direct-system": "false",
+    "dns-direct-fallback-proxy": "false",
+    "hijack-dns": ":53"
+  },
+  "release_policy": {
+    "schema_version": 1
+  },
+  "managed_config_guard": {
+    "path": "modules/uu.conf",
+    "approved_git_blob_sha": "d44de092c540ffaafb7ba6d54239938c8789d174",
+    "description": "Authoritative owner-managed Shadowrocket config. Automation may read, identify, hash, diff, and register baseline metadata only after owner verification; it must never rewrite file contents, user-authored rules, or existing functionality. Watchdog performs near-real-time (push-driven) metadata reconciliation when the owner changes this file so automation is never permanently blocked by a legitimate user update. Sub-second polling is not used; reaction latency is bounded by GitHub Actions start-up after the push event, with a 15-minute schedule as safety net.",
+    "last_user_approved_baseline_update": {
+      "previous_blob_sha": "08e7add5a15414e703ed17bdeb5ae639c8afb835",
+      "new_blob_sha": "d44de092c540ffaafb7ba6d54239938c8789d174",
+      "reason": "Watchdog synchronized the exact main-branch uu.conf Git blob after verifying every intervening config-changing commit is associated with the repository owner. Only baseline metadata and derived release pins are updated; uu.conf bytes are immutable to automation.",
+      "approval_mode": "recovered_owner_authored_config_history",
+      "config_change_commits": [
+        "232b65b57c18af0a8dbadd0db7c13b2f082a641d",
+        "d3b8391316f285fabb3052bb4e36fc710903bbd1",
+        "fb87e340932bbbe4588094171a3428ee6d10d807",
+        "ee6213bdf85da9bad808230e7a16281fb9a951ad",
+        "61485242141a57263daf7cddb89667c2e382f100",
+        "cd7cba77ba4209d252685d6097d305f57665b67a",
+        "ca9c7d50a3142511bb921f5e65215ab319ced3a4",
+        "a11adc2f9e43073b853f07e7ee8ca6c749b40372",
+        "7a9bfc31e14417d1944bf88ca1424fae3bf7efdd",
+        "eb046c97be42466c3eb08a79a3ec89e237713f56",
+        "151f92428d30826af168ad473c95cd0e90c7f419",
+        "4729499a415bb49805b98887ef5bf4917855d85e",
+        "f1a911839dbdb64cb4afb9cb00f07d42cdb6939a",
+        "fc4094fcd654a5956eb1e2f72d238794d6b5d4d8",
+        "9f773f6eec295828d14eec19d0cd80540fdd3a3c",
+        "a9b164e599ede585753242396655493590ea47c2",
+        "6278bd59dccfb74dafca6b638eb8e8915d073345",
+        "50aa8ed38778acdce31e4e9f447fc34f877a50eb",
+        "ec1a4d3a6e627eb3f6d3a93d1a08f15aab27e198",
+        "95bb3055b9f309a42a23596d2da3ddbcc7dcaddf",
+        "e972499e6fcfc5754cf6853752fa4c251258cabd",
+        "3e124ef65064c1ac35ee2a7b33bd92b292e04e1b",
+        "41c196d7206c14d98e70fb921d1094a3309b8fcc",
+        "a865442fcb1cba2a9c0398539cae64e621bde77a",
+        "5dda46ce6c61f33366f643d4def4589f70e73f07",
+        "dd2072f3b79d6e51916c8e59124e70e85b574ba4",
+        "9af4269a0b16dbd6b39d095602dd6d03bbc6ea18",
+        "b75bce69b80764cdeffba83d02dc523d0a6e1639",
+        "cd2edb7935a64521e75889f6a202f0d55c73f642",
+        "ca5ed1b99f9af3824110587e08b3616987f9690f",
+        "bdfff31490199ccaa3188efc2f8526fbaeaa39a3",
+        "3ba2aa73d49a1240c7d9a86c7bb8606ac1dc2502",
+        "fef05c70a5b9edf8b6ee4664a606aed5f3727c15",
+        "11424f646d3aa15642318eaf0dee4fae9c934d41",
+        "5ca516896becf83a36db0b2d32f817e89d306ced",
+        "0a9e82b9d10f67b37e4b5966edc40ab4474eb808",
+        "4fc46589580c960cb46529137f6b81d423028a73",
+        "6dd8cc4f20abc697c6aab3395dfd39785a525bd8",
+        "f028536653fcd15980eeeec9de1c1b9cfd53c7c1",
+        "2a04382b20788acc0d90d84bfc641816a234f248"
+      ],
+      "actor": "instarrys-bit",
+      "commit_sha": "232b65b57c18af0a8dbadd0db7c13b2f082a641d",
+      "registered_at": "2026-11-15T18:01:49.338606+00:00"
+    },
+    "content_immutable_to_automation": true,
+    "content_protection": {
+      "owner_may_edit": true,
+      "automation_may_modify_content": false,
+      "protected_scope": "All bytes in modules/uu.conf, including user-authored rules, section contents, DNS settings, and existing code or feature behavior.",
+      "watchdog_near_realtime_reconciliation": true,
+      "reaction_model": "push_event_immediate_job + 15min_schedule_safety_net; never rewrite uu.conf bytes"
+    },
+    "baseline_metadata_policy": {
+      "automation_may_read_file": true,
+      "automation_may_identify_file": true,
+      "automation_may_hash_file": true,
+      "automation_may_diff_file": true,
+      "automation_may_update_registered_blob_sha": true,
+      "update_authorization": "Owner-verified registration only. Verify repository owner identity and every intervening uu.conf-changing commit before updating baseline metadata.",
+      "registration_must_not_write_config_content": true
+    }
+  }
+}
