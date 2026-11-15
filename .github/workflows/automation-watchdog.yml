@@ -1342,6 +1342,8 @@ jobs:
           set -euo pipefail
           echo "valid=false" >> "$GITHUB_OUTPUT"
           echo "discovery_run_id=" >> "$GITHUB_OUTPUT"
+          echo "discovery_head_sha=" >> "$GITHUB_OUTPUT"
+          echo "discovery_artifact_sha256=" >> "$GITHUB_OUTPUT"
           echo "assessment_task_id=" >> "$GITHUB_OUTPUT"
           if [ "$SOURCE_DISCOVERY_MODE" != "independent" ]; then
             echo "valid=true" >> "$GITHUB_OUTPUT"
@@ -1390,6 +1392,8 @@ jobs:
               found = result.get("found") is True
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
               output.write(f"discovery_run_id={run_id}\\n")
+              output.write(f"discovery_head_sha={predecessor['workflow_head_sha']}\\n")
+              output.write(f"discovery_artifact_sha256={predecessor['artifact_sha256']}\\n")
               output.write(f"assessment_task_id={assessment_task['task_id']}\\n")
               output.write(f"valid={'true' if found else 'false'}\\n")
           if found:
@@ -1399,20 +1403,21 @@ jobs:
           PY
 
       - name: Download artifact from the exact discovery workflow run
-        if: ${{ steps.resolve-discovery-run.outputs.run_id != '' }}
+        if: ${{ steps.resolve-discovery-run.outputs.run_id != '' || (steps.verify-latest-assessment-artifact.outputs.valid == 'false' && steps.verify-latest-assessment-artifact.outputs.assessment_task_id != '') }}
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: source-discovery-output
-          run-id: ${{ steps.resolve-discovery-run.outputs.run_id }}
+          run-id: ${{ (steps.verify-latest-assessment-artifact.outputs.valid == 'false' && steps.verify-latest-assessment-artifact.outputs.assessment_task_id != '' && steps.verify-latest-assessment-artifact.outputs.discovery_run_id) || steps.resolve-discovery-run.outputs.run_id }}
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/source-discovery-output
 
       - name: Verify immutable discovery artifact against producer run and current main
         id: verify-discovery-artifact
-        if: ${{ steps.resolve-discovery-run.outputs.run_id != '' }}
+        if: ${{ steps.resolve-discovery-run.outputs.run_id != '' || (steps.verify-latest-assessment-artifact.outputs.valid == 'false' && steps.verify-latest-assessment-artifact.outputs.assessment_task_id != '') }}
         env:
-          SOURCE_RUN_ID: ${{ steps.resolve-discovery-run.outputs.run_id }}
-          SOURCE_HEAD_SHA: ${{ steps.resolve-discovery-run.outputs.head_sha }}
+          SOURCE_RUN_ID: ${{ (steps.verify-latest-assessment-artifact.outputs.valid == 'false' && steps.verify-latest-assessment-artifact.outputs.assessment_task_id != '' && steps.verify-latest-assessment-artifact.outputs.discovery_run_id) || steps.resolve-discovery-run.outputs.run_id }}
+          SOURCE_HEAD_SHA: ${{ (steps.verify-latest-assessment-artifact.outputs.valid == 'false' && steps.verify-latest-assessment-artifact.outputs.assessment_task_id != '' && steps.verify-latest-assessment-artifact.outputs.discovery_head_sha) || steps.resolve-discovery-run.outputs.head_sha }}
+          SOURCE_ARTIFACT_SHA256_EXPECTED: ${{ (steps.verify-latest-assessment-artifact.outputs.valid == 'false' && steps.verify-latest-assessment-artifact.outputs.assessment_task_id != '' && steps.verify-latest-assessment-artifact.outputs.discovery_artifact_sha256) || steps.resolve-discovery-run.outputs.artifact_sha256 }}
           SOURCE_WORKFLOW_NAME: Shadowrocket Source Discovery (Watchdog)
           SOURCE_ARTIFACT_DIR: ${{ runner.temp }}/source-discovery-output
         run: |
@@ -1441,7 +1446,7 @@ jobs:
           if any(proof.get(key) != value for key, value in expected.items()):
               raise SystemExit("Discovery artifact provenance does not match the completed producer run.")
           artifact_digest = read_only_resource_digests(artifact_root, [expected["artifact_path"]])[expected["artifact_path"]]
-          if artifact_digest != proof.get("artifact_sha256"):
+          if artifact_digest != proof.get("artifact_sha256") or (os.environ.get("SOURCE_ARTIFACT_SHA256_EXPECTED") and artifact_digest != os.environ["SOURCE_ARTIFACT_SHA256_EXPECTED"]):
               message = "Downloaded discovery artifact digest does not match its immutable proof; Assessment is blocked and a fresh Discovery run is required."
               print(message)
               with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
@@ -1584,7 +1589,7 @@ jobs:
           unset queue_token
 
       - name: Enqueue one artifact-recovery Assessment after verified success without supervisor upload
-        if: ${{ steps.verify-latest-assessment-artifact.outputs.valid == 'false' && steps.verify-latest-assessment-artifact.outputs.assessment_task_id != '' && steps.source-mode.outputs.mode == 'independent' }}
+        if: ${{ steps.verify-latest-assessment-artifact.outputs.valid == 'false' && steps.verify-latest-assessment-artifact.outputs.assessment_task_id != '' && steps.verify-discovery-artifact.outputs.valid == 'true' && (steps.resolve-discovery-run.outputs.handoff_state == 'already_assessed' || steps.verify-latest-assessment-artifact.outputs.assessment_task_id != '') && steps.source-mode.outputs.mode == 'independent' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -1679,7 +1684,7 @@ jobs:
           SOURCE_RUN_ID: ${{ (steps.verify-latest-assessment-artifact.outputs.valid == 'false' && steps.verify-latest-assessment-artifact.outputs.assessment_task_id != '' && steps.verify-latest-assessment-artifact.outputs.discovery_run_id) || steps.resolve-discovery-run.outputs.run_id }}
           SOURCE_ASSESSMENT_RETRY_EXHAUSTED: ${{ steps.enqueue-assessment.outputs.retry_exhausted }}
           SOURCE_DISCOVERY_MODE: ${{ steps.source-mode.outputs.mode }}
-          ASSESSMENT_ARTIFACT_VERIFIED: ${{ steps.resolve-discovery-run.outputs.assessment_artifact_verified }}
+          ASSESSMENT_ARTIFACT_VERIFIED: ${{ steps.verify-latest-assessment-artifact.outputs.valid }}
         run: |
           set -euo pipefail
           rm -rf "$AUTOMATION_ARTIFACT_ROOT"
