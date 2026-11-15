@@ -136,17 +136,24 @@ class SelfHealingWorkflowTests(unittest.TestCase):
 
 
 
-    def test_failed_log_download_retries_only_transient_api_rate_limits(self):
+    def test_failed_log_download_degrades_safely_when_actions_api_is_rate_limited(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         download = workflow.split("      - name: Download failed workflow logs", 1)[1].split(
             "      - name: Diagnose failed workflow", 1
         )[0]
+        diagnosis = workflow.split("      - name: Diagnose failed workflow", 1)[1].split(
+            "      - name: Keep self-healing read-only", 1
+        )[0]
+        self.assertIn("id: download", download)
         self.assertIn("for attempt in 1 2 3 4 5", download)
-        self.assertIn("API rate limit exceeded|secondary rate limit|abuse detection", download)
+        self.assertIn("API rate limit exceeded|secondary rate limit|abuse detection|HTTP 403|HTTP 429", download)
         self.assertIn('sleep "$delay"', download)
-        self.assertIn("cat /tmp/failed-run-error.log >&2", download)
+        self.assertIn('echo "available=false" >> "$GITHUB_OUTPUT"', download)
+        self.assertIn('echo "available=true" >> "$GITHUB_OUTPUT"', download)
         self.assertIn('gh run view "$RUN_ID" --repo "$REPO" --log-failed', download)
-        self.assertIn("exit 1", download)
+        self.assertIn("read-only degraded mode", download)
+        self.assertNotIn("exit 1", download)
+        self.assertIn("steps.download.outputs.available == 'true'", diagnosis)
 
     def test_run_history_checks_follow_all_api_pages(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
