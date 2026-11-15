@@ -61,6 +61,12 @@ permissions:
   contents: read
   issues: write
 
+# Numeric workflow IDs are verified from the GitHub Actions run metadata.
+# Avoid filename-based run queries, which can return unrelated active workflows.
+env:
+  AUTO_SYNC_WORKFLOW_ID: "402712272"
+  WATCHDOG_WORKFLOW_ID: "403552201"
+
 # GitHub keeps only one pending run per concurrency group. A shared group can
 # silently replace a pending push/workflow_run watchdog event with a later event.
 # Queue writes use CAS, while the publisher has its own main-writer lock.
@@ -165,7 +171,7 @@ jobs:
           )"
           fi
 
-          runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
+          runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/$AUTO_SYNC_WORKFLOW_ID/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
           current_sha="$(gh api "repos/$REPO/commits/main" --jq .sha)"
 
           if jq -e --argjson source "$SOURCE_RUN_ID" --arg sha "$current_sha" '[.workflow_runs[] | select(.head_branch == "main" and .head_sha == $sha and .id > $source and (.status != "completed" or .conclusion == "success"))] | length > 0' <<< "$runs" >/dev/null; then
@@ -338,7 +344,7 @@ jobs:
           ORIGIN_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
-          runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: .workflow_runs}')"
+          runs="$(gh api "repos/$REPO/actions/workflows/$AUTO_SYNC_WORKFLOW_ID/runs?per_page=100" | jq '{workflow_runs: .workflow_runs}')"
 
           current_sha="$(gh api "repos/$REPO/commits/main" --jq .sha)"
           checkout_sha="$(git rev-parse HEAD)"
@@ -1926,7 +1932,7 @@ jobs:
         run: |
           set -euo pipefail
           echo "queue_blocked=false" >> "$GITHUB_OUTPUT"
-          if ! watchdog_runs="$(gh api "repos/$REPO/actions/workflows/automation-watchdog.yml/runs?per_page=100&status=in_progress" 2>"$RUNNER_TEMP/watchdog-runs.err")"; then
+          if ! watchdog_runs="$(gh api "repos/$REPO/actions/workflows/$WATCHDOG_WORKFLOW_ID/runs?per_page=100&status=in_progress" 2>"$RUNNER_TEMP/watchdog-runs.err")"; then
             echo "Stale-run scan deferred: Watchdog run history is unavailable; no replacement will be dispatched."
             cat "$RUNNER_TEMP/watchdog-runs.err" >&2 || true
             echo "queue_blocked=true" >> "$GITHUB_OUTPUT"
@@ -1958,7 +1964,7 @@ jobs:
           done <<< "$stale_watchdog_ids"
 
           current_main="$(gh api "repos/$REPO/commits/main" --jq .sha)"
-          if ! runs_response="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" 2>"$RUNNER_TEMP/auto-sync-runs.err")"; then
+          if ! runs_response="$(gh api "repos/$REPO/actions/workflows/$AUTO_SYNC_WORKFLOW_ID/runs?per_page=100" 2>"$RUNNER_TEMP/auto-sync-runs.err")"; then
             echo "Stale-run scan deferred; no replacement will be dispatched in this pass."
             cat "$RUNNER_TEMP/auto-sync-runs.err" >&2 || true
             echo "queue_blocked=true" >> "$GITHUB_OUTPUT"
@@ -2004,7 +2010,7 @@ jobs:
               if [ "$reason" = "timeout" ]; then timed_out_any=1; timed_out_run_id="$stale_id"; fi
             done <<< "$stale_lines"
             sleep 10
-            if ! runs_response="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" 2>"$RUNNER_TEMP/auto-sync-refresh.err")"; then
+            if ! runs_response="$(gh api "repos/$REPO/actions/workflows/$AUTO_SYNC_WORKFLOW_ID/runs?per_page=100" 2>"$RUNNER_TEMP/auto-sync-refresh.err")"; then
               echo "Stale-run scan deferred after cancellation; no replacement will be dispatched in this pass."
               cat "$RUNNER_TEMP/auto-sync-refresh.err" >&2 || true
               echo "queue_blocked=true" >> "$GITHUB_OUTPUT"
@@ -2157,7 +2163,7 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
+          runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/$AUTO_SYNC_WORKFLOW_ID/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
           current_sha="$(gh api "repos/$REPO/commits/main" --jq .sha)"
           if jq -e --arg sha "$current_sha" '[.workflow_runs[] | select(.head_sha == $sha and (.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
             echo "A deterministic audit for current main ($current_sha) is already queued or running; waiting for its completion."
