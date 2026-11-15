@@ -631,7 +631,7 @@ jobs:
               # Unknown paths are reported through an issue; the automation never writes a repository registry.
               title="Production input classification requires review"
               issue="$(gh issue list --repo "$REPO" --state open --search "$title in:title" --json number --jq '.[0].number')"
-              body="$(printf 'These paths are not registered as ruleset production inputs. They remain excluded from automatic production until reviewed. No repository registry was modified.\\n\\nPaths: %s\\n\\nRun: %s' "$unknown_paths" "$GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID")"
+              body="$(printf 'These paths are not registered as ruleset production inputs. They remain excluded from automatic production until reviewed. No repository registry was modified.\n\nPaths: %s\n\nRun: %s' "$unknown_paths" "$GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID")"
               if [ -n "$issue" ] && [ "$issue" != "null" ]; then
                 gh issue comment "$issue" --repo "$REPO" --body "$body"
               else
@@ -1999,7 +1999,7 @@ jobs:
           if [ "$timed_out_any" = "1" ]; then
             title="Self-healing incident: stalled audit"
             existing="$(gh issue list --repo "$REPO" --state open --search "stalled audit in:title" --json number --jq '.[0].number')"
-            body_text="$(printf 'The watchdog cancelled an audit that exceeded six hours and queued a replacement on current main %s.\\n' "$current_main")"
+            body_text="$(printf 'The watchdog cancelled an audit that exceeded six hours and queued a replacement on current main %s.\n' "$current_main")"
             if [ -n "$existing" ] && [ "$existing" != "null" ]; then
               gh issue comment "$existing" --repo "$REPO" --body "$body_text"
             else
