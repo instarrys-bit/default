@@ -18,6 +18,10 @@ class AutomationApiLoadTests(unittest.TestCase):
         self.assertNotIn("Recover owner-approved config baseline in validation workspace", workflow)
         self.assertIn("verify_baseline.py --allow-owner-push-change", workflow)
         self.assertIn("audit_config_drift.py --allow-owner-push-change", workflow)
+        baseline_checks = workflow.split("name: Verify owner-approved config baseline", 1)[1].split(
+            "      - run: python scripts/audit_ruleset_references.py", 1
+        )[0]
+        self.assertEqual(baseline_checks.count("GH_TOKEN: ${{ github.token }}"), 2)
 
     def test_dashboard_refresh_is_not_fanned_out_by_every_monitoring_workflow(self):
         workflow = DASHBOARD.read_text(encoding="utf-8")
