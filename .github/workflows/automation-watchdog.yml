@@ -1968,7 +1968,8 @@ jobs:
 
           stale_lines="$(jq -r --arg sha "$current_main" --arg expected "$EXPECTED_COMPLETION_RUN_ID" '
             .workflow_runs[]
-            | select(.status != "completed" and .head_branch == "main" and .id != null and ((.id | tostring) != $expected))
+            | select(.status != "completed" and .head_branch == "main" and .id != null)
+            | select((.id | tostring) != $expected)
             | ((.run_started_at // .created_at // "") | try fromdateiso8601 catch null) as $started
             | if $started != null and (now - $started) > 21600 then
                 [.id, "timeout", (.head_sha // "")]
