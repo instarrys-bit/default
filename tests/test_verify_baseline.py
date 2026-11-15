@@ -35,7 +35,7 @@ class VerifyBaselineOwnerHistoryTests(unittest.TestCase):
         ]
         mocked.side_effect = [
             SimpleNamespace(returncode=0, stdout=""),
-            SimpleNamespace(returncode=0, stdout=f"{first}\\n{second}\\n"),
+            SimpleNamespace(returncode=0, stdout=first + "\n" + second + "\n"),
             SimpleNamespace(returncode=0, stdout=json.dumps(payload)),
         ]
         self.assertTrue(owner_approved_push_changed_config())
@@ -59,7 +59,7 @@ class VerifyBaselineOwnerHistoryTests(unittest.TestCase):
         ]
         mocked.side_effect = [
             SimpleNamespace(returncode=0, stdout=""),
-            SimpleNamespace(returncode=0, stdout=f"{first}\\n"),
+            SimpleNamespace(returncode=0, stdout=first + "\n"),
             SimpleNamespace(returncode=0, stdout=json.dumps(payload)),
         ]
         self.assertFalse(owner_approved_push_changed_config())
