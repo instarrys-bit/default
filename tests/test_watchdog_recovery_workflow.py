@@ -133,7 +133,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
     def test_stale_audit_reconciliation_uses_bounded_runs_and_durable_queue_evidence(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         stale = workflow.split("      - name: Detect stale successful audit and recover", 1)[1].split('          last_success_sha=', 1)[0]
-        self.assertIn('runs="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100"', stale)
+        self.assertIn('runs="$(gh api "repos/$REPO/actions/workflows/$AUTO_SYNC_WORKFLOW_ID/runs?per_page=100"', stale)
         self.assertNotIn("gh api --paginate --slurp", stale)
         self.assertIn("AUTOMATION_QUEUE_SNAPSHOT", stale)
         self.assertIn("last_error.evidence.run_id", stale)
@@ -612,7 +612,7 @@ class WatchdogStaleRunRecoveryTests(unittest.TestCase):
         stale = workflow.split("  stale-run-watch:", 1)[1].split("  manifest-integrity:", 1)[0]
         self.assertIn("github.event_name == 'push'", stale)
         self.assertIn("CURRENT_WATCHDOG_RUN_ID: ${{ github.run_id }}", stale)
-        self.assertIn("actions/workflows/automation-watchdog.yml/runs?per_page=100", stale)
+        self.assertIn("actions/workflows/$WATCHDOG_WORKFLOW_ID/runs?per_page=100", stale)
         self.assertIn("(.id | tostring) != $current", stale)
         self.assertIn("(now - $started) > 1800", stale)
         self.assertIn('gh run cancel "$stale_id"', stale)
@@ -674,8 +674,8 @@ class WatchdogRateLimitResilienceTests(unittest.TestCase):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn('AUTO_SYNC_WORKFLOW_ID: "402712272"', workflow)
         self.assertIn('WATCHDOG_WORKFLOW_ID: "403552201"', workflow)
-        self.assertNotIn("actions/workflows/auto_sync.yml/runs", workflow)
-        self.assertNotIn("actions/workflows/automation-watchdog.yml/runs", workflow)
+        self.assertNotIn("actions/workflows/$AUTO_SYNC_WORKFLOW_ID/runs", workflow)
+        self.assertNotIn("actions/workflows/$WATCHDOG_WORKFLOW_ID/runs", workflow)
         self.assertGreaterEqual(workflow.count("actions/workflows/$AUTO_SYNC_WORKFLOW_ID/runs"), 5)
         self.assertEqual(workflow.count("actions/workflows/$WATCHDOG_WORKFLOW_ID/runs"), 1)
 
