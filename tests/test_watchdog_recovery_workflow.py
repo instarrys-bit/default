@@ -144,8 +144,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
     def test_run_history_checks_use_bounded_single_page_scans(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         stale = workflow.split("  stale-run-watch:", 1)[1].split("  manifest-integrity:", 1)[0]
-        self.assertIn("automation-watchdog.yml/runs?per_page=100&status=in_progress", stale)
-        self.assertIn("auto_sync.yml/runs?per_page=100", stale)
+        self.assertIn("actions/workflows/$WATCHDOG_WORKFLOW_ID/runs?per_page=100&status=in_progress", stale)
+        self.assertIn("actions/workflows/$AUTO_SYNC_WORKFLOW_ID/runs?per_page=100", stale)
         self.assertNotIn("gh api --paginate --slurp", stale)
         self.assertIn("Stale-run scan deferred", stale)
         self.assertNotIn("runs?per_page=20", workflow)
@@ -674,8 +674,8 @@ class WatchdogRateLimitResilienceTests(unittest.TestCase):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn('AUTO_SYNC_WORKFLOW_ID: "402712272"', workflow)
         self.assertIn('WATCHDOG_WORKFLOW_ID: "403552201"', workflow)
-        self.assertNotIn("actions/workflows/$AUTO_SYNC_WORKFLOW_ID/runs", workflow)
-        self.assertNotIn("actions/workflows/$WATCHDOG_WORKFLOW_ID/runs", workflow)
+        self.assertNotIn("actions/workflows/auto_sync.yml/runs", workflow)
+        self.assertNotIn("actions/workflows/automation-watchdog.yml/runs", workflow)
         self.assertGreaterEqual(workflow.count("actions/workflows/$AUTO_SYNC_WORKFLOW_ID/runs"), 5)
         self.assertEqual(workflow.count("actions/workflows/$WATCHDOG_WORKFLOW_ID/runs"), 1)
 
