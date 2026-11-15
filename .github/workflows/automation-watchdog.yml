@@ -845,7 +845,7 @@ jobs:
       GITHUB_MANUAL_AUDIT_REQUEST: ${{ inputs.request_deterministic_audit }}
       PYTHONDONTWRITEBYTECODE: "1"
     needs: [health-check, stale-run-watch, manifest-integrity]
-    if: ${{ always() && needs.health-check.result == 'success' && (github.event_name == 'workflow_run' || needs.stale-run-watch.result == 'success') && (needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped') && (github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.path == '.github/workflows/auto_sync.yml' || github.event.workflow_run.path == '.github/workflows/source-discovery.yml'))) && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[assessment-canary]')) }}
+    if: ${{ always() && needs.health-check.result == 'success' && (github.event_name == 'workflow_run' || needs.stale-run-watch.result == 'success') && (github.event_name == 'workflow_run' || needs.stale-run-watch.outputs.queue_blocked != 'true') && (needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped') && (github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.path == '.github/workflows/auto_sync.yml' || github.event.workflow_run.path == '.github/workflows/source-discovery.yml'))) && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[assessment-canary]')) }}
     permissions:
       actions: write
       contents: read
@@ -1860,6 +1860,8 @@ jobs:
           gh api -X POST "repos/$REPO/actions/workflows/assessment-completion-relay.yml/dispatches" --input - <<< "$payload"
 
   stale-run-watch:
+    outputs:
+      queue_blocked: ${{ steps.stale-run-scan.outputs.queue_blocked }}
     permissions:
       actions: write
       contents: read
@@ -1878,16 +1880,19 @@ jobs:
         with:
           python-version: "3.11"
       - name: Cancel superseded or stalled audits and recover current main
+        id: stale-run-scan
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           CURRENT_WATCHDOG_RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
+          echo "queue_blocked=false" >> "$GITHUB_OUTPUT"
           if ! watchdog_runs="$(gh api "repos/$REPO/actions/workflows/automation-watchdog.yml/runs?per_page=100&status=in_progress" 2>"$RUNNER_TEMP/watchdog-runs.err")"; then
             echo "Stale-run scan deferred: Watchdog run history is unavailable; no replacement will be dispatched."
             cat "$RUNNER_TEMP/watchdog-runs.err" >&2 || true
-            exit 1
+            echo "queue_blocked=true" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
           stale_watchdog_ids="$(jq -r --arg current "$CURRENT_WATCHDOG_RUN_ID" '
             .workflow_runs[]
@@ -1909,7 +1914,8 @@ jobs:
               echo "Cancellation of Watchdog run $stale_id confirmed; concurrency group will keep the next queue worker serialized."
             else
               echo "Stale-run scan deferred: cancellation of Watchdog run $stale_id was not confirmed; no replacement will be dispatched."
-              exit 1
+              echo "queue_blocked=true" >> "$GITHUB_OUTPUT"
+              exit 0
             fi
           done <<< "$stale_watchdog_ids"
 
@@ -1917,7 +1923,8 @@ jobs:
           if ! runs_response="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" 2>"$RUNNER_TEMP/auto-sync-runs.err")"; then
             echo "Stale-run scan deferred; no replacement will be dispatched in this pass."
             cat "$RUNNER_TEMP/auto-sync-runs.err" >&2 || true
-            exit 1
+            echo "queue_blocked=true" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
           runs="$(jq '{workflow_runs: .workflow_runs}' <<< "$runs_response")"
 
@@ -1961,17 +1968,20 @@ jobs:
             if ! runs_response="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" 2>"$RUNNER_TEMP/auto-sync-refresh.err")"; then
               echo "Stale-run scan deferred after cancellation; no replacement will be dispatched in this pass."
               cat "$RUNNER_TEMP/auto-sync-refresh.err" >&2 || true
-              exit 1
+              echo "queue_blocked=true" >> "$GITHUB_OUTPUT"
+              exit 0
             fi
             runs="$(jq '{workflow_runs: .workflow_runs}' <<< "$runs_response")"
             for cancelled_id in "${cancelled_audit_ids[@]}"; do
               if ! cancellation_status="$(gh api "repos/$REPO/actions/runs/$cancelled_id" --jq '.status')"; then
                 echo "Stale-run scan deferred: could not verify cancellation of audit $cancelled_id."
-                exit 1
+                echo "queue_blocked=true" >> "$GITHUB_OUTPUT"
+                exit 0
               fi
               if [ "$cancellation_status" != "completed" ]; then
                 echo "Stale-run scan deferred: audit $cancelled_id is still active after cancellation; no replacement will be dispatched."
-                exit 1
+                echo "queue_blocked=true" >> "$GITHUB_OUTPUT"
+                exit 0
               fi
               echo "Cancellation of audit $cancelled_id confirmed."
             done
@@ -1980,7 +1990,8 @@ jobs:
           active_count="$(jq '[.workflow_runs[] | select(.head_branch == "main" and .status != "completed")] | length' <<< "$runs")"
           if [ "$active_count" -gt 0 ]; then
             echo "An audit is still queued, cancelling, or running; queue supervision is held and no replacement will be dispatched."
-            exit 1
+            echo "queue_blocked=true" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
 
           # Normal input-change and scheduled-refresh decisions are centralized
