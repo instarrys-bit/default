@@ -10,9 +10,10 @@ on:
 permissions:
   contents: read
 
-# Repairs and issue-driven repository changes share the main-writer lock.
+# Diagnostics and incident reporting do not mutate repository files and must
+# never queue behind the ruleset publisher's main-writer lock.
 concurrency:
-  group: shadowrocket-main-writer
+  group: shadowrocket-self-healing-diagnostics
   cancel-in-progress: false
 
 jobs:
