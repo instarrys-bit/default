@@ -1409,6 +1409,7 @@ jobs:
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: source-discovery-output
+          # Normal handoff uses run-id: ${{ steps.resolve-discovery-run.outputs.run_id }}; artifact recovery uses the exact verified predecessor.
           run-id: ${{ (steps.verify-latest-assessment-artifact.outputs.valid == 'false' && steps.verify-latest-assessment-artifact.outputs.assessment_task_id != '' && steps.verify-latest-assessment-artifact.outputs.discovery_run_id) || steps.resolve-discovery-run.outputs.run_id }}
           github-token: ${{ github.token }}
           path: ${{ runner.temp }}/source-discovery-output
