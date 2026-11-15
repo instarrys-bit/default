@@ -1180,13 +1180,13 @@ jobs:
               if matching_assessment.get("found"):
                   handoff_state = "assessment_artifact_verified"
                   with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
-                      output.write("assessment_artifact_verified=true\\n")
+                      output.write("assessment_artifact_verified=true\n")
               else:
                   handoff_state = handoff["state"]
                   if assessment_task.get("status") == "SUCCEEDED" and (assessment_task.get("verification") or {}).get("status") == "passed":
                       handoff_state = "already_assessed"
                       with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
-                          output.write(f"assessment_task_id={assessment_task['task_id']}\\n")
+                          output.write(f"assessment_task_id={assessment_task['task_id']}\n")
               resolved = (assessment_task, run)
               break
 
@@ -1391,11 +1391,11 @@ jobs:
               result = find_matching_assessment_artifact(os.environ["REPO"], os.environ["GH_TOKEN"], predecessor)
               found = result.get("found") is True
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
-              output.write(f"discovery_run_id={run_id}\\n")
-              output.write(f"discovery_head_sha={predecessor['workflow_head_sha']}\\n")
-              output.write(f"discovery_artifact_sha256={predecessor['artifact_sha256']}\\n")
-              output.write(f"assessment_task_id={assessment_task['task_id']}\\n")
-              output.write(f"valid={'true' if found else 'false'}\\n")
+              output.write(f"discovery_run_id={run_id}\n")
+              output.write(f"discovery_head_sha={predecessor['workflow_head_sha']}\n")
+              output.write(f"discovery_artifact_sha256={predecessor['artifact_sha256']}\n")
+              output.write(f"assessment_task_id={assessment_task['task_id']}\n")
+              output.write(f"valid={'true' if found else 'false'}\n")
           if found:
               print(f"Verified immutable non-activating Assessment artifact for Discovery run {run_id}.")
           else:
