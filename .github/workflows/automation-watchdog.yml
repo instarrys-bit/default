@@ -1065,9 +1065,10 @@ jobs:
               )
               producer = None
               last_error = None
-              for _ in range(60):
+              deadline = time.monotonic() + 120
+              while time.monotonic() < deadline:
                   try:
-                      with urllib.request.urlopen(request, timeout=30) as response:
+                      with urllib.request.urlopen(request, timeout=10) as response:
                           producer = json.loads(response.read(2_000_000).decode("utf-8"))
                       if producer.get("status") == "completed":
                           break
@@ -1077,7 +1078,7 @@ jobs:
                       last_error = f"GitHub API HTTP {exc.code}"
                   except urllib.error.URLError as exc:
                       last_error = str(exc)
-                  time.sleep(2)
+                  time.sleep(min(2, max(0, deadline - time.monotonic())))
               if not isinstance(producer, dict) or producer.get("status") != "completed":
                   detail = f" ({last_error})" if last_error else ""
                   raise SystemExit("queue reconciliation is held: callback producer did not complete within 2 minutes" + detail)
