@@ -1887,7 +1887,7 @@ jobs:
           if ! watchdog_runs="$(gh api "repos/$REPO/actions/workflows/automation-watchdog.yml/runs?per_page=100&status=in_progress" 2>"$RUNNER_TEMP/watchdog-runs.err")"; then
             echo "Stale-run scan deferred: Watchdog run history is unavailable; no replacement will be dispatched."
             cat "$RUNNER_TEMP/watchdog-runs.err" >&2 || true
-            exit 0
+            exit 1
           fi
           stale_watchdog_ids="$(jq -r --arg current "$CURRENT_WATCHDOG_RUN_ID" '
             .workflow_runs[]
@@ -1907,6 +1907,9 @@ jobs:
             fi
             if [ "$cancellation_confirmed" = "true" ]; then
               echo "Cancellation of Watchdog run $stale_id confirmed; concurrency group will keep the next queue worker serialized."
+            else
+              echo "Stale-run scan deferred: cancellation of Watchdog run $stale_id was not confirmed; no replacement will be dispatched."
+              exit 1
             fi
           done <<< "$stale_watchdog_ids"
 
@@ -1914,7 +1917,7 @@ jobs:
           if ! runs_response="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" 2>"$RUNNER_TEMP/auto-sync-runs.err")"; then
             echo "Stale-run scan deferred; no replacement will be dispatched in this pass."
             cat "$RUNNER_TEMP/auto-sync-runs.err" >&2 || true
-            exit 0
+            exit 1
           fi
           runs="$(jq '{workflow_runs: .workflow_runs}' <<< "$runs_response")"
 
@@ -1932,6 +1935,7 @@ jobs:
 
           timed_out_any=0
           timed_out_run_id=""
+          cancelled_audit_ids=""
           if [ -n "$stale_lines" ]; then
             while read -r stale_id reason run_sha; do
               [ -n "$stale_id" ] || continue
@@ -1950,6 +1954,232 @@ jobs:
               fi
               echo "Cancelling audit $stale_id ($reason); current main is $current_main."
               gh run cancel "$stale_id" --repo "$REPO" || true
+              cancelled_audit_ids="${cancelled_audit_ids}${stale_id}"
+            done <<< "$stale_lines"
+            sleep 10
+            if ! runs_response="$(gh api "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" 2>"$RUNNER_TEMP/auto-sync-refresh.err")"; then
+              echo "Stale-run scan deferred after cancellation; no replacement will be dispatched in this pass."
+              cat "$RUNNER_TEMP/auto-sync-refresh.err" >&2 || true
+              exit 1
+            fi
+            runs="$(jq '{workflow_runs: .workflow_runs}' <<< "$runs_response")"
+            while IFS= read -r cancelled_id; do
+              [ -n "$cancelled_id" ] || continue
+              if ! cancellation_status="$(gh api "repos/$REPO/actions/runs/$cancelled_id" --jq '.status')"; then
+                echo "Stale-run scan deferred: could not verify cancellation of audit $cancelled_id."
+                exit 1
+              fi
+              if [ "$cancellation_status" != "completed" ]; then
+                echo "Stale-run scan deferred: audit $cancelled_id is still active after cancellation; no replacement will be dispatched."
+                exit 1
+              fi
+              echo "Cancellation of audit $cancelled_id confirmed."
+            done <<< "$cancelled_audit_ids"
+          fi
+
+          active_count="$(jq '[.workflow_runs[] | select(.head_branch == "main" and .status != "completed")] | length' <<< "$runs")"
+          if [ "$active_count" -gt 0 ]; then
+            echo "An audit is still queued, cancelling, or running; no replacement will be dispatched."
+            exit 0
+          fi
+
+          # Normal input-change and scheduled-refresh decisions are centralized
+          # in health-check. This job may enqueue only a bounded timeout recovery.
+          if [ "$timed_out_any" = "1" ]; then
+            decision="$(python3 scripts/watchdog_recovery_policy.py --source-run-id 0 --source-sha "$current_main" <<< "$runs")"
+            echo "$decision" | jq -r '"Timeout recovery policy: " + .reason + "; prior retryable failures=" + (.prior_retryable_failures|tostring) + "; prior deterministic failures=" + (.prior_non_retryable_failures|tostring) + "."'
+            if [ "$(jq -r '.allowed' <<< "$decision")" != "true" ]; then
+              echo "$decision" >> "$GITHUB_STEP_SUMMARY"
+              echo "Timeout recovery suppressed by bounded recovery policy."
+            else
+              checkout_sha="$(git rev-parse HEAD)"
+              if [ "$checkout_sha" != "$current_main" ]; then
+                echo "Watchdog checkout is behind current main; timeout recovery will be reconsidered on the next reconciliation."
+                exit 0
+              fi
+              current_fingerprint="$(python3 - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from production_intent import load_manifest, compute_fingerprint
+          manifest = load_manifest(Path("automation/production_inputs.json"))
+          print(compute_fingerprint(Path("."), manifest))
+          PY
+          )"
+              recovery_input="$(jq -cn --arg fingerprint "$current_fingerprint" --arg reason "bounded recovery after watchdog cancellation of a timed-out audit" '{production_fingerprint:$fingerprint,production_decision:"RECOVERY_REQUIRED",production_reason:$reason}')"
+              dispatch_mode="$(jq -r 'if type == "object" and .schema_version == 1 and (.dispatch_mode == "enabled" or .dispatch_mode == "hold") then .dispatch_mode else "hold" end' automation/production_control.json 2>/dev/null || printf 'hold')"
+              if [ "$dispatch_mode" = "enabled" ]; then
+                printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "production:recovery:$current_fingerprint:$timed_out_run_id" --priority 100 --input-json "$recovery_input" enqueue-auto-sync
+              else
+                echo "HOLD: timed-out-run recovery enqueue suppressed." >> "$GITHUB_STEP_SUMMARY"
+              fi
+            fi
+          fi
+
+          if [ "$timed_out_any" = "1" ]; then
+            title="Self-healing incident: stalled audit"
+            existing="$(gh issue list --repo "$REPO" --state open --search "stalled audit in:title" --json number --jq '.[0].number')"
+            body_text="$(printf 'The watchdog cancelled an audit that exceeded six hours and queued a replacement on current main %s.\n' "$current_main")"
+            if [ -n "$existing" ] && [ "$existing" != "null" ]; then
+              gh issue comment "$existing" --repo "$REPO" --body "$body_text"
+            else
+              gh issue create --repo "$REPO" --title "$title" --body "$body_text"
+            fi
+          fi
+
+  manifest-integrity:
+    needs: [health-check]
+    concurrency:
+      group: shadowrocket-main-writer
+      cancel-in-progress: false
+    if: ${{ (github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && github.event.schedule == '30 22 * * *')) && needs.health-check.outputs.block_manifest != 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      actions: write
+      contents: write
+      issues: write
+    steps:
+      - name: Checkout current main
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+
+      - name: Reconcile manifest metadata from committed rule files
+        id: refresh
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          python3 scripts/refresh_ruleset_manifest.py
+
+      - name: Publish manifest-only metadata repair
+        id: publish
+        if: ${{ steps.refresh.outcome == 'success' }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- rulesets/manifest.json; then
+            echo "Manifest metadata already matches the committed rule files and active reviewer."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- rulesets/manifest.json
+          git diff --cached --check
+          git commit -m "Reconcile published RULE-SET manifest metadata"
+          git push origin HEAD:main
+          git fetch origin main
+
+      - name: Verify published rulesets, manifest and protected baseline
+        id: verify
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          python3 scripts/verify_published_rulesets.py --ref origin/main | tee /tmp/published-integrity.json
+          cat /tmp/published-integrity.json >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Close recovered manifest integrity incidents
+        if: ${{ steps.refresh.outcome == 'success' && steps.publish.outcome == 'success' && steps.verify.outcome == 'success' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          for title in "RULE-SET manifest metadata repair failed" "Published RULE-SET integrity mismatch"; do
+            issue="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title | jq --arg title "$title" -r '.[] | select(.title == $title) | .number' | head -n 1)"
+            if [ -n "$issue" ]; then
+              gh issue comment "$issue" --repo "$REPO" --body "Manifest refresh, publication and independent verification now succeed. Recovery run: $RUN_URL"
+              gh issue close "$issue" --repo "$REPO"
+            fi
+          done
+
+      - name: Dispatch one bounded reconciliation audit on mismatch
+        if: ${{ steps.refresh.outcome == 'success' && steps.verify.outcome == 'failure' && !(github.event_name == 'workflow_run' && github.event.workflow_run.event == 'workflow_dispatch') }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          runs="$(gh api --paginate --slurp "repos/$REPO/actions/workflows/auto_sync.yml/runs?per_page=100" | jq '{workflow_runs: [.[].workflow_runs[]]}')"
+          current_sha="$(gh api "repos/$REPO/commits/main" --jq .sha)"
+          if jq -e --arg sha "$current_sha" '[.workflow_runs[] | select(.head_sha == $sha and (.status == "queued" or .status == "pending" or .status == "waiting" or .status == "requested" or .status == "in_progress"))] | length > 0' <<< "$runs" >/dev/null; then
+            echo "A deterministic audit for current main ($current_sha) is already queued or running; waiting for its completion."
+            exit 0
+          fi
+          checkout_sha="$(git rev-parse HEAD)"
+          if [ "$checkout_sha" != "$current_sha" ]; then
+            echo "Manifest verifier checkout is behind current main; deferring reconciliation."
+            exit 0
+          fi
+          current_fingerprint="$(python3 - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, "scripts")
+          from production_intent import load_manifest, compute_fingerprint
+          manifest = load_manifest(Path("automation/production_inputs.json"))
+          print(compute_fingerprint(Path("."), manifest))
+          PY
+          )"
+          integrity_input="$(jq -cn --arg fingerprint "$current_fingerprint" --arg reason "bounded reconciliation after published manifest integrity mismatch" '{production_fingerprint:$fingerprint,production_decision:"RECOVERY_REQUIRED",production_reason:$reason}')"
+          echo "No current-main audit is active. Enqueueing one bounded integrity reconciliation for $current_sha."
+          dispatch_mode="$(python3 - <<'PY'
+          import json
+          from pathlib import Path
+          try:
+              control = json.loads(Path("automation/production_control.json").read_text(encoding="utf-8"))
+          except (OSError, json.JSONDecodeError):
+              control = {}
+          mode = control.get("dispatch_mode") if isinstance(control, dict) and type(control.get("schema_version")) is int and control.get("schema_version") == 1 else "hold"
+          print(mode if mode in {"enabled", "hold"} else "hold")
+          PY
+          )"
+          if [ "$dispatch_mode" != "enabled" ]; then
+            echo "HOLD: manifest-integrity reconciliation enqueue suppressed; no queue mutation." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "production:integrity:$current_fingerprint" --priority 100 --input-json "$integrity_input" enqueue-auto-sync
+
+      - name: Open manifest metadata repair incident
+        if: ${{ always() && (steps.refresh.outcome == 'failure' || steps.publish.outcome == 'failure') }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          title="RULE-SET manifest metadata repair failed"
+          body="Watchdog could not safely reconcile manifest metadata from the committed DIRECT/PROXY/REJECT files. No rule file or uu.conf was modified.\n\nRun: $RUN_URL\n\nInspect the manifest refresh or manifest-only publish step. The issue is intentionally fail-closed; no source rebuild was dispatched."
+          issue="$(gh issue list --repo "$REPO" --state open --search "$title in:title" --json number --jq '.[0].number')"
+          if [ -n "$issue" ] && [ "$issue" != "null" ]; then
+            gh issue comment "$issue" --repo "$REPO" --body "$body"
+          else
+            gh issue create --repo "$REPO" --title "$title" --body "$body"
+          fi
+
+      - name: Open bounded integrity incident if reconciliation did not repair
+        if: ${{ steps.verify.outcome == 'failure' && (github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.event == 'workflow_dispatch')) }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          title="Published RULE-SET integrity mismatch"
+          body="The bounded reconciliation audit completed, but published ruleset verification still fails. No further automatic dispatch will be made, preventing a retry loop.\n\nRun: $RUN_URL\n\nInspect the verify-published-rulesets step and repair the underlying cause before another publication."
+          issue="$(gh issue list --repo "$REPO" --state open --search "$title in:title" --json number --jq '.[0].number')"
+          if [ -n "$issue" ] && [ "$issue" != "null" ]; then
+            gh issue comment "$issue" --repo "$REPO" --body "$body"
+          else
+            gh issue create --repo "$REPO" --title "$title" --body "$body"
+          fi
+\n'
               if [ "$reason" = "timeout" ]; then timed_out_any=1; timed_out_run_id="$stale_id"; fi
             done <<< "$stale_lines"
             sleep 10
