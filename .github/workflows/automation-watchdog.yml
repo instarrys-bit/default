@@ -1057,7 +1057,9 @@ jobs:
                   producer = json.loads(response.read(2_000_000).decode("utf-8"))
               if producer.get("path") != expected_path or producer.get("head_branch") != "main":
                   raise SystemExit("queue reconciliation is held: callback producer identity does not match its declared workflow")
-              if producer.get("status") != "completed":
+              if producer.get("status") == "completed":
+                  pass
+              else:
                   raise SystemExit("queue reconciliation is held: callback producer has not completed")
               if expected_path == ".github/workflows/auto_sync.yml" and not producer.get("conclusion"):
                   raise SystemExit("queue reconciliation is held: production producer has no terminal conclusion")
