@@ -36,7 +36,23 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("cancel-in-progress: false", queue)
         self.assertIn("logical/source-dag-supervision", (ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
         self.assertIn("needs: [health-check, stale-run-watch, manifest-integrity]", queue)
-        self.assertIn("timeout-minutes: 15", queue)
+        self.assertIn("timeout-minutes: 30", queue)
+
+    def test_task_queue_supervision_timeout_covers_reconciliation_and_adapter_budget(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        queue = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
+        timeout_line = next(line for line in queue.splitlines() if line.strip().startswith("timeout-minutes:"))
+        job_timeout_seconds = int(timeout_line.split(":", 1)[1].strip()) * 60
+
+        programs = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
+        assessment_program = next(item for item in programs["programs"] if item["id"] == "script_assess_sources")
+        adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
+        assessment_adapter = next(item for item in adapters["adapters"] if item["target_program_id"] == "script_assess_sources")
+        required_budget = max(
+            assessment_program["orchestration"]["timeout_seconds"],
+            assessment_adapter["timeout_seconds"],
+        ) + 600
+        self.assertGreaterEqual(job_timeout_seconds, required_budget)
 
     def test_historical_dead_letter_resolution_is_not_scheduled(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
