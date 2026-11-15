@@ -32,7 +32,7 @@
       "After manifest replacement, the helper removes old <logical-name>.parts-* directories.",
       "Temporary staging directories and files are created and removed."
     ],
-    "required_locking": "Hold one exclusive lease for the full logical document across base file, manifest, every shard directory, staging, atomic switch and old-shard cleanup."
+    "required_locking": "Watchdog holds one exclusive logical production lease for the audit workflow. The live lease is checked at workflow phase boundaries before audit and again before publication; runner-local atomic document writes perform local path/symlink/hard-link validation only and must not make a GitHub API request for every temporary file, shard, manifest or checkpoint mutation."
   },
   "confirmed_write_sets": [
     {
@@ -566,13 +566,13 @@
         "Resumable deterministic review; updates the review cursor and ledger in bounded checkpoints."
       ],
       "evidence": "main() checkpoints sources/domain_reviews.json through write_document with lease_required defaulting to false and writes sources/review_cursor.json through atomic_json using a sibling .tmp file and replace.",
-      "write_boundary_fencing": "Review ledger and cursor are per-run checkout workspace state restored/archived by the audit workflow; exact document leases are asserted at every write boundary. Neither is published to the repository.",
+      "write_boundary_fencing": "Review ledger and cursor are per-run checkout workspace state restored/archived by the audit workflow. The workflow validates the live production lease at phase boundaries; local checkpoint writes do not perform remote queue reads. Neither file is published to the repository.",
       "lease_keys": [
         "logical/production-pipeline",
         "sources/domain_reviews.json",
         "sources/review_cursor.json"
       ],
-      "lease_enforcement": "write_document is called with lease_required=True for sources/domain_reviews.json; atomic_json asserts the exact sources/review_cursor.json lease before directory creation, temporary write and replace.",
+      "lease_enforcement": "The Watchdog production resource lease serializes the audit workflow and is verified before expensive audit work and before publication. write_document and atomic_json retain local path/symlink/hard-link checks but do not query GitHub Issues for each file mutation.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [
         "sources/domain_reviews.json (JSON document or manifest/shard/staging children)",
