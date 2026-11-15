@@ -1342,11 +1342,13 @@ jobs:
           AUTOMATION_QUEUE_SNAPSHOT: ${{ runner.temp }}/task_queue.json
         run: |
           set -euo pipefail
-          echo "valid=false" >> "$GITHUB_OUTPUT"
-          echo "discovery_run_id=" >> "$GITHUB_OUTPUT"
-          echo "discovery_head_sha=" >> "$GITHUB_OUTPUT"
-          echo "discovery_artifact_sha256=" >> "$GITHUB_OUTPUT"
-          echo "assessment_task_id=" >> "$GITHUB_OUTPUT"
+          {
+            echo "valid=false"
+            echo "discovery_run_id="
+            echo "discovery_head_sha="
+            echo "discovery_artifact_sha256="
+            echo "assessment_task_id="
+          } >> "$GITHUB_OUTPUT"
           if [ "$SOURCE_DISCOVERY_MODE" != "independent" ]; then
             echo "valid=true" >> "$GITHUB_OUTPUT"
             exit 0
@@ -1532,6 +1534,7 @@ jobs:
           recovery_one_error_type="$(jq -r --arg key "$recovery_one_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .last_error.type // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
           recovery_two_error_type="$(jq -r --arg key "$recovery_two_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .last_error.type // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
           assessment_recovery_blocked=false
+          export assessment_recovery_blocked
           if [ "$assessment_status" = "DEAD_LETTER" ]; then
             if [ "$recovery_two_status" = "DEAD_LETTER" ]; then
               case "$recovery_two_error_type" in
@@ -1597,7 +1600,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           SOURCE_RUN_ID: ${{ steps.verify-latest-assessment-artifact.outputs.discovery_run_id }}
-          VERIFIED_TASK_ID: ${{ steps.verify-latest-assessment-artifact.outputs.assessment_task_id }}
+          ASSESSMENT_TASK_ID_TO_RECOVER: ${{ steps.verify-latest-assessment-artifact.outputs.assessment_task_id }}
           AUTOMATION_QUEUE_SNAPSHOT: ${{ runner.temp }}/task_queue.json
         run: |
           set -euo pipefail
@@ -1605,7 +1608,8 @@ jobs:
           recovery_two_key="$base_key:recovery:2"
           artifact_recovery_key="$base_key:artifact-recovery:1"
           recovery_two="$(jq -c --arg key "$recovery_two_key" '[.tasks[]? | select(.idempotency_key == $key)] | last // empty' "$AUTOMATION_QUEUE_SNAPSHOT")"
-          verified_task="$(jq -c --arg task "$VERIFIED_TASK_ID" '[.tasks[]? | select(.task_id == $task)] | last // empty' "$AUTOMATION_QUEUE_SNAPSHOT")"
+          verified_task_id="$ASSESSMENT_TASK_ID_TO_RECOVER"
+          verified_task="$(jq -c --arg task "$verified_task_id" '[.tasks[]? | select(.task_id == $task)] | last // empty' "$AUTOMATION_QUEUE_SNAPSHOT")"
           # "already_assessed" without a matching immutable artifact is the only
           # condition that can enqueue this one bounded artifact-recovery task.
           if [ -z "$verified_task" ] || [ "$(jq -r '.status // ""' <<< "$verified_task")" != "SUCCEEDED" ] || [ "$(jq -r '.verification.status // ""' <<< "$verified_task")" != "passed" ] || [ "$(jq -r '.result.artifact_verification.valid // false' <<< "$verified_task")" != "true" ] || [ "$(jq -r '.result.artifact_verification.activation_count // -1' <<< "$verified_task")" != "0" ]; then
@@ -1618,7 +1622,7 @@ jobs:
             echo "The single artifact-recovery task already exists ($existing); no duplicate will be enqueued."
             exit 0
           fi
-          verified_task_id="$(jq -r '.task_id' <<< "$recovery_two")"
+          verified_task_id="$(jq -r '.task_id' <<< "$verified_task")"
           predecessor="$(jq -c '.input.predecessor' <<< "$recovery_two")"
           task_input="$(jq -cn --argjson predecessor "$predecessor" '{max_urls:4,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}')"
           echo "Enqueueing one bounded artifact-recovery Assessment for Discovery run $SOURCE_RUN_ID."
