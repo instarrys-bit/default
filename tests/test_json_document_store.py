@@ -71,27 +71,17 @@ class JsonDocumentStoreTests(unittest.TestCase):
                     max_file_bytes=1024, shard_target_bytes=2048,
                 )
 
-    def test_sharded_document_writes_recheck_logical_lease_at_each_mutation(self):
+    def test_sharded_document_writes_do_not_fetch_live_queue_for_each_mutation(self):
         import resource_lease_runtime
         with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
             path = Path(tmp) / "ledger.json"
             payload = {"reviews": [{"id": i, "payload": "x" * 800} for i in range(8)]}
-            checked = []
             with patch.object(store, "MAX_FILE_BYTES", 4096), \
                  patch.object(store, "SHARD_TARGET_BYTES", 2000), \
-                 patch.object(resource_lease_runtime, "assert_resource_lease_from_environment",
-                              side_effect=lambda key: checked.append(key) or True):
+                 patch.object(resource_lease_runtime, "assert_resource_lease_from_environment") as assertion:
                 result = store.write_document(path, payload, "reviews", lease_required=True)
             self.assertEqual(result["storage"], "jsonl-shards-v1")
-            expected = path.relative_to(ROOT).as_posix()
-            self.assertGreater(len(checked), 5)
-            # Each mutation is checked against its actual file/staging path.
-            # The durable proof is scoped to the logical document, so all
-            # checked paths must be that document or one of its child artifacts.
-            self.assertTrue(all(
-                key == expected or key.startswith(expected + ".") or key.startswith(expected + "/")
-                for key in checked
-            ))
+            assertion.assert_not_called()
             self.assertEqual(store.read_document(path, "reviews"), payload)
 
     def test_shard_checksum_failure_fails_closed(self):
