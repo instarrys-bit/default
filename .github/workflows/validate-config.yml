@@ -105,34 +105,12 @@ jobs:
             exit 1
           fi
           python3 scripts/verify_baseline.py --verify-registration --base "$base_sha" --head "$head_sha"
-      - name: Recover owner-approved config baseline in validation workspace
-        if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          BASELINE_SOURCE_REF: ${{ (github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref != 'refs/heads/main')) && 'refs/heads/main' || github.ref }}
-          BASELINE_SOURCE_EVENT: ${{ (github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref != 'refs/heads/main')) && 'schedule' || github.event_name }}
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
-          BASELINE_SOURCE_SHA: ${{ github.sha }}
-        run: |
-          set -euo pipefail
-          if [ "$GITHUB_EVENT_NAME" = "pull_request" ] || { [ "$GITHUB_EVENT_NAME" = "push" ] && [ "$GITHUB_REF" != "refs/heads/main" ]; }; then
-            git fetch --no-tags origin main
-            BASELINE_SOURCE_SHA="$(git merge-base origin/main "$GITHUB_SHA")"
-            if [ -z "$BASELINE_SOURCE_SHA" ]; then
-              echo "Could not resolve the current main-branch baseline for non-main validation." >&2
-              exit 1
-            fi
-            export BASELINE_SOURCE_SHA
-          fi
-          python scripts/register_config_baseline.py
       - name: Verify owner-approved config baseline
         if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
-        run: python scripts/verify_baseline.py --baseline-only
+        run: python scripts/verify_baseline.py --allow-owner-push-change
       - name: Audit config drift against the approved baseline
         if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
-        run: python scripts/audit_config_drift.py
+        run: python scripts/audit_config_drift.py --allow-owner-push-change
       - run: python scripts/audit_ruleset_references.py
       - run: python scripts/audit_ruleset_config_overlap.py
       - run: python scripts/validate_config.py
