@@ -836,7 +836,7 @@ jobs:
           PY
 
   task-queue-supervision:
-    # Coalesced workflow_run callbacks are recovered by the 15-minute schedule.
+    # coalesced workflow_run callbacks are recovered by the 15-minute schedule.
     concurrency:
       group: shadowrocket-watchdog-task-supervision-main
       cancel-in-progress: false
@@ -1173,7 +1173,7 @@ jobs:
                   "artifact_sha256": proof["artifact_sha256"],
               })
               handoff = classify_assessment_handoff(tasks, run_id)
-              handoff_state = "already_assessed" if matching_assessment.get("found") else handoff["state"]
+              handoff_state = "assessment_artifact_verified" if matching_assessment.get("found") else handoff["state"]
               resolved = (assessment_task, run)
               break
 
