@@ -286,6 +286,8 @@ class GitHubContentsObjectBackend:
         if not isinstance(digest, str) or not SHA256_RE.fullmatch(digest) or sha256(content) != digest:
             raise ValueError("object content must match its SHA-256 address")
         path = GITHUB_OBJECT_ROOT + "/" + digest
+        from runtime import assert_automation_write_allowed
+        assert_automation_write_allowed(path, "storage_management")
         url = self.api_root + "/contents/" + urllib.parse.quote(path, safe="/")
         payload = {
             "message": "storage(v2): stage immutable object " + digest[:16],
