@@ -305,8 +305,10 @@ class GitHubContentsObjectBackend:
 class ContentAddressedArtifactStore:
     """Backend-neutral CAS artifact store; manifest is the final commit marker."""
 
-    def __init__(self, repository: str, branch: str, token: str, timeout: int = 30):
-        self.backend = GitHubContentsObjectBackend(repository, branch, token, timeout)
+    def __init__(self, backend):
+        if not hasattr(backend, "put_if_absent") or not hasattr(backend, "get_object"):
+            raise TypeError("backend must implement put_if_absent and get_object")
+        self.backend = backend
 
     def stage(self, data: bytes, *, artifact_type: str, provenance: dict,
               schema_version: int = 1, producer_version: str = "v2",
@@ -366,4 +368,4 @@ class GitHubContentsArtifactStore(ContentAddressedArtifactStore):
     """Durable GitHub Contents API adapter for the V2 artifact object allowlist."""
 
     def __init__(self, repository: str, branch: str, token: str, timeout: int = 30):
-        self.backend = GitHubContentsObjectBackend(repository, branch, token, timeout)
+        super().__init__(GitHubContentsObjectBackend(repository, branch, token, timeout))
