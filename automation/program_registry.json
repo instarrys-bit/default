@@ -2039,7 +2039,10 @@
       "outputs": [
         "unittest result and GitHub Actions job conclusion"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "script_validate_execution_adapters",
+        "script_validate_program_registry"
+      ],
       "dispatches": [],
       "permission_boundary": "contents:read only; no queue mutation, repository writes, workflow dispatch, ruleset publication, or access to modules/uu.conf beyond checkout.",
       "health_check": "All V2 storage unit tests must pass; no production bootstrap or cutover is performed.",
