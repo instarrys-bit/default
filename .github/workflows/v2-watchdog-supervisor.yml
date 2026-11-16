@@ -3,7 +3,6 @@ name: V2 Watchdog read-only supervisor
 on:
   schedule:
     - cron: "*/5 * * * *"
-  workflow_dispatch:
 
 permissions:
   contents: read
