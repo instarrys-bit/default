@@ -1983,7 +1983,7 @@
         "v2_read_only_watchdog_supervision",
         "lease_expiry_recovery_planning"
       ],
-      "invocation": "five-minute schedule and explicit manual workflow_dispatch",
+      "invocation": "five-minute scheduled read-only supervision",
       "inputs": [
         "V2 Storage Management state.json through GitHub Contents API with contents:read"
       ],
