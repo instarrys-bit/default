@@ -204,11 +204,21 @@ class GitHubIssueQueueStoreTests(unittest.TestCase):
 
     def test_non_conflict_api_error_does_not_retry(self):
         def forbidden(request, timeout=20):
-            raise HTTPError(request.full_url, 403, "Forbidden", {}, BytesIO(b"denied"))
+            raise HTTPError(
+                request.full_url, 403, "Forbidden",
+                {"X-GitHub-Request-Id": "ABC123", "X-RateLimit-Remaining": "42"},
+                BytesIO(b'{"message":"Resource not accessible by integration"}'),
+            )
 
-        with patch("github_queue_store.urlopen", side_effect=forbidden):
-            with self.assertRaisesRegex(GitHubAPIError, "HTTP 403"):
+        with patch("github_queue_store.urlopen", side_effect=forbidden) as mocked:
+            with self.assertRaisesRegex(
+                GitHubAPIError,
+                r"GET /repos/owner/repo/issues/315/comments; HTTP 403; "
+                r"message=Resource not accessible by integration; request_id=ABC123; "
+                r"rate_limit_remaining=42",
+            ):
                 self.store.read()
+        self.assertEqual(mocked.call_count, 1)
 
     def test_transient_get_network_failure_retries_with_bounded_backoff(self):
         attempts = {"count": 0}
