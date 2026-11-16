@@ -84,7 +84,7 @@ class StorageV2Tests(unittest.TestCase):
         self.append("TASK_CLAIMED", {"task_id":"task-1","lease_id":"task-lease","owner":"worker","token":"task-token","expires_at":"2026-11-17T00:30:00Z"}, "claim")
         self.append("RESOURCE_ACQUIRED", {"resource_key":"rulesets/direct.list","lease_id":"l1","task_id":"task-1","owner":"worker","fencing_token":1,"expires_at":"2026-11-17T00:10:00Z"}, "resource-1")
         self.append("RESOURCE_RELEASED", {"resource_key":"rulesets/direct.list","lease_id":"l1","fencing_token":1}, "resource-2")
-        self.append("RESOURCE_ACQUIRED", {"resource_key":"rulesets/direct.list","lease_id":"l2","task_id":"task-1","owner":"worker2","fencing_token":2,"expires_at":"2026-11-17T00:20:00Z"}, "resource-3")
+        self.append("RESOURCE_ACQUIRED", {"resource_key":"rulesets/direct.list","lease_id":"l2","task_id":"task-1","owner":"worker","fencing_token":2,"expires_at":"2026-11-17T00:20:00Z"}, "resource-3")
         self.assertEqual(project(self.state)["resource_leases"]["rulesets/direct.list"]["fencing_token"], 2)
 
     def test_uu_conf_automation_only_read_only(self):
