@@ -73,7 +73,7 @@ class ProductionCompatTests(unittest.TestCase):
             return proof
         candidate = {
             "source_revision":"a" * 40,
-            "output_total_bytes":7,
+            "output_total_bytes":32,
             "output_files":[
                 {"path":"rulesets/direct.list","content":b"DOMAIN,a.example","sha256":sha256(b"DOMAIN,a.example"),"size_bytes":16},
                 {"path":"rulesets/proxy.list","content":b"DOMAIN,b.example","sha256":sha256(b"DOMAIN,b.example"),"size_bytes":16},
