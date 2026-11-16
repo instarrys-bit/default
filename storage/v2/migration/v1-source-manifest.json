@@ -1,0 +1,610 @@
+{
+  "schema_version": 1,
+  "migration_id": "v1-to-v2-staging-2026-11-17",
+  "generated_at": "2026-11-17",
+  "source_archive": {
+    "branch": "archive/v1-pre-v2-2026-11-17",
+    "commit": "c6c95b1282826dbc9fb74858f707001e874f7459",
+    "tree_sha": "c6c95b1282826dbc9fb74858f707001e874f7459",
+    "inventory_path": "docs/v2/legacy-v1-inventory.json",
+    "inventory_blob_sha": "824ffbbab82507dfe28b53c21d58f78d1c6b055b",
+    "tracked_file_count": 239
+  },
+  "policy": {
+    "mode": "reference_only_staging",
+    "archive_is_immutable": true,
+    "copy_source_bytes_into_live_outputs": false,
+    "sha_verification_required_before_read": true,
+    "schema_and_lineage_validation_required_before_acceptance": true,
+    "duplicate_and_conflict_analysis_required": true,
+    "no_automatic_publication": true,
+    "legacy_task_statuses_imported": false,
+    "legacy_active_leases_imported": false,
+    "legacy_tasks_auto_replayed": false,
+    "uncertain_records": "remain_quarantined"
+  },
+  "entries": [
+    {
+      "source_path": "automation/production_control.json",
+      "source_blob_sha": "ee5866b3e9ab99fbc00bdc45723bbb0437623a70",
+      "source_size_bytes": 988,
+      "asset_class": "LEGACY_AUTOMATION_CONTROL_METADATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "automation/production_inputs.json",
+      "source_blob_sha": "06b379a7327f0129a8f55cea5cb1ad139aa1d276",
+      "source_size_bytes": 4684,
+      "asset_class": "LEGACY_AUTOMATION_CONTROL_METADATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "automation/release_manifest.json",
+      "source_blob_sha": "75ea172c5ac973e3fed7f9c2329037ad824f44bd",
+      "source_size_bytes": 12905,
+      "asset_class": "LEGACY_AUTOMATION_CONTROL_METADATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "automation/task_queue.json",
+      "source_blob_sha": "13da59249c3bd2db437a3a989136c035773bdfbc",
+      "source_size_bytes": 728426,
+      "asset_class": "LEGACY_QUEUE_SNAPSHOT_HISTORICAL_ONLY",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "data/candidates.json",
+      "source_blob_sha": "defeeb111995221a0e0c858d7b045b3bdb710fa9",
+      "source_size_bytes": 12139598,
+      "asset_class": "CANDIDATE_OR_SOURCE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "data/domain_candidates.json",
+      "source_blob_sha": "54d8987b5501e6edb8451e4850cec1889c4c2f78",
+      "source_size_bytes": 1800310,
+      "asset_class": "CANDIDATE_OR_SOURCE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "data/primary_snapshot.txt",
+      "source_blob_sha": "cf0271105d0f9aeb9efff7a0970c4a253b8d562e",
+      "source_size_bytes": 1046646,
+      "asset_class": "CANDIDATE_OR_SOURCE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "data/secondary_snapshot.txt",
+      "source_blob_sha": "2f83537a64f14bfbaaa8c28ced74d2bc046d035c",
+      "source_size_bytes": 4080086,
+      "asset_class": "CANDIDATE_OR_SOURCE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "data/source_pending.json",
+      "source_blob_sha": "6cb9a9e4de4b29dd8e8504ae695b09939181e568",
+      "source_size_bytes": 95,
+      "asset_class": "CANDIDATE_OR_SOURCE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "data/source_snapshots/acl4ssr-china-domain.txt",
+      "source_blob_sha": "dd6f6ace27df7a7a9d3ce8e34fd03ec58db1c1b1",
+      "source_size_bytes": 7345,
+      "asset_class": "CANDIDATE_OR_SOURCE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "data/source_snapshots/acl4ssr-proxy-lite.txt",
+      "source_blob_sha": "ff4a51e021a43cd3da8be12b00dfb67c922ac79b",
+      "source_size_bytes": 3992,
+      "asset_class": "CANDIDATE_OR_SOURCE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "data/source_snapshots/auto-gatework-surge-rules-da7f8038.txt",
+      "source_blob_sha": "350fc10dcd1a8df718b2cc380e06c6649a456b01",
+      "source_size_bytes": 59803,
+      "asset_class": "CANDIDATE_OR_SOURCE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "data/source_snapshots/auto-jovanykoch-rules-9660520d.txt",
+      "source_blob_sha": "d086fa3692cbacf8f596f415a4d7b5f92bc92db6",
+      "source_size_bytes": 94143,
+      "asset_class": "CANDIDATE_OR_SOURCE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "data/source_snapshots/clashfx-cn-apps-direct.txt",
+      "source_blob_sha": "ad2951c0ed9fad78bef649f775763e8e59f2a93c",
+      "source_size_bytes": 1364,
+      "asset_class": "CANDIDATE_OR_SOURCE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "data/source_snapshots/hagezi-domains-pro.txt",
+      "source_blob_sha": "02166ffb6b77db1b886aa3eb5ac791e2c0c3a8e2",
+      "source_size_bytes": 4053399,
+      "asset_class": "CANDIDATE_OR_SOURCE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "data/source_snapshots/sr-adblock-domain-lite.txt",
+      "source_blob_sha": "cf0271105d0f9aeb9efff7a0970c4a253b8d562e",
+      "source_size_bytes": 1046646,
+      "asset_class": "CANDIDATE_OR_SOURCE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "data/source_snapshots/sve1r-global-proxy.txt",
+      "source_blob_sha": "ea6ee01c75d54571402595f52532032b498abb7e",
+      "source_size_bytes": 7718,
+      "asset_class": "CANDIDATE_OR_SOURCE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/automation/heartbeat.json",
+      "source_blob_sha": "bf66a45caa096d41a490e7f6970e825487d548de",
+      "source_size_bytes": 1085,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/automation/state_store.json",
+      "source_blob_sha": "f2a9ed9a3832379270a0559093cfff05de7e3d25",
+      "source_size_bytes": 355,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/automation/task-queue-archive-2026-11-05.json",
+      "source_blob_sha": "e9411f37194e73d9f7d6e99d390a037c7e6105f7",
+      "source_size_bytes": 47508,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/config-drift-audit.json",
+      "source_blob_sha": "f8558540fc4218a8d1036495c1591cd00d29dd9d",
+      "source_size_bytes": 1698,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/config-drift-audit.md",
+      "source_blob_sha": "67b5fac40dbfec571b5cba6a8e1529f1130736e6",
+      "source_size_bytes": 1254,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/external-domain-audit.md",
+      "source_blob_sha": "c796c322fd2cdce7d2d1532f6a0b8b63fd625385",
+      "source_size_bytes": 2377,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/lifecycle/latest.json",
+      "source_blob_sha": "317ceecc95a0aa6edaee15b67ced6b32bf13e607",
+      "source_size_bytes": 116,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/lifecycle/latest.md",
+      "source_blob_sha": "fbf8829e3e586ea81a251012aad00ddb31784aa9",
+      "source_size_bytes": 97,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/policy-source-overlap.md",
+      "source_blob_sha": "6d8188cd8951d927ffb5127905be006c754ba338",
+      "source_size_bytes": 42862,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/project-status.json",
+      "source_blob_sha": "97e331a9dfc1fa9a9177ef80daded2c003975af0",
+      "source_size_bytes": 1359839,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/project-status.md",
+      "source_blob_sha": "b5b06f9ae4f2908f0055383f133c590c0db61e35",
+      "source_size_bytes": 268050,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/ruleset-config-conflict-sync.json",
+      "source_blob_sha": "2c5cf58c7d524663a829919d8e040d4da9cb11c7",
+      "source_size_bytes": 31125,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/ruleset-config-conflict-sync.md",
+      "source_blob_sha": "c5d7daeadedd01636390015f86b13ee72145f361",
+      "source_size_bytes": 10886,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/ruleset-config-overlap-audit.json",
+      "source_blob_sha": "ec516223760a6bfb52c77f856e49fe7d8f03fe8d",
+      "source_size_bytes": 72707534,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/ruleset-config-overlap-audit.md",
+      "source_blob_sha": "f6ebd534cbf0c9ea4ed6aad034ca33027f36b41b",
+      "source_size_bytes": 9887519,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/ruleset-reference-audit.json",
+      "source_blob_sha": "e62fc4183f2d9ff63196a8cac705595d6f858b5b",
+      "source_size_bytes": 2218,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/ruleset-reference-audit.md",
+      "source_blob_sha": "fdf0b52236ba4dc745bdc8b07741e90a48eabad7",
+      "source_size_bytes": 649,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/source-activation.md",
+      "source_blob_sha": "118ec4420a2d5073abb7d4abc7dd845893ce71e2",
+      "source_size_bytes": 5861,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/source-assessment.md",
+      "source_blob_sha": "90e4e239ee7883558c311ef5443a06563e05551d",
+      "source_size_bytes": 2652641,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/source-candidate-matrix.md",
+      "source_blob_sha": "917d13f3bcbb587baf7b4d5c712545f394ed2b33",
+      "source_size_bytes": 94633,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/source-discovery.md",
+      "source_blob_sha": "f6ca761f781eb64c82b16c5104e38767d19567a0",
+      "source_size_bytes": 9230679,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "reports/source-lineage-audit.json",
+      "source_blob_sha": "d7b3856cde4c938dd32f148a05ef14d17472f04a",
+      "source_size_bytes": 1797784,
+      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "rulesets/config_conflict_archive.json",
+      "source_blob_sha": "cc8cc67735508a7768e254631439aff8b8a48204",
+      "source_size_bytes": 68021,
+      "asset_class": "RULESET_OR_RELEASE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "rulesets/deletion_archive.json",
+      "source_blob_sha": "d33dade2b5a1c6866de0b7639b6a2e095b8df21c",
+      "source_size_bytes": 70,
+      "asset_class": "RULESET_OR_RELEASE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "rulesets/direct.list",
+      "source_blob_sha": "c37186242ff066496be09ffb5ecc681ee5b9242c",
+      "source_size_bytes": 3821,
+      "asset_class": "RULESET_OR_RELEASE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "rulesets/lifecycle_observations.json",
+      "source_blob_sha": "846f8df62c8d4d5a4f7d82ed59a68554c43f7876",
+      "source_size_bytes": 4225424,
+      "asset_class": "RULESET_OR_RELEASE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "rulesets/lifecycle_state.json",
+      "source_blob_sha": "13961ec4b698f44a8cdf6386dd42871034a51724",
+      "source_size_bytes": 797,
+      "asset_class": "RULESET_OR_RELEASE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "rulesets/manifest.json",
+      "source_blob_sha": "864cf6a99b0a68568bb996ce4a23f058bf86ba95",
+      "source_size_bytes": 33148,
+      "asset_class": "RULESET_OR_RELEASE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "rulesets/pending_queue.json",
+      "source_blob_sha": "049db6c431fb8048550a97c2e6ac3ff75718e106",
+      "source_size_bytes": 94,
+      "asset_class": "RULESET_OR_RELEASE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "rulesets/proxy.list",
+      "source_blob_sha": "499de3d67acfdc246d3904bc6a801aa08561162e",
+      "source_size_bytes": 90101,
+      "asset_class": "RULESET_OR_RELEASE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "rulesets/reject.list",
+      "source_blob_sha": "dfeee40c50f4affbd4bcd1878925002a2a49ae95",
+      "source_size_bytes": 441897,
+      "asset_class": "RULESET_OR_RELEASE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "rulesets/reject_review_queue.json",
+      "source_blob_sha": "0a692be8589f044c7ca3ec12694b848fc22c353a",
+      "source_size_bytes": 52637058,
+      "asset_class": "RULESET_OR_RELEASE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "rulesets/source_candidate_registry.json.manifest.json",
+      "source_blob_sha": "34e90d927aa0f0879f999d317f71c2943bcc68c5",
+      "source_size_bytes": 1791,
+      "asset_class": "RULESET_OR_RELEASE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "rulesets/source_candidate_registry.json.parts-bb6b2454a87b5cf2/part-000000.jsonl",
+      "source_blob_sha": "d01589c7ac682be65cc1c6fe4f8b3c521d331d06",
+      "source_size_bytes": 34999959,
+      "asset_class": "RULESET_OR_RELEASE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "rulesets/source_candidate_registry.json.parts-bb6b2454a87b5cf2/part-000001.jsonl",
+      "source_blob_sha": "c2418effbcea702824b06f5d7a66a5de0ed71ad1",
+      "source_size_bytes": 4893758,
+      "asset_class": "RULESET_OR_RELEASE_DATA",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "sources/discovered_sources.json",
+      "source_blob_sha": "00a80449b0e6559d0fbe138b749b66ace8c6a025",
+      "source_size_bytes": 10038403,
+      "asset_class": "SOURCE_CATALOG_OR_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "sources/domain_reviews.json",
+      "source_blob_sha": "d3880c8804a446c444f2095f75d655da0b0fc809",
+      "source_size_bytes": 18336304,
+      "asset_class": "SOURCE_CATALOG_OR_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "sources/domain_sources.json",
+      "source_blob_sha": "48f829bcd823f3f0d133e64113208e939d1d1ec4",
+      "source_size_bytes": 20242,
+      "asset_class": "SOURCE_CATALOG_OR_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "sources/external_intelligence_catalog.json",
+      "source_blob_sha": "eb3132b24688b3fd3ec031cd3aacf7294d5e1fe0",
+      "source_size_bytes": 5242,
+      "asset_class": "SOURCE_CATALOG_OR_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "sources/policy.json",
+      "source_blob_sha": "ad6b117a150c47a5bd49fe624c1f72845e177161",
+      "source_size_bytes": 8431,
+      "asset_class": "SOURCE_CATALOG_OR_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "sources/policy_approvals.json",
+      "source_blob_sha": "8a90291f82ba82743f73a8368373c7d07c73f651",
+      "source_size_bytes": 45,
+      "asset_class": "SOURCE_CATALOG_OR_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "sources/policy_source_overlap.json",
+      "source_blob_sha": "55c1fed359e0b10fd07c04a28bb60cf4e1a45021",
+      "source_size_bytes": 351616,
+      "asset_class": "SOURCE_CATALOG_OR_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "sources/protected_domains.json",
+      "source_blob_sha": "8cbf57dbf079cc061892bb4d4d93ad0ffab709a6",
+      "source_size_bytes": 871,
+      "asset_class": "SOURCE_CATALOG_OR_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "sources/reject_manual_approvals.json",
+      "source_blob_sha": "f96d2be5ed188cfb6339190bdd6b82a38084ca75",
+      "source_size_bytes": 29270,
+      "asset_class": "SOURCE_CATALOG_OR_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "sources/request_domain_observations.json",
+      "source_blob_sha": "91882e28863344ab12899dfcb9da7a6e9d141e04",
+      "source_size_bytes": 48,
+      "asset_class": "SOURCE_CATALOG_OR_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "sources/rule_provenance.json",
+      "source_blob_sha": "b3dc64e7909f6d6302e22b90e978784911b11121",
+      "source_size_bytes": 20612817,
+      "asset_class": "SOURCE_CATALOG_OR_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "sources/source_activation_log.json",
+      "source_blob_sha": "d0c9984db0ffe3d65f3c52f7e216c82ad0df8aab",
+      "source_size_bytes": 11127,
+      "asset_class": "SOURCE_CATALOG_OR_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "sources/source_assessments.json",
+      "source_blob_sha": "ff364315a04e05809edddd8488a402ad030fc934",
+      "source_size_bytes": 7351907,
+      "asset_class": "SOURCE_CATALOG_OR_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    },
+    {
+      "source_path": "sources/source_candidates.json",
+      "source_blob_sha": "90dcaedd07d17fa1592ebe7976bb41a1c7e8ba58",
+      "source_size_bytes": 303748,
+      "asset_class": "SOURCE_CATALOG_OR_EVIDENCE",
+      "migration_status": "DISCOVERED_NOT_IMPORTED",
+      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
+    }
+  ],
+  "summary": {
+    "entry_count": 66,
+    "by_asset_class": {
+      "LEGACY_AUTOMATION_CONTROL_METADATA": 3,
+      "LEGACY_QUEUE_SNAPSHOT_HISTORICAL_ONLY": 1,
+      "CANDIDATE_OR_SOURCE_DATA": 13,
+      "AUDIT_AND_RUN_EVIDENCE": 22,
+      "RULESET_OR_RELEASE_DATA": 13,
+      "SOURCE_CATALOG_OR_EVIDENCE": 14
+    },
+    "all_status": "DISCOVERED_NOT_IMPORTED"
+  },
+  "user_configuration_reference": {
+    "path": "modules/uu.conf",
+    "source_archive_blob_sha": "9039d92e60b101c37b4cde57c4c2e4aaae4049f6",
+    "current_main_blob_sha": "c532dd70956162d52cbda7987824412ddc0ee321",
+    "current_main_commit": "4405c4742e9dbad7effa1f06438eb2bf6c5c1387",
+    "automation_access": "READ_ONLY",
+    "manual_user_access": "ALLOWED",
+    "migration": "REFERENCE_ONLY; NEVER WRITE OR REPLACE",
+    "note": "The archive snapshot predates later user-account commits. Keep the archive version for historical reproducibility and use the current main version only as a read-only live reference."
+  },
+  "post_archive_config_commits": [
+    {
+      "commit": "4405c4742e9dbad7effa1f06438eb2bf6c5c1387",
+      "message": "Expand WeChat and mini-program direct routing",
+      "date": "2026-11-16T21:13:41Z",
+      "author": "instarrys-bit"
+    },
+    {
+      "commit": "83ecc33de8010440e3e2f3ea870a5178cacd2939",
+      "message": "Add missing China platform domains to DIRECT routing",
+      "date": "2026-11-16T21:12:12Z",
+      "author": "instarrys-bit"
+    },
+    {
+      "commit": "7a08835e95f55495428abd53155191f4d243d2b6",
+      "message": "Add explicit Huawei Cloud direct routing",
+      "date": "2026-11-16T21:08:24Z",
+      "author": "instarrys-bit"
+    },
+    {
+      "commit": "1129b7e89b2a08f299af4a8bcc3858d87d2512cb",
+      "message": "Add Huawei Cloud CDN direct routing",
+      "date": "2026-11-16T21:06:03Z",
+      "author": "instarrys-bit"
+    },
+    {
+      "commit": "a37a450e183d5cb191377eca3f66df780329ccb1",
+      "message": "Prioritize direct routing for 106.11.226.0/24",
+      "date": "2026-11-16T19:47:53Z",
+      "author": "instarrys-bit"
+    }
+  ]
+}

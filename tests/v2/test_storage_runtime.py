@@ -1,4 +1,5 @@
 import copy
+import json
 import sys
 import unittest
 from pathlib import Path
@@ -97,7 +98,45 @@ class StorageV2Tests(unittest.TestCase):
     def test_automation_default_deny(self):
         with self.assertRaises(PermissionError):
             assert_automation_write_allowed("README.md", "production_worker")
+        with self.assertRaises(PermissionError):
+            assert_automation_write_allowed("rulesets/direct.list", "watchdog")
         self.assertIsNone(assert_automation_write_allowed("rulesets/direct.list", "storage_management"))
+
+    def test_storage_manager_has_narrow_exact_write_scope(self):
+        allowed = [
+            "storage/v2/state.json",
+            "storage/v2/artifacts/sha256/" + "a" * 64,
+            "storage/v2/migration/manifests/" + "b" * 64 + ".json",
+            "storage/v2/projections/queue.json",
+            "storage/v2/releases/" + "c" * 64 + ".json",
+            "rulesets/reject.list",
+        ]
+        for path in allowed:
+            self.assertIsNone(assert_automation_write_allowed(path, "storage_management"), path)
+        denied = [
+            "storage/v2/queue_seed.json",
+            "storage/v2/production_write_policy.json",
+            "storage/v2/artifacts/sha256/not-a-digest",
+            "automation/task_queue.json",
+            "modules/uu.conf",
+        ]
+        for path in denied:
+            with self.assertRaises(PermissionError, msg=path):
+                assert_automation_write_allowed(path, "storage_management")
+        with self.assertRaises(PermissionError):
+            assert_automation_write_allowed("storage/v2/state.json", "watchdog")
+
+    def test_machine_policy_matches_automation_only_config_boundary(self):
+        policy_path = ROOT / "storage/v2/production_write_policy.json"
+        policy = json.loads(policy_path.read_text(encoding="utf-8"))
+        config = next(item for item in policy["protected_paths"] if item["path"] == "modules/uu.conf")
+        self.assertEqual(config["scope"], "AUTOMATED_WORKFLOWS_AND_AUTOMATION_IDENTITIES_ONLY")
+        self.assertEqual(policy["enforcement"]["protection_scope"], "automation_identities_only")
+        self.assertTrue(policy["enforcement"]["manual_user_edits_allowed"])
+        manager_writes = policy["actors"]["storage_management"]["write"]
+        self.assertIn("storage/v2/state.json", manager_writes)
+        self.assertNotIn("storage/v2/queue_seed.json", manager_writes)
+        self.assertNotIn("storage/v2/production_write_policy.json", manager_writes)
 
 
 if __name__ == "__main__":
