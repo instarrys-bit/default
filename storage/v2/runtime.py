@@ -369,7 +369,16 @@ class GitHubContentsBackend:
         result = self._request("GET", self.endpoint + "?" + urllib.parse.urlencode({"ref": self.branch}))
         if result is None:
             return None, None
-        raw = base64.b64decode(result["content"], validate=False)
+        encoded = result.get("content") or ""
+        if result.get("encoding") != "base64" or not encoded:
+            blob_url = result.get("git_url")
+            if not isinstance(blob_url, str) or not blob_url.startswith("https://api.github.com/repos/"):
+                raise StorageError("large state response omitted a valid Git blob URL")
+            blob = self._request("GET", blob_url)
+            if not isinstance(blob, dict) or blob.get("encoding") != "base64" or not isinstance(blob.get("content"), str):
+                raise StorageError("Git blob API did not return base64 content")
+            encoded = blob["content"]
+        raw = base64.b64decode(encoded, validate=False)
         if len(raw) > MAX_STATE_BYTES:
             raise StorageError("state document exceeds the 45 MB safety limit")
         state = validate_state(json.loads(raw.decode("utf-8")))
@@ -431,6 +440,7 @@ def main() -> int:
     init.add_argument("--epoch-id", required=True)
     init.add_argument("--approved-seed-sha", required=True)
     read = sub.add_parser("read")
+    sub.add_parser("seed-sha", help="print the canonical SHA-256 of the checked-in empty V2 seed")
     append = sub.add_parser("append")
     append.add_argument("--event-type", required=True, choices=sorted(EVENT_TYPES))
     append.add_argument("--payload", required=True)
@@ -438,12 +448,15 @@ def main() -> int:
     append.add_argument("--idempotency-key", required=True)
     append.add_argument("--expected-revision", required=True, type=int)
     args = parser.parse_args()
-    backend = GitHubContentsBackend(args.repository, args.branch, args.token)
     try:
+        seed_path = Path(__file__).with_name("queue_seed.json")
+        seed = json.loads(seed_path.read_text(encoding="utf-8"))
+        actual_seed_sha = sha256(canonical_bytes(seed))
+        if args.command == "seed-sha":
+            print(actual_seed_sha)
+            return 0
+        backend = GitHubContentsBackend(args.repository, args.branch, args.token)
         if args.command == "init":
-            seed_path = Path(__file__).with_name("queue_seed.json")
-            seed = json.loads(seed_path.read_text(encoding="utf-8"))
-            actual_seed_sha = sha256(canonical_bytes(seed))
             if not secrets.compare_digest(actual_seed_sha, args.approved_seed_sha):
                 raise ValueError("approved seed SHA does not match checked-in V2 seed")
             current, _ = backend.read()
