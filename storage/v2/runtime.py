@@ -190,14 +190,26 @@ def _status_counts(tasks: dict) -> dict:
 def append_event(state: dict, *, event_type: str, payload: dict, actor: str,
                  idempotency_key: str, expected_revision: int, created_at: str | None = None) -> tuple[dict, dict]:
     validate_state(state)
-    if expected_revision != state["revision"]:
-        raise Conflict(f"revision conflict: expected {expected_revision}, current {state['revision']}")
     if event_type not in EVENT_TYPES:
         raise ValueError("unsupported event_type")
     if not isinstance(payload, dict) or not isinstance(actor, str) or not actor.strip():
         raise ValueError("payload and actor are required")
     if not isinstance(idempotency_key, str) or not idempotency_key.strip() or len(idempotency_key) > 200:
         raise ValueError("idempotency_key must contain 1..200 characters")
+    # Resolve retries before checking the caller's expected revision. A caller
+    # may have lost the first response after the event was durably committed.
+    for old in state["events"]:
+        if old["idempotency_key"] == idempotency_key:
+            same_request = (
+                old["event_type"] == event_type
+                and old["payload"] == payload
+                and old["actor"] == actor
+            )
+            if same_request:
+                return copy.deepcopy(state), {"created": False, "event": old}
+            raise Conflict("idempotency key already used for a different event")
+    if expected_revision != state["revision"]:
+        raise Conflict(f"revision conflict: expected {expected_revision}, current {state['revision']}")
     body = {
         "sequence": state["revision"] + 1,
         "event_type": event_type,
@@ -208,11 +220,6 @@ def append_event(state: dict, *, event_type: str, payload: dict, actor: str,
         "previous_event_sha256": state["events"][-1]["event_sha256"] if state["events"] else "0" * 64,
     }
     digest = sha256(canonical_bytes(body))
-    for old in state["events"]:
-        if old["idempotency_key"] == idempotency_key:
-            if old["event_sha256"] == digest:
-                return copy.deepcopy(state), {"created": False, "event": old}
-            raise Conflict("idempotency key already used for a different event")
     event = {**body, "event_sha256": digest}
     candidate = copy.deepcopy(state)
     candidate["events"].append(event)
