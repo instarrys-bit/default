@@ -44,11 +44,12 @@ class WatchdogSupervisorTests(unittest.TestCase):
         self.assertNotIn("secret-task-token", json.dumps(plan))
         self.assertFalse(plan["dispatch_enabled"])
 
-    def test_live_resource_blocks_task_requeue(self):
-        state = self.make_task(task_expiry="2026-11-17T00:10:00Z",
-                               resource_expiry="2026-11-17T00:30:00Z")
-        plan = plan_recovery(state, observed_at="2026-11-17T00:20:00Z")
-        self.assertEqual([a["event_type"] for a in plan["actions"]], ["TASK_LEASE_EXPIRED"])
+    def test_expired_resource_is_released_before_live_task_lease_expires(self):
+        state = self.make_task(task_expiry="2026-11-17T00:30:00Z",
+                               resource_expiry="2026-11-17T00:25:00Z")
+        plan = plan_recovery(state, observed_at="2026-11-17T00:27:00Z")
+        self.assertEqual([a["event_type"] for a in plan["actions"]], ["RESOURCE_LEASE_EXPIRED"])
+        self.assertFalse(any(a["event_type"] == "TASK_REQUEUED" for a in plan["actions"]))
 
     def test_unexpired_task_lease_produces_no_recovery_action(self):
         state = self.make_task(task_expiry="2026-11-17T00:30:00Z")
