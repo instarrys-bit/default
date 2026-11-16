@@ -411,23 +411,42 @@ class GitHubContentsBackend:
 
 
 def assert_automation_write_allowed(path: str, actor: str) -> None:
-    """Default-deny path policy for automated identities; human edits are separate."""
+    """Only Storage Management may write its exact data/output scopes.
+
+    Human repository edits use normal GitHub permissions and are deliberately
+    outside this automation-only policy.
+    """
     normalized = path.replace("\\", "/")
-    if normalized.startswith("/") or ".." in normalized.split("/"):
+    if normalized.startswith("/") or ".." in normalized.split("/") or "\\" in path:
         raise ValueError("unsafe repository path")
     if actor == "human_user":
         return
     if normalized == "modules/uu.conf" or normalized.startswith("modules/"):
         raise PermissionError("automated workflows cannot write modules or modules/uu.conf")
-    allowed = {
-        "storage/v2/state.json", "storage/v2/queue_seed.json",
-        "storage/v2/production_write_policy.json",
+    if actor != "storage_management":
+        raise PermissionError(f"{actor} cannot write repository files directly")
+    exact = {
+        "storage/v2/state.json",
         "rulesets/direct.list", "rulesets/proxy.list", "rulesets/reject.list",
         "rulesets/manifest.json", "rulesets/lifecycle_state.json",
         "rulesets/lifecycle_observations.json", "automation/release_manifest.json",
     }
-    if normalized not in allowed and not normalized.startswith("storage/v2/artifacts/"):
-        raise PermissionError(f"automated write path is not allowlisted: {normalized}")
+    if normalized in exact:
+        return
+    parts = normalized.split("/")
+    if (len(parts) == 5 and parts[:4] == ["storage", "v2", "artifacts", "sha256"]
+            and re.fullmatch(r"[0-9a-f]{64}", parts[4])):
+        return
+    if (len(parts) == 5 and parts[:4] == ["storage", "v2", "migration", "manifests"]
+            and re.fullmatch(r"[0-9a-f]{64}\\.json", parts[4])):
+        return
+    if (len(parts) == 4 and parts[:3] == ["storage", "v2", "projections"]
+            and re.fullmatch(r"[a-z0-9_-]{1,80}\\.json", parts[3])):
+        return
+    if (len(parts) == 4 and parts[:3] == ["storage", "v2", "releases"]
+            and re.fullmatch(r"[0-9a-f]{64}\\.json", parts[3])):
+        return
+    raise PermissionError(f"automated write path is not allowlisted: {normalized}")
 
 
 def main() -> int:
