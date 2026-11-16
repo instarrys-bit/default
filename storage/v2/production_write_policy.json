@@ -42,7 +42,11 @@
         "authorized-storage-and-release-scopes"
       ],
       "write": [
-        "storage/v2/**",
+        "storage/v2/state.json",
+        "storage/v2/artifacts/sha256/{sha256}",
+        "storage/v2/migration/manifests/{manifest_sha256}.json",
+        "storage/v2/projections/{projection_name}.json",
+        "storage/v2/releases/{release_sha256}.json",
         "rulesets/direct.list",
         "rulesets/proxy.list",
         "rulesets/reject.list",
@@ -83,8 +87,9 @@
     "automation/release_manifest.json"
   ],
   "forbidden_patterns": [
-    "modules/uu.conf",
     "modules/**",
+    "storage/v2/queue_seed.json",
+    "storage/v2/production_write_policy.json",
     "automation/task_queue.json",
     "automation/production_control.json",
     "automation/production_inputs.json",
@@ -104,6 +109,9 @@
     "independent_readback_required": true,
     "reject_unknown_paths": true,
     "protection_scope": "automation_identities_only",
-    "manual_user_edits_allowed": true
+    "manual_user_edits_allowed": true,
+    "template_path_regex_validation": true,
+    "automation_role_scope_required": true,
+    "human_manual_edits_bypass_automation_only_policy": true
   }
 }
