@@ -2,10 +2,16 @@
   "schema_version": 1,
   "registry_policy": {
     "purpose": "Capability and dependency catalog for repository automation programs.",
-    "registration_required_for": "Any Python component under scripts/ and any GitHub Actions workflow under .github/workflows/.",
+    "registration_required_for": "Any Python component under scripts/ and any active GitHub Actions workflow under .github/workflows/, excluding only the exact frozen legacy workflow paths listed in excluded_legacy_workflow_paths.",
     "collaboration_rule": "A program may run independently under its own entry point. Cross-program orchestration requires an explicit registry entry and declared workflow dependencies or dispatch targets.",
     "permission_rule": "Registry declarations describe boundaries; they never grant permissions. The workflow job's least-privilege permissions remain authoritative.",
-    "activation_rule": "Registration is mandatory for CI acceptance, but does not by itself authorize automatic dispatch, rule activation, publication, or modification of modules/uu.conf."
+    "activation_rule": "Registration is mandatory for CI acceptance, but does not by itself authorize automatic dispatch, rule activation, publication, or modification of modules/uu.conf.",
+    "excluded_legacy_workflow_paths": [
+      ".github/workflows/migrate-queue-to-repo-json.yml",
+      ".github/workflows/queue-lease-recovery.yml",
+      ".github/workflows/restore-queue-store.yml"
+    ],
+    "exclusion_rule": "These V1 legacy workflows are retained in the repository for historical recovery evidence only. They are not V2 dispatch targets and must not be called by V2. Removal or reactivation requires an explicit retirement/migration review."
   },
   "programs": [
     {
@@ -1937,91 +1943,6 @@
         "allowed_callers": [],
         "max_attempts": 0,
         "timeout_seconds": 600
-      }
-    },
-    {
-      "id": "workflow_migrate_queue_to_repo_json",
-      "path": ".github/workflows/migrate-queue-to-repo-json.yml",
-      "kind": "github_actions_workflow",
-      "responsibility": "legacy V1-only queue migration utility; retained for historical recovery audit and not authorized for V2 queue bootstrap or migration",
-      "capabilities": [
-        "legacy_queue_migration"
-      ],
-      "invocation": "manual workflow_dispatch only; V1 legacy maintenance",
-      "inputs": [
-        "legacy V1 queue issue snapshot"
-      ],
-      "outputs": [
-        "legacy V1 repository queue snapshot"
-      ],
-      "depends_on": [
-        "script_github_queue_store"
-      ],
-      "dispatches": [],
-      "permission_boundary": "Legacy workflow has contents:write and issues:read in its job; registration does not grant those permissions. Do not use for V2 epoch initialization. Retain only until V2 cutover review; no automatic orchestration.",
-      "health_check": "Manual operator inspection only; must not be used to import stale V1 task or lease status into V2.",
-      "orchestration": {
-        "enabled": false,
-        "allowed_callers": [],
-        "max_attempts": 0,
-        "timeout_seconds": 1500
-      }
-    },
-    {
-      "id": "workflow_queue_lease_recovery",
-      "path": ".github/workflows/queue-lease-recovery.yml",
-      "kind": "github_actions_workflow",
-      "responsibility": "legacy V1 durable queue lease recovery workflow; maintained for V1 until controlled V2 cutover",
-      "capabilities": [
-        "legacy_queue_lease_recovery"
-      ],
-      "invocation": "10-minute schedule and manual workflow_dispatch on main",
-      "inputs": [
-        "V1 task queue snapshot and V1 task/resource lease records"
-      ],
-      "outputs": [
-        "V1 recovery events and verification report"
-      ],
-      "depends_on": [
-        "script_remote_task_queue_runtime",
-        "script_task_scheduler"
-      ],
-      "dispatches": [],
-      "permission_boundary": "Job-scoped contents:read, issues:write and actions:read only. Mutates only the legacy V1 queue through its existing runtime. Must never mutate V2 state or infer V2 task status from V1.",
-      "health_check": "Post-recovery V1 queue snapshot must contain no expired CLAIMED task leases; V2 state is not in scope.",
-      "orchestration": {
-        "enabled": false,
-        "allowed_callers": [],
-        "max_attempts": 0,
-        "timeout_seconds": 600
-      }
-    },
-    {
-      "id": "workflow_restore_queue_store",
-      "path": ".github/workflows/restore-queue-store.yml",
-      "kind": "github_actions_workflow",
-      "responsibility": "legacy emergency restoration workflow for the V1 github_queue_store implementation; retained for audit only pending V2 retirement plan",
-      "capabilities": [
-        "legacy_queue_store_restore"
-      ],
-      "invocation": "manual workflow_dispatch only; V1 emergency maintenance",
-      "inputs": [
-        "known-good historical github_queue_store.py blob"
-      ],
-      "outputs": [
-        "restored V1 script commit"
-      ],
-      "depends_on": [
-        "script_github_queue_store"
-      ],
-      "dispatches": [],
-      "permission_boundary": "Legacy workflow has contents:write. Registration does not grant permission. Do not invoke as part of V2; preserve as historical emergency tooling until explicit retirement.",
-      "health_check": "Manual review of the resulting V1 script SHA and commit; no V2 storage mutation.",
-      "orchestration": {
-        "enabled": false,
-        "allowed_callers": [],
-        "max_attempts": 0,
-        "timeout_seconds": 300
       }
     },
     {
