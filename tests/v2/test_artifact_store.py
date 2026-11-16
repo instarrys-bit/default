@@ -120,8 +120,7 @@ class ArtifactStoreTests(unittest.TestCase):
 
     def test_cas_store_deduplicates_chunks_but_preserves_provenance_records(self):
         backend = MemoryCASBackend()
-        store = ContentAddressedArtifactStore()
-        store.backend = backend
+        store = ContentAddressedArtifactStore(backend)
         first = store.stage(b"same-content", artifact_type="candidate",
                             provenance=self.provenance)
         second = store.stage(b"same-content", artifact_type="candidate",
@@ -132,8 +131,7 @@ class ArtifactStoreTests(unittest.TestCase):
 
     def test_cas_store_detects_corrupt_or_missing_objects(self):
         backend = MemoryCASBackend()
-        store = ContentAddressedArtifactStore()
-        store.backend = backend
+        store = ContentAddressedArtifactStore(backend)
         staged = store.stage(b"payload", artifact_type="candidate",
                              provenance=self.provenance)
         chunk = staged["manifest"]["chunks"][0]["sha256"]
