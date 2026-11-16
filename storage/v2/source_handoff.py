@@ -217,6 +217,12 @@ def validate_handoff(*, discovery_root: str | Path, assessment_root: str | Path,
         raise ValueError("Assessment proof file is missing from the artifact tree")
 
     discovery_files = _collect_files(discovery_root)
+    combined_files = discovery_files + assessment_files
+    if len(combined_files) > MAX_FILES:
+        raise ValueError("combined source handoff exceeds 5,000 files")
+    combined_total = sum(item["size_bytes"] for item in combined_files)
+    if combined_total > MAX_TOTAL_BYTES:
+        raise ValueError("combined source handoff exceeds 200 MiB")
     return {
         "schema_version": 1,
         "assessment_task_id": assessment_task_id,
@@ -233,8 +239,8 @@ def validate_handoff(*, discovery_root: str | Path, assessment_root: str | Path,
         },
         "discovery_files": discovery_files,
         "assessment_files": assessment_files,
-        "file_count": len(discovery_files) + len(assessment_files),
-        "total_bytes": sum(x["size_bytes"] for x in discovery_files + assessment_files),
+        "file_count": len(combined_files),
+        "total_bytes": combined_total,
     }
 
 
@@ -318,9 +324,6 @@ def main() -> int:
     parser.add_argument("--branch", default="main")
     parser.add_argument("--execute", action="store_true", help="write only after V2 epoch and Storage Management token checks")
     args = parser.parse_args()
-    required = (args.discovery_root, args.assessment_root, args.assessment_task_id,
-                args.discovery_run_id, args.discovery_head_sha, args.assessment_run_id,
-                args.assessment_head_sha)
     if not args.discovery_root or not args.assessment_root:
         raise SystemExit("verified Discovery/Assessment artifact roots are required")
     if not args.discovery_head_sha or not args.assessment_head_sha:
