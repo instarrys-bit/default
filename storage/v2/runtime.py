@@ -74,6 +74,86 @@ def empty_state(epoch_id: str) -> dict:
     }
 
 
+def _require_text(payload: dict, field: str) -> str:
+    value = payload.get(field)
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"event payload {field} must be a non-empty string")
+    return value
+
+
+def _require_timestamp(value: object, field: str) -> None:
+    if not isinstance(value, str) or not value:
+        raise ValueError(f"{field} must be an ISO-8601 timestamp")
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ValueError(f"{field} must be an ISO-8601 timestamp") from exc
+    if parsed.tzinfo is None or parsed.utcoffset() is None:
+        raise ValueError(f"{field} must include a timezone")
+
+
+def _validate_resource_key(value: object) -> str:
+    if not isinstance(value, str) or not value or value.startswith("/") or "\\" in value:
+        raise ValueError("resource_key must be a canonical relative path")
+    parts = value.split("/")
+    if any(part in {"", ".", ".."} for part in parts):
+        raise ValueError("resource_key contains an unsafe path segment")
+    if value == "modules" or value.startswith("modules/"):
+        raise ValueError("modules are not automation-writable resources")
+    return value
+
+
+def validate_event_payload(event_type: str, payload: dict) -> None:
+    required = {
+        "TASK_ENQUEUED": ("task_id",),
+        "TASK_CLAIMED": ("task_id", "lease_id", "owner", "token", "expires_at"),
+        "TASK_STARTED": ("task_id",),
+        "TASK_SUCCEEDED": ("task_id", "result_artifact_id"),
+        "TASK_FAILED": ("task_id", "error"),
+        "TASK_REQUEUED": ("task_id", "reason"),
+        "TASK_DEAD_LETTER": ("task_id", "reason"),
+        "TASK_CANCELLED": ("task_id", "reason"),
+        "RESOURCE_ACQUIRED": ("resource_key", "lease_id", "task_id", "owner", "fencing_token", "expires_at"),
+        "RESOURCE_RELEASED": ("resource_key", "lease_id", "fencing_token"),
+    }[event_type]
+    for field in required:
+        if field not in payload:
+            raise ValueError(f"{event_type} payload is missing {field}")
+    if event_type == "TASK_ENQUEUED":
+        _require_text(payload, "task_id")
+        attempts = payload.get("max_attempts")
+        if isinstance(attempts, bool) or not isinstance(attempts, int) or not 1 <= attempts <= 5:
+            raise ValueError("max_attempts must be an integer from 1 to 5")
+        artifact_ids = payload.get("input_artifact_ids", [])
+        if not isinstance(artifact_ids, list) or any(not isinstance(x, str) or not x for x in artifact_ids):
+            raise ValueError("input_artifact_ids must be an array of non-empty strings")
+    elif event_type == "TASK_CLAIMED":
+        for field in ("task_id", "lease_id", "owner", "token"):
+            _require_text(payload, field)
+        _require_timestamp(payload["expires_at"], "expires_at")
+    elif event_type in {"TASK_STARTED", "TASK_SUCCEEDED", "TASK_FAILED", "TASK_REQUEUED", "TASK_DEAD_LETTER", "TASK_CANCELLED"}:
+        _require_text(payload, "task_id")
+        detail = {"TASK_SUCCEEDED": "result_artifact_id", "TASK_FAILED": "error"}.get(event_type)
+        if detail:
+            _require_text(payload, detail)
+        if event_type in {"TASK_REQUEUED", "TASK_DEAD_LETTER", "TASK_CANCELLED"}:
+            _require_text(payload, "reason")
+    elif event_type == "RESOURCE_ACQUIRED":
+        _validate_resource_key(payload["resource_key"])
+        for field in ("lease_id", "task_id", "owner"):
+            _require_text(payload, field)
+        token = payload["fencing_token"]
+        if isinstance(token, bool) or not isinstance(token, int) or token < 1:
+            raise ValueError("fencing_token must be a positive integer")
+        _require_timestamp(payload["expires_at"], "expires_at")
+    elif event_type == "RESOURCE_RELEASED":
+        _validate_resource_key(payload["resource_key"])
+        _require_text(payload, "lease_id")
+        token = payload["fencing_token"]
+        if isinstance(token, bool) or not isinstance(token, int) or token < 1:
+            raise ValueError("fencing_token must be a positive integer")
+
+
 def validate_state(state: object) -> dict:
     if not isinstance(state, dict) or state.get("schema_version") != 1:
         raise ValueError("unsupported storage state schema")
@@ -96,6 +176,11 @@ def validate_state(state: object) -> dict:
             raise ValueError("event sequence or hash-chain predecessor mismatch")
         if event.get("event_sha256") != digest:
             raise ValueError("event hash mismatch")
+        event_type = event.get("event_type")
+        payload = event.get("payload")
+        if event_type not in EVENT_TYPES or not isinstance(payload, dict):
+            raise ValueError("event type or payload is invalid")
+        validate_event_payload(event_type, payload)
         idem = event.get("idempotency_key")
         if not isinstance(idem, str) or not idem:
             raise ValueError("event idempotency_key is required")
@@ -134,13 +219,29 @@ def project(state: dict) -> dict:
             if target not in TASK_TRANSITIONS[task["status"]]:
                 raise ValueError(f"invalid task transition: {task['status']} -> {target}")
             if kind == "TASK_CLAIMED":
+                if task["attempts"] >= task["max_attempts"]:
+                    raise ValueError("task has exhausted its retry budget")
+                if task.get("task_lease") and task["task_lease"].get("status") == "ACTIVE":
+                    raise ValueError("task already has an active lease")
                 task["attempts"] += 1
                 task["task_lease"] = {
                     "lease_id": payload["lease_id"], "owner": payload["owner"],
                     "token": payload["token"], "expires_at": payload["expires_at"],
                     "status": "ACTIVE",
                 }
+            if kind == "TASK_STARTED" and (
+                not task.get("task_lease") or task["task_lease"].get("status") != "ACTIVE"
+            ):
+                raise ValueError("TASK_STARTED requires an active task lease")
+            if kind == "TASK_REQUEUED" and task["attempts"] >= task["max_attempts"]:
+                raise ValueError("exhausted task must enter DEAD_LETTER, not QUEUED")
             if kind in {"TASK_REQUEUED", "TASK_FAILED", "TASK_SUCCEEDED", "TASK_DEAD_LETTER", "TASK_CANCELLED"}:
+                active_resources = [
+                    key for key, lease in resources.items()
+                    if lease.get("status") == "ACTIVE" and lease.get("task_id") == task_id
+                ]
+                if active_resources:
+                    raise ValueError("release task resource leases before task transition: " + ", ".join(active_resources))
                 if task.get("task_lease"):
                     task["task_lease"]["status"] = "RELEASED"
             if kind == "TASK_FAILED":
@@ -150,7 +251,15 @@ def project(state: dict) -> dict:
             task["status"] = target
             task["last_event"] = event["event_sha256"]
         elif kind == "RESOURCE_ACQUIRED":
-            key = payload["resource_key"]
+            key = _validate_resource_key(payload["resource_key"])
+            task = tasks.get(payload["task_id"])
+            if not task or task["status"] not in {"CLAIMED", "RUNNING"}:
+                raise ValueError("resource lease requires an active claimed/running task")
+            task_lease = task.get("task_lease") or {}
+            if task_lease.get("status") != "ACTIVE" or task_lease.get("owner") != payload["owner"]:
+                raise ValueError("resource lease owner must match the active task lease owner")
+            if datetime.fromisoformat(payload["expires_at"].replace("Z", "+00:00")) > datetime.fromisoformat(task_lease["expires_at"].replace("Z", "+00:00")):
+                raise ValueError("resource lease cannot outlive its task lease")
             old = resources.get(key)
             if old and old["status"] == "ACTIVE":
                 raise ValueError("resource already has an active lease")
