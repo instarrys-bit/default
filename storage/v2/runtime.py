@@ -596,8 +596,8 @@ def apply_watchdog_recovery_plan(state: dict, plan: dict, *, actor: str) -> tupl
         )
         applied.append({
             "event_type": event_type,
-            "revision": result["revision"],
-            "event_sha256": result["event_sha256"],
+            "revision": candidate["revision"],
+            "event_sha256": result["event"]["event_sha256"],
         })
     return candidate, {
         "applied_count": len(applied),
