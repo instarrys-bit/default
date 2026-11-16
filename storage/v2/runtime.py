@@ -614,15 +614,28 @@ def apply_watchdog_recovery_plan_to_backend(backend, plan: dict, *, actor: str) 
     events remain valid and the caller must re-read/re-plan from the new state.
     """
     assert_automation_write_allowed("storage/v2/state.json", actor)
+    if not isinstance(plan, dict) or plan.get("schema_version") != 1:
+        raise ValueError("unsupported Watchdog recovery plan schema")
+    if plan.get("dispatch_enabled") is not False:
+        raise PermissionError("Watchdog recovery plans cannot enable worker dispatch")
+    actions = plan.get("actions")
+    if not isinstance(actions, list):
+        raise ValueError("Watchdog plan actions must be an array")
+    base_revision = plan.get("expected_revision")
+    for index, action in enumerate(actions):
+        if not isinstance(action, dict) or action.get("expected_revision") != base_revision + index:
+            raise Conflict("Watchdog action revisions are not a contiguous plan")
+        if "token" in action or action.get("apply_via") != "storage_management":
+            raise PermissionError("Watchdog plan contains a secret or unauthorized apply target")
     state, blob_sha = backend.read()
     if state is None:
         raise Conflict("V2 storage epoch is not initialized")
-    if plan.get("expected_revision") != state.get("revision"):
+    if base_revision != state.get("revision"):
         raise Conflict("Watchdog plan revision is stale")
     if plan.get("epoch_id") != state.get("epoch_id"):
         raise Conflict("Watchdog plan epoch is stale")
     applied = []
-    for action in plan.get("actions", []):
+    for action in actions:
         single_plan = {
             **plan,
             "expected_revision": state["revision"],
