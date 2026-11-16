@@ -151,10 +151,23 @@ def prepare_workspace(repo_root: str | Path, workspace: str | Path) -> dict:
             for child in sorted(path.rglob("*")):
                 if child.is_file():
                     readonly_snapshot[child.relative_to(workspace).as_posix()] = sha256(child.read_bytes())
+        manifest_path = path.with_name(path.name + ".manifest.json")
+        if manifest_path.is_file():
+            readonly_snapshot[manifest_path.relative_to(workspace).as_posix()] = sha256(manifest_path.read_bytes())
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            shard_dir = manifest.get("shard_directory")
+            if isinstance(shard_dir, str):
+                shard_root = manifest_path.parent / shard_dir
+                if shard_root.is_dir():
+                    for child in sorted(shard_root.rglob("*")):
+                        if child.is_file():
+                            readonly_snapshot[child.relative_to(workspace).as_posix()] = sha256(child.read_bytes())
     builder_sha, builder_files = _bundle_digest(workspace / "scripts")
+    ruleset_baseline = _file_hashes(workspace / "rulesets")
     return {
         "workspace": workspace,
         "readonly_snapshot": readonly_snapshot,
+        "ruleset_baseline_snapshot": ruleset_baseline,
         "builder_bundle_sha256": builder_sha,
         "builder_files": builder_files,
         "uu_conf_sha256": sha256((workspace / "modules/uu.conf").read_bytes()),
@@ -268,6 +281,10 @@ def run_builder(repo_root: str | Path, *, as_of: str, source_revision: str) -> d
             "input_snapshot": [
                 {"path": path, "sha256": digest}
                 for path, digest in sorted(prepared["readonly_snapshot"].items())
+            ],
+            "ruleset_baseline_snapshot": [
+                {"path": path, "sha256": digest}
+                for path, digest in sorted(prepared["ruleset_baseline_snapshot"].items())
             ],
             "uu_conf_sha256": prepared["uu_conf_sha256"],
             "uu_conf_modified": False,
