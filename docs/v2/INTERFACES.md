@@ -33,7 +33,7 @@ Watchdog is the only top-level scheduler. It:
 - requests recovery through Storage Management, never by editing queue files;
 - accepts completion only when independent result verification succeeds.
 
-Watchdog must not write ruleset files, source datasets, queue JSON, lease registries or `modules/uu.conf` directly.
+Watchdog must not write ruleset files, source datasets, queue JSON, lease registries or `modules/uu.conf` directly. The `modules/uu.conf` restriction is scoped to automated workflows and automation identities only; it does not restrict manual edits by the user.
 
 ## 3. Production contract
 
