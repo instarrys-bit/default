@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "policy_id": "v2-production-write-policy",
+  "default": "DENY",
+  "protected_paths": [
+    {
+      "path": "modules/uu.conf",
+      "access": "READ_ONLY",
+      "reason": "User-managed configuration; no automated write, rename, delete, regeneration or formatting."
+    }
+  ],
+  "actors": {
+    "dashboard": {
+      "read": [
+        "storage-management-projections",
+        "verified-audit-artifacts"
+      ],
+      "write": []
+    },
+    "watchdog": {
+      "read": [
+        "storage-management-api"
+      ],
+      "write": [
+        "storage-management-api:dispatch-intent",
+        "storage-management-api:recovery-request"
+      ]
+    },
+    "production_workers": {
+      "read": [
+        "approved-input-artifacts",
+        "staging-artifacts"
+      ],
+      "write": [
+        "storage-management-api:artifact.stage",
+        "storage-management-api:release.prepare"
+      ]
+    },
+    "storage_management": {
+      "read": [
+        "authorized-storage-and-release-scopes"
+      ],
+      "write": [
+        "storage/v2/**",
+        "rulesets/direct.list",
+        "rulesets/proxy.list",
+        "rulesets/reject.list",
+        "rulesets/manifest.json",
+        "rulesets/lifecycle_state.json",
+        "rulesets/lifecycle_observations.json",
+        "automation/release_manifest.json"
+      ]
+    },
+    "independent_verifier": {
+      "read": [
+        "published-ruleset-outputs",
+        "release-records"
+      ],
+      "write": [
+        "storage-management-api:verification-report"
+      ]
+    }
+  },
+  "publication_exact_paths": [
+    "rulesets/direct.list",
+    "rulesets/proxy.list",
+    "rulesets/reject.list"
+  ],
+  "publication_metadata_exact_paths": [
+    "rulesets/manifest.json",
+    "rulesets/lifecycle_state.json",
+    "rulesets/lifecycle_observations.json",
+    "automation/release_manifest.json"
+  ],
+  "forbidden_patterns": [
+    "modules/uu.conf",
+    "modules/**",
+    "automation/task_queue.json",
+    "automation/production_control.json",
+    "automation/production_inputs.json",
+    "scripts/**",
+    ".github/workflows/**",
+    "data/**",
+    "sources/**",
+    "reports/**",
+    "tests/**"
+  ],
+  "enforcement": {
+    "exact_path_match_only": true,
+    "wildcard_write_grants": false,
+    "expected_sha_required": true,
+    "idempotency_key_required": true,
+    "fencing_token_required_for_leased_resources": true,
+    "independent_readback_required": true,
+    "reject_unknown_paths": true
+  }
+}
