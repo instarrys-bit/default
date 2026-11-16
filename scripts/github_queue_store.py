@@ -135,15 +135,16 @@ class GitHubContentsQueueStore:
                     error_body = exc.read(4096)
                 except OSError:
                     pass
-                error_text = error_body.decode("utf-8", errors="replace").lower()
+                error_text = error_body.decode("utf-8", errors="replace")
+                error_lower = error_text.lower()
                 headers = exc.headers or {}
                 secondary_limited = (
                     exc.code == 403
                     and (
                         headers.get("X-RateLimit-Remaining") == "0"
-                        or "secondary rate limit" in error_text
-                        or "rate limit exceeded" in error_text
-                        or "abuse detection" in error_text
+                        or "secondary rate limit" in error_lower
+                        or "rate limit exceeded" in error_lower
+                        or "abuse detection" in error_lower
                     )
                 )
                 retryable = method == "GET" and (
@@ -164,8 +165,37 @@ class GitHubContentsQueueStore:
                     time.sleep(max(0.0, min(delay, 120.0)))
                     attempt += 1
                     continue
-                detail = " (GitHub rate limit)" if secondary_limited else ""
-                raise GitHubAPIError(f"GitHub Issues API returned HTTP {exc.code}{detail}") from None
+                # Preserve the server's diagnostic message without exposing the
+                # Authorization header or request payload. This is essential for
+                # distinguishing missing token scope from primary/secondary limits.
+                try:
+                    decoded_error = json.loads(error_text) if error_text else {}
+                except json.JSONDecodeError:
+                    decoded_error = {}
+                server_message = decoded_error.get("message") if isinstance(decoded_error, dict) else None
+                if not isinstance(server_message, str):
+                    server_message = error_text.strip().replace("\\n", " ")[:800]
+                else:
+                    server_message = server_message.strip()[:800]
+                endpoint = url.split("?", 1)[0].replace(self.api_url, "")
+                diagnostics = [
+                    f"{method} {endpoint}",
+                    f"HTTP {exc.code}",
+                ]
+                if server_message:
+                    diagnostics.append(f"message={server_message}")
+                request_id = headers.get("X-GitHub-Request-Id")
+                if request_id:
+                    diagnostics.append(f"request_id={request_id}")
+                remaining = headers.get("X-RateLimit-Remaining")
+                if remaining is not None:
+                    diagnostics.append(f"rate_limit_remaining={remaining}")
+                retry_after = headers.get("Retry-After")
+                if retry_after:
+                    diagnostics.append(f"retry_after={retry_after}")
+                if secondary_limited:
+                    diagnostics.append("classification=rate_limit")
+                raise GitHubAPIError("GitHub Issues API " + "; ".join(diagnostics)) from None
             except (URLError, TimeoutError, OSError):
                 if method == "GET" and attempt + 1 < max_get_attempts:
                     time.sleep(min(0.5 * (2 ** attempt), 4.0))
