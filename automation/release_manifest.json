@@ -191,6 +191,10 @@
     "discovered_source_registry": {
       "path": "scripts/register_discovered_sources.py",
       "git_blob_sha": "6f18ce43ec40cff524f31346ea397b6bb13fb282"
+    },
+    "config_drift_audit": {
+      "path": "scripts/audit_config_drift.py",
+      "git_blob_sha": "78a687ef9ef750eba8f8f20b9bb5fef9dcf30fa9"
     }
   },
   "compatibility": {
