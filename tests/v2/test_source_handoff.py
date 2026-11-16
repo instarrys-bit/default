@@ -119,7 +119,7 @@ class SourceHandoffTests(unittest.TestCase):
 
     def test_verified_handoff_validates_both_proof_chains(self):
         result = self.validate()
-        self.assertEqual(result["file_count"], 6)
+        self.assertEqual(result["file_count"], 7)
         self.assertEqual(result["assessment_task_id"], self.task_id)
         self.assertEqual(result["total_bytes"], sum(x.stat().st_size for x in self.discovery.rglob("*") if x.is_file()) +
                          sum(x.stat().st_size for x in self.assessment.rglob("*") if x.is_file()))
