@@ -302,8 +302,8 @@ class GitHubContentsObjectBackend:
             raise ArtifactConflict("immutable GitHub object key already contains different bytes") from None
 
 
-class GitHubContentsArtifactStore:
-    """Durable CAS artifact store; manifest is written last as the commit marker."""
+class ContentAddressedArtifactStore:
+    """Backend-neutral CAS artifact store; manifest is the final commit marker."""
 
     def __init__(self, repository: str, branch: str, token: str, timeout: int = 30):
         self.backend = GitHubContentsObjectBackend(repository, branch, token, timeout)
@@ -360,3 +360,11 @@ class GitHubContentsArtifactStore:
             "size_bytes": len(data),
             "chunk_count": len(manifest["chunks"]),
         }
+
+
+class GitHubContentsArtifactStore(ContentAddressedArtifactStore):
+    """Durable GitHub Contents API adapter for the V2 artifact object allowlist."""
+
+    def __init__(self, repository: str, branch: str, token: str, timeout: int = 30):
+        super().__init__.__init__ if False else None
+        self.backend = GitHubContentsObjectBackend(repository, branch, token, timeout)
