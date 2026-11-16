@@ -49,5 +49,21 @@ class DashboardSnapshotTests(unittest.TestCase):
         self.assertTrue(result["read_only"])
 
 
+    def test_v2_dashboard_page_has_no_mutation_controls(self):
+        page = (ROOT / "dashboard/v2/index.html").read_text(encoding="utf-8")
+        lower = page.lower()
+        self.assertIn("只读", page)
+        self.assertIn('fetch("./data.json', page)
+        self.assertNotIn("<form", lower)
+        self.assertNotIn('method="post"', lower)
+        self.assertNotIn("xmlhttprequest", lower)
+        self.assertNotIn("storage/v2/state.json", page)
+
+    def test_pages_workflow_uses_only_read_permission_for_snapshot(self):
+        workflow = (ROOT / ".github/workflows/dashboard-pages.yml").read_text(encoding="utf-8")
+        self.assertIn("contents: read", workflow)
+        self.assertIn("storage/v2/dashboard_snapshot.py", workflow)
+
+
 if __name__ == "__main__":
     unittest.main()
