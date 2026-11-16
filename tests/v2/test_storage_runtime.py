@@ -209,7 +209,7 @@ class StorageV2Tests(unittest.TestCase):
     def test_task_requeue_rejects_still_active_task_lease(self):
         self.append("TASK_ENQUEUED", {"task_id":"task-1","max_attempts":2}, "enq")
         self.append("TASK_CLAIMED", {"task_id":"task-1","lease_id":"tl1","owner":"worker","token":"t1","expires_at":"2026-11-17T00:10:00Z"}, "claim")
-        with self.assertRaisesRegex(ValueError, "expired or released"):
+        with self.assertRaisesRegex(Conflict, "expired or released"):
             self.append("TASK_REQUEUED", {"task_id":"task-1","reason":"worker timeout","lease_id":"tl1","owner":"worker","token":"t1"}, "requeue-active", created_at="2026-11-17T00:05:00Z")
 
 
