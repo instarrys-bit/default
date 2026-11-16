@@ -2136,7 +2136,8 @@
           "main"
         ],
         "caller_permissions_required": [
-          "contents:read"
+          "actions:write",
+          "issues:write"
         ]
       },
       "timeout_seconds": 300,
