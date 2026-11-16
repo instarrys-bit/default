@@ -622,6 +622,9 @@ def apply_watchdog_recovery_plan_to_backend(backend, plan: dict, *, actor: str) 
     if not isinstance(actions, list):
         raise ValueError("Watchdog plan actions must be an array")
     base_revision = plan.get("expected_revision")
+    if isinstance(base_revision, bool) or not isinstance(base_revision, int) or base_revision < 0:
+        raise ValueError("Watchdog plan expected_revision must be a non-negative integer")
+    _require_timestamp(plan.get("observed_at"), "observed_at")
     for index, action in enumerate(actions):
         if not isinstance(action, dict) or action.get("expected_revision") != base_revision + index:
             raise Conflict("Watchdog action revisions are not a contiguous plan")
