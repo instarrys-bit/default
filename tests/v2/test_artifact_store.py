@@ -111,8 +111,7 @@ class ArtifactStoreTests(unittest.TestCase):
 
     def test_backend_neutral_cas_store_stages_and_verifies(self):
         backend = MemoryCASBackend()
-        store = ContentAddressedArtifactStore()
-        store.backend = backend
+        store = ContentAddressedArtifactStore(backend)
         payload = b"durable-v2-object" * 500
         staged = store.stage(payload, artifact_type="source_snapshot",
                               provenance=self.provenance, chunk_bytes=256)
