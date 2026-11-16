@@ -4,7 +4,7 @@
   "status": "partial_static_audit",
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
-    "registry_blob_sha": "cdf9ec38600497cf00ed02afbcd157e9ff4a32bd",
+    "registry_blob_sha": "ac756b976bf3d8922b32e871f564b099ec1f6080",
     "adapters_blob_sha": "2731727ffd8ca28f8668378336caea8a714cbd19",
     "inspected_sources": [
       ".github/workflow_helpers/check_source_assessment_artifact.py",
