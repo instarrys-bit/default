@@ -6,16 +6,22 @@ ephemeral Actions workspace as authoritative storage.
 """
 from __future__ import annotations
 
+import base64
 import hashlib
 import json
 import os
 import re
 import tempfile
+import urllib.error
+import urllib.parse
+import urllib.request
 from pathlib import Path
 from typing import Callable
 
 DEFAULT_CHUNK_BYTES = 4 * 1024 * 1024
 MAX_CHUNK_BYTES = 8 * 1024 * 1024
+MAX_ARTIFACT_BYTES = 50 * 1024 * 1024
+GITHUB_OBJECT_ROOT = "storage/v2/artifacts/sha256"
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
 
@@ -52,6 +58,8 @@ def build_manifest(data: bytes, *, artifact_type: str, provenance: dict,
     """Build a deterministic manifest and content-addressed chunk payloads."""
     if not isinstance(data, bytes):
         raise TypeError("artifact data must be bytes")
+    if len(data) > MAX_ARTIFACT_BYTES:
+        raise ValueError(f"artifact exceeds {MAX_ARTIFACT_BYTES} byte limit")
     if not isinstance(artifact_type, str) or not re.fullmatch(r"[a-z][a-z0-9_.-]{1,63}", artifact_type):
         raise ValueError("artifact_type must be a 2..64 character lowercase identifier")
     if isinstance(schema_version, bool) or not isinstance(schema_version, int) or schema_version < 1:
@@ -212,3 +220,154 @@ class FilesystemArtifactStore:
             "size_bytes": len(data),
             "chunk_count": len(manifest["chunks"]),
         }
+
+
+class GitHubContentsObjectBackend:
+    """Create-only GitHub Contents API object backend under the V2 SHA allowlist."""
+
+    def __init__(self, repository: str, branch: str, token: str, timeout: int = 30):
+        if not isinstance(repository, str) or not re.fullmatch(r"[^/\\s]+/[^/\\s]+", repository):
+            raise ValueError("repository must be owner/name")
+        if not isinstance(branch, str) or not branch.strip() or not isinstance(token, str) or not token:
+            raise ValueError("branch and token are required")
+        self.repository = repository
+        self.branch = branch
+        self.token = token
+        self.timeout = timeout
+        self.api_root = "https://api.github.com/repos/" + repository
+        self.contents_root = self.api_root + "/contents/" + urllib.parse.quote(GITHUB_OBJECT_ROOT, safe="/")
+
+    def _request(self, method: str, url: str, payload: dict | None = None):
+        headers = {
+            "Accept": "application/vnd.github+json",
+            "Authorization": "Bearer " + self.token,
+            "X-GitHub-Api-Version": "2022-11-28",
+            "User-Agent": "shadowrocket-v2-artifact-store",
+        }
+        body = json.dumps(payload, separators=(",", ":")).encode("utf-8") if payload is not None else None
+        request = urllib.request.Request(url, data=body, headers=headers, method=method)
+        try:
+            with urllib.request.urlopen(request, timeout=self.timeout) as response:
+                raw = response.read()
+        except urllib.error.HTTPError as exc:
+            if exc.code == 404 and method == "GET":
+                return None
+            if exc.code in {409, 422}:
+                raise ArtifactConflict(f"GitHub immutable object create conflict ({exc.code})") from None
+            detail = exc.read(500).decode("utf-8", "replace")
+            raise ArtifactError(f"GitHub Contents API HTTP {exc.code}: {detail[:300]}") from None
+        except (urllib.error.URLError, TimeoutError, OSError) as exc:
+            raise ArtifactError(f"GitHub Contents API request failed: {exc}") from None
+        return json.loads(raw.decode("utf-8")) if raw else None
+
+    def get_object(self, digest: str) -> bytes | None:
+        if not isinstance(digest, str) or not SHA256_RE.fullmatch(digest):
+            raise ValueError("object key must be a SHA-256 digest")
+        url = self.contents_root + "/" + digest + "?" + urllib.parse.urlencode({"ref": self.branch})
+        metadata = self._request("GET", url)
+        if metadata is None:
+            return None
+        encoded = metadata.get("content") if isinstance(metadata, dict) else None
+        if metadata.get("encoding") == "base64" and isinstance(encoded, str) and encoded:
+            content = base64.b64decode(encoded.encode("ascii"))
+        else:
+            blob_url = metadata.get("git_url")
+            if not isinstance(blob_url, str) or not blob_url.startswith(self.api_root + "/git/blobs/"):
+                raise ArtifactError("GitHub Contents response omitted a valid Git blob URL")
+            blob = self._request("GET", blob_url)
+            if not isinstance(blob, dict) or blob.get("encoding") != "base64" or not isinstance(blob.get("content"), str):
+                raise ArtifactError("GitHub Git blob response is not base64 encoded")
+            content = base64.b64decode(blob["content"].encode("ascii"))
+        if sha256(content) != digest:
+            raise ArtifactError("GitHub object content does not match its SHA-256 address")
+        return content
+
+    def put_if_absent(self, digest: str, content: bytes) -> bool:
+        if not isinstance(digest, str) or not SHA256_RE.fullmatch(digest) or sha256(content) != digest:
+            raise ValueError("object content must match its SHA-256 address")
+        path = GITHUB_OBJECT_ROOT + "/" + digest
+        from runtime import assert_automation_write_allowed
+        assert_automation_write_allowed(path, "storage_management")
+        url = self.api_root + "/contents/" + urllib.parse.quote(path, safe="/")
+        payload = {
+            "message": "storage(v2): stage immutable object " + digest[:16],
+            "content": base64.b64encode(content).decode("ascii"),
+            "branch": self.branch,
+        }
+        try:
+            self._request("PUT", url, payload)
+            return True
+        except ArtifactConflict:
+            existing = self.get_object(digest)
+            if existing == content:
+                return False
+            raise ArtifactConflict("immutable GitHub object key already contains different bytes") from None
+
+
+class ContentAddressedArtifactStore:
+    """Backend-neutral CAS artifact store; manifest is the final commit marker."""
+
+    def __init__(self, backend):
+        if not hasattr(backend, "put_if_absent") or not hasattr(backend, "get_object"):
+            raise TypeError("backend must implement put_if_absent and get_object")
+        self.backend = backend
+
+    def stage(self, data: bytes, *, artifact_type: str, provenance: dict,
+              schema_version: int = 1, producer_version: str = "v2",
+              chunk_bytes: int = DEFAULT_CHUNK_BYTES) -> dict:
+        manifest, chunks = build_manifest(
+            data, artifact_type=artifact_type, provenance=provenance,
+            schema_version=schema_version, producer_version=producer_version,
+            chunk_bytes=chunk_bytes,
+        )
+        for chunk, entry in zip(chunks, manifest["chunks"]):
+            self.backend.put_if_absent(entry["sha256"], chunk)
+        record_id = manifest_record_id(manifest)
+        self.backend.put_if_absent(record_id, canonical_bytes(manifest))
+        self.read(record_id)
+        return {
+            "artifact_id": "sha256:" + manifest["content_sha256"],
+            "record_id": record_id,
+            "content_sha256": manifest["content_sha256"],
+            "size_bytes": manifest["size_bytes"],
+            "chunk_count": len(chunks),
+            "manifest": manifest,
+        }
+
+    def read(self, record_id: str) -> bytes:
+        if not isinstance(record_id, str) or not SHA256_RE.fullmatch(record_id):
+            raise ValueError("record_id must be a SHA-256 digest")
+        raw = self.backend.get_object(record_id)
+        if raw is None:
+            raise FileNotFoundError(record_id)
+        if sha256(raw) != record_id:
+            raise ArtifactError("manifest record address mismatch")
+        manifest = json.loads(raw.decode("utf-8"))
+        if canonical_bytes(manifest) != raw or manifest_record_id(manifest) != record_id:
+            raise ArtifactError("manifest is not canonical or its record identity is invalid")
+        return verify_manifest(manifest, self._get_chunk)
+
+    def _get_chunk(self, digest: str) -> bytes:
+        content = self.backend.get_object(digest)
+        if content is None:
+            raise FileNotFoundError(digest)
+        return content
+
+    def verify(self, record_id: str) -> dict:
+        data = self.read(record_id)
+        raw = self.backend.get_object(record_id)
+        manifest = json.loads(raw.decode("utf-8"))
+        return {
+            "valid": True,
+            "record_id": record_id,
+            "content_sha256": manifest["content_sha256"],
+            "size_bytes": len(data),
+            "chunk_count": len(manifest["chunks"]),
+        }
+
+
+class GitHubContentsArtifactStore(ContentAddressedArtifactStore):
+    """Durable GitHub Contents API adapter for the V2 artifact object allowlist."""
+
+    def __init__(self, repository: str, branch: str, token: str, timeout: int = 30):
+        super().__init__(GitHubContentsObjectBackend(repository, branch, token, timeout))
