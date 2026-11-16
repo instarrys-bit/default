@@ -15,6 +15,7 @@ from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(ROOT / "scripts"))
 
 DISCOVERY_WORKFLOW = "Shadowrocket Source Discovery (Watchdog)"
 ASSESSMENT_WORKFLOW_PATH = ".github/workflows/automation-watchdog.yml"
@@ -148,17 +149,17 @@ def validate_handoff(*, discovery_root: str | Path, assessment_root: str | Path,
     if discovery_proof.get("artifact_sha256") != actual_discovery_digest:
         raise ValueError("Discovery logical-document digest does not match its proof")
     discovery_doc = discovery_root / "sources" / "discovered_sources.json"
-    if discovery_doc.is_file():
-        try:
-            document = json.loads(discovery_doc.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError) as exc:
-            raise ValueError("Discovery source document is invalid JSON") from exc
-        if not isinstance(document, dict) or document.get("producer") != {
-            "workflow_name": DISCOVERY_WORKFLOW,
-            "workflow_run_id": str(discovery_run_id),
-            "workflow_head_sha": discovery_head_sha,
-        }:
-            raise ValueError("Discovery document producer identity mismatch")
+    from json_document_store import read_document
+    try:
+        document = read_document(discovery_doc, "candidates", {"candidates": []})
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        raise ValueError("Discovery source document or shard set is invalid") from exc
+    if document.get("producer") != {
+        "workflow_name": DISCOVERY_WORKFLOW,
+        "workflow_run_id": str(discovery_run_id),
+        "workflow_head_sha": discovery_head_sha,
+    }:
+        raise ValueError("Discovery document producer identity mismatch")
 
     assessment_proof_path, assessment_proof = _unique_proof(assessment_root, "source-assessment-proof.json")
     if assessment_proof.get("schema_version") != 1:
@@ -320,8 +321,20 @@ def main() -> int:
     required = (args.discovery_root, args.assessment_root, args.assessment_task_id,
                 args.discovery_run_id, args.discovery_head_sha, args.assessment_run_id,
                 args.assessment_head_sha)
+    if not args.discovery_root or not args.assessment_root:
+        raise SystemExit("verified Discovery/Assessment artifact roots are required")
+    if not args.discovery_head_sha or not args.assessment_head_sha:
+        _, discovery_proof = _unique_proof(Path(args.discovery_root).resolve(), "source-discovery-proof.json")
+        _, assessment_proof = _unique_proof(Path(args.assessment_root).resolve(), "source-assessment-proof.json")
+        args.discovery_head_sha = args.discovery_head_sha or discovery_proof.get("workflow_head_sha")
+        args.assessment_head_sha = args.assessment_head_sha or assessment_proof.get("producer_workflow_head_sha")
+        args.discovery_run_id = args.discovery_run_id or discovery_proof.get("workflow_run_id")
+        args.assessment_run_id = args.assessment_run_id or str(assessment_proof.get("producer_workflow_run_id", ""))
+        args.assessment_task_id = args.assessment_task_id or assessment_proof.get("assessment_task_id")
+    required = (args.assessment_task_id, args.discovery_run_id, args.discovery_head_sha,
+                args.assessment_run_id, args.assessment_head_sha)
     if any(not value for value in required):
-        raise SystemExit("verified Discovery/Assessment roots and provenance IDs are required")
+        raise SystemExit("verified Discovery/Assessment provenance identifiers are required")
     validated = validate_handoff(
         discovery_root=args.discovery_root,
         assessment_root=args.assessment_root,
