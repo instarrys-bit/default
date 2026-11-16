@@ -125,6 +125,18 @@ class StorageV2Tests(unittest.TestCase):
         with self.assertRaises(PermissionError):
             assert_automation_write_allowed("storage/v2/state.json", "watchdog")
 
+    def test_machine_policy_matches_automation_only_config_boundary(self):
+        policy_path = ROOT / "storage/v2/production_write_policy.json"
+        policy = json.loads(policy_path.read_text(encoding="utf-8"))
+        config = next(item for item in policy["protected_paths"] if item["path"] == "modules/uu.conf")
+        self.assertEqual(config["scope"], "AUTOMATED_WORKFLOWS_AND_AUTOMATION_IDENTITIES_ONLY")
+        self.assertEqual(policy["enforcement"]["protection_scope"], "automation_identities_only")
+        self.assertTrue(policy["enforcement"]["manual_user_edits_allowed"])
+        manager_writes = policy["actors"]["storage_management"]["write"]
+        self.assertIn("storage/v2/state.json", manager_writes)
+        self.assertNotIn("storage/v2/queue_seed.json", manager_writes)
+        self.assertNotIn("storage/v2/production_write_policy.json", manager_writes)
+
 
 if __name__ == "__main__":
     unittest.main()
