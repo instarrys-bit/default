@@ -5,8 +5,9 @@
   "protected_paths": [
     {
       "path": "modules/uu.conf",
-      "access": "READ_ONLY",
-      "reason": "User-managed configuration; no automated write, rename, delete, regeneration or formatting."
+      "scope": "AUTOMATED_WORKFLOWS_AND_AUTOMATION_IDENTITIES_ONLY",
+      "access": "READ_ONLY_FOR_AUTOMATION",
+      "reason": "User-managed configuration. Automated workflows may read but must not write, replace, regenerate, reformat, rename or delete it. The user retains unrestricted manual edit authority through normal human-controlled repository access."
     }
   ],
   "actors": {
@@ -59,6 +60,15 @@
       "write": [
         "storage-management-api:verification-report"
       ]
+    },
+    "human_user": {
+      "read": [
+        "repository"
+      ],
+      "write": [
+        "repository"
+      ],
+      "note": "Manual user changes, including modules/uu.conf, are permitted subject only to the repository's normal human access controls. Automation-only restrictions do not apply to this actor."
     }
   },
   "publication_exact_paths": [
@@ -92,6 +102,8 @@
     "idempotency_key_required": true,
     "fencing_token_required_for_leased_resources": true,
     "independent_readback_required": true,
-    "reject_unknown_paths": true
+    "reject_unknown_paths": true,
+    "protection_scope": "automation_identities_only",
+    "manual_user_edits_allowed": true
   }
 }
