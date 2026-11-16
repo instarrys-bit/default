@@ -14,16 +14,18 @@ REGISTRY_PATH = Path("automation/program_registry.json")
 ID_RE = re.compile(r"^[a-z][a-z0-9_]{1,79}$")
 
 
-def discover_program_paths(root: Path) -> set[str]:
+def discover_program_paths(root: Path, excluded_workflows: set[str] | None = None) -> set[str]:
     scripts = {
         path.relative_to(root).as_posix()
         for path in (root / "scripts").rglob("*.py")
         if path.is_file()
     }
+    excluded = excluded_workflows or set()
     workflows = {
         path.relative_to(root).as_posix()
         for path in (root / ".github" / "workflows").iterdir()
         if path.is_file() and path.suffix in {".yml", ".yaml"}
+        and path.relative_to(root).as_posix() not in excluded
     } if (root / ".github" / "workflows").is_dir() else set()
     return scripts | workflows
 
@@ -108,7 +110,16 @@ def validate_registry(root: Path = ROOT, registry_path: Path | None = None) -> d
         by_id[program_id] = item
         by_path[path] = item
 
-    expected_paths = discover_program_paths(root)
+    excluded_workflows = policy.get("excluded_legacy_workflow_paths", [])
+    if (not isinstance(excluded_workflows, list)
+            or any(not isinstance(path, str) or not path.startswith(".github/workflows/") for path in excluded_workflows)
+            or len(excluded_workflows) != len(set(excluded_workflows))):
+        raise ValueError("registry_policy.excluded_legacy_workflow_paths must be unique exact workflow paths")
+    for relative in excluded_workflows:
+        excluded_path = root / relative
+        if not excluded_path.is_file() or excluded_path.suffix not in {".yml", ".yaml"}:
+            raise ValueError(f"excluded legacy workflow path is missing or invalid: {relative}")
+    expected_paths = discover_program_paths(root, set(excluded_workflows))
     registered_paths = set(by_path)
     missing_paths = sorted(expected_paths - registered_paths)
     stale_paths = sorted(registered_paths - expected_paths)
