@@ -13,6 +13,7 @@ import hashlib
 import json
 import os
 import secrets
+import re
 import sys
 import tempfile
 import urllib.error
