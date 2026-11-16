@@ -366,5 +366,4 @@ class GitHubContentsArtifactStore(ContentAddressedArtifactStore):
     """Durable GitHub Contents API adapter for the V2 artifact object allowlist."""
 
     def __init__(self, repository: str, branch: str, token: str, timeout: int = 30):
-        super().__init__.__init__ if False else None
         self.backend = GitHubContentsObjectBackend(repository, branch, token, timeout)
