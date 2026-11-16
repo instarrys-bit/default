@@ -1,0 +1,1446 @@
+{
+  "schema_version": 1,
+  "archive_branch": "archive/v1-pre-v2-2026-11-17",
+  "archive_commit": "c6c95b1282826dbc9fb74858f707001e874f7459",
+  "tree_sha": "c6c95b1282826dbc9fb74858f707001e874f7459",
+  "generated_at": "2026-11-17",
+  "file_count": 239,
+  "total_bytes": 280466056,
+  "policy": "Exact V1 tracked-file inventory. Presence and hash do not certify freshness or eligibility for automatic republication.",
+  "files": [
+    {
+      "path": ".github/workflow_helpers/check_source_assessment_artifact.py",
+      "size_bytes": 13863,
+      "blob_sha": "0a8a6fe6cd814d53232565b8e240eb5f7b952c50",
+      "category": ".github"
+    },
+    {
+      "path": ".github/workflows/assessment-completion-relay.yml",
+      "size_bytes": 4978,
+      "blob_sha": "b4489a3788f913571b577c20b085322f72133310",
+      "category": ".github"
+    },
+    {
+      "path": ".github/workflows/auto_sync.yml",
+      "size_bytes": 50035,
+      "blob_sha": "7a18801c347a6f530c7953896b02d6d0709fb328",
+      "category": ".github"
+    },
+    {
+      "path": ".github/workflows/automation-watchdog.yml",
+      "size_bytes": 143157,
+      "blob_sha": "536319d40470a0201c6b23d044dc6376211ae707",
+      "category": ".github"
+    },
+    {
+      "path": ".github/workflows/dashboard-pages.yml",
+      "size_bytes": 1936,
+      "blob_sha": "c8baa73cb72ffd1a0190a0e7c69252207dd7b28d",
+      "category": ".github"
+    },
+    {
+      "path": ".github/workflows/migrate-queue-to-repo-json.yml",
+      "size_bytes": 3833,
+      "blob_sha": "1675721b7223651b66252ab7a022535341616b2d",
+      "category": ".github"
+    },
+    {
+      "path": ".github/workflows/queue-lease-recovery.yml",
+      "size_bytes": 5002,
+      "blob_sha": "90e17cf875dc46f3aa77dfc81bf08605a6a704b1",
+      "category": ".github"
+    },
+    {
+      "path": ".github/workflows/queue-snapshot-artifact.yml",
+      "size_bytes": 1842,
+      "blob_sha": "6e3ea920249e3c60a9eff7004fea553a30deff43",
+      "category": ".github"
+    },
+    {
+      "path": ".github/workflows/restore-queue-store.yml",
+      "size_bytes": 1057,
+      "blob_sha": "50f2452f9eaf06be40b49b58c4bfd400d7ddfd7d",
+      "category": ".github"
+    },
+    {
+      "path": ".github/workflows/self-healing-agent.yml",
+      "size_bytes": 23477,
+      "blob_sha": "d1c27511daa58f2cc18672c3811d63c957fa3d7a",
+      "category": ".github"
+    },
+    {
+      "path": ".github/workflows/self-healing-tests.yml",
+      "size_bytes": 3565,
+      "blob_sha": "cd187e89a0037478d2caa400b3d0122a9b29bacd",
+      "category": ".github"
+    },
+    {
+      "path": ".github/workflows/source-discovery.yml",
+      "size_bytes": 11501,
+      "blob_sha": "df722d1357d3dc1fe3bf7f687bcc3f6808225b2b",
+      "category": ".github"
+    },
+    {
+      "path": ".github/workflows/validate-config.yml",
+      "size_bytes": 8138,
+      "blob_sha": "249b99ad0512d32f59085b66a3710a42acbbc8bb",
+      "category": ".github"
+    },
+    {
+      "path": ".gitignore",
+      "size_bytes": 72,
+      "blob_sha": "514d69b50cd574986ff1090e479de5ad01ad2a08",
+      "category": ".gitignore"
+    },
+    {
+      "path": "README.md",
+      "size_bytes": 1248,
+      "blob_sha": "94f2ecb9c34e9663905fbacd088fb2faaa3400c0",
+      "category": "README.md"
+    },
+    {
+      "path": "automation/capability_contract_inventory.json",
+      "size_bytes": 68758,
+      "blob_sha": "c24b5903ce0e9101356fde6990bb2e00be622ae2",
+      "category": "automation"
+    },
+    {
+      "path": "automation/capability_contracts/assess_sources.json",
+      "size_bytes": 15432,
+      "blob_sha": "791befb591be3c626e21930a848feda25b19b0a0",
+      "category": "automation"
+    },
+    {
+      "path": "automation/execution_adapters.json",
+      "size_bytes": 66813,
+      "blob_sha": "6abc3d7031e3da2daf48b936769f0a6bd8064db5",
+      "category": "automation"
+    },
+    {
+      "path": "automation/production_control.json",
+      "size_bytes": 988,
+      "blob_sha": "ee5866b3e9ab99fbc00bdc45723bbb0437623a70",
+      "category": "automation"
+    },
+    {
+      "path": "automation/production_inputs.json",
+      "size_bytes": 4684,
+      "blob_sha": "06b379a7327f0129a8f55cea5cb1ad139aa1d276",
+      "category": "automation"
+    },
+    {
+      "path": "automation/production_workflow_map.json",
+      "size_bytes": 17040,
+      "blob_sha": "6021a6dd724441980205bbc337bb4177ed147daf",
+      "category": "automation"
+    },
+    {
+      "path": "automation/program_registry.json",
+      "size_bytes": 83815,
+      "blob_sha": "d9958268cf57c5d2ba507bf61a5ef8fc56b3240a",
+      "category": "automation"
+    },
+    {
+      "path": "automation/queue_mig_part_0.txt",
+      "size_bytes": 11,
+      "blob_sha": "b3a425249b207819e63bf9a2716fd16f63b0f7b7",
+      "category": "automation"
+    },
+    {
+      "path": "automation/queue_repo_json_bundle.json",
+      "size_bytes": 21,
+      "blob_sha": "7a95ed815512d6a0097507720a6897defab1fca3",
+      "category": "automation"
+    },
+    {
+      "path": "automation/queue_store_pointer.json",
+      "size_bytes": 581,
+      "blob_sha": "d84f6bc9b7acf62c1e5b6360a2d3d8c8d731c02b",
+      "category": "automation"
+    },
+    {
+      "path": "automation/release_manifest.json",
+      "size_bytes": 12905,
+      "blob_sha": "75ea172c5ac973e3fed7f9c2329037ad824f44bd",
+      "category": "automation"
+    },
+    {
+      "path": "automation/resource_ownership_audit.json",
+      "size_bytes": 33627,
+      "blob_sha": "469a0aef6d4ca00cecfefcb9c5416b00be199811",
+      "category": "automation"
+    },
+    {
+      "path": "automation/resource_write_sets.json",
+      "size_bytes": 106249,
+      "blob_sha": "f10f85976d846527d523bbb67fdf2ac6ab4472dd",
+      "category": "automation"
+    },
+    {
+      "path": "automation/task_queue.json",
+      "size_bytes": 728426,
+      "blob_sha": "13da59249c3bd2db437a3a989136c035773bdfbc",
+      "category": "automation"
+    },
+    {
+      "path": "automation/task_queue_rebuild_seed.json",
+      "size_bytes": 114,
+      "blob_sha": "c7818a773ec33f14d40e02edea0dda53363d977b",
+      "category": "automation"
+    },
+    {
+      "path": "automation/unregistered_path_registry.json",
+      "size_bytes": 43094,
+      "blob_sha": "a765cb0587d5cdcc007d67fdc6590350989f1243",
+      "category": "automation"
+    },
+    {
+      "path": "dashboard/README.md",
+      "size_bytes": 1841,
+      "blob_sha": "4ef9d3b82cd5d10169bfbe89a619911a527dc611",
+      "category": "dashboard"
+    },
+    {
+      "path": "dashboard/index.html",
+      "size_bytes": 28708,
+      "blob_sha": "d2377f98463f90af9bb8474e2b11fc77b7f64c2b",
+      "category": "dashboard"
+    },
+    {
+      "path": "data/candidates.json",
+      "size_bytes": 12139598,
+      "blob_sha": "defeeb111995221a0e0c858d7b045b3bdb710fa9",
+      "category": "data"
+    },
+    {
+      "path": "data/domain_candidates.json",
+      "size_bytes": 1800310,
+      "blob_sha": "54d8987b5501e6edb8451e4850cec1889c4c2f78",
+      "category": "data"
+    },
+    {
+      "path": "data/primary_snapshot.txt",
+      "size_bytes": 1046646,
+      "blob_sha": "cf0271105d0f9aeb9efff7a0970c4a253b8d562e",
+      "category": "data"
+    },
+    {
+      "path": "data/secondary_snapshot.txt",
+      "size_bytes": 4080086,
+      "blob_sha": "2f83537a64f14bfbaaa8c28ced74d2bc046d035c",
+      "category": "data"
+    },
+    {
+      "path": "data/source_pending.json",
+      "size_bytes": 95,
+      "blob_sha": "6cb9a9e4de4b29dd8e8504ae695b09939181e568",
+      "category": "data"
+    },
+    {
+      "path": "data/source_snapshots/acl4ssr-china-domain.txt",
+      "size_bytes": 7345,
+      "blob_sha": "dd6f6ace27df7a7a9d3ce8e34fd03ec58db1c1b1",
+      "category": "data"
+    },
+    {
+      "path": "data/source_snapshots/acl4ssr-proxy-lite.txt",
+      "size_bytes": 3992,
+      "blob_sha": "ff4a51e021a43cd3da8be12b00dfb67c922ac79b",
+      "category": "data"
+    },
+    {
+      "path": "data/source_snapshots/auto-gatework-surge-rules-da7f8038.txt",
+      "size_bytes": 59803,
+      "blob_sha": "350fc10dcd1a8df718b2cc380e06c6649a456b01",
+      "category": "data"
+    },
+    {
+      "path": "data/source_snapshots/auto-jovanykoch-rules-9660520d.txt",
+      "size_bytes": 94143,
+      "blob_sha": "d086fa3692cbacf8f596f415a4d7b5f92bc92db6",
+      "category": "data"
+    },
+    {
+      "path": "data/source_snapshots/clashfx-cn-apps-direct.txt",
+      "size_bytes": 1364,
+      "blob_sha": "ad2951c0ed9fad78bef649f775763e8e59f2a93c",
+      "category": "data"
+    },
+    {
+      "path": "data/source_snapshots/hagezi-domains-pro.txt",
+      "size_bytes": 4053399,
+      "blob_sha": "02166ffb6b77db1b886aa3eb5ac791e2c0c3a8e2",
+      "category": "data"
+    },
+    {
+      "path": "data/source_snapshots/sr-adblock-domain-lite.txt",
+      "size_bytes": 1046646,
+      "blob_sha": "cf0271105d0f9aeb9efff7a0970c4a253b8d562e",
+      "category": "data"
+    },
+    {
+      "path": "data/source_snapshots/sve1r-global-proxy.txt",
+      "size_bytes": 7718,
+      "blob_sha": "ea6ee01c75d54571402595f52532032b498abb7e",
+      "category": "data"
+    },
+    {
+      "path": "modules/AdBlock.sgmodule",
+      "size_bytes": 6089,
+      "blob_sha": "abc839751adeb19f87674db154b5650371307143",
+      "category": "modules"
+    },
+    {
+      "path": "modules/adblock/Social_Adblock.js",
+      "size_bytes": 6502,
+      "blob_sha": "35c3b042391b4ced3e919ecf857e38f1895b2652",
+      "category": "modules"
+    },
+    {
+      "path": "modules/adblock/Targeted_App_AdBlock_Ultimate.sgmodule",
+      "size_bytes": 6089,
+      "blob_sha": "abc839751adeb19f87674db154b5650371307143",
+      "category": "modules"
+    },
+    {
+      "path": "modules/adblock/scripts/Clean_Pro.js",
+      "size_bytes": 50193,
+      "blob_sha": "9f229fdcc62461e8adab1e9301b1c617cdcc659b",
+      "category": "modules"
+    },
+    {
+      "path": "modules/adblock/scripts/youtube_initplayback_observer.js",
+      "size_bytes": 2252,
+      "blob_sha": "c464303e577079a0f8ad1b9eee85ef9843f22734",
+      "category": "modules"
+    },
+    {
+      "path": "modules/maasea/youtube_request_local.js",
+      "size_bytes": 2195,
+      "blob_sha": "d883a9f169a9b2fdb83dac4eac0c5de3203d3340",
+      "category": "modules"
+    },
+    {
+      "path": "modules/maasea/youtube_response.js",
+      "size_bytes": 133432,
+      "blob_sha": "b7d65f5e9c8f71fdc8fa9b2ad1a5df34b4ce4640",
+      "category": "modules"
+    },
+    {
+      "path": "modules/uu.conf",
+      "size_bytes": 86433,
+      "blob_sha": "9039d92e60b101c37b4cde57c4c2e4aaae4049f6",
+      "category": "modules"
+    },
+    {
+      "path": "reports/automation/heartbeat.json",
+      "size_bytes": 1085,
+      "blob_sha": "bf66a45caa096d41a490e7f6970e825487d548de",
+      "category": "reports"
+    },
+    {
+      "path": "reports/automation/state_store.json",
+      "size_bytes": 355,
+      "blob_sha": "f2a9ed9a3832379270a0559093cfff05de7e3d25",
+      "category": "reports"
+    },
+    {
+      "path": "reports/automation/task-queue-archive-2026-11-05.json",
+      "size_bytes": 47508,
+      "blob_sha": "e9411f37194e73d9f7d6e99d390a037c7e6105f7",
+      "category": "reports"
+    },
+    {
+      "path": "reports/config-drift-audit.json",
+      "size_bytes": 1698,
+      "blob_sha": "f8558540fc4218a8d1036495c1591cd00d29dd9d",
+      "category": "reports"
+    },
+    {
+      "path": "reports/config-drift-audit.md",
+      "size_bytes": 1254,
+      "blob_sha": "67b5fac40dbfec571b5cba6a8e1529f1130736e6",
+      "category": "reports"
+    },
+    {
+      "path": "reports/external-domain-audit.md",
+      "size_bytes": 2377,
+      "blob_sha": "c796c322fd2cdce7d2d1532f6a0b8b63fd625385",
+      "category": "reports"
+    },
+    {
+      "path": "reports/lifecycle/latest.json",
+      "size_bytes": 116,
+      "blob_sha": "317ceecc95a0aa6edaee15b67ced6b32bf13e607",
+      "category": "reports"
+    },
+    {
+      "path": "reports/lifecycle/latest.md",
+      "size_bytes": 97,
+      "blob_sha": "fbf8829e3e586ea81a251012aad00ddb31784aa9",
+      "category": "reports"
+    },
+    {
+      "path": "reports/policy-source-overlap.md",
+      "size_bytes": 42862,
+      "blob_sha": "6d8188cd8951d927ffb5127905be006c754ba338",
+      "category": "reports"
+    },
+    {
+      "path": "reports/project-status.json",
+      "size_bytes": 1359839,
+      "blob_sha": "97e331a9dfc1fa9a9177ef80daded2c003975af0",
+      "category": "reports"
+    },
+    {
+      "path": "reports/project-status.md",
+      "size_bytes": 268050,
+      "blob_sha": "b5b06f9ae4f2908f0055383f133c590c0db61e35",
+      "category": "reports"
+    },
+    {
+      "path": "reports/ruleset-config-conflict-sync.json",
+      "size_bytes": 31125,
+      "blob_sha": "2c5cf58c7d524663a829919d8e040d4da9cb11c7",
+      "category": "reports"
+    },
+    {
+      "path": "reports/ruleset-config-conflict-sync.md",
+      "size_bytes": 10886,
+      "blob_sha": "c5d7daeadedd01636390015f86b13ee72145f361",
+      "category": "reports"
+    },
+    {
+      "path": "reports/ruleset-config-overlap-audit.json",
+      "size_bytes": 72707534,
+      "blob_sha": "ec516223760a6bfb52c77f856e49fe7d8f03fe8d",
+      "category": "reports"
+    },
+    {
+      "path": "reports/ruleset-config-overlap-audit.md",
+      "size_bytes": 9887519,
+      "blob_sha": "f6ebd534cbf0c9ea4ed6aad034ca33027f36b41b",
+      "category": "reports"
+    },
+    {
+      "path": "reports/ruleset-reference-audit.json",
+      "size_bytes": 2218,
+      "blob_sha": "e62fc4183f2d9ff63196a8cac705595d6f858b5b",
+      "category": "reports"
+    },
+    {
+      "path": "reports/ruleset-reference-audit.md",
+      "size_bytes": 649,
+      "blob_sha": "fdf0b52236ba4dc745bdc8b07741e90a48eabad7",
+      "category": "reports"
+    },
+    {
+      "path": "reports/source-activation.md",
+      "size_bytes": 5861,
+      "blob_sha": "118ec4420a2d5073abb7d4abc7dd845893ce71e2",
+      "category": "reports"
+    },
+    {
+      "path": "reports/source-assessment.md",
+      "size_bytes": 2652641,
+      "blob_sha": "90e4e239ee7883558c311ef5443a06563e05551d",
+      "category": "reports"
+    },
+    {
+      "path": "reports/source-candidate-matrix.md",
+      "size_bytes": 94633,
+      "blob_sha": "917d13f3bcbb587baf7b4d5c712545f394ed2b33",
+      "category": "reports"
+    },
+    {
+      "path": "reports/source-discovery.md",
+      "size_bytes": 9230679,
+      "blob_sha": "f6ca761f781eb64c82b16c5104e38767d19567a0",
+      "category": "reports"
+    },
+    {
+      "path": "reports/source-lineage-audit.json",
+      "size_bytes": 1797784,
+      "blob_sha": "d7b3856cde4c938dd32f148a05ef14d17472f04a",
+      "category": "reports"
+    },
+    {
+      "path": "rulesets/config_conflict_archive.json",
+      "size_bytes": 68021,
+      "blob_sha": "cc8cc67735508a7768e254631439aff8b8a48204",
+      "category": "rulesets"
+    },
+    {
+      "path": "rulesets/deletion_archive.json",
+      "size_bytes": 70,
+      "blob_sha": "d33dade2b5a1c6866de0b7639b6a2e095b8df21c",
+      "category": "rulesets"
+    },
+    {
+      "path": "rulesets/direct.list",
+      "size_bytes": 3821,
+      "blob_sha": "c37186242ff066496be09ffb5ecc681ee5b9242c",
+      "category": "rulesets"
+    },
+    {
+      "path": "rulesets/lifecycle_observations.json",
+      "size_bytes": 4225424,
+      "blob_sha": "846f8df62c8d4d5a4f7d82ed59a68554c43f7876",
+      "category": "rulesets"
+    },
+    {
+      "path": "rulesets/lifecycle_state.json",
+      "size_bytes": 797,
+      "blob_sha": "13961ec4b698f44a8cdf6386dd42871034a51724",
+      "category": "rulesets"
+    },
+    {
+      "path": "rulesets/manifest.json",
+      "size_bytes": 33148,
+      "blob_sha": "864cf6a99b0a68568bb996ce4a23f058bf86ba95",
+      "category": "rulesets"
+    },
+    {
+      "path": "rulesets/pending_queue.json",
+      "size_bytes": 94,
+      "blob_sha": "049db6c431fb8048550a97c2e6ac3ff75718e106",
+      "category": "rulesets"
+    },
+    {
+      "path": "rulesets/proxy.list",
+      "size_bytes": 90101,
+      "blob_sha": "499de3d67acfdc246d3904bc6a801aa08561162e",
+      "category": "rulesets"
+    },
+    {
+      "path": "rulesets/reject.list",
+      "size_bytes": 441897,
+      "blob_sha": "dfeee40c50f4affbd4bcd1878925002a2a49ae95",
+      "category": "rulesets"
+    },
+    {
+      "path": "rulesets/reject_review_queue.json",
+      "size_bytes": 52637058,
+      "blob_sha": "0a692be8589f044c7ca3ec12694b848fc22c353a",
+      "category": "rulesets"
+    },
+    {
+      "path": "rulesets/source_candidate_registry.json.manifest.json",
+      "size_bytes": 1791,
+      "blob_sha": "34e90d927aa0f0879f999d317f71c2943bcc68c5",
+      "category": "rulesets"
+    },
+    {
+      "path": "rulesets/source_candidate_registry.json.parts-bb6b2454a87b5cf2/part-000000.jsonl",
+      "size_bytes": 34999959,
+      "blob_sha": "d01589c7ac682be65cc1c6fe4f8b3c521d331d06",
+      "category": "rulesets"
+    },
+    {
+      "path": "rulesets/source_candidate_registry.json.parts-bb6b2454a87b5cf2/part-000001.jsonl",
+      "size_bytes": 4893758,
+      "blob_sha": "c2418effbcea702824b06f5d7a66a5de0ed71ad1",
+      "category": "rulesets"
+    },
+    {
+      "path": "scripts/append_step_summary.py",
+      "size_bytes": 2102,
+      "blob_sha": "90fc195d9a5a228fcf06302af1d87680238831ac",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/apply_safe_repair.py",
+      "size_bytes": 5169,
+      "blob_sha": "b73e908dbd4755a559b471658714663eba599054",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/assess_sources.py",
+      "size_bytes": 47782,
+      "blob_sha": "915b7b30ed08a0916bdd26773e2af74d9a1a1944",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/audit_adapter_activation.py",
+      "size_bytes": 10500,
+      "blob_sha": "be2f4d75043b24e4cc518cbbc816be1b1b0313c7",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/audit_config_drift.py",
+      "size_bytes": 7830,
+      "blob_sha": "78a687ef9ef750eba8f8f20b9bb5fef9dcf30fa9",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/audit_external_domains.py",
+      "size_bytes": 7384,
+      "blob_sha": "34c044299315678c62559045755a760e6be81ea7",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/audit_policy_source_overlap.py",
+      "size_bytes": 6799,
+      "blob_sha": "d638a8e81f78baa83a1456d14e4e36c6c258262d",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/audit_ruleset_config_overlap.py",
+      "size_bytes": 11913,
+      "blob_sha": "cb63f60f96ffe6ed9a26711cee079c67d36cbe36",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/audit_ruleset_references.py",
+      "size_bytes": 12725,
+      "blob_sha": "190ba0eebc888a6883225e82417cff03d65ba430",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/audit_source_lineage.py",
+      "size_bytes": 12650,
+      "blob_sha": "ce9cc09d96459405d228e91ded54b1f527136d05",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/auto_activate_sources.py",
+      "size_bytes": 13751,
+      "blob_sha": "da0fa1957347b5322e3bf23d75eaed303fa4b657",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/build_dashboard_snapshot.py",
+      "size_bytes": 18305,
+      "blob_sha": "e8cbbfff9ee83a6cc456e086c9054693ed4d979d",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/build_project_status.py",
+      "size_bytes": 20076,
+      "blob_sha": "600a36f189b41c9f38eef705719e4021d6dc998a",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/build_rule_provenance.py",
+      "size_bytes": 9522,
+      "blob_sha": "870a6a6f7942491c9a0f406de446d70164d74e8e",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/build_rulesets.py",
+      "size_bytes": 37365,
+      "blob_sha": "953e4604af30bf65e22486e6d3b848c6f0cd6954",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/build_source_candidates.py",
+      "size_bytes": 14932,
+      "blob_sha": "84215b7d5ac9ed72e89436d97785c55269686753",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/collect_domains.py",
+      "size_bytes": 22757,
+      "blob_sha": "062e8c78dbc7226fafbc62cda486ca5caea00a88",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/deterministic_review.py",
+      "size_bytes": 36476,
+      "blob_sha": "d7e6a675688e9c6c278965b945a5639fc4fc04dc",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/diagnose_workflow_failure.py",
+      "size_bytes": 5497,
+      "blob_sha": "d30e0cc7e93c8225019db241e1e70c8ffd91d092",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/discover_sources.py",
+      "size_bytes": 59464,
+      "blob_sha": "a49f5212e066bd732496f0fcf011ce438ad9d87f",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/domain_rule_engine.py",
+      "size_bytes": 6149,
+      "blob_sha": "cabf257c35df3a9dcffe8ea7eab0aab80ac25a38",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/github_queue_store.py",
+      "size_bytes": 5880,
+      "blob_sha": "59cfe10e4826ded2bff3622172fd9c7fb388b83b",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/github_workflow_adapter.py",
+      "size_bytes": 20540,
+      "blob_sha": "7fa2e86c9d4af58c5deb41666f5f7778d5904ac0",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/import_request_observations.py",
+      "size_bytes": 2307,
+      "blob_sha": "f7f02951c6eb8e5263ae34ac7105ecd7923e774b",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/incident_state.py",
+      "size_bytes": 9749,
+      "blob_sha": "878ecc3154d7be5eadf1330ae592aaac043a7ab3",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/json_document_store.py",
+      "size_bytes": 22800,
+      "blob_sha": "4f8a32968912f114ef2c4adc84018989bb029dac",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/lifecycle_audit.py",
+      "size_bytes": 16147,
+      "blob_sha": "0465207518156b1ecb4786dd67590b3639d4c8b6",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/lifecycle_gate.py",
+      "size_bytes": 5445,
+      "blob_sha": "c746d1c43e019f67f3668aa5a24582e7db4aa56a",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/persist_review_cursor.py",
+      "size_bytes": 2770,
+      "blob_sha": "8be75c9dc909eb9d81625797f49a3714b0b16124",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/production_intent.py",
+      "size_bytes": 27064,
+      "blob_sha": "b6ce05283275472d85083b32cade2aa8d0fb407a",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/refresh_ruleset_manifest.py",
+      "size_bytes": 4998,
+      "blob_sha": "ad1fb09153a3073080a951e3507d04eb5ae37904",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/register_config_baseline.py",
+      "size_bytes": 11963,
+      "blob_sha": "86cf2d1428a2f0284b90f5c84c69a48d3a0059bc",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/register_discovered_sources.py",
+      "size_bytes": 15986,
+      "blob_sha": "8d2ccdd16fb1ce141b44636545cb719be045e056",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/remote_task_queue_runtime.py",
+      "size_bytes": 25334,
+      "blob_sha": "cd55f27f176bcf6959b88755d73f9dfbe15af1b4",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/resolve_source_artifacts.py",
+      "size_bytes": 13499,
+      "blob_sha": "612cae8546c1837bfa0b365b41c8c515723ee3f8",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/resource_lease_runtime.py",
+      "size_bytes": 28107,
+      "blob_sha": "dd91fc523f1eda217a4b32f6427365a57670c233",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/restore_automation_state.py",
+      "size_bytes": 10280,
+      "blob_sha": "ebf7053b9dee13fcc1a29f563206aea904daa235",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/review_cursor.py",
+      "size_bytes": 1249,
+      "blob_sha": "788e4b4a4b5471f5ac7f4af4751691e5337da8c0",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/select_domain_rules.py",
+      "size_bytes": 9846,
+      "blob_sha": "ef05a300205d0e9996579f94fb0bce98a2472fbe",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/source_handoff_policy.py",
+      "size_bytes": 17388,
+      "blob_sha": "d72364cf34f48d0df78bfda8a6652d21e297bb60",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/source_registry.py",
+      "size_bytes": 7414,
+      "blob_sha": "c459aeffc104486e47e1793e9a791aba8f6651c0",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/sync_ruleset_config_conflicts.py",
+      "size_bytes": 25785,
+      "blob_sha": "1efbc59d77819ca0471201aa9af136286c5779f2",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/task_queue.py",
+      "size_bytes": 28176,
+      "blob_sha": "ba47e004d6caec503b0b4117268826dc51ff4b20",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/task_queue_runtime.py",
+      "size_bytes": 20669,
+      "blob_sha": "5bd1a14463fbb0f558d60d73e2185290c1220099",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/task_result_verifier.py",
+      "size_bytes": 35335,
+      "blob_sha": "a054209c30d5aeaa1bdb399b6f6782c926bf1b92",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/task_scheduler.py",
+      "size_bytes": 89122,
+      "blob_sha": "708b04640e4e16904404d8009b0a1a9f333faf75",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/validate_config.py",
+      "size_bytes": 6561,
+      "blob_sha": "eba8095749dab8db27e064546745c79645711e32",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/validate_execution_adapters.py",
+      "size_bytes": 13480,
+      "blob_sha": "fe6cadbaea8638a7fc42b0f64dd1719e9de3080a",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/validate_program_registry.py",
+      "size_bytes": 10063,
+      "blob_sha": "b7cca266996c739242d511d05f6c7a334d803600",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/validate_release_manifest.py",
+      "size_bytes": 24013,
+      "blob_sha": "e0a6aeac5278440820320592a61ac15563060d60",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/validate_source_registry_artifact.py",
+      "size_bytes": 5449,
+      "blob_sha": "9b5ed5edc5984e8928d2f30f911035bfa2812b4f",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/verify_assess_sources_artifacts.py",
+      "size_bytes": 5429,
+      "blob_sha": "815f6ac6826c77a0b8290c769e5df0385518f4ce",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/verify_baseline.py",
+      "size_bytes": 11062,
+      "blob_sha": "8984aaea1243abd8f5c9d0980d8bbfcd18329c80",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/verify_publish_base.sh",
+      "size_bytes": 10752,
+      "blob_sha": "60e5c4261a9607728f55c5911e85a1594588511d",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/verify_published_rulesets.py",
+      "size_bytes": 5350,
+      "blob_sha": "605c33ee52e9d4e6e046297ab66ac1eb31139e60",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/verify_recovery_run.py",
+      "size_bytes": 2814,
+      "blob_sha": "bbee8e57192f194be960ffd8fc6b8c9e59112d5c",
+      "category": "scripts"
+    },
+    {
+      "path": "scripts/watchdog_recovery_policy.py",
+      "size_bytes": 3996,
+      "blob_sha": "7f4107d6584035ae0baff10bd2adff93d9002ed1",
+      "category": "scripts"
+    },
+    {
+      "path": "sources/discovered_sources.json",
+      "size_bytes": 10038403,
+      "blob_sha": "00a80449b0e6559d0fbe138b749b66ace8c6a025",
+      "category": "sources"
+    },
+    {
+      "path": "sources/domain_reviews.json",
+      "size_bytes": 18336304,
+      "blob_sha": "d3880c8804a446c444f2095f75d655da0b0fc809",
+      "category": "sources"
+    },
+    {
+      "path": "sources/domain_sources.json",
+      "size_bytes": 20242,
+      "blob_sha": "48f829bcd823f3f0d133e64113208e939d1d1ec4",
+      "category": "sources"
+    },
+    {
+      "path": "sources/external_intelligence_catalog.json",
+      "size_bytes": 5242,
+      "blob_sha": "eb3132b24688b3fd3ec031cd3aacf7294d5e1fe0",
+      "category": "sources"
+    },
+    {
+      "path": "sources/policy.json",
+      "size_bytes": 8431,
+      "blob_sha": "ad6b117a150c47a5bd49fe624c1f72845e177161",
+      "category": "sources"
+    },
+    {
+      "path": "sources/policy_approvals.json",
+      "size_bytes": 45,
+      "blob_sha": "8a90291f82ba82743f73a8368373c7d07c73f651",
+      "category": "sources"
+    },
+    {
+      "path": "sources/policy_source_overlap.json",
+      "size_bytes": 351616,
+      "blob_sha": "55c1fed359e0b10fd07c04a28bb60cf4e1a45021",
+      "category": "sources"
+    },
+    {
+      "path": "sources/protected_domains.json",
+      "size_bytes": 871,
+      "blob_sha": "8cbf57dbf079cc061892bb4d4d93ad0ffab709a6",
+      "category": "sources"
+    },
+    {
+      "path": "sources/reject_manual_approvals.json",
+      "size_bytes": 29270,
+      "blob_sha": "f96d2be5ed188cfb6339190bdd6b82a38084ca75",
+      "category": "sources"
+    },
+    {
+      "path": "sources/request_domain_observations.json",
+      "size_bytes": 48,
+      "blob_sha": "91882e28863344ab12899dfcb9da7a6e9d141e04",
+      "category": "sources"
+    },
+    {
+      "path": "sources/rule_provenance.json",
+      "size_bytes": 20612817,
+      "blob_sha": "b3dc64e7909f6d6302e22b90e978784911b11121",
+      "category": "sources"
+    },
+    {
+      "path": "sources/source_activation_log.json",
+      "size_bytes": 11127,
+      "blob_sha": "d0c9984db0ffe3d65f3c52f7e216c82ad0df8aab",
+      "category": "sources"
+    },
+    {
+      "path": "sources/source_assessments.json",
+      "size_bytes": 7351907,
+      "blob_sha": "ff364315a04e05809edddd8488a402ad030fc934",
+      "category": "sources"
+    },
+    {
+      "path": "sources/source_candidates.json",
+      "size_bytes": 303748,
+      "blob_sha": "90dcaedd07d17fa1592ebe7976bb41a1c7e8ba58",
+      "category": "sources"
+    },
+    {
+      "path": "tests/test_append_step_summary.py",
+      "size_bytes": 3008,
+      "blob_sha": "cd0233470c01efd00d9ae37515b3990e06fbace5",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_apply_safe_repair.py",
+      "size_bytes": 3868,
+      "blob_sha": "9be6e8ee4c95a8572c3c1d3bcc2a185ded84fe0f",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_assess_sources_predecessor.py",
+      "size_bytes": 1786,
+      "blob_sha": "a36d83108bcefa9019ec24639a63e9194b763c9e",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_assess_sources_task_contract.py",
+      "size_bytes": 20178,
+      "blob_sha": "106ce1ed04cd52e9d802656c8f6280e21352a138",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_audit_adapter_activation.py",
+      "size_bytes": 3021,
+      "blob_sha": "d8e7ba06753a0b602fe31305793f9e5ed3cd8ee4",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_audit_source_lineage.py",
+      "size_bytes": 5653,
+      "blob_sha": "aa0619fcbaef34b76d20d5b121c333a96dfdfeef",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_auto_activate_sources.py",
+      "size_bytes": 7533,
+      "blob_sha": "04c7510d6855dfdb321b7e097ca38a686e0e7ec3",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_automation_api_load.py",
+      "size_bytes": 2200,
+      "blob_sha": "c8a664ce5eed58818c5e6bf6d42d3cee6f5bf50f",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_baseline_registration_verifier.py",
+      "size_bytes": 2191,
+      "blob_sha": "11d671b3a0928d8b06cac4d69756b696dcfb125e",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_build_project_status.py",
+      "size_bytes": 7729,
+      "blob_sha": "faefb04050364a6a89e6cf8a0482cd037fa9ff4c",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_build_rulesets_capacity.py",
+      "size_bytes": 3435,
+      "blob_sha": "98699eda4cc859dfc21132e14763deea33c047ab",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_capability_contract_inventory.py",
+      "size_bytes": 24561,
+      "blob_sha": "3ccbee00197bfbab47d6e5c2c69eed4651e58e17",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_check_source_assessment_artifact.py",
+      "size_bytes": 11046,
+      "blob_sha": "668974ba20000b39cdd07864d0727a93781cc76e",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_config_baseline_registration.py",
+      "size_bytes": 12347,
+      "blob_sha": "e727c4c1ba58a0fdeac9d1aed290b5a64a47e193",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_config_conflict_run_report.py",
+      "size_bytes": 2875,
+      "blob_sha": "af4f2c38b22c4d98314a220cc7aa2f0bcb248eea",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_config_drift.py",
+      "size_bytes": 2651,
+      "blob_sha": "ec62ddda1b354971a435f310eb5821dbc85f7f7e",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_config_scope_precedence.py",
+      "size_bytes": 3032,
+      "blob_sha": "9c48c74df6890a00083c3427a479fb5d2d0c159f",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_correlated_evidence_gate.py",
+      "size_bytes": 1193,
+      "blob_sha": "f45c4178ff4434afe1fd62b8ed8956248e3c9f15",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_dashboard_metrics.py",
+      "size_bytes": 5805,
+      "blob_sha": "9416585f4311dacd9aef081db98c7fab8c987669",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_dashboard_snapshot_metrics.py",
+      "size_bytes": 3456,
+      "blob_sha": "168585f3d2591c75fb1c22acd627246f52a4bfb3",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_deterministic_review.py",
+      "size_bytes": 49784,
+      "blob_sha": "7ed42dae2fb9e0af165df73820db66efce4eca42",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_diagnose_workflow_failure.py",
+      "size_bytes": 6106,
+      "blob_sha": "005e97c1b90a91ec12e2c837a4952274cb745b6d",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_discover_sources_fencing.py",
+      "size_bytes": 5256,
+      "blob_sha": "a434e5e148ee72df27b0d131fbd1c1e673514e70",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_discovered_source_registry.py",
+      "size_bytes": 8213,
+      "blob_sha": "6489959449b8c19b951f8f0ec04cd6a4cd1938e8",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_domain_wildcard_config_validation.py",
+      "size_bytes": 1542,
+      "blob_sha": "2b2879d76788544e57cac81e99e29d12f076e1cf",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_execution_adapters.py",
+      "size_bytes": 8998,
+      "blob_sha": "09c676f0c2d148e9a4166a3472afeb9f11f665d1",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_external_intelligence_catalog.py",
+      "size_bytes": 6831,
+      "blob_sha": "5040578920298336b175e5e4820440a42ef8d431",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_github_queue_store.py",
+      "size_bytes": 14494,
+      "blob_sha": "3d8e814dad0083ebf2f9f7b5b80d91717c406f7c",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_github_workflow_adapter.py",
+      "size_bytes": 15398,
+      "blob_sha": "79173ee3d42d1ff6c34f2e9c19da2d9bc6c06a2e",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_incident_state.py",
+      "size_bytes": 11514,
+      "blob_sha": "dd89af08316b284bd2b3e14ce33a56843f56459a",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_independence_group_gate.py",
+      "size_bytes": 853,
+      "blob_sha": "69f9934301aba5e91fa7f1195ecd4f86cbe9c6b6",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_json_document_store.py",
+      "size_bytes": 11679,
+      "blob_sha": "be84f8e3a1ff4ee3d4435352b7640637ea946f1f",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_leading_dot_assessment.py",
+      "size_bytes": 1303,
+      "blob_sha": "0f5407fff5cc871186bb903120c50b77baff2cbb",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_lifecycle_audit.py",
+      "size_bytes": 11943,
+      "blob_sha": "19f0ea0f31f3751cd97cee16e8e97fa4c04df6f8",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_lifecycle_gate.py",
+      "size_bytes": 3696,
+      "blob_sha": "59a1c5a851c81caf8f9b535f64902ad70f609f84",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_managed_config_guard_policy.py",
+      "size_bytes": 1578,
+      "blob_sha": "255bd04cc6d3d7989c988925248a553217cbcaa5",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_network_retry.py",
+      "size_bytes": 2256,
+      "blob_sha": "67c6b7b83771d8fda3355fbb73ae4b71f6bdef08",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_persist_review_cursor.py",
+      "size_bytes": 3828,
+      "blob_sha": "46bf7882725f86754189b07115e2a311a8130241",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_policy_source_overlap.py",
+      "size_bytes": 2504,
+      "blob_sha": "c64c1184fb3c427de18fbb7bb57d45547f8598f4",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_production_intent.py",
+      "size_bytes": 37093,
+      "blob_sha": "e3aac4095c9f668a4fb9e55ecb76fa8278f20f57",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_production_queue_routing.py",
+      "size_bytes": 5548,
+      "blob_sha": "3a69d6d4abf8f774813e82a1901c320906277bab",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_program_registry.py",
+      "size_bytes": 7368,
+      "blob_sha": "fa2207c8584a839b886b1aa7153c4f4a1143b362",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_publication_accounting.py",
+      "size_bytes": 2656,
+      "blob_sha": "9dd246e772aa774b1c36857909f4ddb36f939d4e",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_publish_base_integration.py",
+      "size_bytes": 17735,
+      "blob_sha": "85eb11224c3ebf400abd7ac8227da21c5f74fbfa",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_refresh_ruleset_manifest.py",
+      "size_bytes": 3355,
+      "blob_sha": "45abc892f822243313bd2ab1de5cf141176858e2",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_register_unclassified_paths.py",
+      "size_bytes": 2434,
+      "blob_sha": "555cd714c6cbfe44b6c8aae5d52d64a09f2c983b",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_reject_manual_approval_gate.py",
+      "size_bytes": 1304,
+      "blob_sha": "ae4979bba4ccb0321e5f66a4f633ab4eecc53be5",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_release_manifest.py",
+      "size_bytes": 7570,
+      "blob_sha": "2468d46db1850760004292ac6e068a667475c4c6",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_remote_task_queue_runtime.py",
+      "size_bytes": 22244,
+      "blob_sha": "175b35e01fa3a5cb5aa82a58dbd49e310efce8cf",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_resource_lease_runtime.py",
+      "size_bytes": 28094,
+      "blob_sha": "cdef7daf1f992e820cc6072af67ce43c62224eb9",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_restore_automation_state.py",
+      "size_bytes": 11608,
+      "blob_sha": "22fe91b877d763d4aee02d0ee8c19c120e0f3b8f",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_review_cursor.py",
+      "size_bytes": 1388,
+      "blob_sha": "4fa5a500595f2f8c72f9ffbc1d183bd080c5bc77",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_rule_provenance.py",
+      "size_bytes": 2846,
+      "blob_sha": "2903d7b9d325c5773dfa18dfef6cf7b895399901",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_ruleset_config_conflict_sync.py",
+      "size_bytes": 20014,
+      "blob_sha": "2a602a5b4acb5ff47ab46b9901caf359cf7e40af",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_ruleset_config_overlap.py",
+      "size_bytes": 4156,
+      "blob_sha": "64e54e00871785e43e884796952e27b3668a30f8",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_ruleset_references.py",
+      "size_bytes": 8124,
+      "blob_sha": "53ff3d319acb08d31ebb7ceb4cef08a03ab3b73d",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_runtime_source_registry.py",
+      "size_bytes": 3663,
+      "blob_sha": "62beff1520e2241d8653fe00331df06b7a6b15c4",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_self_healing_workflow.py",
+      "size_bytes": 14435,
+      "blob_sha": "5832d0b0fd84241922cdcffa04ecd93c678473e2",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_source_artifact_handoff.py",
+      "size_bytes": 5900,
+      "blob_sha": "12a7090351df828d2ff817635fa3978e3b85ff1f",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_source_assessment_queue.py",
+      "size_bytes": 10744,
+      "blob_sha": "cfe1c274c5689c4111918cd1fdef2aea90609415",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_source_candidate_lineage.py",
+      "size_bytes": 3870,
+      "blob_sha": "e1ae6d25316fcc9d1e40d4d59480d5dd32102092",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_source_discovery_scope.py",
+      "size_bytes": 15611,
+      "blob_sha": "113b70216cbc9a69f26c4b6239502510340d279c",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_source_handoff_policy.py",
+      "size_bytes": 22991,
+      "blob_sha": "db6e3eff607e989384138105967e9df4f43e1f89",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_source_line_provenance.py",
+      "size_bytes": 2426,
+      "blob_sha": "0a6204d9df95f4e5ba5ae59f89bdb41796d2c0df",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_source_quarantine_quality_gate.py",
+      "size_bytes": 1582,
+      "blob_sha": "99cd26eb23ac60df716a661e167f8ec2afec0a0f",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_suffix_scope_safety.py",
+      "size_bytes": 2708,
+      "blob_sha": "2a3d7a4bd0c4fe05cf5e585bba918e3d353dbdfe",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_task_queue.py",
+      "size_bytes": 10576,
+      "blob_sha": "34239c0f197f2bffe0504355d99c03620403b882",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_task_queue_runtime.py",
+      "size_bytes": 18758,
+      "blob_sha": "b1fab83bf1b0f3812ce5f36806973f096f0f376d",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_task_result_verifier.py",
+      "size_bytes": 16659,
+      "blob_sha": "4fe69a7a8041149f726180a3378f41a520fe118c",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_task_scheduler.py",
+      "size_bytes": 60901,
+      "blob_sha": "afa293be470036bf347f791905a3fe95791861a2",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_transitive_write_site_inventory.py",
+      "size_bytes": 10055,
+      "blob_sha": "c95511afe63a9567f684c61c93ce8614819ed05d",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_verify_baseline.py",
+      "size_bytes": 3952,
+      "blob_sha": "ea6302146166d66e5e7f2789afbf273dcfefaffe",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_verify_published_rulesets.py",
+      "size_bytes": 2155,
+      "blob_sha": "ef2f0307b347b69a8a4ab19531331c8c20ec7156",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_verify_recovery_run.py",
+      "size_bytes": 3446,
+      "blob_sha": "4c4287a46ac326aa63748400120bded8c33ff972",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_watchdog_recovery_policy.py",
+      "size_bytes": 4827,
+      "blob_sha": "a19ee549d96fc8791278b6ef0bfe6a23adae0362",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_watchdog_recovery_workflow.py",
+      "size_bytes": 49229,
+      "blob_sha": "111fe2f46df7f7035ca0c841f0ecb608812deef8",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_workflow_config_guard_order.py",
+      "size_bytes": 30173,
+      "blob_sha": "a51490ecde21121c8cf06d17af2e92be845419fa",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_workflow_native_write_inventory.py",
+      "size_bytes": 5680,
+      "blob_sha": "e3343a8d0ece39851d21981c6673be07bd79c7bb",
+      "category": "tests"
+    },
+    {
+      "path": "tests/test_workflow_scheduler_integration.py",
+      "size_bytes": 26943,
+      "blob_sha": "a8383ba848d7c89a624ced9822df2963887d13d8",
+      "category": "tests"
+    }
+  ]
+}
