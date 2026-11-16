@@ -12,9 +12,15 @@ All state-changing requests are authenticated, schema-validated, idempotent and 
 | `queue.append_event` | Watchdog / Storage internal | event type, task ID, expected revision, idempotency key | event ID + new revision |
 | `queue.read_projection` | all authorized readers | projection name, optional cursor | projection + revision |
 | `task.claim` | Watchdog | task ID, worker ID, expected revision, TTL, idempotency key | task lease + fencing token |
-| `task.complete` | worker via Storage | task ID, lease token, result artifact SHA | terminal event |
+| `task.start` | worker via Storage | task ID, lease ID, owner, opaque token | RUNNING event |
+| `task.complete` | worker via Storage | task ID, lease ID, owner, opaque token, result artifact SHA | SUCCEEDED event |
+| `task.fail` | worker via Storage | task ID, lease ID, owner, opaque token, error evidence | FAILED event |
 | `resource.acquire` | worker via Storage | resource key, task ID, TTL, idempotency key | resource lease + fencing token |
+| `resource.renew` | active worker via Storage | resource key, lease ID, fencing token, new expiry | renewed lease event |
+| `resource.expire` | Watchdog recovery via Storage | resource key, lease ID, fencing token, observed expiry | expired lease event |
 | `resource.release` | worker / recovery via Storage | resource key, lease ID, fencing token, reason | release event |
+| `task.lease.renew` | active worker via Storage | task ID, lease ID, owner, opaque token, new expiry | renewed task lease event |
+| `task.lease.expire` | Watchdog recovery via Storage | task ID, lease ID, owner, opaque token, observed expiry | expired task lease event |
 | `artifact.stage` | Production | artifact type, content SHA, provenance, schema version | immutable staged artifact ID |
 | `release.prepare` | Production | staged artifact IDs, exact output manifest, expected base SHAs | release candidate ID |
 | `release.commit` | authorized publisher in Storage | candidate ID, approval/gate evidence, idempotency key | committed release ID + output SHAs |
@@ -71,7 +77,7 @@ Dashboard has no write endpoint for queue, production, release or configuration 
 - **Idempotency:** every mutating request carries a stable idempotency key scoped to the operation.
 - **Concurrency:** state changes use expected revision / SHA-CAS; stale writes are rejected, never silently retried with a refreshed base.
 - **Fencing:** every acquired resource lease has a monotonically increasing fencing token. A stale token cannot write or release a newer lease.
-- **Expiry:** task lease expiry and resource lease expiry are evaluated independently.
+- **Expiry:** task lease expiry and resource lease expiry are evaluated independently and recorded as explicit events. Expired leases cannot be renewed; task requeue is blocked until all resource leases for the task are released or expired.
 - **Events:** state changes are append-only. Projections are rebuildable and never authoritative.
 - **Verification:** write success is not publication success; independent read-back verification is mandatory.
 - **Unknown state:** missing or contradictory evidence is represented as unknown and held for reconciliation, not inferred as success.
