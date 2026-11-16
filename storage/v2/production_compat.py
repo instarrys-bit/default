@@ -15,7 +15,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -297,11 +297,13 @@ def run_builder(repo_root: str | Path, *, as_of: str, source_revision: str) -> d
         }
 
 
-def stage_candidate(candidate: dict, store, *, task_id: str) -> dict:
+def stage_candidate(candidate: dict, store, *, task_id: str, lease_guard) -> dict:
     if not task_id or not task_id.startswith("task_"):
         raise ValueError("task_id must be a canonical V2 task ID")
     staged = []
+    lease_proof = None
     for item in candidate["output_files"]:
+        lease_proof = lease_guard()
         artifact = store.stage(
             item["content"],
             artifact_type="ruleset_candidate_file",
@@ -321,12 +323,14 @@ def stage_candidate(candidate: dict, store, *, task_id: str) -> dict:
             "content_sha256": artifact["content_sha256"],
             "size_bytes": artifact["size_bytes"],
         })
+    lease_proof = lease_guard()
     manifest = {
         key: value for key, value in candidate.items()
         if key not in {"output_files", "builder_stdout_summary"}
     }
     manifest["output_files"] = staged
     manifest["task_id"] = task_id
+    manifest["storage_lease_proof"] = lease_proof
     encoded = json.dumps(manifest, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
     artifact = store.stage(
         encoded,
@@ -383,14 +387,27 @@ def main() -> int:
     epoch_id = os.environ.get("V2_STORAGE_EPOCH_ID")
     if not token or not epoch_id or not args.repository or not args.task_id:
         raise SystemExit("--execute requires Storage Management token, V2 epoch, repository and task ID")
-    from runtime import GitHubContentsBackend, project
-    state, _ = GitHubContentsBackend(args.repository, args.branch, token).read()
+    from runtime import (
+        GitHubContentsBackend, project, validate_active_storage_write_context,
+    )
+    backend = GitHubContentsBackend(args.repository, args.branch, token)
+    state, _ = backend.read()
     if state is None or state.get("epoch_id") != epoch_id:
         raise SystemExit("V2 storage epoch is not initialized or does not match the approved epoch ID")
     project(state)
+    def lease_guard():
+        current_state, _ = backend.read()
+        if current_state is None or current_state.get("epoch_id") != epoch_id:
+            raise RuntimeError("V2 storage epoch changed during artifact staging")
+        return validate_active_storage_write_context(
+            current_state,
+            task_id=args.task_id,
+            resource_key="storage/v2/artifacts",
+            observed_at=datetime.now(timezone.utc).isoformat(),
+        )
     from artifact_store import GitHubContentsArtifactStore
     store = GitHubContentsArtifactStore(args.repository, args.branch, token)
-    result = stage_candidate(candidate, store, task_id=args.task_id)
+    result = stage_candidate(candidate, store, task_id=args.task_id, lease_guard=lease_guard)
     print(json.dumps({"valid": True, "dry_run": False, **result}, ensure_ascii=False, sort_keys=True))
     return 0
 
