@@ -110,10 +110,10 @@ def validate_event_payload(event_type: str, payload: dict) -> None:
     required = {
         "TASK_ENQUEUED": ("task_id",),
         "TASK_CLAIMED": ("task_id", "lease_id", "owner", "token", "expires_at"),
-        "TASK_STARTED": ("task_id",),
-        "TASK_SUCCEEDED": ("task_id", "result_artifact_id"),
-        "TASK_FAILED": ("task_id", "error"),
-        "TASK_REQUEUED": ("task_id", "reason"),
+        "TASK_STARTED": ("task_id", "lease_id", "owner", "token"),
+        "TASK_SUCCEEDED": ("task_id", "result_artifact_id", "lease_id", "owner", "token"),
+        "TASK_FAILED": ("task_id", "error", "lease_id", "owner", "token"),
+        "TASK_REQUEUED": ("task_id", "reason", "lease_id", "owner", "token"),
         "TASK_DEAD_LETTER": ("task_id", "reason"),
         "TASK_CANCELLED": ("task_id", "reason"),
         "TASK_LEASE_RENEWED": ("task_id", "lease_id", "owner", "token", "expires_at"),
@@ -145,6 +145,9 @@ def validate_event_payload(event_type: str, payload: dict) -> None:
             _require_text(payload, detail)
         if event_type in {"TASK_REQUEUED", "TASK_DEAD_LETTER", "TASK_CANCELLED"}:
             _require_text(payload, "reason")
+        if event_type in {"TASK_STARTED", "TASK_SUCCEEDED", "TASK_FAILED", "TASK_REQUEUED"}:
+            for field in ("lease_id", "owner", "token"):
+                _require_text(payload, field)
     elif event_type in {"TASK_LEASE_RENEWED", "TASK_LEASE_EXPIRED"}:
         for field in ("task_id", "lease_id", "owner", "token"):
             _require_text(payload, field)
@@ -255,6 +258,17 @@ def project(state: dict) -> dict:
                 lease["last_event"] = event["event_sha256"]
                 task["last_event"] = event["event_sha256"]
                 continue
+            if kind in {"TASK_STARTED", "TASK_SUCCEEDED", "TASK_FAILED"}:
+                lease = task.get("task_lease") or {}
+                if (lease.get("status") != "ACTIVE"
+                        or lease.get("lease_id") != payload["lease_id"]
+                        or lease.get("owner") != payload["owner"]
+                        or lease.get("token") != payload["token"]):
+                    raise Conflict("task operation lease identity or token mismatch")
+                now = datetime.fromisoformat(event["created_at"].replace("Z", "+00:00"))
+                expiry = datetime.fromisoformat(lease["expires_at"].replace("Z", "+00:00"))
+                if now >= expiry:
+                    raise Conflict("task lease expired before worker operation was recorded")
             target = kind.removeprefix("TASK_")
             target = {"STARTED": "RUNNING", "REQUEUED": "QUEUED"}.get(target, target)
             if target not in TASK_TRANSITIONS[task["status"]]:
@@ -277,9 +291,12 @@ def project(state: dict) -> dict:
             if kind == "TASK_REQUEUED" and task["attempts"] >= task["max_attempts"]:
                 raise ValueError("exhausted task must enter DEAD_LETTER, not QUEUED")
             if kind == "TASK_REQUEUED":
-                lease_status = (task.get("task_lease") or {}).get("status")
-                if lease_status not in {"EXPIRED", "RELEASED"}:
-                    raise ValueError("task lease must be expired or released before requeue")
+                lease = task.get("task_lease") or {}
+                if (lease.get("status") not in {"EXPIRED", "RELEASED"}
+                        or lease.get("lease_id") != payload["lease_id"]
+                        or lease.get("owner") != payload["owner"]
+                        or lease.get("token") != payload["token"]):
+                    raise Conflict("task requeue requires the matching expired or released lease")
             if kind in {"TASK_REQUEUED", "TASK_FAILED", "TASK_SUCCEEDED", "TASK_DEAD_LETTER", "TASK_CANCELLED"}:
                 active_resources = [
                     key for key, lease in resources.items()
