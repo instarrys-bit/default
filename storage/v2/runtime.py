@@ -508,6 +508,39 @@ class GitHubContentsBackend:
 
 
 
+
+def validate_active_storage_write_context(state: dict, *, task_id: str,
+                                          resource_key: str, observed_at: str) -> dict:
+    """Return a sanitized proof that a running task holds a live artifact-store lease."""
+    _require_text({"task_id": task_id}, "task_id")
+    _validate_resource_key(resource_key)
+    _require_timestamp(observed_at, "observed_at")
+    now = datetime.fromisoformat(observed_at.replace("Z", "+00:00"))
+    projection = project(state)
+    task = projection["tasks"].get(task_id) or {}
+    task_lease = task.get("task_lease") or {}
+    if task.get("status") != "RUNNING" or task_lease.get("status") != "ACTIVE":
+        raise Conflict("artifact staging requires a RUNNING task with an active task lease")
+    if now >= datetime.fromisoformat(task_lease["expires_at"].replace("Z", "+00:00")):
+        raise Conflict("task lease expired before artifact staging")
+    resource = projection["resource_leases"].get(resource_key) or {}
+    if (resource.get("status") != "ACTIVE" or resource.get("task_id") != task_id
+            or resource.get("owner") != task_lease.get("owner")):
+        raise Conflict("task does not hold the required artifact-store resource lease")
+    if now >= datetime.fromisoformat(resource["expires_at"].replace("Z", "+00:00")):
+        raise Conflict("artifact-store resource lease expired before staging")
+    return {
+        "task_id": task_id,
+        "task_lease_id": task_lease["lease_id"],
+        "owner": task_lease["owner"],
+        "task_lease_expires_at": task_lease["expires_at"],
+        "resource_key": resource_key,
+        "resource_lease_id": resource["lease_id"],
+        "fencing_token": resource["fencing_token"],
+        "resource_expires_at": resource["expires_at"],
+        "validated_at": observed_at,
+    }
+
 def apply_watchdog_recovery_plan(state: dict, plan: dict, *, actor: str) -> tuple[dict, dict]:
     """Apply one read-only Watchdog plan to an in-memory state as Storage Management.
 
