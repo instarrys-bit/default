@@ -507,6 +507,162 @@ class GitHubContentsBackend:
         return new_blob_sha
 
 
+
+def apply_watchdog_recovery_plan(state: dict, plan: dict, *, actor: str) -> tuple[dict, dict]:
+    """Apply one read-only Watchdog plan to an in-memory state as Storage Management.
+
+    The plan carries lease references, never task lease tokens. Tokens are
+    rehydrated from the current canonical projection immediately before append.
+    """
+    assert_automation_write_allowed("storage/v2/state.json", actor)
+    if not isinstance(plan, dict) or plan.get("schema_version") != 1:
+        raise ValueError("unsupported Watchdog recovery plan schema")
+    if plan.get("dispatch_enabled") is not False:
+        raise PermissionError("Watchdog recovery plans cannot enable worker dispatch")
+    if plan.get("epoch_id") != state.get("epoch_id"):
+        raise Conflict("Watchdog plan epoch does not match current Storage state")
+    if plan.get("expected_revision") != state.get("revision"):
+        raise Conflict("Watchdog plan revision is stale")
+    actions = plan.get("actions")
+    if not isinstance(actions, list):
+        raise ValueError("Watchdog plan actions must be an array")
+    observed_at = plan.get("observed_at")
+    _require_timestamp(observed_at, "observed_at")
+    candidate = state
+    applied = []
+    for action in actions:
+        if not isinstance(action, dict):
+            raise ValueError("Watchdog action must be an object")
+        if "token" in action:
+            raise PermissionError("opaque task lease tokens must never be included in Watchdog plans")
+        if action.get("apply_via") != "storage_management":
+            raise PermissionError("recovery action must be applied by Storage Management")
+        if action.get("expected_revision") != candidate.get("revision"):
+            raise Conflict("Watchdog action expected revision is stale")
+        event_type = action.get("event_type")
+        projection = project(candidate)
+        payload = None
+        if event_type == "RESOURCE_LEASE_EXPIRED":
+            key = _validate_resource_key(action.get("resource_key"))
+            lease = projection["resource_leases"].get(key) or {}
+            if (lease.get("status") != "ACTIVE"
+                    or lease.get("lease_id") != action.get("lease_id")
+                    or lease.get("fencing_token") != action.get("fencing_token")):
+                raise Conflict("resource lease changed since Watchdog observed it")
+            payload = {
+                "resource_key": key,
+                "lease_id": lease["lease_id"],
+                "fencing_token": lease["fencing_token"],
+            }
+        elif event_type in {"TASK_LEASE_EXPIRED", "TASK_REQUEUED"}:
+            task_id = action.get("task_id")
+            task = projection["tasks"].get(task_id) or {}
+            lease = task.get("task_lease") or {}
+            if (lease.get("lease_id") != action.get("lease_id")
+                    or lease.get("owner") != action.get("owner")
+                    or not isinstance(lease.get("token"), str) or not lease["token"]):
+                raise Conflict("task lease changed since Watchdog observed it")
+            if event_type == "TASK_LEASE_EXPIRED":
+                if lease.get("status") != "ACTIVE":
+                    raise Conflict("only an active task lease can be expired")
+            else:
+                if lease.get("status") not in {"EXPIRED", "RELEASED"}:
+                    raise Conflict("task requeue requires an expired or released lease")
+            payload = {
+                "task_id": task_id,
+                "lease_id": lease["lease_id"],
+                "owner": lease["owner"],
+                "token": lease["token"],
+            }
+            if event_type == "TASK_REQUEUED":
+                payload["reason"] = action.get("reason", "Watchdog recovery")
+        elif event_type == "TASK_DEAD_LETTER":
+            payload = {
+                "task_id": action.get("task_id"),
+                "reason": action.get("reason", "Watchdog recovery: retry budget exhausted"),
+            }
+        else:
+            raise ValueError("unsupported Watchdog recovery event: " + str(event_type))
+        idempotency_key = action.get("idempotency_key")
+        _require_text({"idempotency_key": idempotency_key}, "idempotency_key")
+        candidate, result = append_event(
+            candidate,
+            event_type=event_type,
+            payload=payload,
+            actor=actor,
+            idempotency_key=idempotency_key,
+            expected_revision=candidate["revision"],
+            created_at=observed_at,
+        )
+        applied.append({
+            "event_type": event_type,
+            "revision": candidate["revision"],
+            "event_sha256": result["event"]["event_sha256"],
+        })
+    return candidate, {
+        "applied_count": len(applied),
+        "applied_actions": applied,
+        "final_revision": candidate["revision"],
+        "epoch_id": candidate["epoch_id"],
+    }
+
+
+def apply_watchdog_recovery_plan_to_backend(backend, plan: dict, *, actor: str) -> dict:
+    """Apply a plan through one verified GitHub Contents CAS per event.
+
+    A concurrent update stops the sequence immediately. Already committed
+    events remain valid and the caller must re-read/re-plan from the new state.
+    """
+    assert_automation_write_allowed("storage/v2/state.json", actor)
+    if not isinstance(plan, dict) or plan.get("schema_version") != 1:
+        raise ValueError("unsupported Watchdog recovery plan schema")
+    if plan.get("dispatch_enabled") is not False:
+        raise PermissionError("Watchdog recovery plans cannot enable worker dispatch")
+    actions = plan.get("actions")
+    if not isinstance(actions, list):
+        raise ValueError("Watchdog plan actions must be an array")
+    base_revision = plan.get("expected_revision")
+    if isinstance(base_revision, bool) or not isinstance(base_revision, int) or base_revision < 0:
+        raise ValueError("Watchdog plan expected_revision must be a non-negative integer")
+    _require_timestamp(plan.get("observed_at"), "observed_at")
+    for index, action in enumerate(actions):
+        if not isinstance(action, dict) or action.get("expected_revision") != base_revision + index:
+            raise Conflict("Watchdog action revisions are not a contiguous plan")
+        if "token" in action or action.get("apply_via") != "storage_management":
+            raise PermissionError("Watchdog plan contains a secret or unauthorized apply target")
+    state, blob_sha = backend.read()
+    if state is None:
+        raise Conflict("V2 storage epoch is not initialized")
+    if base_revision != state.get("revision"):
+        raise Conflict("Watchdog plan revision is stale")
+    if plan.get("epoch_id") != state.get("epoch_id"):
+        raise Conflict("Watchdog plan epoch is stale")
+    applied = []
+    for action in actions:
+        single_plan = {
+            **plan,
+            "expected_revision": state["revision"],
+            "actions": [{**action, "expected_revision": state["revision"]}],
+        }
+        candidate, summary = apply_watchdog_recovery_plan(state, single_plan, actor=actor)
+        if candidate["revision"] == state["revision"]:
+            continue
+        blob_sha = backend.compare_and_swap(
+            candidate,
+            expected_revision=state["revision"],
+            expected_blob_sha=blob_sha,
+            message="storage(v2): apply Watchdog recovery event " + action["event_type"],
+        )
+        state = candidate
+        applied.extend(summary["applied_actions"])
+    return {
+        "applied_count": len(applied),
+        "applied_actions": applied,
+        "final_revision": state["revision"],
+        "blob_sha": blob_sha,
+        "epoch_id": state["epoch_id"],
+    }
+
 def assert_automation_write_allowed(path: str, actor: str) -> None:
     """Only Storage Management may write its exact data/output scopes.
 

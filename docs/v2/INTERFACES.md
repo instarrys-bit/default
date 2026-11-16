@@ -9,18 +9,19 @@ All state-changing requests are authenticated, schema-validated, idempotent and 
 | Operation | Caller | Required input | Result |
 |---|---|---|---|
 | `queue.bootstrap` | operator/bootstrap job | approved empty seed SHA, epoch ID | initialized epoch + revision |
-| `queue.append_event` | Watchdog / Storage internal | event type, task ID, expected revision, idempotency key | event ID + new revision |
+| `queue.append_event` | Storage Management internal | event type, task ID, expected revision, idempotency key | event ID + new revision |
 | `queue.read_projection` | all authorized readers | projection name, optional cursor | projection + revision |
-| `task.claim` | Watchdog | task ID, worker ID, expected revision, TTL, idempotency key | task lease + fencing token |
+| `task.claim` | Watchdog via Storage Management | task ID, worker ID, expected revision, TTL, idempotency key | task lease + fencing token |
 | `task.start` | worker via Storage | task ID, lease ID, owner, opaque token | RUNNING event |
 | `task.complete` | worker via Storage | task ID, lease ID, owner, opaque token, result artifact SHA | SUCCEEDED event |
 | `task.fail` | worker via Storage | task ID, lease ID, owner, opaque token, error evidence | FAILED event |
 | `resource.acquire` | worker via Storage | resource key, task ID, TTL, idempotency key | resource lease + fencing token |
 | `resource.renew` | active worker via Storage | resource key, lease ID, fencing token, new expiry | renewed lease event |
-| `resource.expire` | Watchdog recovery via Storage | resource key, lease ID, fencing token, observed expiry | expired lease event |
+| `resource.expire` | Watchdog recovery via Storage Management | resource key, lease ID, fencing token, observed expiry | expired lease event |
 | `resource.release` | worker / recovery via Storage | resource key, lease ID, fencing token, reason | release event |
 | `task.lease.renew` | active worker via Storage | task ID, lease ID, owner, opaque token, new expiry | renewed task lease event |
-| `task.lease.expire` | Watchdog recovery via Storage | task ID, lease ID, owner, opaque token, observed expiry | expired task lease event |
+| `task.lease.expire` | Watchdog recovery via Storage Management | task ID, lease ID, owner, opaque token, observed expiry | expired task lease event |
+| `watchdog.recovery.apply` | Storage Management only | sanitized plan, epoch ID, base revision; task lease tokens rehydrated from state | one fenced recovery event per SHA-CAS commit; no token returned |
 | `artifact.stage` | Production | artifact type, content SHA, provenance, schema version | immutable staged artifact ID |
 | `release.prepare` | Production | staged artifact IDs, exact output manifest, expected base SHAs | release candidate ID |
 | `release.commit` | authorized publisher in Storage | candidate ID, approval/gate evidence, idempotency key | committed release ID + output SHAs |
@@ -36,7 +37,7 @@ Watchdog is the only top-level scheduler. It:
 - asks Storage Management to claim tasks and acquire resource leases;
 - starts Production workers using immutable task payload references;
 - observes heartbeats and deadlines;
-- requests recovery through Storage Management, never by editing queue files;
+- submits deterministic recovery plans to Storage Management, never by editing queue files; Storage Management rehydrates lease tokens, validates the current revision and applies events via SHA-CAS;
 - accepts completion only when independent result verification succeeds.
 
 Watchdog must not write ruleset files, source datasets, queue JSON, lease registries or `modules/uu.conf` directly. The `modules/uu.conf` restriction is scoped to automated workflows and automation identities only; it does not restrict manual edits by the user.
