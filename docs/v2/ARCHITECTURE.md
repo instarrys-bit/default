@@ -21,7 +21,7 @@ Production submits validated artifacts and publication intents to Storage Manage
 
 ## Immutable safety boundaries
 
-- `modules/uu.conf` is user-managed. V2 automation has read-only access; it must never write, replace, regenerate, reformat or delete it.
+- `modules/uu.conf` is user-managed. **Automated workflows and automation identities are read-only**: they must never write, replace, regenerate, reformat, rename or delete it. This restriction does not apply to the user: the user may manually edit, replace or otherwise manage `modules/uu.conf` through normal human-controlled repository access.
 - Production publication is restricted to exactly `rulesets/direct.list`, `rulesets/proxy.list`, `rulesets/reject.list` plus explicitly enumerated release manifests/lifecycle metadata.
 - No retired writer guard and no `fenced_file_writer.py`.
 - No AI review flow. Filtering/review gates are deterministic and evidence-based.
