@@ -1,0 +1,34 @@
+name: Restore github_queue_store
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  restore:
+    if: ${{ github.ref_name == 'main' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Restore scripts/github_queue_store.py from 30f10ca and apply pointer resolution
+        run: |
+          set -euo pipefail
+          git show 30f10ca5a13bb9d8b0dc421a9168bd0c6d71da68:scripts/github_queue_store.py > scripts/github_queue_store.py
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path("scripts/github_queue_store.py")
+          text = path.read_text(encoding="utf-8")
+          old = '''MARKER = "<!-- shadowrocket-automation-queue:v1 -->"\nMARKER_V2 = "<!-- shadowrocket-automation-queue:v2 -->"\nDEFAULT_ISSUE_NUMBER = 423\nMAX_COMMENT_BYTES = 60_000\nCHUNK_DATA_CHARS = 40_000\nCOMMENT_PAGE_BATCH_SIZE = 4\n'''
+          new = '''MARKER = "<!-- shadowrocket-automation-queue:v1 -->"\nMARKER_V2 = "<!-- shadowrocket-automation-queue:v2 -->"\nDEFAULT_ISSUE_NUMBER = 423\nQUEUE_STORE_POINTER_PATH = Path(__file__).resolve().parents[1] / "automation" / "queue_store_pointer.json"\nMAX_COMMENT_BYTES = 60_000\nCHUNK_DATA_CHARS = 40_000\nCOMMENT_PAGE_BATCH_SIZE = 4\n\n\ndef resolve_queue_issue_number(explicit: int | None = None) -> int:\n    if explicit is not None:\n        if explicit < 1:\n            raise ValueError("issue_number must be a positive integer")\n        return explicit\n    env_raw = os.environ.get("AUTOMATION_QUEUE_ISSUE_NUMBER")\n    if env_raw is not None and str(env_raw).strip() != "":\n        try:\n            value = int(env_raw)\n        except (TypeError, ValueError):\n            raise ValueError("AUTOMATION_QUEUE_ISSUE_NUMBER must be a positive integer") from None\n        if value < 1:\n            raise ValueError("AUTOMATION_QUEUE_ISSUE_NUMBER must be a positive integer")\n        return value\n    if QUEUE_STORE_POINTER_PATH.is_file():\n        try:\n            pointer = json.loads(QUEUE_STORE_POINTER_PATH.read_text(encoding="utf-8"))\n        except (OSError, json.JSONDecodeError) as exc:\n            raise ValueError(f"invalid queue store pointer at {QUEUE_STORE_POINTER_PATH}: {exc}") from None\n        if not isinstance(pointer, dict):\n            raise ValueError("queue store pointer must be a JSON object")\n        try:\n            value = int(pointer.get("active_issue_number"))\n        except (TypeError, ValueError):\n            raise ValueError("queue store pointer active_issue_number must be a positive integer") from None\n        if value < 1:\n            raise ValueError("queue store pointer active_issue_number must be a positive integer")\n        return value\n    return DEFAULT_ISSUE_NUMBER\n'''
+          if old not in text:\n              raise SystemExit("expected marker block missing")\n          text = text.replace(old, new, 1)\n          old2 = '''        raw_issue = issue_number if issue_number is not None else os.environ.get(\n            "AUTOMATION_QUEUE_ISSUE_NUMBER", str(DEFAULT_ISSUE_NUMBER)\n        )\n        try:\n            self.issue_number = int(raw_issue)\n        except (TypeError, ValueError):\n            raise ValueError("AUTOMATION_QUEUE_ISSUE_NUMBER must be a positive integer") from None\n        if self.issue_number < 1:\n            raise ValueError("AUTOMATION_QUEUE_ISSUE_NUMBER must be a positive integer")\n        if issue_number is None and self.issue_number == 315:\n            raise ValueError("durable queue Issue #315 is retired; use Issue #423")\n'''
+          new2 = '''        self.issue_number = resolve_queue_issue_number(issue_number)\n        if issue_number is None and self.issue_number == 315:\n            raise ValueError("durable queue Issue #315 is retired; rotate via automation/queue_store_pointer.json")\n'''
+          if old2 not in text:\n              raise SystemExit("expected issue resolve block missing")\n          text = text.replace(old2, new2, 1)\n          path.write_text(text, encoding="utf-8")\n          print("patched", len(text))\n          PY
+          python3 -m py_compile scripts/github_queue_store.py
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/github_queue_store.py
+          git commit -m "fix(queue): restore github_queue_store.py with pointer-based epoch resolution"
+          git push origin HEAD:main
