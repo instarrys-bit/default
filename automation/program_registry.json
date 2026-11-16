@@ -1990,10 +1990,7 @@
       "outputs": [
         "sanitized recovery plan and status summary in GitHub Actions job summary"
       ],
-      "depends_on": [
-        "script_resource_lease_runtime",
-        "script_validate_execution_adapters"
-      ],
+      "depends_on": [],
       "dispatches": [],
       "permission_boundary": "contents:read only. No actions:write, contents:write, task mutation, lease renewal/release, workflow dispatch, ruleset publication, or user-config writes. Opaque task lease tokens are never emitted.",
       "health_check": "V2 Watchdog planner unit tests, successful read-only state projection, and job summary output; state mutation and dispatch must remain absent.",
