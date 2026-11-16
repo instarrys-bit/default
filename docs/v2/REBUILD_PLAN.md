@@ -49,7 +49,7 @@ This plan authorizes a non-destructive parallel rebuild. It does not authorize d
 
 ## Phase 5 — migration and validation
 
-- [ ] Verify V1 inventory against the archive branch.
+- [x] Verify all 239 V1 inventory paths against the frozen archive Git tree (exact blob SHA and byte size; zero missing, extra or mismatched entries). See ARCHIVE_INTEGRITY_2026-11-17.md.
 - [ ] Migrate data in batches to V2 staging, retaining original path, blob SHA, source, timestamp and classification.
 - [ ] Revalidate lineage, duplicates, conflicts and freshness before promotion.
 - [ ] Keep uncertain and rejected data in quarantine/archive.

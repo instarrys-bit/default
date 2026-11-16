@@ -6,7 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "storage" / "v2"))
 
-from migration import validate_migration_manifest
+from migration import validate_migration_manifest, verify_archive_tree_inventory
 
 
 class V1MigrationManifestTests(unittest.TestCase):
@@ -43,6 +43,40 @@ class V1MigrationManifestTests(unittest.TestCase):
         broken["entries"][0]["promotion_status"] = "ACCEPTED"
         with self.assertRaisesRegex(ValueError, "remain quarantined"):
             validate_migration_manifest(broken, self.inventory)
+
+
+    def test_archive_tree_verification_checks_exact_blob_sha_and_size(self):
+        inventory = {
+            "schema_version": 1,
+            "tree_sha": "a" * 40,
+            "file_count": 1,
+            "total_bytes": 5,
+            "files": [{"path": "data/a.txt", "blob_sha": "b" * 40, "size_bytes": 5}],
+        }
+        tree = {
+            "sha": "a" * 40,
+            "truncated": False,
+            "tree": [{"path": "data/a.txt", "type": "blob", "sha": "b" * 40, "size": 5}],
+        }
+        result = verify_archive_tree_inventory(inventory, tree)
+        self.assertTrue(result["valid"])
+        self.assertEqual(result["file_count"], 1)
+
+    def test_archive_tree_verification_rejects_wrong_tree_sha(self):
+        inventory = {
+            "schema_version": 1, "tree_sha": "a" * 40,
+            "file_count": 0, "total_bytes": 0, "files": [],
+        }
+        with self.assertRaisesRegex(ValueError, "Git tree SHA"):
+            verify_archive_tree_inventory(inventory, {"sha": "c" * 40, "tree": []})
+
+    def test_archive_tree_verification_rejects_truncated_tree(self):
+        inventory = {
+            "schema_version": 1, "tree_sha": "a" * 40,
+            "file_count": 0, "total_bytes": 0, "files": [],
+        }
+        with self.assertRaisesRegex(ValueError, "truncated"):
+            verify_archive_tree_inventory(inventory, {"sha": "a" * 40, "truncated": True, "tree": []})
 
 
 if __name__ == "__main__":

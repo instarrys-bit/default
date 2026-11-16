@@ -33,5 +33,9 @@ jobs:
           python scripts/validate_execution_adapters.py
       - name: Validate registry evidence pins
         run: python -m unittest discover -s tests -p test_capability_contract_inventory.py -v
+      - name: Verify frozen V1 archive Git tree identity
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python storage/v2/verify_archive_inventory.py
       - name: Run V2 storage unit tests
         run: python -m unittest discover -s tests/v2 -v

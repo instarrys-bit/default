@@ -111,3 +111,63 @@ def validate_migration_manifest(manifest: object, inventory: object) -> dict:
         "user_config_manual_edits_allowed": True,
         "legacy_queue_imported": False,
     }
+
+
+def verify_archive_tree_inventory(inventory: object, tree: object) -> dict:
+    """Compare every frozen inventory entry with the archive's actual Git tree."""
+    if not isinstance(inventory, dict) or inventory.get("schema_version") != 1:
+        raise ValueError("unsupported V1 inventory schema")
+    if not isinstance(tree, dict) or tree.get("truncated") is True:
+        raise ValueError("archive Git tree is missing or truncated")
+    tree_sha = tree.get("sha")
+    if not isinstance(tree_sha, str) or not BLOB_SHA_RE.fullmatch(tree_sha):
+        raise ValueError("archive Git tree SHA is invalid")
+    if tree_sha != inventory.get("tree_sha"):
+        raise ValueError("archive Git tree SHA does not match the frozen inventory")
+    expected_files = inventory.get("files")
+    actual_entries = tree.get("tree")
+    if not isinstance(expected_files, list) or not isinstance(actual_entries, list):
+        raise ValueError("inventory files and Git tree entries must be arrays")
+    expected = {}
+    for item in expected_files:
+        if not isinstance(item, dict) or not isinstance(item.get("path"), str):
+            raise ValueError("inventory contains an invalid file entry")
+        if item["path"] in expected:
+            raise ValueError("inventory contains duplicate paths")
+        expected[item["path"]] = item
+    actual = {}
+    for item in actual_entries:
+        if not isinstance(item, dict):
+            raise ValueError("Git tree contains an invalid entry")
+        if item.get("type") != "blob":
+            continue
+        path = item.get("path")
+        if not isinstance(path, str) or path in actual:
+            raise ValueError("Git tree contains an invalid or duplicate blob path")
+        actual[path] = item
+    missing = sorted(set(expected) - set(actual))
+    extra = sorted(set(actual) - set(expected))
+    mismatches = []
+    for path in sorted(set(expected) & set(actual)):
+        source, archived = expected[path], actual[path]
+        if source.get("blob_sha") != archived.get("sha") or source.get("size_bytes") != archived.get("size"):
+            mismatches.append(path)
+    if missing or extra or mismatches:
+        raise ValueError(
+            "archive inventory mismatch: "
+            f"missing={missing[:10]}, extra={extra[:10]}, sha_or_size_mismatch={mismatches[:10]}"
+        )
+    total_bytes = sum(item.get("size_bytes", 0) for item in expected.values())
+    if inventory.get("file_count") != len(expected) or inventory.get("total_bytes") != total_bytes:
+        raise ValueError("inventory file_count or total_bytes summary mismatch")
+    return {
+        "valid": True,
+        "tree_sha": tree_sha,
+        "file_count": len(expected),
+        "total_bytes": total_bytes,
+        "missing_count": 0,
+        "extra_count": 0,
+        "sha_or_size_mismatch_count": 0,
+        "verification": "exact Git blob SHA and byte-size comparison",
+    }
+
