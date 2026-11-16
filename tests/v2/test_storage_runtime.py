@@ -227,5 +227,15 @@ class StorageV2Tests(unittest.TestCase):
             self.append("TASK_SUCCEEDED", {"task_id":"task-1","result_artifact_id":"sha256:abc","lease_id":"tl1","owner":"worker","token":"t1"}, "late-success", created_at="2026-11-17T00:12:00Z")
 
 
+    def test_active_task_lease_cannot_be_dead_lettered(self):
+        self.append("TASK_ENQUEUED", {"task_id":"task-1","max_attempts":1}, "enq")
+        self.append("TASK_CLAIMED", {"task_id":"task-1","lease_id":"tl1","owner":"worker","token":"t1","expires_at":"2026-11-17T00:10:00Z"}, "claim")
+        with self.assertRaisesRegex(Conflict, "must expire or be released"):
+            self.append("TASK_DEAD_LETTER", {"task_id":"task-1","reason":"retry budget exhausted"}, "dead-letter-live", created_at="2026-11-17T00:05:00Z")
+        self.append("TASK_LEASE_EXPIRED", {"task_id":"task-1","lease_id":"tl1","owner":"worker","token":"t1"}, "expire", created_at="2026-11-17T00:11:00Z")
+        self.append("TASK_DEAD_LETTER", {"task_id":"task-1","reason":"retry budget exhausted"}, "dead-letter-expired", created_at="2026-11-17T00:12:00Z")
+        self.assertEqual(project(self.state)["tasks"]["task-1"]["status"], "DEAD_LETTER")
+
+
 if __name__ == "__main__":
     unittest.main()

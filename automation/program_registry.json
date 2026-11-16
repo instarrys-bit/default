@@ -1973,6 +1973,33 @@
         "max_attempts": 0,
         "timeout_seconds": 300
       }
+    },
+    {
+      "id": "workflow_v2_watchdog_supervisor",
+      "path": ".github/workflows/v2-watchdog-supervisor.yml",
+      "kind": "github_actions_workflow",
+      "responsibility": "read the V2 Storage Management event projection and produce a sanitized lease-recovery plan without writes or worker dispatch",
+      "capabilities": [
+        "v2_read_only_watchdog_supervision",
+        "lease_expiry_recovery_planning"
+      ],
+      "invocation": "five-minute scheduled read-only supervision",
+      "inputs": [
+        "V2 Storage Management state.json through GitHub Contents API with contents:read"
+      ],
+      "outputs": [
+        "sanitized recovery plan and status summary in GitHub Actions job summary"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "contents:read only. No actions:write, contents:write, task mutation, lease renewal/release, workflow dispatch, ruleset publication, or user-config writes. Opaque task lease tokens are never emitted.",
+      "health_check": "V2 Watchdog planner unit tests, successful read-only state projection, and job summary output; state mutation and dispatch must remain absent.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
     }
   ]
 }

@@ -297,6 +297,10 @@ def project(state: dict) -> dict:
                         or lease.get("owner") != payload["owner"]
                         or lease.get("token") != payload["token"]):
                     raise Conflict("task requeue requires the matching expired or released lease")
+            if kind == "TASK_DEAD_LETTER" and task["status"] in {"CLAIMED", "RUNNING"}:
+                lease_status = (task.get("task_lease") or {}).get("status")
+                if lease_status not in {"EXPIRED", "RELEASED"}:
+                    raise Conflict("active task lease must expire or be released before dead-lettering")
             if kind in {"TASK_REQUEUED", "TASK_FAILED", "TASK_SUCCEEDED", "TASK_DEAD_LETTER", "TASK_CANCELLED"}:
                 active_resources = [
                     key for key, lease in resources.items()
