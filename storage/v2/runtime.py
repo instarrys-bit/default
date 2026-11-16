@@ -438,10 +438,10 @@ def assert_automation_write_allowed(path: str, actor: str) -> None:
             and re.fullmatch(r"[0-9a-f]{64}", parts[4])):
         return
     if (len(parts) == 5 and parts[:4] == ["storage", "v2", "migration", "manifests"]
-            and re.fullmatch(r"[0-9a-f]{64}\\.json", parts[4])):
+            and parts[4].endswith(".json") and re.fullmatch(r"[0-9a-f]{64}", parts[4][:-5])):
         return
     if (len(parts) == 4 and parts[:3] == ["storage", "v2", "projections"]
-            and re.fullmatch(r"[a-z0-9_-]{1,80}\\.json", parts[3])):
+            and parts[3].endswith(".json") and re.fullmatch(r"[a-z0-9_-]{1,80}", parts[3][:-5])):
         return
     if (len(parts) == 4 and parts[:3] == ["storage", "v2", "releases"]
             and re.fullmatch(r"[0-9a-f]{64}\\.json", parts[3])):
