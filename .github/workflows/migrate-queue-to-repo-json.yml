@@ -1,0 +1,96 @@
+name: Migrate queue to repository JSON
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: read
+
+concurrency:
+  group: shadowrocket-queue-migration-main
+  cancel-in-progress: false
+
+jobs:
+  deploy-and-migrate:
+    if: ${{ github.ref_name == 'main' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.11"
+      - name: Materialize store implementation from bundle
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import base64, json
+          from pathlib import Path
+          bundle = json.loads(Path("automation/queue_repo_json_bundle.json").read_text(encoding="utf-8"))
+          Path("scripts/github_queue_store.py").write_bytes(base64.b64decode(bundle["github_queue_store.py"]))
+          Path("tests/test_github_queue_store.py").write_bytes(base64.b64decode(bundle["test_github_queue_store.py"]))
+          Path("automation/queue_store_pointer.json").write_bytes(base64.b64decode(bundle["queue_store_pointer.json"]))
+          print("materialized", Path("scripts/github_queue_store.py").stat().st_size)
+          PY
+          python3 -m py_compile scripts/github_queue_store.py
+          python3 -m unittest tests.test_github_queue_store -v
+      - name: Export live queue from Issue #423 archive
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          git show 30f10ca5a13bb9d8b0dc421a9168bd0c6d71da68:scripts/github_queue_store.py > /tmp/issue_queue_store.py
+          mkdir -p /tmp/issue_scripts
+          cp /tmp/issue_queue_store.py /tmp/issue_scripts/github_queue_store.py
+          PYTHONPATH=/tmp/issue_scripts python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          from github_queue_store import GitHubContentsQueueStore
+          store = GitHubContentsQueueStore(os.environ["GITHUB_REPOSITORY"], token=os.environ["GITHUB_TOKEN"], issue_number=423)
+          snap = store.read()
+          doc = snap.document
+          print(json.dumps({"revision": doc.get("revision"), "task_count": len(doc.get("tasks") or []), "content_sha": snap.content_sha}, sort_keys=True))
+          if not isinstance(doc.get("revision"), int) or doc.get("revision") < 1:
+              raise SystemExit("invalid issue snapshot")
+          Path(os.environ["RUNNER_TEMP"]).joinpath("live_queue.json").write_text(
+              json.dumps(doc, ensure_ascii=False, sort_keys=True, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          PY
+      - name: Commit repository-json queue data plane
+        run: |
+          set -euo pipefail
+          cp "$RUNNER_TEMP/live_queue.json" automation/task_queue.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/github_queue_store.py tests/test_github_queue_store.py automation/queue_store_pointer.json automation/task_queue.json automation/queue_repo_json_bundle.json
+          git status
+          git commit -m "feat(queue): migrate durable queue from Issue comments to repository JSON"
+          git push origin HEAD:main
+      - name: Verify repository backend
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          git pull --ff-only origin main
+          python3 - <<'PY'
+          import json, os, sys
+          sys.path.insert(0, "scripts")
+          from github_queue_store import GitHubContentsQueueStore
+          store = GitHubContentsQueueStore(os.environ["GITHUB_REPOSITORY"], token=os.environ["GITHUB_TOKEN"])
+          snap = store.read()
+          print(json.dumps({
+              "revision": snap.document.get("revision"),
+              "task_count": len(snap.document.get("tasks") or []),
+              "content_sha": snap.content_sha,
+              "git_blob_sha": snap.git_blob_sha,
+          }, indent=2, sort_keys=True))
+          if not snap.content_sha:
+              raise SystemExit("repository backend cannot read migrated queue")
+          PY
