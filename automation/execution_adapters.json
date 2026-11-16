@@ -2091,18 +2091,19 @@
       "target_kind": "github_actions_workflow",
       "adapter_type": "github_actions_workflow",
       "enabled": false,
-      "interface_status": "unreviewed_disabled",
+      "interface_status": "workflow_dispatch_reviewed",
       "allowed_callers": [],
       "workflow": {
         "path": ".github/workflows/migrate-queue-to-repo-json.yml",
-        "dispatchable": false,
+        "dispatchable": true,
         "inputs": [],
         "allowed_refs": [
-          "main",
-          "v2/storage-management-mvp"
+          "main"
         ],
         "caller_permissions_required": [
-          "contents:read"
+          "actions:write",
+          "issues:write",
+          "contents:write"
         ]
       },
       "timeout_seconds": 300,
@@ -2126,18 +2127,18 @@
       "target_kind": "github_actions_workflow",
       "adapter_type": "github_actions_workflow",
       "enabled": false,
-      "interface_status": "unreviewed_disabled",
+      "interface_status": "workflow_dispatch_reviewed",
       "allowed_callers": [],
       "workflow": {
         "path": ".github/workflows/queue-lease-recovery.yml",
-        "dispatchable": false,
+        "dispatchable": true,
         "inputs": [],
         "allowed_refs": [
-          "main",
-          "v2/storage-management-mvp"
+          "main"
         ],
         "caller_permissions_required": [
-          "contents:read"
+          "actions:write",
+          "issues:write"
         ]
       },
       "timeout_seconds": 300,
@@ -2161,18 +2162,19 @@
       "target_kind": "github_actions_workflow",
       "adapter_type": "github_actions_workflow",
       "enabled": false,
-      "interface_status": "unreviewed_disabled",
+      "interface_status": "workflow_dispatch_reviewed",
       "allowed_callers": [],
       "workflow": {
         "path": ".github/workflows/restore-queue-store.yml",
-        "dispatchable": false,
+        "dispatchable": true,
         "inputs": [],
         "allowed_refs": [
-          "main",
-          "v2/storage-management-mvp"
+          "main"
         ],
         "caller_permissions_required": [
-          "contents:read"
+          "actions:write",
+          "issues:write",
+          "contents:write"
         ]
       },
       "timeout_seconds": 300,
@@ -2196,18 +2198,18 @@
       "target_kind": "github_actions_workflow",
       "adapter_type": "github_actions_workflow",
       "enabled": false,
-      "interface_status": "unreviewed_disabled",
+      "interface_status": "event_only",
       "allowed_callers": [],
       "workflow": {
         "path": ".github/workflows/v2-storage-tests.yml",
         "dispatchable": false,
         "inputs": [],
         "allowed_refs": [
-          "main",
-          "v2/storage-management-mvp"
+          "main"
         ],
         "caller_permissions_required": [
-          "contents:read"
+          "actions:write",
+          "issues:write"
         ]
       },
       "timeout_seconds": 300,
