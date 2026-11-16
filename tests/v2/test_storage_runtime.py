@@ -97,7 +97,33 @@ class StorageV2Tests(unittest.TestCase):
     def test_automation_default_deny(self):
         with self.assertRaises(PermissionError):
             assert_automation_write_allowed("README.md", "production_worker")
+        with self.assertRaises(PermissionError):
+            assert_automation_write_allowed("rulesets/direct.list", "watchdog")
         self.assertIsNone(assert_automation_write_allowed("rulesets/direct.list", "storage_management"))
+
+    def test_storage_manager_has_narrow_exact_write_scope(self):
+        allowed = [
+            "storage/v2/state.json",
+            "storage/v2/artifacts/sha256/" + "a" * 64,
+            "storage/v2/migration/manifests/" + "b" * 64 + ".json",
+            "storage/v2/projections/queue.json",
+            "storage/v2/releases/" + "c" * 64 + ".json",
+            "rulesets/reject.list",
+        ]
+        for path in allowed:
+            self.assertIsNone(assert_automation_write_allowed(path, "storage_management"), path)
+        denied = [
+            "storage/v2/queue_seed.json",
+            "storage/v2/production_write_policy.json",
+            "storage/v2/artifacts/sha256/not-a-digest",
+            "automation/task_queue.json",
+            "modules/uu.conf",
+        ]
+        for path in denied:
+            with self.assertRaises(PermissionError, msg=path):
+                assert_automation_write_allowed(path, "storage_management")
+        with self.assertRaises(PermissionError):
+            assert_automation_write_allowed("storage/v2/state.json", "watchdog")
 
 
 if __name__ == "__main__":
