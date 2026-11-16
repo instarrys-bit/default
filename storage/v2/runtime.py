@@ -28,7 +28,9 @@ MAX_STATE_BYTES = 45_000_000
 EVENT_TYPES = {
     "TASK_ENQUEUED", "TASK_CLAIMED", "TASK_STARTED", "TASK_SUCCEEDED",
     "TASK_FAILED", "TASK_REQUEUED", "TASK_DEAD_LETTER", "TASK_CANCELLED",
+    "TASK_LEASE_RENEWED", "TASK_LEASE_EXPIRED",
     "RESOURCE_ACQUIRED", "RESOURCE_RELEASED",
+    "RESOURCE_LEASE_RENEWED", "RESOURCE_LEASE_EXPIRED",
 }
 TASK_TRANSITIONS = {
     "QUEUED": {"CLAIMED", "CANCELLED"},
@@ -114,8 +116,12 @@ def validate_event_payload(event_type: str, payload: dict) -> None:
         "TASK_REQUEUED": ("task_id", "reason"),
         "TASK_DEAD_LETTER": ("task_id", "reason"),
         "TASK_CANCELLED": ("task_id", "reason"),
+        "TASK_LEASE_RENEWED": ("task_id", "lease_id", "owner", "token", "expires_at"),
+        "TASK_LEASE_EXPIRED": ("task_id", "lease_id", "owner", "token"),
         "RESOURCE_ACQUIRED": ("resource_key", "lease_id", "task_id", "owner", "fencing_token", "expires_at"),
         "RESOURCE_RELEASED": ("resource_key", "lease_id", "fencing_token"),
+        "RESOURCE_LEASE_RENEWED": ("resource_key", "lease_id", "task_id", "owner", "fencing_token", "expires_at"),
+        "RESOURCE_LEASE_EXPIRED": ("resource_key", "lease_id", "fencing_token"),
     }[event_type]
     for field in required:
         if field not in payload:
@@ -139,7 +145,12 @@ def validate_event_payload(event_type: str, payload: dict) -> None:
             _require_text(payload, detail)
         if event_type in {"TASK_REQUEUED", "TASK_DEAD_LETTER", "TASK_CANCELLED"}:
             _require_text(payload, "reason")
-    elif event_type == "RESOURCE_ACQUIRED":
+    elif event_type in {"TASK_LEASE_RENEWED", "TASK_LEASE_EXPIRED"}:
+        for field in ("task_id", "lease_id", "owner", "token"):
+            _require_text(payload, field)
+        if event_type == "TASK_LEASE_RENEWED":
+            _require_timestamp(payload["expires_at"], "expires_at")
+    elif event_type in {"RESOURCE_ACQUIRED", "RESOURCE_LEASE_RENEWED"}:
         _validate_resource_key(payload["resource_key"])
         for field in ("lease_id", "task_id", "owner"):
             _require_text(payload, field)
@@ -147,7 +158,7 @@ def validate_event_payload(event_type: str, payload: dict) -> None:
         if isinstance(token, bool) or not isinstance(token, int) or token < 1:
             raise ValueError("fencing_token must be a positive integer")
         _require_timestamp(payload["expires_at"], "expires_at")
-    elif event_type == "RESOURCE_RELEASED":
+    elif event_type in {"RESOURCE_RELEASED", "RESOURCE_LEASE_EXPIRED"}:
         _validate_resource_key(payload["resource_key"])
         _require_text(payload, "lease_id")
         token = payload["fencing_token"]
@@ -177,6 +188,7 @@ def validate_state(state: object) -> dict:
             raise ValueError("event sequence or hash-chain predecessor mismatch")
         if event.get("event_sha256") != digest:
             raise ValueError("event hash mismatch")
+        _require_timestamp(event.get("created_at"), "event.created_at")
         event_type = event.get("event_type")
         payload = event.get("payload")
         if event_type not in EVENT_TYPES or not isinstance(payload, dict):
@@ -215,6 +227,34 @@ def project(state: dict) -> dict:
             if task_id not in tasks:
                 raise ValueError("task event references an unknown task")
             task = tasks[task_id]
+            if kind in {"TASK_LEASE_RENEWED", "TASK_LEASE_EXPIRED"}:
+                lease = task.get("task_lease") or {}
+                if (lease.get("status") != "ACTIVE"
+                        or lease.get("lease_id") != payload["lease_id"]
+                        or lease.get("owner") != payload["owner"]
+                        or lease.get("token") != payload["token"]):
+                    raise Conflict("task lease identity or token mismatch")
+                now = datetime.fromisoformat(event["created_at"].replace("Z", "+00:00"))
+                old_expiry = datetime.fromisoformat(lease["expires_at"].replace("Z", "+00:00"))
+                if kind == "TASK_LEASE_RENEWED":
+                    new_expiry = datetime.fromisoformat(payload["expires_at"].replace("Z", "+00:00"))
+                    if now >= old_expiry:
+                        raise Conflict("an expired task lease cannot be renewed")
+                    if new_expiry <= old_expiry:
+                        raise ValueError("task lease renewal must extend expiry")
+                    for resource in resources.values():
+                        if (resource.get("status") == "ACTIVE"
+                                and resource.get("task_id") == task_id
+                                and datetime.fromisoformat(resource["expires_at"].replace("Z", "+00:00")) > new_expiry):
+                            raise ValueError("task lease renewal cannot shorten below an active resource lease")
+                    lease["expires_at"] = payload["expires_at"]
+                else:
+                    if now < old_expiry:
+                        raise ValueError("task lease cannot be expired before its expiry timestamp")
+                    lease["status"] = "EXPIRED"
+                lease["last_event"] = event["event_sha256"]
+                task["last_event"] = event["event_sha256"]
+                continue
             target = kind.removeprefix("TASK_")
             target = {"STARTED": "RUNNING", "REQUEUED": "QUEUED"}.get(target, target)
             if target not in TASK_TRANSITIONS[task["status"]]:
@@ -236,6 +276,10 @@ def project(state: dict) -> dict:
                 raise ValueError("TASK_STARTED requires an active task lease")
             if kind == "TASK_REQUEUED" and task["attempts"] >= task["max_attempts"]:
                 raise ValueError("exhausted task must enter DEAD_LETTER, not QUEUED")
+            if kind == "TASK_REQUEUED":
+                lease_status = (task.get("task_lease") or {}).get("status")
+                if lease_status not in {"EXPIRED", "RELEASED"}:
+                    raise ValueError("task lease must be expired or released before requeue")
             if kind in {"TASK_REQUEUED", "TASK_FAILED", "TASK_SUCCEEDED", "TASK_DEAD_LETTER", "TASK_CANCELLED"}:
                 active_resources = [
                     key for key, lease in resources.items()
@@ -251,6 +295,37 @@ def project(state: dict) -> dict:
                 task["result_artifact_id"] = payload["result_artifact_id"]
             task["status"] = target
             task["last_event"] = event["event_sha256"]
+        elif kind in {"RESOURCE_LEASE_RENEWED", "RESOURCE_LEASE_EXPIRED"}:
+            key = _validate_resource_key(payload["resource_key"])
+            old = resources.get(key)
+            if (not old or old.get("status") != "ACTIVE"
+                    or old.get("lease_id") != payload["lease_id"]
+                    or old.get("fencing_token") != payload["fencing_token"]):
+                raise Conflict("resource lease or fencing token mismatch")
+            now = datetime.fromisoformat(event["created_at"].replace("Z", "+00:00"))
+            old_expiry = datetime.fromisoformat(old["expires_at"].replace("Z", "+00:00"))
+            if kind == "RESOURCE_LEASE_RENEWED":
+                task = tasks.get(payload["task_id"])
+                if (not task or old.get("task_id") != payload["task_id"]
+                        or old.get("owner") != payload["owner"]):
+                    raise Conflict("resource lease task or owner mismatch")
+                task_lease = task.get("task_lease") or {}
+                if task_lease.get("status") != "ACTIVE" or task_lease.get("owner") != payload["owner"]:
+                    raise Conflict("resource renewal requires the matching active task lease")
+                new_expiry = datetime.fromisoformat(payload["expires_at"].replace("Z", "+00:00"))
+                task_expiry = datetime.fromisoformat(task_lease["expires_at"].replace("Z", "+00:00"))
+                if now >= old_expiry:
+                    raise Conflict("an expired resource lease cannot be renewed")
+                if new_expiry <= old_expiry:
+                    raise ValueError("resource lease renewal must extend expiry")
+                if new_expiry > task_expiry:
+                    raise ValueError("resource lease cannot outlive its task lease")
+                old["expires_at"] = payload["expires_at"]
+            else:
+                if now < old_expiry:
+                    raise ValueError("resource lease cannot be expired before its expiry timestamp")
+                old["status"] = "EXPIRED"
+            old["last_event"] = event["event_sha256"]
         elif kind == "RESOURCE_ACQUIRED":
             key = _validate_resource_key(payload["resource_key"])
             task = tasks.get(payload["task_id"])

@@ -22,13 +22,13 @@ No transition is performed by editing a projection. Every transition appends an 
 
 Task lease states: `NONE`, `ACTIVE`, `EXPIRED`, `RELEASED`.
 
-A task may be requeued only after the lease is independently verified expired or explicitly released. Expiry does not by itself prove the task's result is absent; inspect result evidence first.
+A task lease may be renewed only while its current lease is live, using the same lease ID, owner and opaque token; renewal must strictly extend expiry and must not shorten below any active resource lease. Expiry is a separate event and is accepted only at or after the recorded deadline. A task may be requeued only after the task lease is expired/released and every resource lease held by that task is independently expired/released. Expiry does not by itself prove the task's result is absent; inspect result evidence first.
 
 ## Resource lease lifecycle
 
 Resource lease states: `NONE`, `ACTIVE`, `EXPIRED`, `RELEASED`.
 
-Resource leases are keyed independently from task leases. A recovery action must:
+Resource leases are keyed independently from task leases. Renewal is allowed only before expiry, with the same lease ID and fencing token, and cannot extend beyond the owning task lease. Expiry is an explicit event; reacquisition after expiry increments the fencing token. A recovery action must:
 1. read the current resource lease and fencing token;
 2. verify expiry or authoritative worker termination;
 3. compare-and-swap the exact lease ID/token;

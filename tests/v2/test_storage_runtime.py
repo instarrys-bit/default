@@ -17,12 +17,12 @@ class StorageV2Tests(unittest.TestCase):
     def setUp(self):
         self.state = empty_state("test-epoch")
 
-    def append(self, kind, payload, key, revision=None):
+    def append(self, kind, payload, key, revision=None, created_at="2026-11-17T00:00:00Z"):
         candidate, result = append_event(
             self.state, event_type=kind, payload=payload, actor="test",
             idempotency_key=key,
             expected_revision=self.state["revision"] if revision is None else revision,
-            created_at="2026-11-17T00:00:00Z",
+            created_at=created_at,
         )
         self.state = candidate
         return result
@@ -137,6 +137,75 @@ class StorageV2Tests(unittest.TestCase):
         self.assertIn("storage/v2/state.json", manager_writes)
         self.assertNotIn("storage/v2/queue_seed.json", manager_writes)
         self.assertNotIn("storage/v2/production_write_policy.json", manager_writes)
+
+
+    def _claimed_task_with_resource(self, resource_expiry="2026-11-17T00:10:00Z"):
+        self.append("TASK_ENQUEUED", {"task_id":"task-lease","max_attempts":3}, "enqueue-lease")
+        self.append("TASK_CLAIMED", {"task_id":"task-lease","lease_id":"task-l1","owner":"worker","token":"task-t1","expires_at":"2026-11-17T00:30:00Z"}, "claim-lease")
+        self.append("RESOURCE_ACQUIRED", {"resource_key":"rulesets/direct.list","lease_id":"res-l1","task_id":"task-lease","owner":"worker","fencing_token":1,"expires_at":resource_expiry}, "acquire-resource")
+
+    def test_task_lease_renewal_extends_live_lease(self):
+        self.append("TASK_ENQUEUED", {"task_id":"task-1","max_attempts":2}, "enq")
+        self.append("TASK_CLAIMED", {"task_id":"task-1","lease_id":"tl1","owner":"worker","token":"t1","expires_at":"2026-11-17T00:10:00Z"}, "claim")
+        self.append("TASK_LEASE_RENEWED", {"task_id":"task-1","lease_id":"tl1","owner":"worker","token":"t1","expires_at":"2026-11-17T00:20:00Z"}, "renew", created_at="2026-11-17T00:05:00Z")
+        lease = project(self.state)["tasks"]["task-1"]["task_lease"]
+        self.assertEqual(lease["expires_at"], "2026-11-17T00:20:00Z")
+        self.assertEqual(lease["status"], "ACTIVE")
+
+    def test_expired_task_lease_cannot_be_renewed(self):
+        self.append("TASK_ENQUEUED", {"task_id":"task-1","max_attempts":2}, "enq")
+        self.append("TASK_CLAIMED", {"task_id":"task-1","lease_id":"tl1","owner":"worker","token":"t1","expires_at":"2026-11-17T00:10:00Z"}, "claim")
+        with self.assertRaisesRegex(Conflict, "expired task lease"):
+            self.append("TASK_LEASE_RENEWED", {"task_id":"task-1","lease_id":"tl1","owner":"worker","token":"t1","expires_at":"2026-11-17T00:20:00Z"}, "late-renew", created_at="2026-11-17T00:11:00Z")
+
+    def test_task_lease_expiry_requires_elapsed_deadline(self):
+        self.append("TASK_ENQUEUED", {"task_id":"task-1","max_attempts":2}, "enq")
+        self.append("TASK_CLAIMED", {"task_id":"task-1","lease_id":"tl1","owner":"worker","token":"t1","expires_at":"2026-11-17T00:10:00Z"}, "claim")
+        with self.assertRaisesRegex(ValueError, "before its expiry"):
+            self.append("TASK_LEASE_EXPIRED", {"task_id":"task-1","lease_id":"tl1","owner":"worker","token":"t1"}, "early-expire", created_at="2026-11-17T00:09:00Z")
+        self.append("TASK_LEASE_EXPIRED", {"task_id":"task-1","lease_id":"tl1","owner":"worker","token":"t1"}, "expire", created_at="2026-11-17T00:11:00Z")
+        self.assertEqual(project(self.state)["tasks"]["task-1"]["task_lease"]["status"], "EXPIRED")
+
+    def test_resource_lease_renew_expire_and_reacquire_increments_fence(self):
+        self._claimed_task_with_resource()
+        self.append("RESOURCE_LEASE_RENEWED", {"resource_key":"rulesets/direct.list","lease_id":"res-l1","task_id":"task-lease","owner":"worker","fencing_token":1,"expires_at":"2026-11-17T00:20:00Z"}, "renew-resource", created_at="2026-11-17T00:05:00Z")
+        self.append("RESOURCE_LEASE_EXPIRED", {"resource_key":"rulesets/direct.list","lease_id":"res-l1","fencing_token":1}, "expire-resource", created_at="2026-11-17T00:21:00Z")
+        self.assertEqual(project(self.state)["resource_leases"]["rulesets/direct.list"]["status"], "EXPIRED")
+        self.append("RESOURCE_ACQUIRED", {"resource_key":"rulesets/direct.list","lease_id":"res-l2","task_id":"task-lease","owner":"worker","fencing_token":2,"expires_at":"2026-11-17T00:25:00Z"}, "reacquire-resource", created_at="2026-11-17T00:22:00Z")
+        self.assertEqual(project(self.state)["resource_leases"]["rulesets/direct.list"]["fencing_token"], 2)
+
+    def test_resource_lease_cannot_be_expired_early(self):
+        self._claimed_task_with_resource()
+        with self.assertRaisesRegex(ValueError, "before its expiry"):
+            self.append("RESOURCE_LEASE_EXPIRED", {"resource_key":"rulesets/direct.list","lease_id":"res-l1","fencing_token":1}, "early-resource-expire", created_at="2026-11-17T00:09:00Z")
+
+    def test_resource_lease_renewal_cannot_outlive_task_lease(self):
+        self._claimed_task_with_resource()
+        with self.assertRaisesRegex(ValueError, "cannot outlive"):
+            self.append("RESOURCE_LEASE_RENEWED", {"resource_key":"rulesets/direct.list","lease_id":"res-l1","task_id":"task-lease","owner":"worker","fencing_token":1,"expires_at":"2026-11-17T00:31:00Z"}, "overrun-resource", created_at="2026-11-17T00:05:00Z")
+
+    def test_stale_resource_fencing_token_cannot_renew(self):
+        self._claimed_task_with_resource()
+        with self.assertRaisesRegex(Conflict, "fencing token mismatch"):
+            self.append("RESOURCE_LEASE_RENEWED", {"resource_key":"rulesets/direct.list","lease_id":"res-l1","task_id":"task-lease","owner":"worker","fencing_token":2,"expires_at":"2026-11-17T00:20:00Z"}, "stale-resource-renew", created_at="2026-11-17T00:05:00Z")
+
+    def test_task_requeue_waits_until_resource_lease_is_expired_or_released(self):
+        self.append("TASK_ENQUEUED", {"task_id":"task-1","max_attempts":2}, "enq")
+        self.append("TASK_CLAIMED", {"task_id":"task-1","lease_id":"tl1","owner":"worker","token":"t1","expires_at":"2026-11-17T00:10:00Z"}, "claim")
+        self.append("RESOURCE_ACQUIRED", {"resource_key":"rulesets/direct.list","lease_id":"rl1","task_id":"task-1","owner":"worker","fencing_token":1,"expires_at":"2026-11-17T00:08:00Z"}, "resource")
+        self.append("TASK_LEASE_EXPIRED", {"task_id":"task-1","lease_id":"tl1","owner":"worker","token":"t1"}, "task-expire", created_at="2026-11-17T00:11:00Z")
+        with self.assertRaisesRegex(ValueError, "release task resource leases"):
+            self.append("TASK_REQUEUED", {"task_id":"task-1","reason":"worker timeout"}, "requeue", created_at="2026-11-17T00:12:00Z")
+        self.append("RESOURCE_LEASE_EXPIRED", {"resource_key":"rulesets/direct.list","lease_id":"rl1","fencing_token":1}, "resource-expire", created_at="2026-11-17T00:11:00Z")
+        self.append("TASK_REQUEUED", {"task_id":"task-1","reason":"worker timeout"}, "requeue-after-expiry", created_at="2026-11-17T00:12:00Z")
+        self.assertEqual(project(self.state)["tasks"]["task-1"]["status"], "QUEUED")
+
+
+    def test_task_requeue_rejects_still_active_task_lease(self):
+        self.append("TASK_ENQUEUED", {"task_id":"task-1","max_attempts":2}, "enq")
+        self.append("TASK_CLAIMED", {"task_id":"task-1","lease_id":"tl1","owner":"worker","token":"t1","expires_at":"2026-11-17T00:10:00Z"}, "claim")
+        with self.assertRaisesRegex(ValueError, "expired or released"):
+            self.append("TASK_REQUEUED", {"task_id":"task-1","reason":"worker timeout"}, "requeue-active", created_at="2026-11-17T00:05:00Z")
 
 
 if __name__ == "__main__":
