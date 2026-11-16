@@ -15,7 +15,7 @@ The first V2 supervisor is intentionally read-only:
 - It never emits opaque task lease tokens; Storage Management must rehydrate them from the current state after CAS validation.
 - It does not dispatch workers because the V2 task routing schema and Storage Manager apply/dispatch interface are not yet enabled.
 
-The scheduled workflow uses contents:read only and writes its report to the Actions job summary. It does not mutate state, renew/release leases, dispatch tasks, import V1 queue state, or publish rulesets.
+The scheduled workflow is schedule-only (no workflow_dispatch), uses contents:read only, and writes its report to the Actions job summary. It does not mutate state, renew/release leases, dispatch tasks, import V1 queue state, or publish rulesets.
 
 ## Next gate
 
