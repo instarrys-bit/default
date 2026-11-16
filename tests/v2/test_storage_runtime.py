@@ -70,10 +70,14 @@ class StorageV2Tests(unittest.TestCase):
             validate_state(broken)
 
     def test_task_transition_must_be_valid(self):
+        queued, _ = append_event(self.state, event_type="TASK_ENQUEUED",
+            payload={"task_id":"task-1","max_attempts":2}, actor="test",
+            idempotency_key="enqueue", expected_revision=0,
+            created_at="2026-11-17T00:00:00Z")
         with self.assertRaisesRegex(ValueError, "invalid task transition"):
-            append_event(self.state, event_type="TASK_SUCCEEDED",
-                payload={"task_id":"missing","result_artifact_id":"sha"}, actor="test",
-                idempotency_key="k", expected_revision=0)
+            append_event(queued, event_type="TASK_SUCCEEDED",
+                payload={"task_id":"task-1","result_artifact_id":"sha"}, actor="test",
+                idempotency_key="k", expected_revision=1)
 
     def test_resource_fencing_tokens_increase(self):
         self.append("TASK_ENQUEUED", {"task_id":"task-1","max_attempts":2}, "enqueue")
