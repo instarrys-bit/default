@@ -286,37 +286,7 @@ jobs:
           test -n "${AUTOMATION_TASK_ID_BASE:-}"
           printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$AUTOMATION_TASK_ID_BASE" --proof-json "$RESOURCE_LEASE_PROOF"
 
-      - name: Register repository-owner-approved uu.conf changes (never edit the config)
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_REF: ${{ github.ref }}
-          GITHUB_EVENT_NAME: ${{ inputs.baseline_source_event || github.event_name }}
-          GITHUB_ACTOR: ${{ inputs.baseline_source_actor || github.actor }}
-          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
-          GITHUB_BEFORE: ${{ inputs.baseline_source_before || github.event.before }}
-          GITHUB_SHA: ${{ inputs.baseline_source_sha || github.sha }}
-        run: python3 scripts/register_config_baseline.py
-      - name: Detect runner-local config baseline proposal
-        id: baseline_proposal
-        if: always()
-        shell: bash
-        run: |
-          if [ -s "$RUNNER_TEMP/config-baseline-proposal.json" ]; then
-            echo "found=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "found=false" >> "$GITHUB_OUTPUT"
-          fi
-      - name: Preserve config baseline proposal as immutable run artifact
-        if: steps.baseline_proposal.outputs.found == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: config-baseline-proposal-${{ github.run_id }}
-          path: ${{ runner.temp }}/config-baseline-proposal.json
-          if-no-files-found: error
-          retention-days: 30
-      - name: Verify registered user config baseline
+      - name: Verify file-manager registered user config baseline
         run: python3 scripts/verify_baseline.py --baseline-only
       - name: Capture and verify the exact production input fingerprint
         env:
