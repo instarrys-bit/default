@@ -2009,7 +2009,7 @@
         "configuration_baseline_registration",
         "configuration_baseline_reconciliation"
       ],
-      "invocation": "push event for modules/uu.conf with a five-minute scheduled reconciliation safety net; main-only manual recovery",
+      "invocation": "push event for modules/uu.conf with a five-minute scheduled reconciliation safety net; main-only",
       "inputs": [
         "latest origin/main commit and exact modules/uu.conf Git blob",
         "GitHub author attribution for every config-changing commit since the registered baseline anchor"
