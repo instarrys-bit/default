@@ -1626,7 +1626,6 @@
         "script_lifecycle_audit",
         "script_lifecycle_gate",
         "script_refresh_ruleset_manifest",
-        "script_register_config_baseline",
         "script_register_discovered_sources",
         "script_remote_task_queue_runtime",
         "script_resolve_source_artifacts",
