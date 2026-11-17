@@ -9,13 +9,21 @@
     "protected_config": {
       "path": "modules/uu.conf",
       "access": "read_only",
-      "writers_allowed": [],
+      "writers_allowed": [
+        "config_baseline_manager_workflow"
+      ],
       "metadata_only_sync": {
-        "writer": null,
-        "allowed_paths": [],
-        "authorization": "No automated repository metadata synchronization is authorized.",
-        "fence": "No Watchdog job has contents:write permission for baseline metadata.",
-        "proposal_only": "scripts/register_config_baseline.py may emit a runner-local proposal artifact; it cannot write repository files.",
+        "writer": "config_baseline_manager_workflow",
+        "writer_workflow": ".github/workflows/config-baseline-manager.yml",
+        "allowed_paths": [
+          "sources/policy.json",
+          "automation/release_manifest.json",
+          "automation/production_workflow_map.json",
+          "automation/resource_write_sets.json"
+        ],
+        "authorization": "Only after every uu.conf-changing commit since the registered anchor is verified as GitHub-authored by the repository owner; no inferred or unassociated author is accepted.",
+        "fence": "Dedicated non-cancelling GitHub Actions concurrency group on main; manager always refreshes latest origin/main, checks exact config blob before and after, stages an exact four-file allowlist, and uses a non-force fast-forward push. A concurrent main update causes a safe retry on the next push or five-minute reconciliation.",
+        "proposal_only": "The baseline manager is the sole repository metadata writer. register_config_baseline.py --apply is invoked only by this workflow; default mode remains runner-local proposal-only.",
         "never_write": [
           "modules/uu.conf"
         ]
