@@ -9,9 +9,7 @@
     "protected_config": {
       "path": "modules/uu.conf",
       "access": "read_only",
-      "writers_allowed": [
-        "config_baseline_manager_workflow"
-      ],
+      "writers_allowed": [],
       "metadata_only_sync": {
         "writer": "config_baseline_manager_workflow",
         "writer_workflow": ".github/workflows/config-baseline-manager.yml",
