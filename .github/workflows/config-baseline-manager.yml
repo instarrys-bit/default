@@ -1,0 +1,82 @@
+name: Shadowrocket config baseline manager
+run-name: Config baseline reconciliation | ${{ github.event_name }} | ${{ github.sha }}
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "modules/uu.conf"
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: shadowrocket-config-baseline-manager-main
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout latest main with complete history
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+      - name: Reconcile the latest owner-approved config baseline
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          BASELINE_SOURCE_EVENT: ${{ github.event_name }}
+          BASELINE_SOURCE_REF: refs/heads/main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git checkout -B main origin/main
+          latest_sha="$(git rev-parse HEAD)"
+          echo "Reconciling latest main: $latest_sha"
+          export BASELINE_SOURCE_SHA="$latest_sha"
+          export GITHUB_SHA="$latest_sha"
+          export GITHUB_REF="refs/heads/main"
+          export GITHUB_EVENT_NAME="$BASELINE_SOURCE_EVENT"
+          result="$(python3 scripts/register_config_baseline.py --apply)"
+          printf '%s\n' "$result" | tee "$RUNNER_TEMP/config-baseline-manager-result.json"
+          registered="$(jq -r '.registered // false' <<< "$result")"
+          if [ "$registered" != "true" ]; then
+            echo "No baseline drift requiring registration."
+            exit 0
+          fi
+          python3 scripts/verify_baseline.py --baseline-only
+          git diff --exit-code HEAD -- modules/uu.conf
+          git add -- sources/policy.json automation/release_manifest.json automation/production_workflow_map.json automation/resource_write_sets.json
+          staged="$(git diff --cached --name-only | sort)"
+          expected="$(printf '%s\n' automation/production_workflow_map.json automation/release_manifest.json automation/resource_write_sets.json sources/policy.json | sort)"
+          if [ "$staged" != "$expected" ]; then
+            echo "Unexpected baseline-manager write set:" >&2
+            printf '%s\n' "$staged" >&2
+            exit 1
+          fi
+          if git diff --cached --name-only | grep -Fxq modules/uu.conf; then
+            echo "Protected config was staged; refusing commit." >&2
+            exit 1
+          fi
+          git diff --cached --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: reconcile owner-approved uu.conf baseline metadata"
+          git push origin HEAD:main
+          echo "Latest config baseline metadata committed. uu.conf content was not modified."
