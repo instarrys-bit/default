@@ -1366,8 +1366,8 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "75ea172c5ac973e3fed7f9c2329037ad824f44bd",
-    "program_registry_blob_sha": "97c4bc32325502c32ec7ccba40629dbc74086cf0",
+    "release_manifest_blob_sha": "fd4bafb797d046d2b2b58dd233fa1d51d9397fd0",
+    "program_registry_blob_sha": "e7d007dcfa135c00281e90746958b09c34afe73d",
     "execution_adapters_blob_sha": "ac0d4a74d5cf1da6d1fe05ebe16a050b2e13fdbb",
     "added_after_release_baseline": true,
     "note": "Independent Source Discovery and non-activating Assessment are enabled through Watchdog-owned tasks. Discovery/Assessment outputs are isolated immutable RUNNER_TEMP artifacts; Assessment's only shared mutation is the fenced Issue #423 checkpoint. Repository mutations are governed per capability by explicit exclusive resource_contract.resource_keys; control-plane metadata is separately inventoried. The production auto_sync publisher stages only the three rule-set deliverables under rulesets/**. The global static/transitive inventory remains partial for unrelated capabilities.",
@@ -1754,6 +1754,23 @@
       ],
       "fence": "The artifact name is bound to the exact unique GitHub Actions run ID; upload-artifact finalizes an immutable run-scoped artifact and cannot overwrite another run's snapshot.",
       "boundary": "External GitHub Actions artifact storage only. No repository contents, refs, queue comments, task state, rulesets or modules/uu.conf are modified."
+    },
+    {
+      "workflow_path": ".github/workflows/config-baseline-manager.yml",
+      "step_name": "Reconcile owner-approved config baseline metadata",
+      "mutation_kinds": [
+        "git_add",
+        "git_commit",
+        "git_push"
+      ],
+      "resources": [
+        "sources/policy.json",
+        "automation/release_manifest.json",
+        "automation/production_workflow_map.json",
+        "automation/resource_write_sets.json"
+      ],
+      "fence": "Dedicated non-cancelling main-branch concurrency group; exact latest-main config blob verification; owner-attributed config history; pre/post uu.conf byte equality; exact four-path staging allowlist; non-force fast-forward push.",
+      "boundary": "The only writer of approved config-baseline metadata. It never writes modules/uu.conf, rulesets/**, sources other than sources/policy.json, or any user-managed module/script."
     }
   ],
   "workflow_native_scan": {
