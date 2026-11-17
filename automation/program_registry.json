@@ -2000,6 +2000,39 @@
         "max_attempts": 0,
         "timeout_seconds": 300
       }
+    },
+    {
+      "id": "workflow_config_baseline_manager",
+      "path": ".github/workflows/config-baseline-manager.yml",
+      "kind": "github_actions_workflow",
+      "responsibility": "sole owner-verified manager of modules/uu.conf baseline metadata; reconcile the latest main-branch blob without modifying config content",
+      "capabilities": [
+        "configuration_baseline_registration",
+        "configuration_baseline_reconciliation"
+      ],
+      "invocation": "push event for modules/uu.conf with a five-minute scheduled reconciliation safety net; main-only manual recovery",
+      "inputs": [
+        "latest origin/main commit and exact modules/uu.conf Git blob",
+        "GitHub author attribution for every config-changing commit since the registered baseline anchor"
+      ],
+      "outputs": [
+        "owner-verified SHA registration in sources/policy.json",
+        "consistent read-only release and workflow metadata pins",
+        "metadata-only commit limited to the four registered files"
+      ],
+      "depends_on": [
+        "script_register_config_baseline",
+        "script_verify_baseline"
+      ],
+      "dispatches": [],
+      "permission_boundary": "contents:write is scoped to the four metadata files sources/policy.json, automation/release_manifest.json, automation/production_workflow_map.json and automation/resource_write_sets.json. Never writes modules/uu.conf or rulesets/**. GitHub author verification is mandatory and git push is non-force fast-forward only.",
+      "health_check": "The registration script verifies every intervening config-changing commit is authored by the repository owner; verify_baseline.py checks the registered blob; exact uu.conf bytes are compared before and after; staged paths must equal the four-file allowlist; failed or concurrent pushes are retried by the five-minute schedule.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 600
+      }
     }
   ]
 }
