@@ -1759,6 +1759,7 @@
       "workflow_path": ".github/workflows/config-baseline-manager.yml",
       "step_name": "Reconcile owner-approved config baseline metadata",
       "mutation_kinds": [
+        "git_checkout",
         "git_add",
         "git_commit",
         "git_push"
@@ -1776,7 +1777,7 @@
   "workflow_native_scan": {
     "status": "partial_workflow_shell_pattern_scan",
     "scanner": "tests/test_workflow_native_write_inventory.py",
-    "workflow_count": 9,
+    "workflow_count": 10,
     "detected_mutation_families": [
       "GitHub Actions workflow_dispatch",
       "GitHub Actions workflow_dispatch REST API",
