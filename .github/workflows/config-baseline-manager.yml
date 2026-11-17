@@ -8,7 +8,6 @@ on:
       - "modules/uu.conf"
   schedule:
     - cron: "*/5 * * * *"
-  workflow_dispatch:
 
 permissions:
   contents: write
