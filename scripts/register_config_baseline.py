@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create a runner-local review proposal for owner-approved uu.conf baseline changes."""
+"""Register owner-approved uu.conf baseline metadata for the dedicated file manager."""
 from __future__ import annotations
 
 
@@ -157,7 +157,7 @@ def apply_baseline_updates(root: Path, config_path: str, config_sha: str, policy
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--apply", action="store_true",
-                        help="Apply owner-verified metadata-only sync; reserved for Watchdog baseline-sync.")
+                        help="Apply owner-verified metadata-only sync; reserved for the dedicated Config Baseline Manager workflow.")
     args = parser.parse_args()
     policy = json.loads(POLICY.read_text(encoding="utf-8"))
     guard = policy["managed_config_guard"]
