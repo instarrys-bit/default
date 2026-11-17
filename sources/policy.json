@@ -168,7 +168,7 @@
       "automation_may_hash_file": true,
       "automation_may_diff_file": true,
       "automation_may_update_registered_blob_sha": true,
-      "update_authorization": "Only the dedicated Config Baseline Manager may update registered baseline metadata after verifying repository owner identity and every intervening uu.conf-changing commit.",
+      "update_authorization": "Owner-verified registration only. The dedicated Config Baseline Manager may update registered baseline metadata after verifying repository owner identity and every intervening uu.conf-changing commit.",
       "registration_must_not_write_config_content": true
     }
   }
