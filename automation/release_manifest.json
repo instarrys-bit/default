@@ -78,19 +78,19 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "967e0d05d0c09fad70079e324acee0a1a056e897"
+      "git_blob_sha": "0bbd9a98b4b98db0bf8015b64d37f1134562e094"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "7583f53e8a6429d0bc99284b29ddccaa7b47cd25"
+      "git_blob_sha": "31d2482f71cbf9dfb23e9eb54696630c0602e6a4"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "1a084b8003fa0f599c45918ebec3768b47c46dc6"
+      "git_blob_sha": "a3145f74941e35a2e6f20b5e06ce2b85f7395d16"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "618f3fd599079503cdbf1d52237f5850e76322a2"
+      "git_blob_sha": "1714b223204e175d1fdcbbd050e32ffa605c0540"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -198,7 +198,7 @@
     },
     "config_baseline_manager_workflow": {
       "path": ".github/workflows/config-baseline-manager.yml",
-      "git_blob_sha": "be8065dd5af939bfacffa1a76577de58477ae24e"
+      "git_blob_sha": "f4714c022c1787eb9163f9403aaca380d716bcb2"
     }
   },
   "compatibility": {
