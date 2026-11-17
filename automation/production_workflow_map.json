@@ -72,15 +72,15 @@
           "order": 7
         },
         {
-          "name": "Register repository-owner-approved uu.conf changes (never edit the config)",
+          "name": "Consume file-manager registered uu.conf baseline (read-only)",
           "order": 8
         },
         {
-          "name": "Detect runner-local config baseline proposal",
+          "name": "Verify file-manager baseline metadata is current",
           "order": 9
         },
         {
-          "name": "Preserve config baseline proposal as immutable run artifact",
+          "name": "Preserve baseline verification evidence",
           "order": 10
         },
         {
