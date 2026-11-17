@@ -275,15 +275,24 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
 
 
 
-    def test_owner_config_registration_precedes_fingerprint_and_parallel_read_only_tests(self):
+    def test_config_baseline_is_owned_by_file_manager_not_ruleset_audit(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         preflight = workflow.split("  preflight:", 1)[1].split("\n  audit:", 1)[0]
         audit = workflow.split("\n  audit:", 1)[1].split("\n  publish:", 1)[0]
-        registration = audit.index("Register repository-owner-approved uu.conf changes")
         fingerprint = audit.index("Capture and verify the exact production input fingerprint")
-        self.assertLess(registration, fingerprint)
+        baseline_check = audit.index("Verify file-manager registered user config baseline")
+        self.assertLess(baseline_check, fingerprint)
+        self.assertNotIn("register_config_baseline.py", workflow)
         self.assertIn("Compile and run deterministic review tests", preflight)
         self.assertNotIn("Compile and run deterministic review tests", audit)
+        manager = (ROOT / ".github" / "workflows" / "config-baseline-manager.yml").read_text(encoding="utf-8")
+        self.assertIn('      - "modules/uu.conf"', manager)
+        self.assertIn('cron: "*/5 * * * *"', manager)
+        self.assertIn("python3 scripts/register_config_baseline.py --apply", manager)
+        self.assertIn("python3 scripts/verify_baseline.py --baseline-only", manager)
+        self.assertIn("git diff --exit-code HEAD -- modules/uu.conf", manager)
+        self.assertIn("git add -- sources/policy.json automation/release_manifest.json automation/production_workflow_map.json automation/resource_write_sets.json", manager)
+        self.assertIn("git push origin HEAD:main", manager)
         publish = workflow.split("\n  publish:", 1)[1].split("\n  persist-review-cursor:", 1)[0]
         self.assertIn("needs: [audit, preflight]", publish)
         archive = workflow.split("          base_files=(", 1)[1].split("          )", 1)[0]
