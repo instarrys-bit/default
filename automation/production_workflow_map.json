@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "7a18801c347a6f530c7953896b02d6d0709fb328",
-  "registry_blob_sha": "97c4bc32325502c32ec7ccba40629dbc74086cf0",
+  "workflow_blob_sha": "81534451a58fc3f652c4ef0d73e44a725167ec19",
+  "registry_blob_sha": "e7d007dcfa135c00281e90746958b09c34afe73d",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 7,
-    "step_count": 61,
+    "step_count": 58,
     "independent_python_dispatch_enabled": true,
     "independent_workflow_count": 1
   },
@@ -72,24 +72,12 @@
           "order": 7
         },
         {
-          "name": "Consume file-manager registered uu.conf baseline (read-only)",
+          "name": "Verify file-manager registered user config baseline",
           "order": 8
         },
         {
-          "name": "Verify file-manager baseline metadata is current",
-          "order": 9
-        },
-        {
-          "name": "Preserve baseline verification evidence",
-          "order": 10
-        },
-        {
-          "name": "Verify registered user config baseline",
-          "order": 11
-        },
-        {
           "name": "Capture and verify the exact production input fingerprint",
-          "order": 12
+          "order": 9
         },
         {
           "name": "Stop stale audit before discovery and source downloads",
@@ -362,8 +350,8 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "75ea172c5ac973e3fed7f9c2329037ad824f44bd",
-    "program_registry_blob_sha": "97c4bc32325502c32ec7ccba40629dbc74086cf0",
+    "release_manifest_blob_sha": "fd4bafb797d046d2b2b58dd233fa1d51d9397fd0",
+    "program_registry_blob_sha": "e7d007dcfa135c00281e90746958b09c34afe73d",
     "execution_adapters_blob_sha": "ac0d4a74d5cf1da6d1fe05ebe16a050b2e13fdbb",
     "added_after_release_baseline": true,
     "note": "The independent source DAG is enabled under the scoped release allowlist. The production deliverables are exactly DIRECT, PROXY and REJECT; queue/checkpoint state and immutable runner-local artifacts are separate control-plane/runtime resources. The global static/transitive inventory remains partial for unrelated capabilities.",
