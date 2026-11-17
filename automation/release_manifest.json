@@ -24,11 +24,11 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "536319d40470a0201c6b23d044dc6376211ae707"
+      "git_blob_sha": "8f22353c89ce10e2036365e4a3bfc12dd0707df7"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "7a18801c347a6f530c7953896b02d6d0709fb328"
+      "git_blob_sha": "81534451a58fc3f652c4ef0d73e44a725167ec19"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -78,7 +78,7 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "bc05f1c0419ac784fae1cceb0314ad9339f141ed"
+      "git_blob_sha": "e7d007dcfa135c00281e90746958b09c34afe73d"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
@@ -195,6 +195,10 @@
     "config_drift_audit": {
       "path": "scripts/audit_config_drift.py",
       "git_blob_sha": "78a687ef9ef750eba8f8f20b9bb5fef9dcf30fa9"
+    },
+    "config_baseline_manager_workflow": {
+      "path": ".github/workflows/config-baseline-manager.yml",
+      "git_blob_sha": "be8065dd5af939bfacffa1a76577de58477ae24e"
     }
   },
   "compatibility": {
