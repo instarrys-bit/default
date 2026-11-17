@@ -15,6 +15,7 @@ WORKFLOWS = [
     ".github/workflows/validate-config.yml",
     ".github/workflows/source-discovery.yml",
     ".github/workflows/queue-snapshot-artifact.yml",
+    ".github/workflows/config-baseline-manager.yml",
 ]
 PATTERNS = {
     "git_add": re.compile(r"\bgit\s+add\b"),
