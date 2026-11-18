@@ -1,4 +1,5 @@
 name: Storage Management — incident ledger
+run-name: Storage incident ledger / ${{ inputs.automation_task_id || inputs.event_id }}
 on:
   workflow_dispatch:
     inputs:
@@ -14,6 +15,10 @@ on:
       event_id:
         description: Idempotent event identifier
         required: true
+        type: string
+      automation_task_id:
+        description: Correlated event identifier for the run name
+        required: false
         type: string
       run_id:
         description: Originating workflow run ID for record operations
@@ -58,7 +63,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   mutate-ledger:
-    if: \${{ github.ref == 'refs/heads/main' }}
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
@@ -75,20 +80,20 @@ jobs:
           python-version: "3.11"
       - name: Apply allowlisted incident ledger operation
         env:
-          GITHUB_TOKEN: \${{ github.token }}
-          GITHUB_REPOSITORY: \${{ github.repository }}
-          OPERATION: \${{ inputs.operation }}
-          WORKFLOW_KEY: \${{ inputs.workflow }}
-          EVENT_ID: \${{ inputs.event_id }}
-          RUN_ID: \${{ inputs.run_id }}
-          SOURCE_SHA: \${{ inputs.source_sha }}
-          CLASSIFICATION: \${{ inputs.classification }}
-          SUMMARY: \${{ inputs.summary }}
-          RUN_URL: \${{ inputs.run_url }}
-          BEFORE_RUN_ID: \${{ inputs.before_run_id }}
-          CLASSIFICATIONS: \${{ inputs.classifications }}
-          VERIFICATION_URL: \${{ inputs.verification_url }}
-          DIAGNOSIS_JSON: \${{ inputs.diagnosis_json }}
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          OPERATION: ${{ inputs.operation }}
+          WORKFLOW_KEY: ${{ inputs.workflow }}
+          EVENT_ID: ${{ inputs.event_id }}
+          RUN_ID: ${{ inputs.run_id }}
+          SOURCE_SHA: ${{ inputs.source_sha }}
+          CLASSIFICATION: ${{ inputs.classification }}
+          SUMMARY: ${{ inputs.summary }}
+          RUN_URL: ${{ inputs.run_url }}
+          BEFORE_RUN_ID: ${{ inputs.before_run_id }}
+          CLASSIFICATIONS: ${{ inputs.classifications }}
+          VERIFICATION_URL: ${{ inputs.verification_url }}
+          DIAGNOSIS_JSON: ${{ inputs.diagnosis_json }}
         run: |
           set -euo pipefail
           args=("$OPERATION" --workflow "$WORKFLOW_KEY" --event-id "$EVENT_ID")

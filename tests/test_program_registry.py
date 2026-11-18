@@ -14,6 +14,7 @@ class ProgramRegistryTests(unittest.TestCase):
     def make_repo(self, dependency=True):
         root = Path(tempfile.mkdtemp())
         (root / "scripts").mkdir()
+        (root / "storage" / "v2").mkdir(parents=True)
         (root / ".github" / "workflows").mkdir(parents=True)
         (root / "automation").mkdir()
         (root / "scripts" / "alpha.py").write_text("print('alpha')\n", encoding="utf-8")
@@ -75,6 +76,12 @@ class ProgramRegistryTests(unittest.TestCase):
         root, registry = self.make_repo()
         result = validate_registry(root, registry)
         self.assertEqual(result["program_count"], 2)
+
+    def test_rejects_unregistered_storage_management_component(self):
+        root, registry = self.make_repo()
+        (root / "storage" / "v2" / "new_store.py").write_text("pass\n", encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "unregistered program files"):
+            validate_registry(root, registry)
 
     def test_rejects_new_program_without_registration(self):
         root, registry = self.make_repo()
