@@ -6,9 +6,7 @@
     "collaboration_rule": "A program may run independently under its own entry point. Cross-program orchestration requires an explicit registry entry and declared workflow dependencies or dispatch targets.",
     "permission_rule": "Registry declarations describe boundaries; they never grant permissions. The workflow job's least-privilege permissions remain authoritative.",
     "activation_rule": "Registration is mandatory for CI acceptance, but does not by itself authorize automatic dispatch, rule activation, publication, or modification of modules/uu.conf.",
-    "excluded_legacy_workflow_paths": [
-      ".github/workflows/restore-queue-store.yml"
-    ],
+    "excluded_legacy_workflow_paths": [],
     "exclusion_rule": "These V1 legacy workflows are retained in the repository for historical recovery evidence only. They are not V2 dispatch targets and must not be called by V2. Removal or reactivation requires an explicit retirement/migration review."
   },
   "programs": [
