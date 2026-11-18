@@ -292,26 +292,26 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         writes = load_json("automation/resource_write_sets.json")
         entries = {item["program_id"]: item for item in writes["control_plane_side_effects"]}
         remote = entries["script_remote_task_queue_runtime"]
-        store = entries["script_github_queue_store"]
+        store = entries["storage_queue_store"]
         self.assertEqual(remote["side_effects"], ["GitHub Contents API SHA-CAS updates to automation/task_queue.json"])
-        self.assertEqual(store["side_effects"], ["GitHub Contents API SHA-CAS updates to automation/task_queue.json"])
+        self.assertEqual(store["side_effects"], ["automation/task_queue.json Contents API SHA-CAS updates", "storage/v2/incidents.json Contents API SHA-CAS updates"])
         self.assertEqual(remote["classification"], "repository_json_contents_sha_cas_queue_store")
         self.assertIn("automation/task_queue.json", remote["control_plane_boundary"])
         group = next(
             item for item in writes["confirmed_shared_write_groups"]
             if item["resource"] == "durable task queue control-plane state"
         )
-        self.assertEqual(group["mode"], "append_only_revision_chain")
-        self.assertIn("workflow_automation_watchdog", group["writers"])
-        self.assertIn("script_resource_lease_runtime", group["writers"])
+        self.assertEqual(group["mode"], "repository_json_contents_sha_cas")
+        self.assertEqual(group["writers"], ["storage_queue_store"])
+        self.assertIn("workflow_automation_watchdog", group["clients"])
 
         ownership = load_json("automation/resource_ownership_audit.json")
         audit_group = next(
             item for item in ownership["resource_groups"]
             if item["id"] == "durable_task_queue_control_plane"
         )
-        self.assertEqual(audit_group["status"], "append_only_issue_snapshot_chain_reviewed")
-        self.assertIn("script_resource_lease_runtime", audit_group["writers"])
+        self.assertEqual(audit_group["status"], "active_storage_management_json_sha_cas")
+        self.assertEqual(audit_group["writers"], ["storage_queue_store"])
         self.assertEqual(ownership["status"], "partial_static_audit")
 
 
@@ -348,7 +348,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertIn("sources/rule_provenance.json logical document", {item["resource"] for item in writes["confirmed_shared_write_groups"]})
         self.assertEqual(groups["domain_candidate_buffer"]["status"], "fenced_at_each_document_store_mutation")
         self.assertEqual(groups["rule_provenance_ledger"]["status"], "fenced_at_each_document_store_mutation")
-        self.assertEqual(groups["watchdog_unregistered_path_registry"]["status"], "bounded_cas_retry_implemented_concurrent_integration_unproven")
+        self.assertEqual(groups["watchdog_unregistered_path_registry"]["status"], "read_only_no_active_writer")
         self.assertEqual(groups["request_intake_observations"]["status"], "checked_in_observation_seed_read_only")
         self.assertEqual(groups["request_intake_observations"]["known_writers"], [])
         self.assertEqual(groups["active_source_registry_and_activation"]["status"], "no_repository_writer_source_activation_artifact_only")
@@ -392,9 +392,9 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertFalse(nonwriter_ids & external_ids)
         self.assertEqual(writer_ids | nonwriter_ids | external_ids, python_ids)
         self.assertEqual(len(writer_ids), 26)
-        self.assertEqual(len(nonwriter_ids), 27)
+        self.assertEqual(len(nonwriter_ids), 30)
         self.assertIn("script_source_handoff_policy", nonwriter_ids)
-        self.assertEqual(external_ids, {"script_github_workflow_adapter", "script_github_queue_store", "script_remote_task_queue_runtime"})
+        self.assertEqual(external_ids, {"script_github_workflow_adapter", "script_remote_task_queue_runtime", "storage_incident_store", "storage_queue_store"})
         self.assertIn("script_resource_lease_runtime", writer_ids)
         self.assertIn("script_json_document_store", writer_ids)
 

@@ -439,7 +439,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("audit_base_stale", stale)
         self.assertNotIn("auto-sync-stale:", stale)
         self.assertIn("bounded timeout recovery", stale)
-        self.assertIn("production:recovery:$current_fingerprint:$timed_out_run_id", stale)
+        self.assertIn("production:recovery:$recovery_fingerprint:$SOURCE_RUN_ID", stale)
 
     def test_successful_heartbeat_persists_the_production_input_fingerprint(self):
         audit = AUTO_SYNC.read_text(encoding="utf-8")
@@ -450,7 +450,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("compute_fingerprint", audit)
         self.assertIn("automation/production_inputs.json", audit)
 
-    def test_production_intent_engine_is_registered_and_ss_conf_is_read_only_input(self):
+    def test_production_intent_engine_is_registered_and_uu_conf_is_read_only_input(self):
         registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
         manifest = json.loads((ROOT / "automation" / "production_inputs.json").read_text(encoding="utf-8"))
         self.assertIn("script_production_intent", {item["id"] for item in registry["programs"]})

@@ -75,7 +75,11 @@ class WorkflowNativeWriteInventoryTests(unittest.TestCase):
             'git commit -m "Reconcile published RULE-SET manifest metadata"',
             "git push origin HEAD:main",
         ])
-        self.assertNotIn("contents: write", watchdog.split("  manifest-integrity:", 1)[0])
+        queue_job = watchdog.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
+        self.assertIn("      contents: write", queue_job)
+        self.assertIn("storage/v2/queue_store.py", (ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
+        self.assertNotIn("git push", queue_job)
+        self.assertIn("      contents: write", watchdog.split("  manifest-integrity:", 1)[1])
 
     def test_watchdog_artifact_recovery_uses_reviewed_four_url_budget(self):
         watchdog = (ROOT / ".github/workflows/automation-watchdog.yml").read_text(encoding="utf-8")

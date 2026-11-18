@@ -79,7 +79,7 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertIn("gh workflow run storage-incident-management.yml", resolver)
         self.assertNotIn("gh issue", resolver)
         self.assertIn("classifications=CONFIG_BASELINE_MISMATCH,TEST_FAILURE,PYTHON_IMPORT_FAILURE", resolver)
-        self.assertIn("The protected config was not modified.", workflow)
+        self.assertIn("The protected config was not modified; modules/uu.conf remains read-only.", workflow)
 
     def test_failed_checkpoint_recovery_uses_expanded_github_context_and_paginated_history(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
@@ -230,9 +230,11 @@ class SelfHealingWorkflowTests(unittest.TestCase):
 
     def test_incident_deduplication_is_scoped_to_source_revision(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn('($workflow_key; ${FAILED_SHA:0:8})', workflow)
-        self.assertIn("deterministic_audit(; [0-9a-f]{8})?", workflow)
-        self.assertIn("config_validator(; [0-9a-f]{8})?", workflow)
+        self.assertIn('event_id="failure-run-$RUN_ID"', workflow)
+        self.assertIn('source_sha="$FAILED_SHA"', workflow)
+        store = (ROOT / "storage" / "v2" / "incident_store.py").read_text(encoding="utf-8")
+        self.assertIn("incident_key(workflow, source_sha, classification)", store)
+        self.assertIn("storage/v2/incidents.json", store)
 
 
 if __name__ == "__main__":
