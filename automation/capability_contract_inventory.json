@@ -4,8 +4,8 @@
   "status": "baseline_inventory",
   "source_registry_blob_sha": "e32da1d883ad0c40d99c4e19e12a8e21683eb388",
   "summary": {
-    "registered_programs": 76,
-    "python_components": 65,
+    "registered_programs": 71,
+    "python_components": 60,
     "python_components_with_concrete_io_contract": 1,
     "python_components_with_declared_registry_dependencies": 14,
     "independently_dispatchable_python_components": 1,
@@ -1813,6 +1813,113 @@
         "independent_verifier"
       ],
       "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "storage_incident_store",
+      "path": "storage/v2/incident_store.py",
+      "declared_capabilities": [
+        "incident_ledger_persistence"
+      ],
+      "registry_dependencies": [
+        "storage_queue_store",
+        "script_incident_state"
+      ],
+      "current_registry_inputs": [
+        "validated incident event",
+        "verified recovery event"
+      ],
+      "current_registry_outputs": [
+        "incident state transition",
+        "append-only event record"
+      ],
+      "current_invocation": "only from workflow_storage_incident_management",
+      "contract_status": "active_storage_management_incident_service",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [],
+      "audit_note": "No direct GitHub Issues access. The only writable path is storage/v2/incidents.json through storage_queue_store."
+    },
+    {
+      "id": "storage_migration",
+      "path": "storage/v2/migration.py",
+      "declared_capabilities": [
+        "storage_management_support"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "validated state or artifact references"
+      ],
+      "current_registry_outputs": [
+        "validated projection, migration result or integrity report"
+      ],
+      "current_invocation": "imported only by registered Watchdog, Dashboard, Production or Storage Management entry points",
+      "contract_status": "library_only_non_dispatchable",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "No independent credential grant or workflow dispatch. Runtime write authority is determined by the calling four-system workflow and Storage Management allowlists."
+    },
+    {
+      "id": "storage_queue_store",
+      "path": "storage/v2/queue_store.py",
+      "declared_capabilities": [
+        "storage_json_sha_cas"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "allowlisted repository path",
+        "repository token",
+        "expected logical revision"
+      ],
+      "current_registry_outputs": [
+        "verified JSON document",
+        "Git blob SHA",
+        "logical revision SHA"
+      ],
+      "current_invocation": "Storage Management persistence adapter called by Watchdog queue clients and the Storage Management incident workflow.",
+      "contract_status": "active_storage_management_persistence_adapter",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [],
+      "audit_note": "Only automation/task_queue.json and storage/v2/incidents.json are allowlisted. Watchdog queue clients and the incident workflow call this single Storage Management writer; all writes use Contents API SHA-CAS and read-after-write verification. No Issues API, rulesets/** or modules/** writes."
+    },
+    {
+      "id": "storage_verify_archive_inventory",
+      "path": "storage/v2/verify_archive_inventory.py",
+      "declared_capabilities": [
+        "storage_management_support"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "validated state or artifact references"
+      ],
+      "current_registry_outputs": [
+        "validated projection, migration result or integrity report"
+      ],
+      "current_invocation": "imported only by registered Watchdog, Dashboard, Production or Storage Management entry points",
+      "contract_status": "library_only_non_dispatchable",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "No independent credential grant or workflow dispatch. Runtime write authority is determined by the calling four-system workflow and Storage Management allowlists."
     }
   ],
   "workflow_capabilities": [

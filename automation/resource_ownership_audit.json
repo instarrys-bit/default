@@ -237,25 +237,23 @@
         "automation/task_queue.json"
       ],
       "writers": [
-        "script_github_queue_store",
-        "script_remote_task_queue_runtime",
-        "script_resource_lease_runtime",
-        "script_task_scheduler",
-        "workflow_automation_watchdog"
+        "storage_queue_store"
       ],
       "lease_key": "github-contents-cas:automation/task_queue.json",
       "status": "active_storage_management_json_sha_cas",
       "note": "The live queue is the repository JSON file automation/task_queue.json. Storage Management uses Contents Blob SHA-CAS and read-after-write verification; task/resource leases and assessment checkpoints share this revisioned document. No Issue comment chain is used.",
       "known_writers": [
-        "storage_queue_store",
+        "storage_queue_store"
+      ],
+      "lock_key": "contents-cas:automation/task_queue.json",
+      "required_mode": "repository_json_contents_sha_cas_with_live_task_and_resource_fences",
+      "clients": [
         "script_remote_task_queue_runtime",
         "script_resource_lease_runtime",
         "script_task_scheduler",
         "workflow_automation_watchdog",
         "script_assess_sources"
-      ],
-      "lock_key": "contents-cas:automation/task_queue.json",
-      "required_mode": "repository_json_contents_sha_cas_with_live_task_and_resource_fences"
+      ]
     },
     {
       "id": "independent_source_assessment_queue_checkpoint",
@@ -263,14 +261,17 @@
         "automation/task_queue.json task.assessment_checkpoint"
       ],
       "writers": [
-        "script_assess_sources",
-        "script_remote_task_queue_runtime",
-        "workflow_automation_watchdog"
+        "storage_queue_store"
       ],
       "lock_key": "contents-cas:automation/task_queue.json + logical/production-pipeline + logical/source-assessment-checkpoints + logical/source-dag-supervision",
       "required_mode": "repository_json_contents_sha_cas_with_live_task_and_resource_fences",
       "status": "bounded_task_checkpoint_fenced",
-      "note": "Per-URL results are stored only in the currently claimed task's assessment_checkpoint within automation/task_queue.json. Storage Management validates task identity, active task lease, exact predecessor run/digest and resource fencing tokens before SHA-CAS update."
+      "note": "Per-URL results are stored only in the currently claimed task's assessment_checkpoint within automation/task_queue.json. Storage Management validates task identity, active task lease, exact predecessor run/digest and resource fencing tokens before SHA-CAS update.",
+      "clients": [
+        "script_assess_sources",
+        "script_remote_task_queue_runtime",
+        "workflow_automation_watchdog"
+      ]
     },
     {
       "id": "independent_source_dag_supervision",
@@ -555,7 +556,7 @@
       ],
       "lock_key": "logical/production-pipeline + logical/source-assessment-checkpoints + logical/source-dag-supervision + exact assessment output resource keys in monolithic mode; per-run RUNNER_TEMP isolation in independent mode",
       "required_mode": "isolated_per_run_artifact_workspace",
-      "status": "active_runner_local_artifacts_and_fenced_issue_checkpoint",
+      "status": "active_runner_local_artifacts_and_fenced_repository_json_checkpoint",
       "note": "Independent assessment JSON and report are per-run RUNNER_TEMP artifacts. Watchdog adds a provenance proof binding the exact Assessment task, verified Discovery predecessor, producer workflow run/head SHA and every artifact file digest before immutable upload. Production independently resolves and verifies that artifact; only the bounded task assessment_checkpoint is shared through automation/task_queue.json CAS. No assessment document is committed or published."
     },
     {
@@ -629,6 +630,6 @@
       "Global dynamic path, third-party Action and cross-workflow runtime evidence remains required before enabling unrelated capabilities."
     ]
   },
-  "limitation": "The active source DAG uses runner-local immutable artifacts and a fenced automation/task_queue.json checkpoint owned by Storage Management. Incident state is held in storage/v2/incidents.json. No runtime workflow or script calls GitHub Issues. Production deliverables are limited to rulesets/**; modules/** remain read-only.",
+  "limitation": "The active source DAG uses runner-local immutable artifacts and a Storage Management-owned automation/task_queue.json checkpoint. Incident state is held in storage/v2/incidents.json. No runtime workflow or script calls GitHub Issues. Production deliverables are limited to rulesets/**; modules/** remain read-only.",
   "reviewed_at": "2026-11-18"
 }

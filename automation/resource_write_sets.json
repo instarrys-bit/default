@@ -809,7 +809,7 @@
       "lease_enforcement": "Durable queue changes use GitHubContentsQueueStore Blob-SHA compare-and-swap and queue validation; resource fencing tokens are checked against the exact active task and lease proof.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [],
-      "control_plane_consistency": "append_only_issue_snapshot_chain",
+      "control_plane_consistency": "repository_json_contents_sha_cas_revision_chain",
       "write_boundary_fencing": "No GitHub Contents API or repository-file write is used for durable queue state; candidate queues are validated before and after each append, with bounded re-read/reapply after conflicts."
     },
     {
@@ -1128,17 +1128,19 @@
         "automation/task_queue.json"
       ],
       "writers": [
-        "storage_queue_store",
+        "storage_queue_store"
+      ],
+      "lock_key": "contents-cas:automation/task_queue.json",
+      "mode": "compare_and_swap",
+      "enforcement": "Storage Management reads the current Contents Blob SHA and logical revision, validates task/resource fencing, conditionally writes the next revision, then verifies the persisted document and new blob SHA. Stale SHA/409 conflicts fail closed and are retried only within the bounded store retry policy.",
+      "note": "automation/task_queue_rebuild_seed.json is the read-only bootstrap. The live queue, assessment checkpoints and resource leases are a single repository JSON document owned by Storage Management; no Issue comments or Issue API are used.",
+      "clients": [
         "script_remote_task_queue_runtime",
         "script_resource_lease_runtime",
         "script_task_scheduler",
         "workflow_automation_watchdog",
         "script_assess_sources"
-      ],
-      "lock_key": "contents-cas:automation/task_queue.json",
-      "mode": "compare_and_swap",
-      "enforcement": "Storage Management reads the current Contents Blob SHA and logical revision, validates task/resource fencing, conditionally writes the next revision, then verifies the persisted document and new blob SHA. Stale SHA/409 conflicts fail closed and are retried only within the bounded store retry policy.",
-      "note": "automation/task_queue_rebuild_seed.json is the read-only bootstrap. The live queue, assessment checkpoints and resource leases are a single repository JSON document owned by Storage Management; no Issue comments or Issue API are used."
+      ]
     },
     {
       "resource": "logical/production-pipeline",
@@ -1422,6 +1424,12 @@
       "evidence": "Domain parsing/indexing helpers; static scan found no filesystem mutation or external write calls."
     },
     {
+      "program_id": "script_github_queue_store",
+      "source": "scripts/github_queue_store.py",
+      "classification": "storage_management_compatibility_import_shim_non_dispatchable",
+      "evidence": "Compatibility import shim only. It re-exports the Storage Management queue store and performs no filesystem writes, token handling, network calls or repository mutations."
+    },
+    {
       "program_id": "script_incident_state",
       "source": "scripts/incident_state.py",
       "classification": "storage_state_transition_library_non_writer",
@@ -1512,6 +1520,12 @@
       "evidence": "Reads release pins and compatibility contracts and fails closed on mismatches; no repository file mutation sites."
     },
     {
+      "program_id": "script_validate_source_registry_artifact",
+      "source": "scripts/validate_source_registry_artifact.py",
+      "classification": "runner_local_ephemeral_output_non_dispatchable",
+      "evidence": "The validator writes only to tempfile.TemporaryDirectory() under the GitHub runner's temporary filesystem. It invokes the existing JSON document store against that isolated path, reads the resulting manifest and shards back to verify SHA-256 digests, record counts, per-file size limits and exact logical equality, then removes the temporary directory on exit. It has no repository output path, no dispatch capability, and no source activation or policy mutation."
+    },
+    {
       "program_id": "script_verify_assess_sources_artifacts",
       "source": "scripts/verify_assess_sources_artifacts.py",
       "classification": "read_only_artifact_verifier",
@@ -1542,10 +1556,16 @@
       "evidence": "Computes bounded recovery eligibility from supplied run metadata; no filesystem or external write calls."
     },
     {
-      "program_id": "script_validate_source_registry_artifact",
-      "source": "scripts/validate_source_registry_artifact.py",
-      "classification": "runner_local_ephemeral_output_non_dispatchable",
-      "evidence": "The validator writes only to tempfile.TemporaryDirectory() under the GitHub runner's temporary filesystem. It invokes the existing JSON document store against that isolated path, reads the resulting manifest and shards back to verify SHA-256 digests, record counts, per-file size limits and exact logical equality, then removes the temporary directory on exit. It has no repository output path, no dispatch capability, and no source activation or policy mutation."
+      "program_id": "storage_migration",
+      "source": "storage/v2/migration.py",
+      "classification": "pure_migration_manifest_validation_library_non_dispatchable",
+      "evidence": "Pure path and frozen archive manifest validation; no filesystem or network mutations."
+    },
+    {
+      "program_id": "storage_verify_archive_inventory",
+      "source": "storage/v2/verify_archive_inventory.py",
+      "classification": "read_only_archive_integrity_verifier_non_dispatchable",
+      "evidence": "Reads the frozen archive tree through GitHub GET requests only; no mutation HTTP methods or repository writes."
     }
   ],
   "control_plane_side_effects": [
@@ -1568,7 +1588,7 @@
         "automation/task_queue.json Contents API SHA-CAS updates (repository durable queue state)"
       ],
       "file_writes": [],
-      "control_plane_boundary": "Delegates durable state writes to storage_queue_store, which only allows automation/task_queue.json and storage/v2/incidents.json and verifies Contents API SHA-CAS read-after-write."
+      "control_plane_boundary": "Queue orchestration client. All durable task/lease/checkpoint reads and mutations go through storage_queue_store; no direct GitHub Issues API or independent persistent writer."
     },
     {
       "program_id": "storage_incident_store",
@@ -1595,7 +1615,7 @@
   "direct_mutation_scan": {
     "status": "partial_python_direct_callsite_scan",
     "scanner": "tests/test_transitive_write_site_inventory.py",
-    "registered_component_count": 56,
+    "registered_component_count": 60,
     "mutation_api_families": [
       "Path/open write modes",
       "Path write_text/write_bytes/unlink/mkdir/replace/rename/touch",
