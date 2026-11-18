@@ -188,7 +188,7 @@
     ],
     "independent_verifier": "scripts/verify_assess_sources_artifacts.py independently checks runner-local runtime/history/report consistency, fingerprints exclusion and non-activation.",
     "remote_fetches_may_repeat": true,
-    "repository_writes": "No repository file writes, commits, or GitHub Contents API writes. Per-URL progress is stored only in automation/task_queue.json durable queue snapshots through append-only CAS under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences."
+    "repository_writes": "Assessment documents are runner-local immutable artifacts. The only repository mutation is the bounded per-URL checkpoint in automation/task_queue.json through Storage Management Contents API SHA-CAS under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences."
   },
   "dependency_edges": {
     "required_predecessor": "script_discover_sources",
@@ -255,7 +255,7 @@
     "total_attempts_including_initial": true,
     "identity": "workflow_run_id + artifact_sha256",
     "batch_selection": "deterministic stable offset",
-    "resume": "durable per-URL result checkpoint in automation/task_queue.json durable queue snapshots (repository bootstrap is read-only), atomically updated with queue repository JSON SHA-CAS queue under active task/resource fencing",
+    "resume": "durable per-URL result checkpoint in automation/task_queue.json via Storage Management Contents API SHA-CAS (repository bootstrap is read-only), atomically updated with queue repository JSON SHA-CAS queue under active task/resource fencing",
     "remote_fetches_may_repeat": "only for URLs not yet checkpointed or whose previous fetch failed before a result was persisted",
     "repository_writes": "per-URL durable queue checkpoint; final verified history/report outputs under live fenced leases"
   }

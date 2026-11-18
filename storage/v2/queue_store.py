@@ -47,7 +47,7 @@ class GitHubContentsJsonStore:
     def _request(self, method, url, payload=None):
         if not self.token:
             raise GitHubAPIError("GitHub token required")
-        headers = {"Accept": "application/vnd.github+json", "Authorization": f"Bearer {self.token}", "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "shadowrocket-repo-queue"}
+        headers = {"Accept": "application/vnd.github+json", "Authorization": f"Bearer {self.token}", "X-GitHub-Api-Version": "2022-11-28", "User-Agent": "shadowrocket-storage-management"}
         data = None
         if payload is not None:
             headers["Content-Type"] = "application/json"
@@ -106,7 +106,7 @@ class GitHubContentsJsonStore:
             d.setdefault("tasks", []); d.setdefault("resource_leases", {})
         else:
             d.setdefault("incidents", []); d.setdefault("events", [])
-        self._write_remote(d, git_blob_sha=None, message="chore(automation): bootstrap task queue JSON")
+        self._write_remote(d, git_blob_sha=None, message=f"chore(storage): bootstrap {self.path}")
         return self.read()
 
     def _cas(self, document, expected_sha, current):
