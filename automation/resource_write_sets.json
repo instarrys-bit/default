@@ -788,7 +788,7 @@
       "program_id": "script_resource_lease_runtime",
       "source": "scripts/resource_lease_runtime.py",
       "writes": [
-        "automation/task_queue.json comment snapshots (external durable queue state)"
+        "automation/task_queue.json Contents API SHA-CAS snapshots (external durable queue state)"
       ],
       "document_store": [],
       "dynamic_children": [],
@@ -1545,10 +1545,10 @@
       "source": "scripts/github_queue_store.py",
       "classification": "repository_json_contents_sha_cas_queue_store",
       "side_effects": [
-        "automation/task_queue.json comment snapshots (external durable queue state)"
+        "automation/task_queue.json Contents API SHA-CAS snapshots (external durable queue state)"
       ],
       "file_writes": [],
-      "control_plane_boundary": "Mutates automation/task_queue.json comments only; writes only automation/task_queue.json through Contents API SHA-CAS. Snapshot integrity is hash chained and queue state is re-read and validated before/after append. Concurrency/fencing proof for all concurrent queue writers remains an open Issue #193 acceptance item."
+      "control_plane_boundary": "Mutates only automation/task_queue.json through Contents API SHA-CAS; writes only automation/task_queue.json through Contents API SHA-CAS. Snapshot integrity is hash chained and queue state is re-read and validated before/after append. Concurrency/fencing proof for all concurrent queue writers remains an open concurrency acceptance criterion tracked in the storage audit."
     },
     {
       "program_id": "script_github_workflow_adapter",
@@ -1566,10 +1566,10 @@
       "source": "scripts/remote_task_queue_runtime.py",
       "classification": "repository_json_contents_sha_cas_queue_store",
       "side_effects": [
-        "automation/task_queue.json comment snapshots (external durable queue state)"
+        "automation/task_queue.json Contents API SHA-CAS snapshots (external durable queue state)"
       ],
       "file_writes": [],
-      "control_plane_boundary": "Mutates automation/task_queue.json comments only; writes only automation/task_queue.json through Contents API SHA-CAS. Snapshot integrity is hash chained and queue state is re-read and validated before/after append. Concurrency/fencing proof for all concurrent queue writers remains an open Issue #193 acceptance item."
+      "control_plane_boundary": "Mutates only automation/task_queue.json through Contents API SHA-CAS; writes only automation/task_queue.json through Contents API SHA-CAS. Snapshot integrity is hash chained and queue state is re-read and validated before/after append. Concurrency/fencing proof for all concurrent queue writers remains an open concurrency acceptance criterion tracked in the storage audit."
     }
   ],
   "direct_mutation_scan": {

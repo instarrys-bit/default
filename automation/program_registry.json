@@ -88,7 +88,7 @@
         "script_discover_sources"
       ],
       "dispatches": [],
-      "permission_boundary": "Read only the exact verified discovery artifact and read-only baseline files. Write assessment documents only under the isolated RUNNER_TEMP artifact root; no repository file writes, commits, or GitHub Contents API writes. The sole shared mutation is the current task's bounded assessment_checkpoint in automation/task_queue.json, guarded by the active task lease, logical/source-assessment-checkpoints and logical/production-pipeline fences. No source activation; modules/uu.conf and sources/domain_sources.json remain read-only.",
+      "permission_boundary": "Read only the exact verified discovery artifact and read-only baseline files. Write assessment documents only under the isolated RUNNER_TEMP artifact root; no repository file writes, commits, or GitHub Contents API writes. The only shared mutation is the current task's bounded assessment_checkpoint in automation/task_queue.json via the Storage Management queue store, guarded by the active task lease, logical/source-assessment-checkpoints and logical/production-pipeline fences. No source activation; modules/uu.conf and sources/domain_sources.json remain read-only.",
       "health_check": "Scheduler validates the exact discovery predecessor digest from the external runner-local artifact root, the assessor validates task/resource fencing before each queue checkpoint CAS, and verify_assess_sources_artifacts.py independently checks the runner-local output documents and non-activation.",
       "orchestration": {
         "enabled": true,
@@ -590,7 +590,7 @@
       "id": "script_github_queue_store",
       "path": "scripts/github_queue_store.py",
       "kind": "python_component",
-      "responsibility": "provide append-only GitHub Issue comment snapshot persistence for the cross-runner task queue; repository bootstrap JSON is read-only",
+      "responsibility": "provide repository JSON task queue persistence through GitHub Contents API SHA-CAS; bootstrap JSON is read-only",
       "capabilities": [
         "github_queue_storage"
       ],
@@ -834,7 +834,7 @@
       ],
       "depends_on": [],
       "dispatches": [],
-      "permission_boundary": "Read-only deterministic classification and hashing; may read sources/request_domain_observations.json comments using caller-provided token. No repository Contents writes, queue writes, ruleset writes, or modification of modules/uu.conf.",
+      "permission_boundary": "Read-only deterministic classification and hashing; reads only the checked-in sources/request_domain_observations.json seed; no external observation transport. No repository Contents writes, queue writes, ruleset writes, or modification of modules/uu.conf.",
       "health_check": "Dedicated deterministic unit tests plus Watchdog workflow integration tests.",
       "orchestration": {
         "enabled": false,
@@ -929,7 +929,7 @@
       "id": "script_remote_task_queue_runtime",
       "path": "scripts/remote_task_queue_runtime.py",
       "kind": "python_component",
-      "responsibility": "execute durable task queue transitions through repository JSON Contents API SHA-CAS",
+      "responsibility": "execute durable task queue transitions through the Storage Management repository JSON Contents API SHA-CAS interface",
       "capabilities": [
         "remote_task_queue_runtime"
       ],
@@ -950,7 +950,7 @@
         "script_task_queue"
       ],
       "dispatches": [],
-      "permission_boundary": "Requires caller-provided GitHub Contents API read/write permission for automation/task_queue.json; repository task_queue_rebuild_seed.json is read-only bootstrap state and no repository Contents write is performed.",
+      "permission_boundary": "Requires caller-provided GitHub Contents API read/write permission for automation/task_queue.json; repository task_queue_rebuild_seed.json is read-only bootstrap state and no path outside automation/task_queue.json may be written.",
       "health_check": "Unit tests for Issue-backed enqueue, idempotency, priority claims, lease ownership, retry/dead-letter transitions, and expired-lease recovery.",
       "orchestration": {
         "enabled": false,
@@ -1731,7 +1731,7 @@
         "repository state and declared workflow inputs"
       ],
       "outputs": [
-        "workflow run diagnosis and incident reports through GitHub Contents API; no repository changes"
+        "workflow diagnosis artifacts and Storage Management incident-ledger dispatch; no direct repository changes"
       ],
       "depends_on": [
         "script_diagnose_workflow_failure",
@@ -1739,7 +1739,7 @@
         "script_verify_recovery_run"
       ],
       "dispatches": [],
-      "permission_boundary": "Read-only repository access; may create/update GitHub Contents API for incident reporting only. No repository contents, pull-request, branch, commit, or ruleset writes.",
+      "permission_boundary": "Read-only repository access; dispatches Storage Management incident operations through actions:write. No direct repository contents, pull-request, branch, commit, or ruleset writes.",
       "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",
       "orchestration": {
         "enabled": false,
@@ -1935,7 +1935,7 @@
         "script_remote_task_queue_runtime"
       ],
       "dispatches": [],
-      "permission_boundary": "contents:read and contents:read only to read and validate the canonical queue; actions:write only to upload a run-scoped immutable Actions artifact. No repository contents writes, commits, branch updates, queue mutations, task dispatch, source activation, ruleset publication, or writes to modules/uu.conf.",
+      "permission_boundary": "contents:read only to read and validate the canonical queue; actions:write only to upload a run-scoped immutable Actions artifact. No repository contents writes, commits, branch updates, queue mutations, task dispatch, source activation, ruleset publication, or writes to modules/uu.conf.",
       "health_check": "The snapshot CLI must validate the canonical automation/task_queue.json envelope and report revision/task count; the exact output file must be uploaded under a unique run ID. Missing or invalid snapshots fail the job; the upload step cannot turn a failed export into a successful run.",
       "orchestration": {
         "enabled": false,
