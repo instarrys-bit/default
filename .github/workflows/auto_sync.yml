@@ -106,7 +106,7 @@ jobs:
           mode="$(jq -er '.source_discovery_mode | select(. == "independent" or . == "monolithic_fallback")' automation/production_control.json)"
           echo "mode=$mode" >> "$GITHUB_OUTPUT"
 
-      - name: Export durable queue snapshot from Issue state
+      - name: Export durable queue snapshot from repository JSON state
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -742,7 +742,7 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
-      - name: Export durable queue snapshot from Issue state
+      - name: Export durable queue snapshot from repository JSON state
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}

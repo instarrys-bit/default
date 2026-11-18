@@ -1042,7 +1042,7 @@
         "task-queue-lease-snapshot.json",
         "task-result.json"
       ],
-      "write_boundary_fencing": "Durable queue state is external Issue comment history, not a repository file; task and resource lease/fencing validation remains mandatory. Temporary paths are runner-local."
+      "write_boundary_fencing": "Task scheduling is a caller of the Storage Management queue store. Durable queue state is repository JSON in automation/task_queue.json and all mutations use storage_queue_store SHA-CAS with task/resource fencing. Temporary paths are runner-local."
     },
     {
       "program_id": "script_register_discovered_sources",

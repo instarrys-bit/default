@@ -402,7 +402,7 @@
       "lock_key": "read-only checked-in observation seed",
       "required_mode": "read_only_checked_in_seed",
       "status": "checked_in_seed_read_only",
-      "note": "The checked-in observation seed is read-only. Production Intent and candidate import consume it; external Issue ingestion and all repository write modes were removed."
+      "note": "The checked-in observation seed is read-only. Production Intent and candidate import consume it; the former external comment intake path was removed and no repository writer remains."
     },
     {
       "id": "review_cursor_checkpoint",

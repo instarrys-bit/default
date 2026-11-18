@@ -301,7 +301,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
             item for item in writes["confirmed_shared_write_groups"]
             if item["resource"] == "durable task queue control-plane state"
         )
-        self.assertEqual(group["mode"], "repository_json_contents_sha_cas")
+        self.assertEqual(group["mode"], "compare_and_swap")
         self.assertEqual(group["writers"], ["storage_queue_store"])
         self.assertIn("workflow_automation_watchdog", group["clients"])
 
