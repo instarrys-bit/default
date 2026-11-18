@@ -1668,6 +1668,7 @@
       ],
       "depends_on": [
         "script_production_intent",
+        "script_remote_task_queue_runtime",
         "script_refresh_ruleset_manifest",
         "script_remote_task_queue_runtime",
         "script_task_scheduler",
