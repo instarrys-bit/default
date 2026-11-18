@@ -44,7 +44,7 @@ class FourSystemCleanupTests(unittest.TestCase):
             content = (ROOT / relative).read_text(encoding="utf-8")
             with self.subTest(path=relative):
                 self.assertIsNone(
-                    re.search(r"(?m)^\\s*issues:\\s*(?:read|write)\\s*$", content),
+                    re.search(r"(?m)^\s*issues:\s*(?:read|write)\s*$", content),
                     f"{relative} requests an unnecessary GitHub Issues permission",
                 )
 
