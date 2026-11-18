@@ -2,10 +2,10 @@
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
   "workflow_blob_sha": "3321e99e1ee62674945495d7573ee395a9103a38",
-  "registry_blob_sha": "da5e89486c5aa1c2ed10330f99f017ca0b61f10e",
+  "registry_blob_sha": "57bdbda5bc00102d8a90f4f2644e08b11358006f",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
-    "job_count": 7,
+    "job_count": 8,
     "step_count": 61,
     "independent_python_dispatch_enabled": true,
     "independent_workflow_count": 1
@@ -361,12 +361,12 @@
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
     "release_manifest_blob_sha": "75ea172c5ac973e3fed7f9c2329037ad824f44bd",
-    "program_registry_blob_sha": "da5e89486c5aa1c2ed10330f99f017ca0b61f10e",
-    "execution_adapters_blob_sha": "3302a7158a82f8ae60046940003f876564e0090c",
+    "program_registry_blob_sha": "57bdbda5bc00102d8a90f4f2644e08b11358006f",
+    "execution_adapters_blob_sha": "e252c588903f1807124e027b2cf237b09b73b2c7",
     "added_after_release_baseline": true,
     "note": "The independent source DAG is enabled under the scoped release allowlist. The production deliverables are exactly DIRECT, PROXY and REJECT; queue/checkpoint state and immutable runner-local artifacts are separate control-plane/runtime resources. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07",
-    "registry_blob_sha": "d9958268cf57c5d2ba507bf61a5ef8fc56b3240a",
+    "registry_blob_sha": "57bdbda5bc00102d8a90f4f2644e08b11358006f",
     "source_dag_scope": "End-to-end Watchdog-owned Discovery → immutable artifact verification → non-activating Assessment → immutable Assessment artifact proof → production artifact re-verification → source matrix → deterministic admission → production collection. REJECT is automatically published after deterministic first-stage review, stricter secondary evidence gates and config-conflict checks; human review is exception-only; uu.conf is read-only."
   },
   "independent_dags": [

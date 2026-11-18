@@ -2,12 +2,12 @@
   "schema_version": 1,
   "audit_id": "capability-contract-inventory-source-dag-active-2026-11-07",
   "status": "baseline_inventory",
-  "source_registry_blob_sha": "da5e89486c5aa1c2ed10330f99f017ca0b61f10e",
+  "source_registry_blob_sha": "57bdbda5bc00102d8a90f4f2644e08b11358006f",
   "summary": {
-    "registered_programs": 66,
-    "python_components": 56,
+    "registered_programs": 76,
+    "python_components": 65,
     "python_components_with_concrete_io_contract": 1,
-    "python_components_with_declared_registry_dependencies": 6,
+    "python_components_with_declared_registry_dependencies": 14,
     "independently_dispatchable_python_components": 1,
     "note": "Counts reflect registry declarations, not runtime call-graph completeness."
   },
@@ -1914,6 +1914,7 @@
     }
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2"
+    "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
+    "execution_adapters_blob_sha": "e252c588903f1807124e027b2cf237b09b73b2c7"
   }
 }
