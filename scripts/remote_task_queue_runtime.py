@@ -142,7 +142,7 @@ def enqueue_remote(task: dict, store: GitHubContentsQueueStore,
                 raise ValueError("manual authorization has already been consumed by another task")
         item = {
             "task_id": task_id,
-            "execution_backend": "github_contents",
+            "execution_backend": "github_issue_comments",
             "idempotency_key": idem,
             "trace_id": trace_id,
             "requester_program_id": task["requester_program_id"],
