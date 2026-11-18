@@ -47,6 +47,7 @@ on:
 
 permissions:
   contents: read
+  issues: read
 
 jobs:
   focused-tests:
@@ -64,6 +65,38 @@ jobs:
       - name: Compile self-healing modules
         run: |
           python3 -m py_compile scripts/apply_safe_repair.py scripts/diagnose_workflow_failure.py scripts/refresh_ruleset_manifest.py scripts/watchdog_recovery_policy.py scripts/verify_recovery_run.py scripts/incident_state.py
+      - name: Verify live durable queue snapshot without mutation
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main validate | tee "$RUNNER_TEMP/live-queue-validation.json"
+          python3 - "$RUNNER_TEMP/live-queue-validation.json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          result = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          if result.get("valid") is not True:
+              raise SystemExit("Live durable queue did not pass the read-only integrity check.")
+          revision = result.get("revision")
+          task_count = result.get("task_count")
+          content_sha = result.get("content_sha")
+          if isinstance(revision, bool) or not isinstance(revision, int) or revision < 1:
+              raise SystemExit("Live queue revision is invalid.")
+          if isinstance(task_count, bool) or not isinstance(task_count, int) or task_count < 0:
+              raise SystemExit("Live queue task count is invalid.")
+          prefix, separator, digest = str(content_sha or "").partition(":")
+          if separator != ":" or prefix != str(revision) or len(digest) != 64 or any(char not in "0123456789abcdef" for char in digest):
+              raise SystemExit("Live queue canonical revision digest is invalid.")
+          print(json.dumps({
+              "read_only": True,
+              "revision": revision,
+              "task_count": task_count,
+              "content_sha": content_sha,
+          }, sort_keys=True))
+          PY
       - name: Test bounded watchdog recovery policy
         run: python3 -m unittest discover -s tests -p "test_watchdog_recovery_policy.py" -v
       - name: Test independent recovery verification
