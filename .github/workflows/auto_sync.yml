@@ -952,13 +952,13 @@ jobs:
     steps:
       - name: Dispatch incident record to Storage Management
         env:
-          GH_TOKEN: \${{ github.token }}
-          REPO: \${{ github.repository }}
-          RUN_URL: \${{ github.server_url }}/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-          COMMIT_SHA: \${{ github.sha }}
-          RUN_ID: \${{ github.run_id }}
-          AUDIT_RESULT: \${{ needs.audit.result }}
-          PUBLISH_RESULT: \${{ needs.publish.result }}
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          COMMIT_SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+          AUDIT_RESULT: ${{ needs.audit.result }}
+          PUBLISH_RESULT: ${{ needs.publish.result }}
         run: |
           set -euo pipefail
           summary="The deterministic pipeline ended with audit=$AUDIT_RESULT and publish=$PUBLISH_RESULT."
@@ -979,10 +979,10 @@ jobs:
     steps:
       - name: Dispatch verified incident recovery to Storage Management
         env:
-          GH_TOKEN: \${{ github.token }}
-          REPO: \${{ github.repository }}
-          RUN_URL: \${{ github.server_url }}/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-          RUN_ID: \${{ github.run_id }}
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
           gh workflow run storage-incident-management.yml --repo "$REPO" --ref main \
