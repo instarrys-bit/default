@@ -1,6 +1,6 @@
 # Four-System Cutover Audit
 
-This is an execution gate, not a claim of completion. The repository currently contains overlapping legacy and V2 implementations. A safe one-pass deletion is not possible until active call graphs and state migration are reconciled.
+This is an execution record and retirement gate, not a claim of full cutover. The primary task queue is already stored in repository JSON through GitHub Contents API SHA-CAS. The V2 event-sourced store is not yet the live queue backend, and active incident workflows still contain GitHub Issues operations.
 
 ## Protected paths
 
@@ -13,14 +13,25 @@ Baseline checked on 2026-11-18:
 - `modules/AdBlock.sgmodule` blob SHA: `abc839751adeb19f87674db154b5650371307143`
 - `modules/adblock/scripts/Clean_Pro.js` blob SHA: `9f229fdcc62461e8adab1e9301b1c617cdcc659b`
 
+## Retirements completed in this branch
+
+- Deleted the completed Issue-to-repository queue migration workflow.
+- Deleted the duplicate five-minute V2 Watchdog schedule and its registry/adapter declarations.
+- Deleted the stale queue pointer containing Issue index/backend references.
+- Removed the Issue-number compatibility switch from the repository-JSON queue store; it now uses Contents API SHA-CAS only.
+- Removed Issue #317 request-observation fetching; Production now reads the checked-in observation seed only.
+- Removed unused Issues permissions from Source Discovery, queue snapshot, Dashboard, and queue lease recovery workflows.
+- Replaced the old Issue-comment queue-store test suite with tests for repository JSON Contents API behavior.
+
 ## Current blockers found during audit
 
-1. **Issue-era queue migration is incomplete.** Legacy workflow names and registries remain, while the active Watchdog still imports the remote task scheduler/queue runtime. Removing those files now would break dispatch and recovery.
-2. **Queue persistence has multiple competing representations.** The repository contains task queue JSON, queue pointers/bundles, migration/recovery workflows, and V2 storage code. A canonical durable store and migration of live task/lease state must be selected before deleting any representation.
+1. **Incident Issues remain active.** `auto_sync.yml`, `automation-watchdog.yml`, and `self-healing-agent.yml` still create/update/close GitHub Issues for failure and recovery incidents. These must move to Storage Management before all Issues permissions and API calls can be removed.
+2. **The V2 event-sourced store is not yet live.** `storage/v2/queue_seed.json` is an empty bootstrap template; no verified migration has promoted the live task queue and leases into `storage/v2/state.json`.
+3. **Queue state must remain intact.** The active repository JSON queue is revision 877 with 160 tasks (39 SUCCEEDED, 89 CANCELLED, 29 DEAD_LETTER, 3 QUEUED) and 23 resource-lease records. The queue and historical snapshots are preserved; no tasks were reset or replayed.
 3. **Watchdog and recovery overlap.** Several scheduled workflows and adapters remain active. Their trigger graph and ownership must be collapsed to one Watchdog entry point before retirement.
-4. **Production is not yet isolated from orchestration.** Existing scheduler/adapter modules still combine queue operations, GitHub workflow dispatch, and production task execution.
-5. **Dashboard has multiple generations.** The legacy dashboard and V2 dashboard must be reconciled to one read-only view backed by Storage Management projections.
-6. **Existing open PRs are not a safe substitute for this cutover.** PR #603 retains Issue-comment persistence and is incompatible with the no-Issues requirement. PR #632 is a separate config-baseline change and must be revalidated against the current base before reuse.
+5. **Production is not yet isolated from orchestration.** Existing scheduler/adapter modules still combine queue operations, GitHub workflow dispatch, and production task execution.
+6. **Dashboard has multiple generations.** The legacy dashboard and V2 dashboard must be reconciled to one read-only view backed by Storage Management projections.
+7. **Existing open PRs are not a safe substitute for this cutover.** PR #603 retains Issue-comment persistence and is incompatible with the no-Issues requirement. PR #632 is a separate config-baseline change and must be revalidated against the current base before reuse.
 
 ## Required execution sequence
 
