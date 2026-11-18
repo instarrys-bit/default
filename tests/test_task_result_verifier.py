@@ -162,6 +162,16 @@ class TaskResultVerifierTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "requires independent verification"):
             validate_candidate(candidate, self.registry)
 
+    def test_legacy_contents_backed_task_cannot_be_marked_succeeded_without_verification(self):
+        self.make_verifying_task({"ok": True})
+        candidate = copy.deepcopy(self.store.document)
+        task = candidate["tasks"][0]
+        task["execution_backend"] = "github_contents"
+        task["status"] = "SUCCEEDED"
+        task["state_history"].append("SUCCEEDED")
+        with self.assertRaisesRegex(ValueError, "requires independent verification"):
+            validate_candidate(candidate, self.registry)
+
     def test_missing_reviewed_contract_blocks_without_mutation(self):
         task = self.make_verifying_task({"ok": True})
         before = copy.deepcopy(self.store.document)
