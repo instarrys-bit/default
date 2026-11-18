@@ -607,7 +607,7 @@
         "storage_queue_store"
       ],
       "dispatches": [],
-      "permission_boundary": "Requires caller-supplied GitHub Contents API read/write permission to append and read compressed queue snapshots in automation/task_queue.json. It performs no writes outside automation/task_queue.json and never logs token values.",
+      "permission_boundary": "Compatibility import shim only; delegates to storage_queue_store. It performs no network or repository writes independently.",
       "health_check": "Mocked API tests for snapshot compression, SHA-256 chain validation, canonical duplicate-revision resolution, bounded conflict retries, and fail-closed API errors.",
       "orchestration": {
         "enabled": false,
@@ -813,7 +813,7 @@
       "id": "script_production_intent",
       "path": "scripts/production_intent.py",
       "kind": "python_component",
-      "responsibility": "compute production fingerprints using repository inputs plus append-only external sources/request_domain_observations.json request observations, and classify whether a production audit is required",
+      "responsibility": "compute production fingerprints from read-only repository inputs and the checked-in request-observation seed, then classify whether a ruleset audit is required",
       "capabilities": [
         "production_intent_classification",
         "production_input_fingerprinting"
@@ -821,10 +821,10 @@
       "invocation": "python_cli_and_python_library",
       "inputs": [
         "automation/production_inputs.json",
-        "repository changed-path set",
+        "read-only repository changed-path set",
         "last successful audit fingerprint and timestamp",
         "active and successful task fingerprints",
-        "append-only hostname observation batches from sources/request_domain_observations.json"
+        "checked-in sources/request_domain_observations.json observation seed"
       ],
       "outputs": [
         "deterministic production-demand decision",
@@ -833,7 +833,7 @@
       ],
       "depends_on": [],
       "dispatches": [],
-      "permission_boundary": "Read-only deterministic classification and hashing; reads only the checked-in sources/request_domain_observations.json seed; no external observation transport. No repository Contents writes, queue writes, ruleset writes, or modification of modules/uu.conf.",
+      "permission_boundary": "Read-only deterministic classification and hashing. No repository Contents writes, queue writes, observation-seed writes, ruleset writes, external Issues API or modification of modules/uu.conf.",
       "health_check": "Dedicated deterministic unit tests plus Watchdog workflow integration tests.",
       "orchestration": {
         "enabled": false,
