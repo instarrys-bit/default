@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 from storage.v2.queue_store import GitHubContentsJsonStore
 from incident_state import incident_key, transition_incident

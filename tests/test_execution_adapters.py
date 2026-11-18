@@ -53,7 +53,7 @@ class ExecutionAdapterTests(unittest.TestCase):
                  "workflow": {"path": ".github/workflows/run.yml", "dispatchable": True,
                  "inputs": [{"name": "item", "type": "string", "required": True},
                             {"name": "automation_task_id", "type": "string", "required": False}],
-                 "allowed_refs": ["main"], "caller_permissions_required": ["actions:write", "contents:write"]},
+                 "allowed_refs": ["main"], "caller_permissions_required": ["actions:write"]},
                  "timeout_seconds": 300, "retry": {"max_attempts": 0},
                  "completion": {"independent_verification_required": True}},
             ],
@@ -126,11 +126,11 @@ class ExecutionAdapterTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "automation_task_id"):
             validate_execution_adapters(root, ap, rp)
 
-    def test_rejects_workflow_caller_without_queue_storage_permission(self):
+    def test_rejects_workflow_caller_without_dispatch_permission(self):
         root, ap, rp, doc = self.make_repo()
-        doc["adapters"][1]["workflow"]["caller_permissions_required"] = ["actions:write"]
+        doc["adapters"][1]["workflow"]["caller_permissions_required"] = ["contents:write"]
         ap.write_text(json.dumps(doc), encoding="utf-8")
-        with self.assertRaisesRegex(ValueError, "actions:write and contents:write"):
+        with self.assertRaisesRegex(ValueError, "actions:write"):
             validate_execution_adapters(root, ap, rp)
 
     def test_rejects_invalid_resource_lease_contract(self):

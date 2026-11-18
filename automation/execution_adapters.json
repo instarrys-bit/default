@@ -1629,8 +1629,7 @@
           "main"
         ],
         "caller_permissions_required": [
-          "actions:write",
-          "contents:write"
+          "actions:write"
         ]
       },
       "timeout_seconds": 480,
@@ -1722,8 +1721,7 @@
           "main"
         ],
         "caller_permissions_required": [
-          "actions:write",
-          "contents:write"
+          "actions:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1814,8 +1812,7 @@
           "main"
         ],
         "caller_permissions_required": [
-          "actions:write",
-          "contents:write"
+          "actions:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1850,8 +1847,7 @@
           "main"
         ],
         "caller_permissions_required": [
-          "actions:write",
-          "contents:write"
+          "actions:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1882,8 +1878,7 @@
           "main"
         ],
         "caller_permissions_required": [
-          "actions:write",
-          "contents:write"
+          "actions:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1926,8 +1921,7 @@
           "main"
         ],
         "caller_permissions_required": [
-          "actions:write",
-          "contents:write"
+          "actions:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1975,8 +1969,7 @@
           "main"
         ],
         "caller_permissions_required": [
-          "actions:write",
-          "contents:write"
+          "actions:write"
         ]
       },
       "timeout_seconds": 30,
@@ -2023,8 +2016,7 @@
           "main"
         ],
         "caller_permissions_required": [
-          "actions:write",
-          "contents:write"
+          "actions:write"
         ]
       },
       "timeout_seconds": 30,
@@ -2065,8 +2057,7 @@
           "main"
         ],
         "caller_permissions_required": [
-          "actions:write",
-          "contents:write"
+          "actions:write"
         ]
       },
       "timeout_seconds": 600,
@@ -2101,8 +2092,7 @@
           "main"
         ],
         "caller_permissions_required": [
-          "actions:write",
-          "contents:write"
+          "actions:write"
         ]
       },
       "timeout_seconds": 300,
