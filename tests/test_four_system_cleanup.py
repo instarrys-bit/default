@@ -22,7 +22,7 @@ class FourSystemCleanupTests(unittest.TestCase):
                 self.assertFalse((ROOT / relative).exists(), relative)
 
     def test_queue_store_uses_repository_contents_api_only(self):
-        source = (ROOT / "scripts/github_queue_store.py").read_text(encoding="utf-8")
+        source = (ROOT / "storage" / "v2" / "queue_store.py").read_text(encoding="utf-8")
         self.assertIn("/contents/", source)
         self.assertNotIn("issue_number", source)
         self.assertNotIn("/issues/", source)
@@ -35,20 +35,34 @@ class FourSystemCleanupTests(unittest.TestCase):
         self.assertNotIn("/issues/", source)
         self.assertNotIn("urlopen", source)
 
-    def test_non_issue_workflows_do_not_request_issue_permissions(self):
-        paths = [
-            ".github/workflows/source-discovery.yml",
-            ".github/workflows/queue-snapshot-artifact.yml",
-            ".github/workflows/dashboard-pages.yml",
-            ".github/workflows/queue-lease-recovery.yml",
-        ]
-        for relative in paths:
-            content = (ROOT / relative).read_text(encoding="utf-8")
-            with self.subTest(path=relative):
-                self.assertIsNone(
-                    re.search(r"(?m)^\s*issues:\s*(?:read|write)\s*$", content),
-                    f"{relative} requests an unnecessary GitHub Issues permission",
-                )
+    def test_all_active_workflows_are_issue_api_free(self):
+        workflows = sorted((ROOT / ".github" / "workflows").glob("*.yml"))
+        self.assertTrue(workflows)
+        for path in workflows:
+            content = path.read_text(encoding="utf-8")
+            with self.subTest(path=path.name):
+                self.assertNotRegex(content, r"(?m)^\s*issues:\s*(?:read|write)\s*$")
+                self.assertNotIn("gh issue", content)
+                self.assertNotIn("/issues/", content)
+
+    def test_storage_management_owns_incident_and_queue_state_paths(self):
+        store = (ROOT / "storage" / "v2" / "queue_store.py").read_text(encoding="utf-8")
+        incident = (ROOT / "storage" / "v2" / "incident_store.py").read_text(encoding="utf-8")
+        workflow = (ROOT / ".github" / "workflows" / "storage-incident-management.yml").read_text(encoding="utf-8")
+        self.assertIn('"automation/task_queue.json"', store)
+        self.assertIn('"storage/v2/incidents.json"', store)
+        self.assertIn("path not in ALLOWED_STATE_PATHS", store)
+        self.assertIn("storage/v2/incidents.json", incident)
+        self.assertIn("contents: write", workflow)
+        self.assertNotIn("gh issue", workflow)
+
+    def test_runtime_python_has_no_github_issues_transport(self):
+        paths = list((ROOT / "scripts").glob("*.py")) + list((ROOT / "storage" / "v2").glob("*.py"))
+        for path in paths:
+            content = path.read_text(encoding="utf-8")
+            with self.subTest(path=path.relative_to(ROOT)):
+                self.assertNotIn("/issues/", content)
+                self.assertNotIn("gh issue", content)
 
 
 if __name__ == "__main__":
