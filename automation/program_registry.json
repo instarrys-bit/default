@@ -1670,7 +1670,6 @@
         "script_production_intent",
         "script_remote_task_queue_runtime",
         "script_refresh_ruleset_manifest",
-        "script_remote_task_queue_runtime",
         "script_task_scheduler",
         "script_verify_published_rulesets",
         "script_watchdog_recovery_policy"
@@ -1771,6 +1770,7 @@
         "script_diagnose_workflow_failure",
         "script_incident_state",
         "script_production_intent",
+        "script_remote_task_queue_runtime",
         "script_refresh_ruleset_manifest",
         "script_resource_lease_runtime",
         "script_restore_automation_state",
