@@ -80,7 +80,7 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
             raise ValueError(f"duplicate task_id: {task_id}")
         task_ids.add(task_id)
         execution_backend = task.get("execution_backend")
-        if execution_backend is not None and execution_backend != "github_contents":
+        if execution_backend is not None and execution_backend not in {"github_contents", "github_issue_comments"}:
             raise ValueError(f"{task_id}.execution_backend is unsupported")
         idem = task["idempotency_key"]
         if not isinstance(idem, str) or not 1 <= len(idem) <= 200:
