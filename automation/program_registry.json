@@ -1302,7 +1302,7 @@
         "script_github_workflow_adapter"
       ],
       "dispatches": [],
-      "permission_boundary": "Requires caller-provided GitHub Issues read/write permission for durable queue transitions and GitHub Actions read/write permission for reviewed workflow dispatch and run verification. It does not require repository Contents write permission. Child programs receive only a non-secret environment allowlist, no shell, and no GitHub token. The scheduler does not modify modules/uu.conf.",
+      "permission_boundary": "Requires caller-provided GitHub Issues read/write permission for durable queue transitions and GitHub Actions read/write permission for reviewed workflow dispatch and run verification. No repository contents write permission is required. Child programs receive only a non-secret environment allowlist, no shell, and no GitHub token. The scheduler does not modify modules/uu.conf.",
       "health_check": "Tests cover disabled-adapter blocking, reviewed Python execution, workflow dispatch authorization, durable intent recovery, duplicate-dispatch prevention, and independent workflow run verification.",
       "orchestration": {
         "enabled": false,
