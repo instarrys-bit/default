@@ -259,7 +259,7 @@ def validate_task_queue(root: Path = ROOT, queue_path: Path | None = None, regis
                 raise ValueError(f"{task_id} VERIFYING task must not retain a previous verification")
             if status == "SUCCEEDED" and verification["status"] != "passed":
                 raise ValueError(f"{task_id} SUCCEEDED task requires passed verification")
-        if execution_backend == "github_contents" and status == "SUCCEEDED":
+        if execution_backend in {"github_contents", "github_issue_comments"} and status == "SUCCEEDED":
             if not isinstance(verification, dict) or verification.get("status") != "passed":
                 raise ValueError(f"{task_id} GitHub-backed SUCCEEDED task requires independent verification")
 
