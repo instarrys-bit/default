@@ -96,7 +96,7 @@ def resolve_incidents(document, *, workflow, before_run_id, classifications, eve
     document["events"].append({"event_id": event_id, "operation": "resolve", "workflow": workflow,
         "before_run_id": str(before_run_id), "classifications": sorted(allowed),
         "verification_url": verification_url, "resolved_incident_ids": resolved})
-    if resolved: document["revision"] += 1
+    document["revision"] += 1
     return document, {"changed": bool(resolved), "resolved": len(resolved), "incident_ids": resolved}
 
 def _store():

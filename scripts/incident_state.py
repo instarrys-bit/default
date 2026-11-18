@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Deterministic, idempotent incident-state transitions stored in GitHub issue bodies."""
+"""Deterministic, idempotent incident-state transitions stored in Storage Management incident ledger records."""
 from __future__ import annotations
 
 

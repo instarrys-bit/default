@@ -342,7 +342,7 @@ def assert_resource_lease_for_repository_path(root, relative_path):
         # Repository-local writes during an audit are confined to the isolated
         # runner workspace. The workflow validates the live production lease
         # at phase boundaries (before audit and again before publication).
-        # Do not perform a GitHub Issues API read for every temporary-file,
+        # Do not perform a remote queue API read for every temporary-file,
         # shard, manifest, or checkpoint mutation: large deterministic reviews
         # can execute thousands of these writes and otherwise fail on API
         # throttling/timeouts. Keep the path/symlink/hard-link checks above.
