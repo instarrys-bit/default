@@ -70,6 +70,11 @@ class TaskQueueTests(unittest.TestCase):
         self.write_task(queue, self.task())
         self.assertEqual(self.validate(root, queue, registry)["task_count"], 1)
 
+    def test_issue_comment_execution_backend_is_accepted(self):
+        root, queue, registry = self.make_store()
+        self.write_task(queue, self.task(execution_backend="github_issue_comments"))
+        self.assertEqual(self.validate(root, queue, registry)["task_count"], 1)
+
     def assessment_task(self, **overrides):
         root, queue, registry = self.make_store()
         data = json.loads(registry.read_text(encoding="utf-8"))
