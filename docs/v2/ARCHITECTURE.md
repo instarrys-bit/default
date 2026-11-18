@@ -1,65 +1,63 @@
-# V2 Architecture Baseline
+# Four-System Architecture (Canonical Target)
 
-Status: design baseline for the parallel rebuild. V1 production remains untouched until V2 passes acceptance.
+Status: canonical target contract. This document supersedes the parallel V1/V2 design descriptions where they conflict. It does not claim that cutover is complete; see [FOUR_SYSTEM_CUTOVER.md](FOUR_SYSTEM_CUTOVER.md).
 
-## Goal
+## The four systems
 
-Rebuild the automation architecture around four bounded subsystems while preserving all V1 production data in an immutable Git snapshot.
+### 1. Watchdog
 
-## Four subsystems
+The sole top-level scheduler and supervisor. It dispatches production work, monitors deadlines and heartbeats, detects stalled or failed operations, requests recovery through Storage Management, and verifies end-to-end completion. It must not directly mutate production outputs or storage internals.
 
-1. **Watchdog (control plane)** — the sole top-level scheduler and lifecycle supervisor. It dispatches work, detects timeout/failure, requests lease recovery through Storage Management, and verifies end-to-end completion. It does not directly edit production data.
-2. **Dashboard (read-only presentation plane)** — reads verified projections and evidence from Storage Management. It displays queue/task/lease status, production runs, releases, audit results and exceptions. It does not directly mutate queue, production or configuration state.
-3. **Production (execution plane)** — source discovery/collection, deterministic filtering and assessment, candidate construction, conflict checking, ruleset build, publication request and post-publication validation. It has no direct authority to mutate queue internals or arbitrary repository paths.
-4. **Storage Management (data plane + persistence plane)** — the single owner of durable data and state: V2 queue/event log, task and resource leases, source snapshots, candidates, assessments, review cursors, ruleset repository, release manifests, SHA/version records, audit evidence, recovery records and read projections for Dashboard.
+### 2. Dashboard
 
-## Data ownership
+A read-only presentation and operator entry point. It displays authoritative state, task and lease status, production progress, release evidence, audits, and exceptions. It must not own queues, duplicate state, or write production/storage records.
 
-Storage Management contains the complete data plane. There is no fifth data-plane subsystem.
+### 3. Production
 
-Production submits validated artifacts and publication intents to Storage Management. Storage Management validates schema, provenance, idempotency, allowed path and expected SHA before accepting writes. Watchdog requests state transitions through Storage Management. Dashboard consumes read-only projections.
+The only ruleset production pipeline. Its stages are:
 
-## Immutable safety boundaries
+`discover -> collect -> normalize -> filter -> deterministic_review -> deduplicate -> conflict_check -> build -> publish -> verify`
 
-- `modules/uu.conf` is user-managed. **Automated workflows and automation identities are read-only**: they must never write, replace, regenerate, reformat, rename or delete it. This restriction does not apply to the user: the user may manually edit, replace or otherwise manage `modules/uu.conf` through normal human-controlled repository access.
-- Production publication is restricted to exactly `rulesets/direct.list`, `rulesets/proxy.list`, `rulesets/reject.list` plus explicitly enumerated release manifests/lifecycle metadata.
-- No retired writer guard and no `fenced_file_writer.py`.
-- No AI review flow. Filtering/review gates are deterministic and evidence-based.
-- Preserve SHA-CAS, task leases, resource fencing, idempotency keys and independent post-write verification.
-- A task lease and a resource lease are distinct state machines and must be verified/recovered independently.
-- Unknown historical task outcomes remain unknown; do not replay them automatically.
+It handles collection, filtering, review, DIRECT/PROXY/REJECT classification, ruleset construction, publication requests, and post-publication validation. REJECT decisions must follow deterministic evidence and any configured human-approval gate. There is no AI review subsystem.
 
-## V1 preservation and V2 isolation
+Production's canonical output authority is limited to `rulesets/**` and the exact release metadata explicitly allowlisted by Storage Management. It cannot write queue internals, arbitrary repository paths, user modules, scripts, or configuration.
 
-- V1 is frozen at commit `c6c95b1282826dbc9fb74858f707001e874f7459` on branch `archive/v1-pre-v2-2026-11-17`.
-- The archive branch preserves the full tracked V1 repository snapshot. `legacy-v1-inventory.json` records every tracked path, byte size and Git blob SHA.
-- V1 data is retained as source material and audit history, not presumed valid/current production input.
-- V2 starts with a new queue epoch and a separately initialized empty seed. Do not import V1 queue statuses or leases.
-- Migration uses staging: inventory -> hash verification -> schema validation -> duplicate/conflict analysis -> lineage/evidence review -> explicit acceptance. Rejected or uncertain records remain archived/quarantined.
-- Existing `data/**`, `reports/**`, `rulesets/**`, `sources/**` and historical queue records are not deleted as part of this foundation phase.
+### 4. Storage Management
 
-## Release and cutover model
+The sole owner of durable state and file lifecycle: task/state persistence, event history, leases, source snapshots, candidate and review artifacts, release manifests, lifecycle metadata, audit evidence, recovery records, immutable snapshots, and SHA/version baselines.
 
-1. Build V2 in parallel on its own branch.
-2. Keep V1 production workflows unchanged during design and implementation.
-3. Migrate data into V2 staging, never directly into live outputs.
-4. Run deterministic tests, concurrency tests, recovery tests, output-scope tests and independent publication verification.
-5. Run a controlled shadow period and compare results.
-6. Cut over only after acceptance evidence is recorded. V1 remains archived and recoverable.
+It manages the latest `modules/uu.conf` baseline SHA and change tracking in real time, but **never edits `modules/uu.conf`**. It provides validated interfaces to the other three systems and preserves recoverable history.
 
-## Acceptance gates
+## Ownership and data flow
 
-- Storage bootstrap/read/append and SHA-CAS concurrency.
-- Task lease and resource lease expiry/recovery.
-- Watchdog supervision without direct data writes.
-- Source discovery -> deterministic assessment handoff.
-- Candidate provenance and duplicate/conflict handling.
-- Ruleset publication limited to the explicit allowlist.
-- Post-publication remote content and SHA verification.
-- Dashboard values match Storage Management projections.
-- Automated attempts to write `modules/uu.conf` and unrelated paths are denied and tested.
-- Rollback restores the previous verified ruleset release without altering user configuration.
+- Watchdog requests dispatch/recovery and observes verified outcomes.
+- Production emits versioned, provenance-bearing artifacts and ruleset release intents.
+- Storage Management validates schema, provenance, idempotency, expected revision/SHA, and write scope before persisting or publishing.
+- Dashboard reads projections and evidence from Storage Management only.
+- No system bypasses another system's ownership boundary.
 
-## V1 current-state note
+## Hard exclusions
 
-The checked-in V1 queue document is revision 877 with 160 tasks and 23 resource leases. The queue pointer names issue #571 as its index; issue #423 is a read-only historical issue-comment epoch after reaching its 2,500-comment ceiling. These facts describe V1 only and are not V2 state.
+- Exactly four systems; no fifth system or parallel control plane.
+- No GitHub Issues dependency: Issues are forbidden as queue, persistence, pointer, lease, checkpoint, state machine, or communication transport. GitHub PRs may be used for code review only.
+- No external or internal Lusse dependency.
+- No AI review flow.
+- No retired generic writer guard or `fenced_file_writer.py`.
+- No automated write access to `modules/uu.conf`, `modules/**`, or mapped scripts.
+
+## Preserved user assets
+
+`modules/uu.conf` remains the unique user configuration file and is byte-for-byte protected. All module files and associated scripts under `modules/**` are explicitly preserved; this architecture cleanup does not remove or rewrite them.
+
+## State migration and retirement policy
+
+A legacy queue, workflow, adapter, registry, or subsystem may be deleted only after all of the following are evidenced:
+
+1. Its active callers and workflow triggers are mapped.
+2. Every still-relevant task, lease, checkpoint, artifact, and audit record is migrated or explicitly archived with source SHA and provenance.
+3. The replacement interface is deployed and verified.
+4. No runtime import, workflow, permission, registry, or test depends on the retired component.
+5. Full relevant test suites and end-to-end production validation pass.
+6. Rollback to the last verified ruleset release is proven without touching user configuration.
+
+Historical GitHub Issue references may remain in inert archives solely for provenance; no running code may query or mutate Issues.
