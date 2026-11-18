@@ -226,6 +226,12 @@ class RepositoryJsonQueueStoreTests(unittest.TestCase):
         self.assertFalse(hasattr(self.store, "issue_number"))
         self.assertNotIn("/issues/", self.store.contents_endpoint)
 
+    def test_storage_store_rejects_non_allowlisted_repository_paths(self):
+        with self.assertRaisesRegex(ValueError, "not allowlisted"):
+            GitHubContentsQueueStore("owner/repo", "modules/uu.conf", token="test-token")
+        with self.assertRaisesRegex(ValueError, "not allowlisted"):
+            GitHubContentsQueueStore("owner/repo", "rulesets/direct.list", token="test-token")
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
