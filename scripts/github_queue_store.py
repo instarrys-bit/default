@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Repository-JSON durable queue with Contents API SHA-CAS. Issue comments retired."""
 from __future__ import annotations
-import base64, copy, hashlib, json, os, time
+import base64, copy, hashlib, json, os
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -29,14 +29,13 @@ def _logical_sha(d):
     return f"{r}:{_digest(d)}"
 
 class GitHubContentsQueueStore:
-    def __init__(self, repository, path=DEFAULT_QUEUE_PATH, *, branch="main", token=None, api_url="https://api.github.com", timeout=20, issue_number=None, bootstrap_path=None):
+    def __init__(self, repository, path=DEFAULT_QUEUE_PATH, *, branch="main", token=None, api_url="https://api.github.com", timeout=20, bootstrap_path=None):
         if not repository or "/" not in repository:
             raise ValueError("repository must be owner/name")
         self.repository, self.path, self.branch = repository, path, branch
         self.token = token if token is not None else os.environ.get("GITHUB_TOKEN", "")
         self.api_url, self.timeout = api_url.rstrip("/"), timeout
         self.bootstrap_path = bootstrap_path or path
-        self.issue_number = int(issue_number or 0)
 
     @property
     def contents_endpoint(self):
@@ -123,6 +122,3 @@ class GitHubContentsQueueStore:
             except ConcurrentUpdate:
                 if i >= max_conflicts: raise
         raise ConcurrentUpdate("conflict budget exhausted")
-
-def resolve_queue_issue_number(explicit=None):
-    return 0
