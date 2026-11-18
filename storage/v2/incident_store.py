@@ -7,7 +7,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
-from github_queue_store import GitHubContentsQueueStore
+from storage.v2.queue_store import GitHubContentsJsonStore
 from incident_state import incident_key, transition_incident
 
 INCIDENTS_PATH = "storage/v2/incidents.json"
@@ -102,7 +102,7 @@ def resolve_incidents(document, *, workflow, before_run_id, classifications, eve
 def _store():
     repository, token = os.environ.get("GITHUB_REPOSITORY", ""), os.environ.get("GITHUB_TOKEN", "")
     if not repository or not token: raise RuntimeError("GITHUB_REPOSITORY and GITHUB_TOKEN are required")
-    return GitHubContentsQueueStore(repository, INCIDENTS_PATH, branch="main", token=token, bootstrap_path=INCIDENTS_PATH)
+    return GitHubContentsJsonStore(repository, INCIDENTS_PATH, branch="main", token=token, bootstrap_path=INCIDENTS_PATH)
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
