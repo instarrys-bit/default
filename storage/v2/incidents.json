@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "revision": 0,
+  "incidents": [],
+  "events": [],
+  "migration": {
+    "source": "GitHub Issues",
+    "cutover_date": "2026-11-18",
+    "records_imported": 0,
+    "policy": "Issues are archival-only; runtime reads/writes repository JSON through Storage Management."
+  }
+}
