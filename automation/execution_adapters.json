@@ -243,7 +243,7 @@
         ],
         "lease_seconds": 3600,
         "fencing_required": true,
-        "coverage": "Only the durable per-URL task assessment_checkpoint in GitHub Issue #423 is shared state. It is updated by append-only Issue snapshot CAS under the active task lease and these two logical resource fences. All assessment JSON and reports are runner-local outputs uploaded as an immutable Actions artifact; no repository file is written or published. Resource lease is 3600 seconds, at least four 15-minute Watchdog reconciliation intervals, so a missed workflow_run event cannot expire the fence before scheduled verification. Both source-DAG capabilities also acquire logical/source-dag-supervision; this common exclusive fence serializes Discovery and Assessment across concurrent Watchdog runs, while Issue #423 CAS and monotonically increasing fencing tokens remain the authority for task claims."
+        "coverage": "Only the durable per-URL task assessment_checkpoint in automation/task_queue.json is shared state. It is updated by repository JSON Contents API SHA-CAS under the active task lease and these two logical resource fences. All assessment JSON and reports are runner-local outputs uploaded as an immutable Actions artifact; no repository file is written or published. Resource lease is 3600 seconds, at least four 15-minute Watchdog reconciliation intervals, so a missed workflow_run event cannot expire the fence before scheduled verification. Both source-DAG capabilities also acquire logical/source-dag-supervision; this common exclusive fence serializes Discovery and Assessment across concurrent Watchdog runs, while automation/task_queue.json CAS and monotonically increasing fencing tokens remain the authority for task claims."
       },
       "read_only_resources": [
         "sources/discovered_sources.json",
@@ -1630,7 +1630,7 @@
         ],
         "caller_permissions_required": [
           "actions:write",
-          "issues:write"
+          "contents:write"
         ]
       },
       "timeout_seconds": 480,
@@ -1723,7 +1723,7 @@
         ],
         "caller_permissions_required": [
           "actions:write",
-          "issues:write"
+          "contents:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1815,7 +1815,7 @@
         ],
         "caller_permissions_required": [
           "actions:write",
-          "issues:write"
+          "contents:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1851,7 +1851,7 @@
         ],
         "caller_permissions_required": [
           "actions:write",
-          "issues:write"
+          "contents:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1883,7 +1883,7 @@
         ],
         "caller_permissions_required": [
           "actions:write",
-          "issues:write"
+          "contents:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1927,7 +1927,7 @@
         ],
         "caller_permissions_required": [
           "actions:write",
-          "issues:write"
+          "contents:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1976,7 +1976,7 @@
         ],
         "caller_permissions_required": [
           "actions:write",
-          "issues:write"
+          "contents:write"
         ]
       },
       "timeout_seconds": 30,
@@ -2024,7 +2024,7 @@
         ],
         "caller_permissions_required": [
           "actions:write",
-          "issues:write"
+          "contents:write"
         ]
       },
       "timeout_seconds": 30,
@@ -2066,7 +2066,7 @@
         ],
         "caller_permissions_required": [
           "actions:write",
-          "issues:write"
+          "contents:write"
         ]
       },
       "timeout_seconds": 600,
@@ -2102,7 +2102,7 @@
         ],
         "caller_permissions_required": [
           "actions:write",
-          "issues:write"
+          "contents:write"
         ]
       },
       "timeout_seconds": 300,

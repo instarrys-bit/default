@@ -82,13 +82,13 @@
       "outputs": [
         "stdout JSON: assessed, bytes_read, parser_candidates, policy_candidates, activated=0",
         "runner-local sources/source_assessments.json, data/source_assessments_runtime.json and reports/source-assessment.md uploaded as immutable Actions artifact",
-        "durable per-URL checkpoint in GitHub Issue #423 using CAS under task and logical resource leases"
+        "durable per-URL checkpoint in automation/task_queue.json using CAS under task and logical resource leases"
       ],
       "depends_on": [
         "script_discover_sources"
       ],
       "dispatches": [],
-      "permission_boundary": "Read only the exact verified discovery artifact and read-only baseline files. Write assessment documents only under the isolated RUNNER_TEMP artifact root; no repository file writes, commits, or GitHub Contents API writes. The sole shared mutation is the current task's bounded assessment_checkpoint in GitHub Issue #423, guarded by the active task lease, logical/source-assessment-checkpoints and logical/production-pipeline fences. No source activation; modules/uu.conf and sources/domain_sources.json remain read-only.",
+      "permission_boundary": "Read only the exact verified discovery artifact and read-only baseline files. Write assessment documents only under the isolated RUNNER_TEMP artifact root; no repository file writes, commits, or GitHub Contents API writes. The sole shared mutation is the current task's bounded assessment_checkpoint in automation/task_queue.json, guarded by the active task lease, logical/source-assessment-checkpoints and logical/production-pipeline fences. No source activation; modules/uu.conf and sources/domain_sources.json remain read-only.",
       "health_check": "Scheduler validates the exact discovery predecessor digest from the external runner-local artifact root, the assessor validates task/resource fencing before each queue checkpoint CAS, and verify_assess_sources_artifacts.py independently checks the runner-local output documents and non-activation.",
       "orchestration": {
         "enabled": true,
@@ -608,7 +608,7 @@
       ],
       "depends_on": [],
       "dispatches": [],
-      "permission_boundary": "Requires caller-supplied GitHub Issues read/write permission to append and read compressed queue snapshots in Issue #423. It performs no repository Contents API writes and never logs token values.",
+      "permission_boundary": "Requires caller-supplied GitHub Contents API read/write permission to append and read compressed queue snapshots in automation/task_queue.json. It performs no writes outside automation/task_queue.json and never logs token values.",
       "health_check": "Mocked API tests for snapshot compression, SHA-256 chain validation, canonical duplicate-revision resolution, bounded conflict retries, and fail-closed API errors.",
       "orchestration": {
         "enabled": false,
@@ -669,7 +669,7 @@
         "script_production_intent"
       ],
       "dispatches": [],
-      "permission_boundary": "Reads the read-only repository seed and append-only GitHub Issue #317 observation comments using caller-provided GitHub token; writes only the runner-local candidate buffer.",
+      "permission_boundary": "Reads the read-only repository seed and append-only sources/request_domain_observations.json observation comments using caller-provided GitHub token; writes only the runner-local candidate buffer.",
       "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
       "orchestration": {
         "enabled": false,
@@ -814,7 +814,7 @@
       "id": "script_production_intent",
       "path": "scripts/production_intent.py",
       "kind": "python_component",
-      "responsibility": "compute production fingerprints using repository inputs plus append-only external Issue #317 request observations, and classify whether a production audit is required",
+      "responsibility": "compute production fingerprints using repository inputs plus append-only external sources/request_domain_observations.json request observations, and classify whether a production audit is required",
       "capabilities": [
         "production_intent_classification",
         "production_input_fingerprinting"
@@ -825,7 +825,7 @@
         "repository changed-path set",
         "last successful audit fingerprint and timestamp",
         "active and successful task fingerprints",
-        "append-only hostname observation batches from GitHub Issue #317"
+        "append-only hostname observation batches from sources/request_domain_observations.json"
       ],
       "outputs": [
         "deterministic production-demand decision",
@@ -834,7 +834,7 @@
       ],
       "depends_on": [],
       "dispatches": [],
-      "permission_boundary": "Read-only deterministic classification and hashing; may read Issue #317 comments using caller-provided token. No repository Contents writes, queue writes, ruleset writes, or modification of modules/uu.conf.",
+      "permission_boundary": "Read-only deterministic classification and hashing; may read sources/request_domain_observations.json comments using caller-provided token. No repository Contents writes, queue writes, ruleset writes, or modification of modules/uu.conf.",
       "health_check": "Dedicated deterministic unit tests plus Watchdog workflow integration tests.",
       "orchestration": {
         "enabled": false,
@@ -929,7 +929,7 @@
       "id": "script_remote_task_queue_runtime",
       "path": "scripts/remote_task_queue_runtime.py",
       "kind": "python_component",
-      "responsibility": "execute durable task queue transitions through append-only GitHub Issue snapshots",
+      "responsibility": "execute durable task queue transitions through repository JSON Contents API SHA-CAS",
       "capabilities": [
         "remote_task_queue_runtime"
       ],
@@ -950,7 +950,7 @@
         "script_task_queue"
       ],
       "dispatches": [],
-      "permission_boundary": "Requires caller-provided GitHub Issues read/write permission for Issue #423; repository task_queue_rebuild_seed.json is read-only bootstrap state and no repository Contents write is performed.",
+      "permission_boundary": "Requires caller-provided GitHub Contents API read/write permission for automation/task_queue.json; repository task_queue_rebuild_seed.json is read-only bootstrap state and no repository Contents write is performed.",
       "health_check": "Unit tests for Issue-backed enqueue, idempotency, priority claims, lease ownership, retry/dead-letter transitions, and expired-lease recovery.",
       "orchestration": {
         "enabled": false,
@@ -1731,7 +1731,7 @@
         "repository state and declared workflow inputs"
       ],
       "outputs": [
-        "workflow run diagnosis and incident reports through GitHub Issues; no repository changes"
+        "workflow run diagnosis and incident reports through GitHub Contents API; no repository changes"
       ],
       "depends_on": [
         "script_diagnose_workflow_failure",
@@ -1739,7 +1739,7 @@
         "script_verify_recovery_run"
       ],
       "dispatches": [],
-      "permission_boundary": "Read-only repository access; may create/update GitHub Issues for incident reporting only. No repository contents, pull-request, branch, commit, or ruleset writes.",
+      "permission_boundary": "Read-only repository access; may create/update GitHub Contents API for incident reporting only. No repository contents, pull-request, branch, commit, or ruleset writes.",
       "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",
       "orchestration": {
         "enabled": false,
@@ -1814,7 +1814,7 @@
         "script_resource_lease_runtime"
       ],
       "dispatches": [],
-      "permission_boundary": "The workflow validates the exact Watchdog durable task and active resource lease proof, reads the main-branch source catalog/baseline, and writes only into isolated RUNNER_TEMP. It has contents:read, actions:read and issues:write only for external queue state; no repository file writes or publication. No source activation.",
+      "permission_boundary": "The workflow validates the exact Watchdog durable task and active resource lease proof, reads the main-branch source catalog/baseline, and writes only into isolated RUNNER_TEMP. It has contents:read, actions:read and contents:write only for external queue state; no repository file writes or publication. No source activation.",
       "health_check": "Successful workflow completion, exact run/head provenance and immutable artifact digest are required before Assessment enqueue.",
       "orchestration": {
         "enabled": true,
@@ -1917,14 +1917,14 @@
       "id": "workflow_queue_snapshot_artifact",
       "path": ".github/workflows/queue-snapshot-artifact.yml",
       "kind": "github_actions_workflow",
-      "responsibility": "periodically export the canonical durable queue snapshot from Issue #423 and retain it as an immutable Actions artifact for disaster recovery",
+      "responsibility": "periodically export the canonical durable queue snapshot from automation/task_queue.json and retain it as an immutable Actions artifact for disaster recovery",
       "capabilities": [
         "durable_queue_snapshot_export",
         "queue_disaster_recovery"
       ],
       "invocation": "15-minute schedule and completion of Watchdog, config-validation or Source Discovery workflows; manual dispatch is available for recovery",
       "inputs": [
-        "canonical append-only durable queue state in GitHub Issue #423",
+        "canonical append-only durable queue state in automation/task_queue.json",
         "repository identity and triggering workflow run identity",
         "optional automation_task_id for correlated manual backup runs"
       ],
@@ -1935,8 +1935,8 @@
         "script_remote_task_queue_runtime"
       ],
       "dispatches": [],
-      "permission_boundary": "contents:read and issues:read only to read and validate the canonical queue; actions:write only to upload a run-scoped immutable Actions artifact. No repository contents writes, commits, branch updates, queue mutations, task dispatch, source activation, ruleset publication, or writes to modules/uu.conf.",
-      "health_check": "The snapshot CLI must validate the canonical Issue #423 envelope and report revision/task count; the exact output file must be uploaded under a unique run ID. Missing or invalid snapshots fail the job; the upload step cannot turn a failed export into a successful run.",
+      "permission_boundary": "contents:read and contents:read only to read and validate the canonical queue; actions:write only to upload a run-scoped immutable Actions artifact. No repository contents writes, commits, branch updates, queue mutations, task dispatch, source activation, ruleset publication, or writes to modules/uu.conf.",
+      "health_check": "The snapshot CLI must validate the canonical automation/task_queue.json envelope and report revision/task count; the exact output file must be uploaded under a unique run ID. Missing or invalid snapshots fail the job; the upload step cannot turn a failed export into a successful run.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],
