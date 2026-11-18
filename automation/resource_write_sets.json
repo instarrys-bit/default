@@ -1031,7 +1031,7 @@
       "side_effects": [
         "Durable queue mutations append automation/task_queue.json snapshots; direct temporary files remain isolated to the current task execution directory."
       ],
-      "evidence": "run_scheduler_once() writes task-input.json, task-queue-lease-snapshot.json and task-result.json under isolated task/verifier temporary directories; durable queue transitions append snapshots through the GitHub Issue store.",
+      "evidence": "run_scheduler_once() writes task-input.json, task-queue-lease-snapshot.json and task-result.json under isolated task/verifier temporary directories; durable queue transitions append snapshots through the Storage Management JSON store.",
       "lease_keys": [
         "github-contents-cas:automation/task_queue.json"
       ],
