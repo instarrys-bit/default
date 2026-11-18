@@ -288,15 +288,15 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(ownership["status"], "partial_static_audit")
 
 
-    def test_durable_task_queue_writers_are_classified_as_issue_snapshot_control_plane(self):
+    def test_durable_task_queue_writers_are_classified_as_repository_json_control_plane(self):
         writes = load_json("automation/resource_write_sets.json")
         entries = {item["program_id"]: item for item in writes["control_plane_side_effects"]}
         remote = entries["script_remote_task_queue_runtime"]
         store = entries["script_github_queue_store"]
-        self.assertEqual(remote["side_effects"], ["GitHub Issue #423 comment snapshots (external durable queue state)"])
-        self.assertEqual(store["side_effects"], ["GitHub Issue #423 comment snapshots (external durable queue state)"])
-        self.assertEqual(remote["classification"], "external_issue_423_append_only_queue_snapshot_store")
-        self.assertIn("no repository filesystem or Contents API writes", remote["control_plane_boundary"])
+        self.assertEqual(remote["side_effects"], ["GitHub Contents API SHA-CAS updates to automation/task_queue.json"])
+        self.assertEqual(store["side_effects"], ["GitHub Contents API SHA-CAS updates to automation/task_queue.json"])
+        self.assertEqual(remote["classification"], "repository_json_contents_sha_cas_queue_store")
+        self.assertIn("automation/task_queue.json", remote["control_plane_boundary"])
         group = next(
             item for item in writes["confirmed_shared_write_groups"]
             if item["resource"] == "durable task queue control-plane state"
@@ -349,7 +349,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(groups["domain_candidate_buffer"]["status"], "fenced_at_each_document_store_mutation")
         self.assertEqual(groups["rule_provenance_ledger"]["status"], "fenced_at_each_document_store_mutation")
         self.assertEqual(groups["watchdog_unregistered_path_registry"]["status"], "bounded_cas_retry_implemented_concurrent_integration_unproven")
-        self.assertEqual(groups["request_intake_observations"]["status"], "historical_external_issue_ledger_read_only")
+        self.assertEqual(groups["request_intake_observations"]["status"], "checked_in_observation_seed_read_only")
         self.assertEqual(groups["request_intake_observations"]["known_writers"], [])
         self.assertEqual(groups["active_source_registry_and_activation"]["status"], "no_repository_writer_source_activation_artifact_only")
         self.assertEqual(groups["policy_source_overlap_audit"]["status"], "artifact_only_no_repository_publication")
