@@ -16,7 +16,6 @@ on:
 permissions:
   contents: read
   actions: write
-  issues: write
 
 concurrency:
   group: shadowrocket-source-discovery-writer
@@ -41,7 +40,7 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Export durable queue snapshot from Issue state
+      - name: Export durable queue snapshot from repository JSON state
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
