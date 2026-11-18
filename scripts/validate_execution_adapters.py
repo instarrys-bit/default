@@ -121,7 +121,7 @@ def validate_execution_adapters(root=ROOT,adapters_path=None,registry_path=None)
                 raise ValueError(f"{tid} requires automation_task_id input and a correlated run-name")
             if a.get("interface_status")!=("workflow_dispatch_reviewed" if actual else "event_only"): raise ValueError(f"{tid} workflow interface_status invalid")
             if not isinstance(w.get("allowed_refs"),list) or not w["allowed_refs"]: raise ValueError(f"{tid} allowed_refs must be explicit")
-            if not isinstance(w.get("caller_permissions_required"),list) or not {"actions:write","issues:write"}.issubset(set(w["caller_permissions_required"])): raise ValueError(f"{tid} caller requires actions:write and issues:write")
+            if not isinstance(w.get("caller_permissions_required"),list) or not {"actions:write","contents:write"}.issubset(set(w["caller_permissions_required"])): raise ValueError(f"{tid} caller requires actions:write and contents:write")
             if enabled and not actual: raise ValueError(f"{tid} event-only workflow cannot be dispatched")
             run_timeout=a.get("workflow_run_timeout_seconds")
             if run_timeout is not None and (isinstance(run_timeout,bool) or not isinstance(run_timeout,int) or not 60<=run_timeout<=43200):

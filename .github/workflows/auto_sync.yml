@@ -90,7 +90,7 @@ jobs:
       PYTHONPATH: scripts
       REVIEW_WORKERS: "2"
     permissions:
-      contents: read
+      contents: write
       actions: read
     steps:
       - name: Checkout repository
