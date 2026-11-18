@@ -1368,7 +1368,7 @@
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
     "release_manifest_blob_sha": "75ea172c5ac973e3fed7f9c2329037ad824f44bd",
-    "program_registry_blob_sha": "57bdbda5bc00102d8a90f4f2644e08b11358006f",
+    "program_registry_blob_sha": "e32da1d883ad0c40d99c4e19e12a8e21683eb388",
     "execution_adapters_blob_sha": "e252c588903f1807124e027b2cf237b09b73b2c7",
     "added_after_release_baseline": true,
     "note": "Production Intent is read-only; the only persistent task/lease/checkpoint state is stored by Storage Management in automation/task_queue.json. Incident events are stored only in storage/v2/incidents.json. Production's committed deliverables remain allowlisted rulesets/**.",
