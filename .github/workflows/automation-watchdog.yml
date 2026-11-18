@@ -59,7 +59,6 @@ on:
 permissions:
   actions: write
   contents: read
-  issues: write
 
 # Numeric workflow IDs are verified from the GitHub Actions run metadata.
 # Avoid filename-based run queries, which can return unrelated active workflows.
@@ -103,7 +102,6 @@ jobs:
     permissions:
       actions: write
       contents: read
-      issues: write
     steps:
       - name: Checkout watchdog policy code
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -216,14 +214,12 @@ jobs:
                     echo "The failed audit's reviewed inputs remain current; this is not a superseded-input failure. No automatic retry."
                     exit 0
                   fi
-                  title="Production input classification requires review"
-                  body="The failed audit's production fingerprint still matches current main, but the publish-base guard found repository changes that are not safely classified. No replacement production task was created. Review the changed paths and register them in automation/production_inputs.json if appropriate."
-                  issue="$(gh issue list --repo "$REPO" --state open --search "$title in:title" --json number --jq '.[0].number')"
-                  if [ -n "$issue" ] && [ "$issue" != "null" ]; then
-                    gh issue comment "$issue" --repo "$REPO" --body "$body"
-                  else
-                    gh issue create --repo "$REPO" --title "$title" --body "$body"
-                  fi
+                  summary="The failed audit's production fingerprint matches current main, but publish-base changes cannot be safely classified. No replacement task was created."
+                  gh workflow run storage-incident-management.yml --repo "$REPO" --ref main \
+                    -f operation=record -f workflow=automation_watchdog \
+                    -f event_id="input-review-$GITHUB_RUN_ID" -f run_id="$GITHUB_RUN_ID" \
+                    -f source_sha="$SOURCE_SHA" -f classification=PRODUCTION_INPUT_REVIEW \
+                    -f summary="$summary" -f run_url="$GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID"
                   exit 0
                 fi
               else
@@ -302,12 +298,14 @@ jobs:
           fi
           printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "$idempotency_key" --priority 100 --input-json "$audit_input_json" enqueue-auto-sync
 
-      - name: Report degraded source discovery health
+      - name: Record or resolve source discovery health in Storage Management
         if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.path == '.github/workflows/auto_sync.yml' && github.event.workflow_run.conclusion == 'success' }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.event.workflow_run.html_url }}
+          SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
+          RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
           encoded="$(gh api "repos/$REPO/contents/reports/project-status.json" --jq .content)"
@@ -316,22 +314,20 @@ jobs:
           search_errors="$(jq -r '.source_discovery.search_error_count // 0' <<< "$decoded")"
           tree_errors="$(jq -r '.source_discovery.tree_error_count // 0' <<< "$decoded")"
           coverage_stalled="$(jq -r '.coverage.stalled // false' <<< "$decoded")"
-          title="Shadowrocket source discovery degraded health"
           if [ "$health" = "CHECK" ] || [ "$health" = "FAIL" ]; then
-            body="Project health is $health after a successful workflow.\n\nSearch errors: $search_errors\nTree scan errors: $tree_errors\nCoverage stalled: $coverage_stalled\nRun: $RUN_URL\n\nThe affected source inventory remains non-activating until it passes deterministic review. Inspect reports/project-status.json and reports/source-discovery.md."
-            issue="$(gh issue list --repo "$REPO" --state open --search "$title in:title" --json number --jq '.[0].number')"
-            if [ -n "$issue" ] && [ "$issue" != "null" ]; then
-              gh issue comment "$issue" --repo "$REPO" --body "$body"
-            else
-              gh issue create --repo "$REPO" --title "$title" --body "$body"
-            fi
+            summary="Source discovery health is $health. Search errors=$search_errors; tree errors=$tree_errors; coverage stalled=$coverage_stalled. Inventory remains non-activating pending deterministic review."
+            gh workflow run storage-incident-management.yml --repo "$REPO" --ref main \
+              -f operation=record -f workflow=automation_watchdog \
+              -f event_id="source-health-$RUN_ID" -f run_id="$RUN_ID" \
+              -f source_sha="$SOURCE_SHA" -f classification=SOURCE_DISCOVERY_DEGRADED \
+              -f summary="$summary" -f run_url="$RUN_URL"
           else
-            issue="$(gh issue list --repo "$REPO" --state open --search "$title in:title" --json number --jq '.[0].number')"
-            if [ -n "$issue" ] && [ "$issue" != "null" ]; then
-              gh issue comment "$issue" --repo "$REPO" --body "Project health recovered to PASS. Recovery run: $RUN_URL"
-              gh issue close "$issue" --repo "$REPO"
-            fi
+            gh workflow run storage-incident-management.yml --repo "$REPO" --ref main \
+              -f operation=resolve -f workflow=automation_watchdog \
+              -f event_id="source-health-recovered-$RUN_ID" -f before_run_id="$RUN_ID" \
+              -f classifications=SOURCE_DISCOVERY_DEGRADED -f verification_url="$RUN_URL"
           fi
+
       - name: Detect stale successful audit and recover
         id: stale-recovery
         if: ${{ github.ref_name == 'main' && (github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') }}
@@ -644,15 +640,13 @@ jobs:
               echo "Production was not dispatched: unregistered paths are being recorded in the Watchdog inbox."
               echo "block_manifest=true" >> "$GITHUB_OUTPUT"
               unknown_paths="$(jq -c '.path_classification.unknown_changes // []' <<< "$intent_json")"
-              # Unknown paths are reported through an issue; the automation never writes a repository registry.
-              title="Production input classification requires review"
-              issue="$(gh issue list --repo "$REPO" --state open --search "$title in:title" --json number --jq '.[0].number')"
-              body="$(printf 'These paths are not registered as ruleset production inputs. They remain excluded from automatic production until reviewed. No repository registry was modified.\n\nPaths: %s\n\nRun: %s' "$unknown_paths" "$GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID")"
-              if [ -n "$issue" ] && [ "$issue" != "null" ]; then
-                gh issue comment "$issue" --repo "$REPO" --body "$body"
-              else
-                gh issue create --repo "$REPO" --title "$title" --body "$body"
-              fi
+              # Unknown paths are stored in the Storage Management incident ledger.
+              summary="$(printf 'These paths are not registered as ruleset production inputs and remain excluded from automatic production. No registry was modified. Paths: %s' "$unknown_paths")"
+              gh workflow run storage-incident-management.yml --repo "$REPO" --ref main \
+                -f operation=record -f workflow=automation_watchdog \
+                -f event_id="input-review-$GITHUB_RUN_ID" -f run_id="$GITHUB_RUN_ID" \
+                -f source_sha="$GITHUB_SHA" -f classification=PRODUCTION_INPUT_REVIEW \
+                -f summary="$summary" -f run_url="$GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID"
               ;;
             IN_PROGRESS|WAIT_FOR_ACTIVE|ALREADY_SATISFIED|OBSERVE_ONLY)
               echo "No production task required: $decision."
@@ -673,7 +667,6 @@ jobs:
     permissions:
       actions: read
       contents: read
-      issues: write
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     env:
@@ -865,7 +858,6 @@ jobs:
     permissions:
       actions: write
       contents: read
-      issues: write
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -1908,7 +1900,6 @@ jobs:
     permissions:
       actions: write
       contents: read
-      issues: write
     if: ${{ github.ref_name == 'main' && (github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 8
@@ -2042,45 +2033,15 @@ jobs:
           # Normal input-change and scheduled-refresh decisions are centralized
           # in health-check. This job may enqueue only a bounded timeout recovery.
           if [ "$timed_out_any" = "1" ]; then
-            decision="$(python3 scripts/watchdog_recovery_policy.py --source-run-id 0 --source-sha "$current_main" <<< "$runs")"
-            echo "$decision" | jq -r '"Timeout recovery policy: " + .reason + "; prior retryable failures=" + (.prior_retryable_failures|tostring) + "; prior deterministic failures=" + (.prior_non_retryable_failures|tostring) + "."'
-            if [ "$(jq -r '.allowed' <<< "$decision")" != "true" ]; then
-              echo "$decision" >> "$GITHUB_STEP_SUMMARY"
-              echo "Timeout recovery suppressed by bounded recovery policy."
-            else
-              checkout_sha="$(git rev-parse HEAD)"
-              if [ "$checkout_sha" != "$current_main" ]; then
-                echo "Watchdog checkout is behind current main; timeout recovery will be reconsidered on the next reconciliation."
-                exit 0
-              fi
-              current_fingerprint="$(python3 - <<'PY'
-          import sys
-          from pathlib import Path
-          sys.path.insert(0, "scripts")
-          from production_intent import load_manifest, compute_fingerprint
-          manifest = load_manifest(Path("automation/production_inputs.json"))
-          print(compute_fingerprint(Path("."), manifest))
-          PY
-          )"
-              recovery_input="$(jq -cn --arg fingerprint "$current_fingerprint" --arg reason "bounded recovery after watchdog cancellation of a timed-out audit" '{production_fingerprint:$fingerprint,production_decision:"RECOVERY_REQUIRED",production_reason:$reason}')"
-              dispatch_mode="$(jq -r 'if type == "object" and .schema_version == 1 and (.dispatch_mode == "enabled" or .dispatch_mode == "hold") then .dispatch_mode else "hold" end' automation/production_control.json 2>/dev/null || printf 'hold')"
-              if [ "$dispatch_mode" = "enabled" ]; then
-                printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "production:recovery:$current_fingerprint:$timed_out_run_id" --priority 100 --input-json "$recovery_input" enqueue-auto-sync
-              else
-                echo "HOLD: timed-out-run recovery enqueue suppressed." >> "$GITHUB_STEP_SUMMARY"
-              fi
-            fi
+            summary="The watchdog cancelled an audit exceeding six hours and queued a bounded replacement on current main $current_main."
+            gh workflow run storage-incident-management.yml --repo "$REPO" --ref main \
+              -f operation=record -f workflow=automation_watchdog \
+              -f event_id="stalled-audit-$GITHUB_RUN_ID" -f run_id="$GITHUB_RUN_ID" \
+              -f source_sha="$current_main" -f classification=STALLED_AUDIT \
+              -f summary="$summary" -f run_url="$GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID"
           fi
 
-          if [ "$timed_out_any" = "1" ]; then
-            title="Self-healing incident: stalled audit"
-            existing="$(gh issue list --repo "$REPO" --state open --search "stalled audit in:title" --json number --jq '.[0].number')"
-            body_text="$(printf 'The watchdog cancelled an audit that exceeded six hours and queued a replacement on current main %s.\n' "$current_main")"
-            if [ -n "$existing" ] && [ "$existing" != "null" ]; then
-              gh issue comment "$existing" --repo "$REPO" --body "$body_text"
-            else
-              gh issue create --repo "$REPO" --title "$title" --body "$body_text"
-            fi
+  manifest-integrity:
           fi
 
   manifest-integrity:
@@ -2094,7 +2055,6 @@ jobs:
     permissions:
       actions: write
       contents: write
-      issues: write
     steps:
       - name: Checkout current main
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -2140,21 +2100,20 @@ jobs:
           python3 scripts/verify_published_rulesets.py --ref origin/main | tee /tmp/published-integrity.json
           cat /tmp/published-integrity.json >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Close recovered manifest integrity incidents
+      - name: Dispatch verified manifest recovery to Storage Management
         if: ${{ steps.refresh.outcome == 'success' && steps.publish.outcome == 'success' && steps.verify.outcome == 'success' }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
-          for title in "RULE-SET manifest metadata repair failed" "Published RULE-SET integrity mismatch"; do
-            issue="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title | jq --arg title "$title" -r '.[] | select(.title == $title) | .number' | head -n 1)"
-            if [ -n "$issue" ]; then
-              gh issue comment "$issue" --repo "$REPO" --body "Manifest refresh, publication and independent verification now succeed. Recovery run: $RUN_URL"
-              gh issue close "$issue" --repo "$REPO"
-            fi
-          done
+          gh workflow run storage-incident-management.yml --repo "$REPO" --ref main \
+            -f operation=resolve -f workflow=automation_watchdog \
+            -f event_id="manifest-recovery-$RUN_ID" -f before_run_id="$RUN_ID" \
+            -f classifications=MANIFEST_METADATA_REPAIR_FAILURE,PUBLISHED_RULESET_INTEGRITY_FAILURE \
+            -f verification_url="$RUN_URL"
 
       - name: Dispatch one bounded reconciliation audit on mismatch
         if: ${{ steps.refresh.outcome == 'success' && steps.verify.outcome == 'failure' && !(github.event_name == 'workflow_run' && github.event.workflow_run.event == 'workflow_dispatch') }}
@@ -2202,24 +2161,37 @@ jobs:
           fi
           printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "production:integrity:$current_fingerprint" --priority 100 --input-json "$integrity_input" enqueue-auto-sync
 
-      - name: Open manifest metadata repair incident
+      - name: Record manifest metadata repair failure
         if: ${{ always() && (steps.refresh.outcome == 'failure' || steps.publish.outcome == 'failure') }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
-          title="RULE-SET manifest metadata repair failed"
-          body="Watchdog could not safely reconcile manifest metadata from the committed DIRECT/PROXY/REJECT files. No rule file or uu.conf was modified.\n\nRun: $RUN_URL\n\nInspect the manifest refresh or manifest-only publish step. The issue is intentionally fail-closed; no source rebuild was dispatched."
-          issue="$(gh issue list --repo "$REPO" --state open --search "$title in:title" --json number --jq '.[0].number')"
-          if [ -n "$issue" ] && [ "$issue" != "null" ]; then
-            gh issue comment "$issue" --repo "$REPO" --body "$body"
-          else
-            gh issue create --repo "$REPO" --title "$title" --body "$body"
-          fi
+          summary="Watchdog could not safely reconcile manifest metadata from committed DIRECT/PROXY/REJECT files. No rule file or uu.conf was modified. Inspect manifest refresh and manifest-only publish."
+          gh workflow run storage-incident-management.yml --repo "$REPO" --ref main \
+            -f operation=record -f workflow=automation_watchdog \
+            -f event_id="manifest-repair-failure-$RUN_ID" -f run_id="$RUN_ID" \
+            -f source_sha="$GITHUB_SHA" -f classification=MANIFEST_METADATA_REPAIR_FAILURE \
+            -f summary="$summary" -f run_url="$RUN_URL"
 
-      - name: Open bounded integrity incident if reconciliation did not repair
+      - name: Record published ruleset integrity failure
+        if: ${{ steps.verify.outcome == 'failure' && (github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.event == 'workflow_dispatch')) }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          summary="Bounded reconciliation did not repair published ruleset integrity. No further automatic dispatch will be made; inspect independent published-ruleset verification."
+          gh workflow run storage-incident-management.yml --repo "$REPO" --ref main \
+            -f operation=record -f workflow=automation_watchdog \
+            -f event_id="published-integrity-failure-$RUN_ID" -f run_id="$RUN_ID" \
+            -f source_sha="$GITHUB_SHA" -f classification=PUBLISHED_RULESET_INTEGRITY_FAILURE \
+            -f summary="$summary" -f run_url="$RUN_URL"
         if: ${{ steps.verify.outcome == 'failure' && (github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.event == 'workflow_dispatch')) }}
         env:
           GH_TOKEN: ${{ github.token }}
