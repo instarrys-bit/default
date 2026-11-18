@@ -335,7 +335,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("Record or resolve source discovery health in Storage Management", workflow)
         self.assertIn(".source_discovery.search_error_count", workflow)
         self.assertIn(".coverage.stalled", workflow)
-        self.assertIn("Shadowrocket source discovery degraded health", workflow)
+        self.assertIn("Source discovery health is $health", workflow)
         self.assertIn("gh workflow run storage-incident-management.yml", workflow)
         self.assertIn("classification=SOURCE_DISCOVERY_DEGRADED", workflow)
         self.assertNotIn("gh issue", workflow)

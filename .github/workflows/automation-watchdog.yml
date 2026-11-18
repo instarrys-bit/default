@@ -219,7 +219,8 @@ jobs:
                     -f operation=record -f workflow=automation_watchdog \
                     -f event_id="input-review-$GITHUB_RUN_ID" -f run_id="$GITHUB_RUN_ID" \
                     -f source_sha="$SOURCE_SHA" -f classification=PRODUCTION_INPUT_REVIEW \
-                    -f summary="$summary" -f run_url="$GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID"
+                    -f summary="$summary" -f run_url="$GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID" \
+                -f diagnosis_json="$(jq -cn --argjson paths "$unknown_paths" '{unknown_paths:$paths}')"
                   exit 0
                 fi
               else
@@ -879,9 +880,9 @@ jobs:
 
       - name: Recover expired task and resource leases
         env:
-          GITHUB_TOKEN: \${{ github.token }}
-          GH_TOKEN: \${{ github.token }}
-          GITHUB_REPOSITORY: \${{ github.repository }}
+          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
           python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main recover-expired | tee "$RUNNER_TEMP/recover-expired.json"

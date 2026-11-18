@@ -82,7 +82,7 @@ class RepositoryJsonQueueStoreTests(unittest.TestCase):
         raise AssertionError(f"unexpected method: {request.method}")
 
     def test_read_uses_contents_api_and_verifies_blob_sha(self):
-        with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
+        with patch("storage.v2.queue_store.urlopen", side_effect=self.fake_urlopen):
             snapshot = self.store.read()
 
         self.assertEqual(snapshot.document, self.document)
@@ -108,7 +108,7 @@ class RepositoryJsonQueueStoreTests(unittest.TestCase):
             bootstrap_path=str(self.seed_path),
         )
 
-        with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
+        with patch("storage.v2.queue_store.urlopen", side_effect=self.fake_urlopen):
             snapshot = store.read()
 
         self.assertEqual(snapshot.document, seed)
@@ -131,7 +131,7 @@ class RepositoryJsonQueueStoreTests(unittest.TestCase):
             bootstrap_path=str(self.seed_path),
         )
 
-        with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
+        with patch("storage.v2.queue_store.urlopen", side_effect=self.fake_urlopen):
             snapshot = store._ensure_bootstrap()
 
         self.assertEqual(snapshot.document, seed)
@@ -143,7 +143,7 @@ class RepositoryJsonQueueStoreTests(unittest.TestCase):
     def test_compare_and_swap_uses_current_git_blob_sha(self):
         candidate = {**self.document, "revision": 5, "tasks": self.document["tasks"] + [{"task_id": "next"}]}
 
-        with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
+        with patch("storage.v2.queue_store.urlopen", side_effect=self.fake_urlopen):
             current = self.store.read()
             result = self.store.compare_and_swap(candidate, current.content_sha)
             latest = self.store.read()
@@ -155,21 +155,21 @@ class RepositoryJsonQueueStoreTests(unittest.TestCase):
 
     def test_compare_and_swap_rejects_stale_logical_sha(self):
         candidate = {**self.document, "revision": 5}
-        with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
+        with patch("storage.v2.queue_store.urlopen", side_effect=self.fake_urlopen):
             with self.assertRaisesRegex(ConcurrentUpdate, "sha mismatch"):
                 self.store.compare_and_swap(candidate, "stale")
         self.assertEqual(len(self.put_payloads), 0)
 
     def test_compare_and_swap_requires_exactly_next_revision(self):
         candidate = {**self.document, "revision": 6}
-        with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
+        with patch("storage.v2.queue_store.urlopen", side_effect=self.fake_urlopen):
             current = self.store.read()
             with self.assertRaisesRegex(ValueError, "revision must advance by one"):
                 self.store.compare_and_swap(candidate, current.content_sha)
         self.assertEqual(len(self.put_payloads), 0)
 
     def test_unchanged_mutation_does_not_write(self):
-        with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
+        with patch("storage.v2.queue_store.urlopen", side_effect=self.fake_urlopen):
             result = self.store.mutate(lambda queue: (queue, "unchanged"))
 
         self.assertEqual(result, "unchanged")
@@ -181,7 +181,7 @@ class RepositoryJsonQueueStoreTests(unittest.TestCase):
             queue["tasks"].append({"task_id": "new", "status": "QUEUED"})
             return queue, "added"
 
-        with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
+        with patch("storage.v2.queue_store.urlopen", side_effect=self.fake_urlopen):
             result = self.store.mutate(add_task)
             latest = self.store.read()
 
@@ -194,7 +194,7 @@ class RepositoryJsonQueueStoreTests(unittest.TestCase):
         def conflict(request, timeout=20):
             raise HTTPError(request.full_url, 409, "Conflict", {}, BytesIO(b"{}"))
 
-        with patch("github_queue_store.urlopen", side_effect=conflict):
+        with patch("storage.v2.queue_store.urlopen", side_effect=conflict):
             with self.assertRaises(ConcurrentUpdate):
                 self.store._request("PUT", self.store.contents_endpoint, {})
 
@@ -208,7 +208,7 @@ class RepositoryJsonQueueStoreTests(unittest.TestCase):
                 BytesIO(b'{"message":"Resource not accessible by integration"}'),
             )
 
-        with patch("github_queue_store.urlopen", side_effect=forbidden):
+        with patch("storage.v2.queue_store.urlopen", side_effect=forbidden):
             with self.assertRaisesRegex(GitHubAPIError, "GET HTTP 403"):
                 self.store.read()
 
@@ -218,7 +218,7 @@ class RepositoryJsonQueueStoreTests(unittest.TestCase):
         def unavailable(request, timeout=20):
             raise URLError("temporary network interruption")
 
-        with patch("github_queue_store.urlopen", side_effect=unavailable):
+        with patch("storage.v2.queue_store.urlopen", side_effect=unavailable):
             with self.assertRaisesRegex(GitHubAPIError, "temporary network interruption"):
                 self.store.read()
 
