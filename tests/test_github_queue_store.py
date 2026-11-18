@@ -319,5 +319,203 @@ class GitHubIssueQueueStoreTests(unittest.TestCase):
         self.assertEqual(len(self.comments), 1)  # compact bootstrap snapshot stays in one comment
 
 
+    def test_mutations_write_only_issue_comments_not_repository_contents(self):
+        candidate = {"schema_version": 1, "revision": 5, "tasks": [{"task_id": "next"}]}
+        with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
+            current = self.store._ensure_bootstrap()
+            self.store.compare_and_swap(candidate, current.content_sha)
+
+        self.assertTrue(
+            any(call.method == "POST" and "/issues/315/comments" in call.full_url for call in self.calls)
+        )
+        self.assertTrue(all("/issues/315/comments" in call.full_url for call in self.calls))
+        self.assertFalse(any(call.method == "PUT" or "/contents/" in call.full_url for call in self.calls))
+
+
+
+class GitHubQueueEpochRotationTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.bootstrap = Path(self.temp.name) / "task_queue.json"
+        self.document = {
+            "schema_version": 1,
+            "revision": 877,
+            "tasks": [{"task_id": "task-preserve-this", "status": "QUEUED"}],
+            "resource_leases": {},
+            "manual_authorizations": {},
+        }
+        self.bootstrap.write_text(json.dumps(self.document), encoding="utf-8")
+        self.issue_comments = {423: [], 571: []}
+        self.next_comment_id = 10000
+        self.next_issue_number = 609
+        self.created_issues = []
+        self.calls = []
+        self.store = GitHubContentsQueueStore(
+            "owner/repo",
+            str(self.bootstrap),
+            token="test-token",
+            api_url="https://api.example.test",
+            index_issue_number=571,
+            rotate_comment_threshold=2400,
+        )
+        snapshot_digest = self.store._digest(self.document)
+        pointer = {
+            "schema_version": 1,
+            "epoch": 1,
+            "issue_number": 423,
+            "previous_sha256": None,
+            "source_artifact_digest": "sha256:" + "a" * 64,
+            "source_artifact_run_id": 43826128047,
+            "source_issue_number": 423,
+            "source_revision": 877,
+            "source_snapshot_sha256": snapshot_digest,
+        }
+        pointer["sha256"] = hashlib.sha256(
+            self.store._canonical_bytes(pointer)
+        ).hexdigest()
+        self.issue_comments[571] = [{
+            "id": 1,
+            "body": "<!-- shadowrocket-automation-queue-index:v1 -->\n"
+                    + json.dumps(pointer, sort_keys=True, separators=(",", ":")),
+        }]
+        snapshot_body = self.store._encode_comment(self.document, None)
+        self.issue_comments[423] = [
+            {"id": index, "body": "ordinary historical comment"}
+            for index in range(2, 2501)
+        ] + [{"id": 2501, "body": snapshot_body}]
+
+    def tearDown(self):
+        self.temp.cleanup()
+
+    def fake_urlopen(self, request, timeout=20):
+        from urllib.parse import parse_qs, urlparse
+        self.calls.append(request)
+        parsed = urlparse(request.full_url)
+        path = parsed.path
+        if request.method == "GET" and path.endswith("/search/issues"):
+            return FakeResponse({"items": [
+                issue for issue in self.created_issues
+                if issue["title"] in parse_qs(parsed.query).get("q", [""])[0]
+            ]})
+        if request.method == "GET" and path.endswith("/comments"):
+            issue_number = int(path.split("/")[-2])
+            page = int(parse_qs(parsed.query).get("page", ["1"])[0])
+            comments = self.issue_comments.get(issue_number, [])
+            return FakeResponse(comments[(page - 1) * 100:page * 100])
+        if request.method == "POST" and path.endswith("/issues"):
+            payload = json.loads(request.data)
+            issue = {
+                "number": self.next_issue_number,
+                "title": payload["title"],
+                "body": payload["body"],
+            }
+            self.created_issues.append(issue)
+            self.issue_comments[self.next_issue_number] = []
+            self.next_issue_number += 1
+            return FakeResponse(issue)
+        if request.method == "POST" and path.endswith("/comments"):
+            issue_number = int(path.split("/")[-2])
+            payload = json.loads(request.data)
+            comment = {"id": self.next_comment_id, "body": payload["body"]}
+            self.next_comment_id += 1
+            self.issue_comments.setdefault(issue_number, []).append(comment)
+            return FakeResponse({"id": comment["id"]})
+        raise AssertionError(f"unexpected request: {request.method} {request.full_url}")
+
+    def test_epoch_rotation_checkpoints_exact_queue_before_switching_index(self):
+        original_tasks = json.loads(json.dumps(self.document["tasks"]))
+
+        def add_one_task(queue):
+            queue["revision"] += 1
+            queue["tasks"].append({"task_id": "task-after-rotation", "status": "QUEUED"})
+            return queue, "appended"
+
+        with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
+            result = self.store.mutate(add_one_task)
+            latest = self.store.read()
+
+        self.assertEqual(result, "appended")
+        self.assertEqual(latest.document["revision"], 878)
+        self.assertEqual(
+            latest.document["tasks"],
+            original_tasks + [{"task_id": "task-after-rotation", "status": "QUEUED"}],
+        )
+        self.assertEqual(len(self.issue_comments[423]), 2500)
+        self.assertEqual(len(self.created_issues), 1)
+        self.assertEqual(len(self.issue_comments[609]), 2)
+        pointer = self.store._canonical_index_pointer(self.issue_comments[571])
+        self.assertEqual(pointer["epoch"], 2)
+        self.assertEqual(pointer["issue_number"], 609)
+        self.assertEqual(pointer["revision"], 877)
+        self.assertEqual(pointer["snapshot_sha256"], self.store._digest(self.document))
+        self.assertTrue(self.store._snapshot_matches_pointer(self.issue_comments[609], pointer))
+        self.assertEqual(
+            self.store._canonical_snapshot(self.issue_comments[609]).document["tasks"],
+            original_tasks + [{"task_id": "task-after-rotation", "status": "QUEUED"}],
+        )
+        self.assertTrue(all("/contents/" not in request.full_url for request in self.calls))
+        self.assertTrue(any(
+            request.method == "POST" and "/issues/571/comments" in request.full_url
+            for request in self.calls
+        ))
+        self.assertTrue(any(
+            request.method == "POST" and "/issues/609/comments" in request.full_url
+            for request in self.calls
+        ))
+
+    def test_index_pointer_digest_mismatch_fails_closed(self):
+        pointer_comment = self.issue_comments[571][0]
+        payload = json.loads(pointer_comment["body"].split("\n", 1)[1])
+        payload["issue_number"] = 609
+        pointer_comment["body"] = (
+            "<!-- shadowrocket-automation-queue-index:v1 -->\n"
+            + json.dumps(payload, sort_keys=True, separators=(",", ":"))
+        )
+        with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
+            with self.assertRaisesRegex(GitHubAPIError, "pointer digest mismatch"):
+                self.store.read()
+
+    def test_existing_epoch_issue_is_reused_after_interrupted_rotation(self):
+        digest = self.store._digest(self.document)
+        marker = f"<!-- shadowrocket-automation-queue-epoch:v1 key=2:877:{digest} -->"
+        self.created_issues.append({
+            "number": 609,
+            "title": f"Durable automation queue epoch 2 revision 877 {digest[:12]}",
+            "body": marker,
+        })
+        self.issue_comments[609] = [{
+            "id": 2502,
+            "body": self.store._encode_comment(self.document, None),
+        }]
+        self.next_issue_number = 610
+
+        def append_after_interrupted_rotation(queue):
+            queue["revision"] += 1
+            queue["tasks"].append({
+                "task_id": "task-after-interrupted-rotation",
+                "status": "QUEUED",
+            })
+            return queue, "resumed"
+
+        with patch("github_queue_store.urlopen", side_effect=self.fake_urlopen):
+            result = self.store.mutate(append_after_interrupted_rotation)
+            latest = self.store.read()
+
+        self.assertEqual(result, "resumed")
+        self.assertEqual(len(self.created_issues), 1)
+        pointer = self.store._canonical_index_pointer(self.issue_comments[571])
+        self.assertEqual(pointer["epoch"], 2)
+        self.assertEqual(pointer["issue_number"], 609)
+        self.assertEqual(len(self.issue_comments[609]), 2)
+        self.assertEqual(latest.document["revision"], 878)
+        self.assertEqual(
+            latest.document["tasks"],
+            self.document["tasks"] + [{
+                "task_id": "task-after-interrupted-rotation",
+                "status": "QUEUED",
+            }],
+        )
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

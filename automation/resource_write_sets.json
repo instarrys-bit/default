@@ -91,7 +91,7 @@
         "Per-URL results are CAS-appended to GitHub Issue #423 task.assessment_checkpoint under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences.",
         "All assessment documents are isolated beneath RUNNER_TEMP and uploaded as immutable Actions artifacts; no repository checkout file is modified."
       ],
-      "evidence": "Independent task mode resolves the discovery predecessor from AUTOMATION_PREDECESSOR_ARTIFACT_ROOT and writes runtime/history/report documents only beneath AUTOMATION_ARTIFACT_ROOT. write_document uses no repository resource lease because the workspace is per-run isolated. Shared progress is written only through the fenced Issue #423 queue CAS.",
+      "evidence": "Independent task mode resolves the discovery predecessor from AUTOMATION_PREDECESSOR_ARTIFACT_ROOT and writes runtime/history/report documents only beneath AUTOMATION_ARTIFACT_ROOT. write_document uses no repository resource lease because the workspace is per-run isolated. Shared progress is written only through the fenced active queue epoch Issue (epoch 1 is #423; indexed by Issue #571) queue CAS.",
       "lease_keys": [
         "logical/production-pipeline",
         "sources/source_assessments.json",
@@ -99,7 +99,7 @@
         "reports/source-assessment.md",
         "logical/source-assessment-checkpoints"
       ],
-      "lease_enforcement": "The durable per-URL checkpoint is updated via append-only Issue #423 CAS under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences. The 3600-second resource lease exceeds four 15-minute Watchdog reconciliation intervals; pending verification renews it before expiry. All assessment JSON and reports remain per-run immutable artifacts.",
+      "lease_enforcement": "The durable per-URL checkpoint is updated via append-only active queue epoch Issue (epoch 1 is #423; indexed by Issue #571) CAS under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences. The 3600-second resource lease exceeds four 15-minute Watchdog reconciliation intervals; pending verification renews it before expiry. All assessment JSON and reports remain per-run immutable artifacts.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [
         "sources/source_assessments.json (monolithic checkout workspace only)",
@@ -801,12 +801,12 @@
       "side_effects": [
         "Acquires, renews, asserts and releases durable resource leases by mutating the task queue through GitHubContentsQueueStore."
       ],
-      "evidence": "Queue mutations append compressed snapshots to GitHub Issue #423 comments with SHA-256 previous-revision chaining and deterministic canonical comment ordering.",
+      "evidence": "Queue mutations append compressed snapshots to the active queue epoch Issue, indexed by Issue #571, with SHA-256 previous-revision chaining and deterministic canonical comment ordering.",
       "lease_keys": [
         "github-issue-comment-chain:423",
         "resource:<canonical logical resource path>"
       ],
-      "lease_enforcement": "Durable queue changes use GitHubContentsQueueStore Blob-SHA compare-and-swap and queue validation; resource fencing tokens are checked against the exact active task and lease proof.",
+      "lease_enforcement": "Durable queue changes use append-only Issue-comment SHA-256 compare-and-swap through the active epoch pointer in Issue #571; resource fencing tokens are checked against the exact active task and lease proof.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [],
       "control_plane_consistency": "append_only_issue_snapshot_chain",
@@ -1035,7 +1035,7 @@
       "lease_keys": [
         "github-issue-comment-chain:423"
       ],
-      "lease_enforcement": "Queue persistence uses the remote GitHub Contents SHA-CAS store; temporary files are runner-local. This inventory entry does not treat local task_queue_runtime flock as a cross-runner lock.",
+      "lease_enforcement": "Queue persistence uses append-only GitHub Issue-comment SHA-256 snapshots with the Issue #571 epoch index; temporary files are runner-local. This inventory entry does not treat local task_queue_runtime flock as a cross-runner lock.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [
         "task-input.json",
@@ -1128,7 +1128,7 @@
     {
       "resource": "durable task queue control-plane state",
       "paths": [
-        "GitHub Issue #423 comments (external state)"
+        "GitHub Issue #571 append-only epoch index + active queue epoch Issue comments (epoch 1 is #423)"
       ],
       "writers": [
         "script_github_queue_store",
@@ -1138,10 +1138,10 @@
         "workflow_automation_watchdog",
         "script_assess_sources"
       ],
-      "lock_key": "github-issue-comment-chain:423",
+      "lock_key": "github-issue-comment-chain:571-index+active-epoch",
       "mode": "append_only_revision_chain",
-      "enforcement": "Queue mutations append compressed SHA-256 verified snapshots to Issue #423 comments; each revision references the prior digest and canonical earliest comment ID wins duplicate revisions. Losing writers re-read and reapply within a bounded retry budget.",
-      "note": "automation/task_queue_rebuild_seed.json is the read-only bootstrap for the rebuilt Issue #423 queue; local task_queue_runtime remains runner-local. Source assessor checkpoints and resource leases share the external queue state."
+      "enforcement": "Queue mutations append compressed SHA-256 verified snapshots to the active epoch Issue; Issue #571 stores the append-only epoch pointer chain. Each revision references the prior digest and canonical earliest comment ID wins duplicate revisions. Losing writers re-read and reapply within a bounded retry budget.",
+      "note": "Issue #423 is epoch 1 and has reached the 2,500-comment limit. The adapter rotates before the 2,400-comment threshold by checkpointing the exact current snapshot into a deterministic next-epoch Issue, verifying it, then appending the pointer to Issue #571. automation/task_queue_rebuild_seed.json remains read-only bootstrap state; local task_queue_runtime remains runner-local."
     },
     {
       "resource": "logical/production-pipeline",
@@ -1358,8 +1358,8 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "75ea172c5ac973e3fed7f9c2329037ad824f44bd",
-    "program_registry_blob_sha": "97c4bc32325502c32ec7ccba40629dbc74086cf0",
+    "release_manifest_blob_sha": "69c193493e0cf8499f5fd84afbabf1d29238b9fb",
+    "program_registry_blob_sha": "7a3893c5c718657ffdd3f621b904324c3bb94da3",
     "execution_adapters_blob_sha": "ac0d4a74d5cf1da6d1fe05ebe16a050b2e13fdbb",
     "added_after_release_baseline": true,
     "note": "Independent Source Discovery and non-activating Assessment are enabled through Watchdog-owned tasks. Discovery/Assessment outputs are isolated immutable RUNNER_TEMP artifacts; Assessment's only shared mutation is the fenced Issue #423 checkpoint. Repository mutations are governed per capability by explicit exclusive resource_contract.resource_keys; control-plane metadata is separately inventoried. The production auto_sync publisher stages only the three rule-set deliverables under rulesets/**. The global static/transitive inventory remains partial for unrelated capabilities.",

@@ -4,7 +4,7 @@
   "status": "partial_static_audit",
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
-    "registry_blob_sha": "97c4bc32325502c32ec7ccba40629dbc74086cf0",
+    "registry_blob_sha": "7a3893c5c718657ffdd3f621b904324c3bb94da3",
     "adapters_blob_sha": "ac0d4a74d5cf1da6d1fe05ebe16a050b2e13fdbb",
     "inspected_sources": [
       ".github/workflow_helpers/check_source_assessment_artifact.py",
@@ -87,7 +87,7 @@
       "tests/test_workflow_native_write_inventory.py",
       ".github/workflows/queue-snapshot-artifact.yml"
     ],
-    "limitation": "The active Source Discovery → Assessment DAG remains scoped to runner-local immutable artifacts and a fenced Issue #423 checkpoint. A separate durable non-activating source-candidate registry is committed only as rulesets/source_candidate_registry.json by the existing single auto_sync publisher under the Watchdog logical/production-pipeline fence. Protected modules/** and JavaScript remain unwritable. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
+    "limitation": "The active Source Discovery → Assessment DAG remains scoped to runner-local immutable artifacts and a fenced active queue epoch Issue (epoch 1 is #423; indexed by Issue #571) checkpoint. A separate durable non-activating source-candidate registry is committed only as rulesets/source_candidate_registry.json by the existing single auto_sync publisher under the Watchdog logical/production-pipeline fence. Protected modules/** and JavaScript remain unwritable. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
     "reviewed_at": "2026-11-07",
     "isolated_ephemeral_outputs": [
       {
@@ -212,7 +212,7 @@
       ],
       "lease_key": "github-issue-comment-chain:423",
       "status": "append_only_issue_snapshot_chain_reviewed",
-      "note": "The durable queue is control-plane state stored as append-only, compressed GitHub Issue #423 comments. Each snapshot is SHA-256 chained to the prior revision; concurrent duplicate revisions resolve deterministically by earliest canonical comment ID. The repository automation/task_queue_rebuild_seed.json file is read-only bootstrap state. Local task_queue_runtime is runner-local only."
+      "note": "The durable queue is control-plane state stored as append-only, compressed GitHub active queue epoch Issue (epoch 1 is #423; indexed by Issue #571) comments. Each snapshot is SHA-256 chained to the prior revision; concurrent duplicate revisions resolve deterministically by earliest canonical comment ID. The repository automation/task_queue_rebuild_seed.json file is read-only bootstrap state. Local task_queue_runtime is runner-local only."
     },
     {
       "id": "independent_source_assessment_queue_checkpoint",
@@ -227,7 +227,7 @@
       "lock_key": "github-issue-comment-chain:423 + logical/production-pipeline + logical/source-assessment-checkpoints + logical/source-dag-supervision",
       "required_mode": "append_only_issue_snapshot_CAS_with_live_task_and_resource_fences",
       "status": "bounded_task_checkpoint_fenced",
-      "note": "Per-URL results are stored only in the currently claimed task's assessment_checkpoint. Each mutation uses the append-only Issue #423 snapshot CAS and validates task identity, active task lease, exact predecessor run/digest and both logical resource fencing tokens. No repository assessment document is written or published. Discovery and Assessment also share logical/source-dag-supervision, held from task claim through independent workflow verification so overlapping Watchdog events cannot execute different source-DAG stages concurrently."
+      "note": "Per-URL results are stored only in the currently claimed task's assessment_checkpoint. Each mutation uses the append-only active queue epoch Issue (epoch 1 is #423; indexed by Issue #571) snapshot CAS and validates task identity, active task lease, exact predecessor run/digest and both logical resource fencing tokens. No repository assessment document is written or published. Discovery and Assessment also share logical/source-dag-supervision, held from task claim through independent workflow verification so overlapping Watchdog events cannot execute different source-DAG stages concurrently."
     },
     {
       "id": "lifecycle_gate_state",
@@ -499,7 +499,7 @@
       "lock_key": "logical/production-pipeline + logical/source-assessment-checkpoints + logical/source-dag-supervision + exact assessment output resource keys in monolithic mode; per-run RUNNER_TEMP isolation in independent mode",
       "required_mode": "isolated_per_run_artifact_workspace",
       "status": "active_runner_local_artifacts_and_fenced_issue_checkpoint",
-      "note": "Independent assessment JSON and report are per-run RUNNER_TEMP artifacts. Watchdog adds a provenance proof binding the exact Assessment task, verified Discovery predecessor, producer workflow run/head SHA and every artifact file digest before immutable upload. Production independently resolves and verifies that artifact; only the bounded task assessment_checkpoint is shared through Issue #423 CAS. No assessment document is committed or published."
+      "note": "Independent assessment JSON and report are per-run RUNNER_TEMP artifacts. Watchdog adds a provenance proof binding the exact Assessment task, verified Discovery predecessor, producer workflow run/head SHA and every artifact file digest before immutable upload. Production independently resolves and verifies that artifact; only the bounded task assessment_checkpoint is shared through active queue epoch Issue (epoch 1 is #423; indexed by Issue #571) CAS. No assessment document is committed or published."
     },
     {
       "id": "source_candidate_artifacts",
@@ -590,7 +590,7 @@
       ],
       "lock_key": "unique GitHub Actions run ID; immutable artifact name durable-queue-snapshot-<run_id>",
       "required_mode": "immutable_run_scoped_artifact",
-      "note": "The backup workflow reads the canonical Issue #423 queue snapshot and uploads one immutable artifact per run. This is external Actions artifact storage, not a repository file writer or queue mutator."
+      "note": "The backup workflow reads the canonical active queue epoch Issue (epoch 1 is #423; indexed by Issue #571) queue snapshot and uploads one immutable artifact per run. This is external Actions artifact storage, not a repository file writer or queue mutator."
     }
   ],
   "scheduling_gates": {
@@ -605,6 +605,6 @@
       "Global dynamic path, third-party Action and cross-workflow runtime evidence remains required before enabling unrelated capabilities."
     ]
   },
-  "limitation": "The active Source Discovery → Assessment DAG is scoped to runner-local immutable artifacts and a fenced Issue #423 checkpoint. The production repository publisher stages rulesets/** only: the three policy rule-set deliverables plus the non-policy discovered-source candidate registry. The registry remains unclassified and inactive. Per-capability repository writes are validated against explicit exclusive resource_contract.resource_keys; protected modules/** and JavaScript remain unwritable. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
+  "limitation": "The active Source Discovery → Assessment DAG is scoped to runner-local immutable artifacts and a fenced active queue epoch Issue (epoch 1 is #423; indexed by Issue #571) checkpoint. The production repository publisher stages rulesets/** only: the three policy rule-set deliverables plus the non-policy discovered-source candidate registry. The registry remains unclassified and inactive. Per-capability repository writes are validated against explicit exclusive resource_contract.resource_keys; protected modules/** and JavaScript remain unwritable. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
   "reviewed_at": "2026-11-10"
 }

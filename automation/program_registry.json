@@ -7,11 +7,9 @@
     "permission_rule": "Registry declarations describe boundaries; they never grant permissions. The workflow job's least-privilege permissions remain authoritative.",
     "activation_rule": "Registration is mandatory for CI acceptance, but does not by itself authorize automatic dispatch, rule activation, publication, or modification of modules/uu.conf.",
     "excluded_legacy_workflow_paths": [
-      ".github/workflows/migrate-queue-to-repo-json.yml",
-      ".github/workflows/queue-lease-recovery.yml",
-      ".github/workflows/restore-queue-store.yml"
+      ".github/workflows/queue-lease-recovery.yml"
     ],
-    "exclusion_rule": "These V1 legacy workflows are retained in the repository for historical recovery evidence only. They are not V2 dispatch targets and must not be called by V2. Removal or reactivation requires an explicit retirement/migration review."
+    "exclusion_rule": "The remaining V1 queue lease-recovery workflow is retained for historical recovery evidence only. It is not a V2 dispatch target and must not be called by V2. Retired direct-main repository writers are removed; any future reactivation requires a new explicit review and must preserve the rulesets/**-only repository write boundary."
   },
   "programs": [
     {
@@ -89,7 +87,7 @@
         "script_discover_sources"
       ],
       "dispatches": [],
-      "permission_boundary": "Read only the exact verified discovery artifact and read-only baseline files. Write assessment documents only under the isolated RUNNER_TEMP artifact root; no repository file writes, commits, or GitHub Contents API writes. The sole shared mutation is the current task's bounded assessment_checkpoint in GitHub Issue #423, guarded by the active task lease, logical/source-assessment-checkpoints and logical/production-pipeline fences. No source activation; modules/uu.conf and sources/domain_sources.json remain read-only.",
+      "permission_boundary": "Read only the exact verified discovery artifact and read-only baseline files. Write assessment documents only under the isolated RUNNER_TEMP artifact root; no repository file writes, commits, or GitHub Contents API writes. The sole shared mutation is the current task's bounded assessment_checkpoint in GitHub active queue epoch Issue (epoch 1 is #423; indexed by Issue #571), guarded by the active task lease, logical/source-assessment-checkpoints and logical/production-pipeline fences. No source activation; modules/uu.conf and sources/domain_sources.json remain read-only.",
       "health_check": "Scheduler validates the exact discovery predecessor digest from the external runner-local artifact root, the assessor validates task/resource fencing before each queue checkpoint CAS, and verify_assess_sources_artifacts.py independently checks the runner-local output documents and non-activation.",
       "orchestration": {
         "enabled": true,
@@ -609,7 +607,7 @@
       ],
       "depends_on": [],
       "dispatches": [],
-      "permission_boundary": "Requires caller-supplied GitHub Issues read/write permission to append and read compressed queue snapshots in Issue #423. It performs no repository Contents API writes and never logs token values.",
+      "permission_boundary": "Requires caller-supplied GitHub Issues read/write permission to append and read compressed queue snapshots in active queue epoch Issue (epoch 1 is #423; indexed by Issue #571). It performs no repository Contents API writes and never logs token values.",
       "health_check": "Mocked API tests for snapshot compression, SHA-256 chain validation, canonical duplicate-revision resolution, bounded conflict retries, and fail-closed API errors.",
       "orchestration": {
         "enabled": false,
@@ -951,7 +949,7 @@
         "script_task_queue"
       ],
       "dispatches": [],
-      "permission_boundary": "Requires caller-provided GitHub Issues read/write permission for Issue #423; repository task_queue_rebuild_seed.json is read-only bootstrap state and no repository Contents write is performed.",
+      "permission_boundary": "Requires caller-provided GitHub Issues read/write permission for active queue epoch Issue (epoch 1 is #423; indexed by Issue #571); repository task_queue_rebuild_seed.json is read-only bootstrap state and no repository Contents write is performed.",
       "health_check": "Unit tests for Issue-backed enqueue, idempotency, priority claims, lease ownership, retry/dead-letter transitions, and expired-lease recovery.",
       "orchestration": {
         "enabled": false,
@@ -1918,7 +1916,7 @@
       "id": "workflow_queue_snapshot_artifact",
       "path": ".github/workflows/queue-snapshot-artifact.yml",
       "kind": "github_actions_workflow",
-      "responsibility": "periodically export the canonical durable queue snapshot from Issue #423 and retain it as an immutable Actions artifact for disaster recovery",
+      "responsibility": "periodically export the canonical durable queue snapshot from active queue epoch Issue (epoch 1 is #423; indexed by Issue #571) and retain it as an immutable Actions artifact for disaster recovery",
       "capabilities": [
         "durable_queue_snapshot_export",
         "queue_disaster_recovery"
@@ -1937,7 +1935,7 @@
       ],
       "dispatches": [],
       "permission_boundary": "contents:read and issues:read only to read and validate the canonical queue; actions:write only to upload a run-scoped immutable Actions artifact. No repository contents writes, commits, branch updates, queue mutations, task dispatch, source activation, ruleset publication, or writes to modules/uu.conf.",
-      "health_check": "The snapshot CLI must validate the canonical Issue #423 envelope and report revision/task count; the exact output file must be uploaded under a unique run ID. Missing or invalid snapshots fail the job; the upload step cannot turn a failed export into a successful run.",
+      "health_check": "The snapshot CLI must validate the canonical active queue epoch Issue (epoch 1 is #423; indexed by Issue #571) envelope and report revision/task count; the exact output file must be uploaded under a unique run ID. Missing or invalid snapshots fail the job; the upload step cannot turn a failed export into a successful run.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],

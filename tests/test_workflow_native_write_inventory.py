@@ -108,5 +108,59 @@ class WorkflowNativeWriteInventoryTests(unittest.TestCase):
         self.assertIn("actions/deploy-pages", workflow)
 
 
+    def test_unsafe_queue_repository_write_workflows_are_retired(self):
+        retired = (
+            ".github/workflows/migrate-queue-to-repo-json.yml",
+            ".github/workflows/restore-queue-store.yml",
+        )
+        for workflow in retired:
+            with self.subTest(workflow=workflow):
+                self.assertFalse(
+                    (ROOT / workflow).exists(),
+                    f"{workflow} can write non-ruleset repository files directly to main",
+                )
+
+
+    def test_durable_queue_inventory_tracks_issue_epoch_store(self):
+        store = (ROOT / "scripts/github_queue_store.py").read_text(encoding="utf-8")
+        self.assertNotIn("/contents/", store)
+        self.assertIn("DEFAULT_INDEX_ISSUE_NUMBER = 571", store)
+        self.assertIn("QUEUE_ROTATE_COMMENT_THRESHOLD = 2400", store)
+
+        queue_group = next(
+            item for item in self.inventory["confirmed_shared_write_groups"]
+            if item["resource"] == "durable task queue control-plane state"
+        )
+        self.assertIn("Issue #571", " ".join(queue_group["paths"]))
+        self.assertIn("active-epoch", queue_group["lock_key"])
+        self.assertIn("SHA-256", queue_group["enforcement"])
+
+        for program_id in ("script_resource_lease_runtime", "script_task_scheduler"):
+            entry = next(
+                item for item in self.inventory["confirmed_write_sets"]
+                if item["program_id"] == program_id
+            )
+            self.assertIn("Issue", entry["lease_enforcement"])
+            self.assertIn("SHA-256", entry["lease_enforcement"])
+            self.assertNotIn("Contents SHA-CAS", entry["lease_enforcement"])
+
+        registry = json.loads((ROOT / "automation/program_registry.json").read_text(encoding="utf-8"))
+        queue_store = next(item for item in registry["programs"] if item["id"] == "script_github_queue_store")
+        self.assertIn("Issue #571", queue_store["permission_boundary"])
+        self.assertIn("no repository Contents API writes", queue_store["permission_boundary"])
+
+        queue_runtime = next(item for item in registry["programs"] if item["id"] == "script_remote_task_queue_runtime")
+        self.assertIn("Issue #571", queue_runtime["permission_boundary"])
+        self.assertIn("read-only bootstrap state", queue_runtime["permission_boundary"])
+        self.assertIn("no repository Contents write is performed", queue_runtime["permission_boundary"])
+
+        ownership = json.loads((ROOT / "automation/resource_ownership_audit.json").read_text(encoding="utf-8"))
+        queue_resource = next(
+            item for item in ownership["resource_groups"]
+            if "durable_task_queue" in item.get("id", "").lower()
+        )
+        self.assertIn("Issue #571", queue_resource["note"])
+
+
 if __name__ == "__main__":
     unittest.main()
