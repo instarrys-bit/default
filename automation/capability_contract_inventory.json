@@ -112,7 +112,7 @@
       "current_registry_outputs": [
         "stdout JSON: assessed, bytes_read, parser_candidates, policy_candidates, activated=0, artifact_verification",
         "runner-local source_assessment history/runtime/report uploaded as immutable Actions artifact; no repository publication",
-        "GitHub Issue #423 task.assessment_checkpoint: per-URL result and fingerprint checkpoint (durable CAS state)"
+        "Active queue epoch Issue (epoch 1 is #423; indexed by Issue #571) task.assessment_checkpoint: per-URL result and fingerprint checkpoint (durable CAS state)"
       ],
       "current_invocation": "python_module_or_workflow_step",
       "contract_status": "reviewed_active_scoped_source_dag",
@@ -1878,7 +1878,7 @@
       ],
       "current_invocation": "15-minute scheduled backup and workflow_run completion callback; non-dispatchable",
       "current_registry_inputs": [
-        "canonical GitHub Issue #423 append-only snapshot chain",
+        "canonical indexed active queue epoch Issue append-only snapshot chain (Issue #571 pointer; epoch 1 is #423)",
         "exact current repository main checkout"
       ],
       "current_registry_outputs": [

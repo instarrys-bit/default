@@ -293,9 +293,12 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         entries = {item["program_id"]: item for item in writes["control_plane_side_effects"]}
         remote = entries["script_remote_task_queue_runtime"]
         store = entries["script_github_queue_store"]
-        self.assertEqual(remote["side_effects"], ["GitHub Issue #423 comment snapshots (external durable queue state)"])
-        self.assertEqual(store["side_effects"], ["GitHub Issue #423 comment snapshots (external durable queue state)"])
-        self.assertEqual(remote["classification"], "external_issue_423_append_only_queue_snapshot_store")
+        self.assertEqual(remote["side_effects"], ["GitHub Issue #571 epoch-pointer comments and active queue epoch Issue comments (epoch 1 is #423)"])
+        self.assertEqual(store["side_effects"], ["GitHub Issue #571 epoch-pointer comments and active queue epoch Issue comments (epoch 1 is #423)"])
+        self.assertEqual(remote["classification"], "external_indexed_issue_epoch_queue_snapshot_store")
+        self.assertEqual(store["classification"], "external_indexed_issue_epoch_queue_snapshot_store")
+        self.assertIn("active queue epoch", remote["control_plane_boundary"])
+        self.assertIn("Issue #571", " ".join(remote["side_effects"]))
         self.assertIn("no repository filesystem or Contents API writes", remote["control_plane_boundary"])
         group = next(
             item for item in writes["confirmed_shared_write_groups"]

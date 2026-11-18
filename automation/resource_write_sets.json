@@ -88,7 +88,7 @@
       ],
       "side_effects": [
         "HTTPS reads restricted to raw.githubusercontent.com with repository binding and same-host redirect validation.",
-        "Per-URL results are CAS-appended to GitHub Issue #423 task.assessment_checkpoint under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences.",
+        "Per-URL results are CAS-appended to the active queue epoch Issue (epoch 1 is #423; indexed by Issue #571) task.assessment_checkpoint under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences.",
         "All assessment documents are isolated beneath RUNNER_TEMP and uploaded as immutable Actions artifacts; no repository checkout file is modified."
       ],
       "evidence": "Independent task mode resolves the discovery predecessor from AUTOMATION_PREDECESSOR_ARTIFACT_ROOT and writes runtime/history/report documents only beneath AUTOMATION_ARTIFACT_ROOT. write_document uses no repository resource lease because the workspace is per-run isolated. Shared progress is written only through the fenced active queue epoch Issue (epoch 1 is #423; indexed by Issue #571) queue CAS.",
@@ -1548,7 +1548,7 @@
         "GitHub Issue #571 epoch-pointer comments and active queue epoch Issue comments (epoch 1 is #423)"
       ],
       "file_writes": [],
-      "control_plane_boundary": "Mutates only GitHub Issue #571 pointer comments and the currently indexed queue epoch Issue comments; no repository filesystem or Contents API writes. Before an epoch switch, the exact current snapshot is copied to a deterministic new Issue and independently read back; only then is the pointer appended and read back. Snapshot integrity is SHA-256 chained; bounded GET retry/backoff excludes ambiguous POST retries. Cross-writer concurrency/fencing proof remains an open Issue #193 acceptance item."
+      "control_plane_boundary": "Mutates only GitHub Issue #571 pointer comments and the currently indexed active queue epoch Issue comments; no repository filesystem or Contents API writes. Before an epoch switch, the exact current snapshot is copied to a deterministic new Issue and independently read back; only then is the pointer appended and read back. Snapshot integrity is SHA-256 chained; bounded GET retry/backoff excludes ambiguous POST retries. Cross-writer concurrency/fencing proof remains an open Issue #193 acceptance item."
     },
     {
       "program_id": "script_github_workflow_adapter",
@@ -1569,7 +1569,7 @@
         "GitHub Issue #571 epoch-pointer comments and active queue epoch Issue comments (epoch 1 is #423)"
       ],
       "file_writes": [],
-      "control_plane_boundary": "Mutates only GitHub Issue #571 pointer comments and the currently indexed queue epoch Issue comments; no repository filesystem or Contents API writes. Before an epoch switch, the exact current snapshot is copied to a deterministic new Issue and independently read back; only then is the pointer appended and read back. Snapshot integrity is SHA-256 chained; bounded GET retry/backoff excludes ambiguous POST retries. Cross-writer concurrency/fencing proof remains an open Issue #193 acceptance item."
+      "control_plane_boundary": "Mutates only GitHub Issue #571 pointer comments and the currently indexed active queue epoch Issue comments; no repository filesystem or Contents API writes. Before an epoch switch, the exact current snapshot is copied to a deterministic new Issue and independently read back; only then is the pointer appended and read back. Snapshot integrity is SHA-256 chained; bounded GET retry/backoff excludes ambiguous POST retries. Cross-writer concurrency/fencing proof remains an open Issue #193 acceptance item."
     }
   ],
   "direct_mutation_scan": {
