@@ -28,12 +28,13 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertNotIn("git commit", diagnose)
         self.assertNotIn("git push", diagnose)
         self.assertNotIn("gh pr create", diagnose)
-        self.assertIn("gh issue create", diagnose)
+        self.assertIn("gh workflow run storage-incident-management.yml", diagnose)
+        self.assertNotIn("gh issue", workflow)
 
     def test_self_healing_has_no_repository_write_or_pr_token(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         diagnose = workflow.split("  diagnose-and-repair:", 1)[1].split("  report-agent-failure:", 1)[0]
-        repair_step = diagnose.split("      - name: Keep self-healing read-only", 1)[1].split("      - name: Open incident when no safe repair applies", 1)[0]
+        repair_step = diagnose.split("      - name: Keep self-healing read-only", 1)[1].split("      - name: Dispatch diagnosed incident to Storage Management", 1)[0]
         self.assertNotIn("GH_TOKEN", repair_step)
         self.assertNotIn("contents: write", repair_step)
         self.assertNotIn("pull-requests: write", repair_step)
@@ -74,13 +75,10 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertIn('      - "Validate Shadowrocket config against user baseline"', workflow)
         self.assertIn("resolve-validator-incidents:", workflow)
         resolver = workflow.split("  resolve-validator-incidents:", 1)[1].split("  resolve-audit-incidents:", 1)[0]
-        self.assertIn("contents: read", resolver)
-        self.assertIn("Checkout incident state helper", resolver)
-        self.assertNotIn("\\\\n", resolver)
-        self.assertIn("validator-verifying-$RUN_ID-$issue", resolver)
-        self.assertIn("validator-success-$RUN_ID-$issue", resolver)
-        self.assertIn("persist-credentials: false", resolver)
-        self.assertIn("CONFIG_BASELINE_MISMATCH TEST_FAILURE PYTHON_IMPORT_FAILURE", workflow)
+        self.assertIn("actions: write", resolver)
+        self.assertIn("gh workflow run storage-incident-management.yml", resolver)
+        self.assertNotIn("gh issue", resolver)
+        self.assertIn("classifications=CONFIG_BASELINE_MISMATCH,TEST_FAILURE,PYTHON_IMPORT_FAILURE", resolver)
         self.assertIn("The protected config was not modified.", workflow)
 
     def test_failed_checkpoint_recovery_uses_expanded_github_context_and_paginated_history(self):
@@ -173,7 +171,8 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertIn("contents: read", diagnose)
         self.assertNotIn("contents: write", diagnose)
         resolver = workflow.split("  resolve-validator-incidents:", 1)[1].split("  resolve-audit-incidents:", 1)[0]
-        self.assertIn("issues: write", resolver)
+        self.assertIn("actions: write", resolver)
+        self.assertNotIn("issues: write", resolver)
         self.assertNotIn("contents: write", resolver)
         watcher = WATCHDOG.read_text(encoding="utf-8").split("  stale-run-watch:", 1)[1]
         self.assertIn("actions: write", watcher)
@@ -190,13 +189,13 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertIn('gh api "repos/$REPO/actions/runs/$RUN_ID"', resolver)
         self.assertIn('gh api --paginate --slurp "repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=100"', resolver)
         self.assertIn("python3 scripts/verify_recovery_run.py", resolver)
-        self.assertIn("actions: read", resolver)
+        self.assertIn("actions: write", resolver)
         self.assertIn("contents: read", resolver)
         self.assertIn("Checkout verifier code", resolver)
         self.assertIn("--paginate --slurp", resolver)
         self.assertLess(
             resolver.index("python3 scripts/verify_recovery_run.py"),
-            resolver.index('          issues="$(gh issue list'),
+            resolver.index("gh workflow run storage-incident-management.yml"),
         )
         self.assertIn("Independently verify committed remote rulesets", AUTO_SYNC.read_text(encoding="utf-8"))
 
@@ -223,10 +222,9 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         state_machine = ROOT / "scripts" / "incident_state.py"
         self.assertTrue(state_machine.exists())
-        self.assertIn("--target-state MANUAL_INTERVENTION", workflow)
-        self.assertIn("--target-state RECOVERED", workflow)
-        self.assertIn("--verification-url", workflow)
-        self.assertIn("gh issue edit \"$issue\" --repo \"$REPO\" --body-file /tmp/incident-state-body.md", workflow)
+        self.assertIn("storage-incident-management.yml", workflow)
+        self.assertTrue((ROOT / "storage" / "v2" / "incident_store.py").exists())
+        self.assertNotIn("gh issue", workflow)
         self.assertIn("FAILED_SHA: ${{ github.event.workflow_run.head_sha }}", workflow)
         self.assertIn("incident-state:v1", state_machine.read_text(encoding="utf-8"))
 
