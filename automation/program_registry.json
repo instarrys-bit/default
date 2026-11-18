@@ -1263,7 +1263,7 @@
         "script_github_workflow_adapter"
       ],
       "dispatches": [],
-      "permission_boundary": "Requires caller-provided GitHub Contents read/write permission to persist verification transitions; never modifies modules/uu.conf, rulesets, or DNS.",
+      "permission_boundary": "Requires caller-provided GitHub Issues read/write permission to persist verification transitions through the active append-only queue epoch (Issue #423, indexed by Issue #571); no repository Contents write permission is required; never modifies modules/uu.conf, rulesets, or DNS.",
       "health_check": "Tests cover deterministic JSON contract validation, workflow run correlation, identity/SHA checks, pending state, success/failure conclusions, and CAS-backed task transitions.",
       "orchestration": {
         "enabled": false,
@@ -1302,7 +1302,7 @@
         "script_github_workflow_adapter"
       ],
       "dispatches": [],
-      "permission_boundary": "Requires caller-provided GitHub Contents read/write permission. Child programs receive only a non-secret environment allowlist, no shell, and no GitHub token. The scheduler does not modify modules/uu.conf.",
+      "permission_boundary": "Requires caller-provided GitHub Issues read/write permission for durable queue transitions and GitHub Actions read/write permission for reviewed workflow dispatch and run verification. It does not require repository Contents write permission. Child programs receive only a non-secret environment allowlist, no shell, and no GitHub token. The scheduler does not modify modules/uu.conf.",
       "health_check": "Tests cover disabled-adapter blocking, reviewed Python execution, workflow dispatch authorization, durable intent recovery, duplicate-dispatch prevention, and independent workflow run verification.",
       "orchestration": {
         "enabled": false,
