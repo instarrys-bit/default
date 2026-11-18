@@ -134,6 +134,7 @@ jobs:
         if: ${{ steps.supersession.outputs.stale != 'true' }}
         run: |
           echo "Automatic repository code repair is disabled. Diagnosis and incident reporting remain active."
+          echo "The protected config was not modified; modules/uu.conf remains read-only."
           echo "changed=false" >> "$GITHUB_OUTPUT"
 
       - name: Dispatch diagnosed incident to Storage Management

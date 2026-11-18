@@ -858,7 +858,7 @@ jobs:
     if: ${{ always() && needs.health-check.result == 'success' && (github.event_name == 'workflow_run' || needs.stale-run-watch.result == 'success') && (github.event_name == 'workflow_run' || needs.stale-run-watch.outputs.queue_blocked != 'true') && (needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped') && (github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.path == '.github/workflows/auto_sync.yml' || github.event.workflow_run.path == '.github/workflows/source-discovery.yml'))) && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[assessment-canary]')) }}
     permissions:
       actions: write
-      contents: read
+      contents: write
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
@@ -887,7 +887,6 @@ jobs:
           set -euo pipefail
           python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main recover-expired | tee "$RUNNER_TEMP/recover-expired.json"
           current_main="$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)"
-          printf '%s' "$GITHUB_TOKEN" | python3 scripts/task_scheduler.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin --current-main-sha "$current_main" resolve-superseded-dead-letters | tee "$RUNNER_TEMP/resolve-superseded.json" || true
           python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue_after_recovery.json"
           python3 - <<'PY'
           import json, os
