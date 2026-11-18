@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "GitHub Issues open incident search snapshot",
-  "captured_at": "2026-11-18T11:30:00Z",
+  "captured_at": "2026-11-18T11:19:00Z",
   "record_count": 85,
   "records": [
     {
@@ -19,7 +19,8 @@
       "source_sha": null,
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "AGENT_FAILURE"
     },
     {
       "legacy_id": "legacy_issue_489",
@@ -36,7 +37,8 @@
       "source_sha": null,
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "AGENT_FAILURE"
     },
     {
       "legacy_id": "legacy_issue_492",
@@ -53,7 +55,8 @@
       "source_sha": null,
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "AGENT_FAILURE"
     },
     {
       "legacy_id": "legacy_issue_493",
@@ -70,7 +73,8 @@
       "source_sha": null,
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "AGENT_FAILURE"
     },
     {
       "legacy_id": "legacy_issue_494",
@@ -87,7 +91,8 @@
       "source_sha": null,
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "AGENT_FAILURE"
     },
     {
       "legacy_id": "legacy_issue_496",
@@ -104,7 +109,8 @@
       "source_sha": null,
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "AGENT_FAILURE"
     },
     {
       "legacy_id": "legacy_issue_502",
@@ -121,7 +127,9 @@
       "source_sha": "b7ead5b9ca89de9d666e3e1170e27c27623a072e",
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "PIPELINE_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_513",
@@ -138,7 +146,9 @@
       "source_sha": "f4ffcd7c5ae12bd516bdab7cc8dd9cea433b8020",
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "PIPELINE_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_514",
@@ -155,7 +165,9 @@
       "source_sha": "f4ffcd7c5ae12bd516bdab7cc8dd9cea433b8020",
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "PIPELINE_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_517",
@@ -172,7 +184,9 @@
       "source_sha": "6dd8cc4f20abc697c6aab3395dfd39785a525bd8",
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "PIPELINE_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_521",
@@ -189,7 +203,9 @@
       "source_sha": "5ca516896becf83a36db0b2d32f817e89d306ced",
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "PIPELINE_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_530",
@@ -206,7 +222,9 @@
       "source_sha": "68f9eb7064901d17cf59c3a393b41f986cb75d13",
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "PIPELINE_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_531",
@@ -223,7 +241,9 @@
       "source_sha": "68f9eb7064901d17cf59c3a393b41f986cb75d13",
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "PIPELINE_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_534",
@@ -240,7 +260,9 @@
       "source_sha": "41c196d7206c14d98e70fb921d1094a3309b8fcc",
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "PIPELINE_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_535",
@@ -257,7 +279,9 @@
       "source_sha": "41c196d7206c14d98e70fb921d1094a3309b8fcc",
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "PIPELINE_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_536",
@@ -274,7 +298,9 @@
       "source_sha": "41c196d7206c14d98e70fb921d1094a3309b8fcc",
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "PIPELINE_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_537",
@@ -291,7 +317,9 @@
       "source_sha": "41c196d7206c14d98e70fb921d1094a3309b8fcc",
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "PIPELINE_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_541",
@@ -308,7 +336,8 @@
       "source_sha": null,
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "AGENT_FAILURE"
     },
     {
       "legacy_id": "legacy_issue_542",
@@ -325,7 +354,8 @@
       "source_sha": null,
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "AGENT_FAILURE"
     },
     {
       "legacy_id": "legacy_issue_543",
@@ -342,7 +372,8 @@
       "source_sha": null,
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "AGENT_FAILURE"
     },
     {
       "legacy_id": "legacy_issue_544",
@@ -359,7 +390,8 @@
       "source_sha": null,
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "AGENT_FAILURE"
     },
     {
       "legacy_id": "legacy_issue_545",
@@ -376,7 +408,8 @@
       "source_sha": null,
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "AGENT_FAILURE"
     },
     {
       "legacy_id": "legacy_issue_546",
@@ -393,7 +426,8 @@
       "source_sha": null,
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "AGENT_FAILURE"
     },
     {
       "legacy_id": "legacy_issue_547",
@@ -410,7 +444,8 @@
       "source_sha": null,
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "AGENT_FAILURE"
     },
     {
       "legacy_id": "legacy_issue_548",
@@ -427,7 +462,8 @@
       "source_sha": null,
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "AGENT_FAILURE"
     },
     {
       "legacy_id": "legacy_issue_549",
@@ -444,7 +480,8 @@
       "source_sha": null,
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "AGENT_FAILURE"
     },
     {
       "legacy_id": "legacy_issue_550",
@@ -461,7 +498,8 @@
       "source_sha": null,
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "AGENT_FAILURE"
     },
     {
       "legacy_id": "legacy_issue_551",
@@ -478,7 +516,8 @@
       "source_sha": null,
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "AGENT_FAILURE"
     },
     {
       "legacy_id": "legacy_issue_552",
@@ -495,7 +534,9 @@
       "source_sha": "042251f50d096a69dfd1d65e015035591265ecdf",
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "PIPELINE_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_553",
@@ -512,7 +553,9 @@
       "source_sha": "042251f50d096a69dfd1d65e015035591265ecdf",
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "PIPELINE_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_554",
@@ -529,7 +572,9 @@
       "source_sha": "042251f50d096a69dfd1d65e015035591265ecdf",
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "PIPELINE_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_555",
@@ -546,7 +591,9 @@
       "source_sha": "042251f50d096a69dfd1d65e015035591265ecdf",
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "PIPELINE_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_556",
@@ -563,7 +610,9 @@
       "source_sha": "042251f50d096a69dfd1d65e015035591265ecdf",
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "PIPELINE_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_557",
@@ -580,7 +629,9 @@
       "source_sha": "042251f50d096a69dfd1d65e015035591265ecdf",
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "PIPELINE_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_562",
@@ -597,7 +648,9 @@
       "source_sha": "e5979b89a2f5745e9f615deb2cf48e0d51ab7415",
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "PIPELINE_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_565",
@@ -614,7 +667,9 @@
       "source_sha": "e5979b89a2f5745e9f615deb2cf48e0d51ab7415",
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "PIPELINE_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_566",
@@ -631,7 +686,9 @@
       "source_sha": "e5979b89a2f5745e9f615deb2cf48e0d51ab7415",
       "incident_state": null,
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "PIPELINE_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_573",
@@ -665,7 +722,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_577",
@@ -699,7 +758,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_578",
@@ -733,7 +794,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_579",
@@ -767,7 +830,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_580",
@@ -801,7 +866,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_581",
@@ -835,7 +902,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_585",
@@ -869,7 +938,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_587",
@@ -903,7 +974,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_589",
@@ -937,7 +1010,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_592",
@@ -971,7 +1046,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_593",
@@ -1005,7 +1082,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_595",
@@ -1039,7 +1118,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_597",
@@ -1073,7 +1154,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_598",
@@ -1107,7 +1190,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_599",
@@ -1141,7 +1226,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_600",
@@ -1175,7 +1262,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_601",
@@ -1209,7 +1298,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_602",
@@ -1243,7 +1334,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_604",
@@ -1277,7 +1370,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_605",
@@ -1311,7 +1406,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_606",
@@ -1345,7 +1442,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_607",
@@ -1379,7 +1478,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_608",
@@ -1413,7 +1514,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_609",
@@ -1447,7 +1550,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_610",
@@ -1481,7 +1586,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_611",
@@ -1515,7 +1622,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_612",
@@ -1549,7 +1658,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_613",
@@ -1583,7 +1694,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_614",
@@ -1617,7 +1730,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_615",
@@ -1651,7 +1766,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_616",
@@ -1685,7 +1802,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_617",
@@ -1719,7 +1838,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_618",
@@ -1753,7 +1874,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_619",
@@ -1787,7 +1910,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_620",
@@ -1821,7 +1946,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_621",
@@ -1855,7 +1982,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_622",
@@ -1889,7 +2018,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_623",
@@ -1923,7 +2054,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_624",
@@ -1957,7 +2090,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_625",
@@ -1991,7 +2126,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_626",
@@ -2025,7 +2162,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_627",
@@ -2059,7 +2198,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_628",
@@ -2093,7 +2234,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_629",
@@ -2127,7 +2270,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_630",
@@ -2161,7 +2306,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_631",
@@ -2195,7 +2342,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_633",
@@ -2229,7 +2378,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     },
     {
       "legacy_id": "legacy_issue_634",
@@ -2263,7 +2414,9 @@
         "workflow": "config_validator"
       },
       "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
-      "archived_at": "2026-11-18T11:30:00Z"
+      "archived_at": "2026-11-18T11:19:00Z",
+      "classification": "TEST_FAILURE",
+      "identity_key": null
     }
   ]
 }
