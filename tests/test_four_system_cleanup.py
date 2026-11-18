@@ -13,6 +13,7 @@ class FourSystemCleanupTests(unittest.TestCase):
         retired = [
             ".github/workflows/migrate-queue-to-repo-json.yml",
             ".github/workflows/v2-watchdog-supervisor.yml",
+            ".github/workflows/queue-lease-recovery.yml",
             "automation/queue_store_pointer.json",
         ]
         for relative in retired:

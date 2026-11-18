@@ -877,6 +877,37 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Recover expired task and resource leases
+        env:
+          GITHUB_TOKEN: \${{ github.token }}
+          GH_TOKEN: \${{ github.token }}
+          GITHUB_REPOSITORY: \${{ github.repository }}
+        run: |
+          set -euo pipefail
+          python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main recover-expired | tee "$RUNNER_TEMP/recover-expired.json"
+          current_main="$(gh api "repos/$GITHUB_REPOSITORY/commits/main" --jq .sha)"
+          printf '%s' "$GITHUB_TOKEN" | python3 scripts/task_scheduler.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin --current-main-sha "$current_main" resolve-superseded-dead-letters | tee "$RUNNER_TEMP/resolve-superseded.json" || true
+          python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue_after_recovery.json"
+          python3 - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+          queue = json.loads((Path(os.environ["RUNNER_TEMP"]) / "task_queue_after_recovery.json").read_text(encoding="utf-8"))
+          now = datetime.now(timezone.utc)
+          expired = []
+          for task in queue.get("tasks", []):
+              if not isinstance(task, dict) or task.get("status") != "CLAIMED":
+                  continue
+              lease = task.get("lease") or {}
+              expires = lease.get("expires_at")
+              if not expires or datetime.fromisoformat(str(expires).replace("Z", "+00:00")) <= now:
+                  expired.append(task.get("task_id"))
+          report = {"revision": queue.get("revision"), "expired_claimed_remaining": expired}
+          print(json.dumps(report, ensure_ascii=False, sort_keys=True))
+          if expired:
+              raise SystemExit("Expired CLAIMED leases remain after Watchdog recovery: " + ", ".join(map(str, expired)))
+          PY
+
       - name: Export current durable queue snapshot for supervision
         env:
           GITHUB_TOKEN: ${{ github.token }}
