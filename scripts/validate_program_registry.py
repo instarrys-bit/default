@@ -23,7 +23,7 @@ def discover_program_paths(root: Path, excluded_workflows: set[str] | None = Non
     storage_components = {
         path.relative_to(root).as_posix()
         for path in (root / "storage" / "v2").rglob("*.py")
-        if path.is_file()
+        if path.is_file() and path.name != "__init__.py"
     } if (root / "storage" / "v2").is_dir() else set()
     storage_components = {
         path.relative_to(root).as_posix()

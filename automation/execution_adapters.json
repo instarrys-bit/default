@@ -1604,6 +1604,54 @@
       }
     },
     {
+      "target_program_id": "storage_artifact_store",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "storage/v2/artifact_store.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "library-only; direct execution disabled"
+      },
+      "completion": {
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "storage_dashboard_snapshot",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "storage/v2/dashboard_snapshot.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "library-only; direct execution disabled"
+      },
+      "completion": {
+        "independent_verification_required": true
+      }
+    },
+    {
       "target_program_id": "storage_incident_store",
       "target_kind": "python_component",
       "adapter_type": "python_cli",
@@ -1628,6 +1676,30 @@
       }
     },
     {
+      "target_program_id": "storage_migration",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "storage/v2/migration.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "library-only; direct execution disabled"
+      },
+      "completion": {
+        "independent_verification_required": true
+      }
+    },
+    {
       "target_program_id": "storage_queue_store",
       "target_kind": "python_component",
       "adapter_type": "python_cli",
@@ -1646,6 +1718,102 @@
       "retry": {
         "max_attempts": 0,
         "policy": "import-only; direct execution is disabled"
+      },
+      "completion": {
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "storage_runtime",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "storage/v2/runtime.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "library-only; direct execution disabled"
+      },
+      "completion": {
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "storage_source_handoff",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "storage/v2/source_handoff.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "library-only; direct execution disabled"
+      },
+      "completion": {
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "storage_verify_archive_inventory",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "storage/v2/verify_archive_inventory.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "library-only; direct execution disabled"
+      },
+      "completion": {
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "storage_watchdog_supervisor",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "storage/v2/watchdog_supervisor.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "library-only; direct execution disabled"
       },
       "completion": {
         "independent_verification_required": true

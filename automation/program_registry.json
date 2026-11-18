@@ -1589,6 +1589,58 @@
       }
     },
     {
+      "id": "storage_artifact_store",
+      "path": "storage/v2/artifact_store.py",
+      "kind": "python_component",
+      "responsibility": "immutable Storage Management artifact store for content-addressed backups and retained snapshots",
+      "capabilities": [
+        "storage_management_support"
+      ],
+      "invocation": "imported only by registered Watchdog, Dashboard, Production or Storage Management entry points",
+      "inputs": [
+        "validated state or artifact references"
+      ],
+      "outputs": [
+        "validated projection, migration result or integrity report"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent credential grant or workflow dispatch. Runtime write authority is determined by the calling four-system workflow and Storage Management allowlists.",
+      "health_check": "Dedicated unit tests validate deterministic behavior, integrity checks and fail-closed error handling.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "storage_dashboard_snapshot",
+      "path": "storage/v2/dashboard_snapshot.py",
+      "kind": "python_component",
+      "responsibility": "read-only Storage Management projection builder for the single Dashboard",
+      "capabilities": [
+        "storage_management_support"
+      ],
+      "invocation": "imported only by registered Watchdog, Dashboard, Production or Storage Management entry points",
+      "inputs": [
+        "validated state or artifact references"
+      ],
+      "outputs": [
+        "validated projection, migration result or integrity report"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent credential grant or workflow dispatch. Runtime write authority is determined by the calling four-system workflow and Storage Management allowlists.",
+      "health_check": "Dedicated unit tests validate deterministic behavior, integrity checks and fail-closed error handling.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
       "id": "storage_incident_store",
       "path": "storage/v2/incident_store.py",
       "kind": "python_component",
@@ -1620,6 +1672,32 @@
       }
     },
     {
+      "id": "storage_migration",
+      "path": "storage/v2/migration.py",
+      "kind": "python_component",
+      "responsibility": "explicitly gated migration and reconciliation utilities for durable state; not an active scheduler",
+      "capabilities": [
+        "storage_management_support"
+      ],
+      "invocation": "imported only by registered Watchdog, Dashboard, Production or Storage Management entry points",
+      "inputs": [
+        "validated state or artifact references"
+      ],
+      "outputs": [
+        "validated projection, migration result or integrity report"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent credential grant or workflow dispatch. Runtime write authority is determined by the calling four-system workflow and Storage Management allowlists.",
+      "health_check": "Dedicated unit tests validate deterministic behavior, integrity checks and fail-closed error handling.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
       "id": "storage_queue_store",
       "path": "storage/v2/queue_store.py",
       "kind": "python_component",
@@ -1642,6 +1720,110 @@
       "dispatches": [],
       "permission_boundary": "Only automation/task_queue.json and storage/v2/incidents.json are allowlisted. All writes use Contents API SHA-CAS and read-after-write verification; no Issues API or modules/rulesets paths.",
       "health_check": "Unit tests cover allowlisted paths, SHA-CAS, stale revisions, conflicts, permission failures and read-after-write verification.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "storage_runtime",
+      "path": "storage/v2/runtime.py",
+      "kind": "python_component",
+      "responsibility": "event-sourced Storage Management runtime library retained for migration compatibility; not the canonical live task queue",
+      "capabilities": [
+        "storage_management_support"
+      ],
+      "invocation": "imported only by registered Watchdog, Dashboard, Production or Storage Management entry points",
+      "inputs": [
+        "validated state or artifact references"
+      ],
+      "outputs": [
+        "validated projection, migration result or integrity report"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent credential grant or workflow dispatch. Runtime write authority is determined by the calling four-system workflow and Storage Management allowlists.",
+      "health_check": "Dedicated unit tests validate deterministic behavior, integrity checks and fail-closed error handling.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "storage_source_handoff",
+      "path": "storage/v2/source_handoff.py",
+      "kind": "python_component",
+      "responsibility": "Storage Management source handoff and durable provenance interface",
+      "capabilities": [
+        "storage_management_support"
+      ],
+      "invocation": "imported only by registered Watchdog, Dashboard, Production or Storage Management entry points",
+      "inputs": [
+        "validated state or artifact references"
+      ],
+      "outputs": [
+        "validated projection, migration result or integrity report"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent credential grant or workflow dispatch. Runtime write authority is determined by the calling four-system workflow and Storage Management allowlists.",
+      "health_check": "Dedicated unit tests validate deterministic behavior, integrity checks and fail-closed error handling.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "storage_verify_archive_inventory",
+      "path": "storage/v2/verify_archive_inventory.py",
+      "kind": "python_component",
+      "responsibility": "read-only integrity verifier for immutable Storage Management archives",
+      "capabilities": [
+        "storage_management_support"
+      ],
+      "invocation": "imported only by registered Watchdog, Dashboard, Production or Storage Management entry points",
+      "inputs": [
+        "validated state or artifact references"
+      ],
+      "outputs": [
+        "validated projection, migration result or integrity report"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent credential grant or workflow dispatch. Runtime write authority is determined by the calling four-system workflow and Storage Management allowlists.",
+      "health_check": "Dedicated unit tests validate deterministic behavior, integrity checks and fail-closed error handling.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "storage_watchdog_supervisor",
+      "path": "storage/v2/watchdog_supervisor.py",
+      "kind": "python_component",
+      "responsibility": "Watchdog support library for storage recovery supervision; not a separate workflow or scheduler",
+      "capabilities": [
+        "storage_management_support"
+      ],
+      "invocation": "imported only by registered Watchdog, Dashboard, Production or Storage Management entry points",
+      "inputs": [
+        "validated state or artifact references"
+      ],
+      "outputs": [
+        "validated projection, migration result or integrity report"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent credential grant or workflow dispatch. Runtime write authority is determined by the calling four-system workflow and Storage Management allowlists.",
+      "health_check": "Dedicated unit tests validate deterministic behavior, integrity checks and fail-closed error handling.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],
