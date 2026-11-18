@@ -2,7 +2,7 @@
   "schema_version": 1,
   "registry_policy": {
     "purpose": "Capability and dependency catalog for repository automation programs.",
-    "registration_required_for": "Any Python component under scripts/ or storage/v2/ and any active GitHub Actions workflow under .github/workflows/, excluding only exact frozen legacy workflow paths listed in excluded_legacy_workflow_paths.",
+    "registration_required_for": "Every non-package Python component under scripts/ and storage/v2/, plus every active GitHub Actions workflow under .github/workflows/.",
     "collaboration_rule": "A program may run independently under its own entry point. Cross-program orchestration requires an explicit registry entry and declared workflow dependencies or dispatch targets.",
     "permission_rule": "Registry declarations describe boundaries; they never grant permissions. The workflow job's least-privilege permissions remain authoritative.",
     "activation_rule": "Registration is mandatory for CI acceptance, but does not by itself authorize automatic dispatch, rule activation, publication, or modification of modules/uu.conf.",

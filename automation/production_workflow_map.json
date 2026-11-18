@@ -5,7 +5,7 @@
   "registry_blob_sha": "57bdbda5bc00102d8a90f4f2644e08b11358006f",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
-    "job_count": 8,
+    "job_count": 7,
     "step_count": 61,
     "independent_python_dispatch_enabled": true,
     "independent_workflow_count": 1
