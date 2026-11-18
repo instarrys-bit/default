@@ -160,6 +160,27 @@ class WorkflowNativeWriteInventoryTests(unittest.TestCase):
             if "durable_task_queue" in item.get("id", "").lower()
         )
         self.assertIn("Issue #571", queue_resource["note"])
+        self.assertIn("Issue #571", " ".join(queue_resource["paths"]))
+        self.assertIn("571-index+active-epoch", queue_resource["lease_key"])
+        self.assertNotIn("github-issue-comment-chain:423", queue_resource["lease_key"])
+
+        write_sets = json.loads((ROOT / "automation/resource_write_sets.json").read_text(encoding="utf-8"))
+        for program_id in ("script_github_queue_store", "script_remote_task_queue_runtime"):
+            effect = next(
+                item for item in write_sets["control_plane_side_effects"]
+                if item["program_id"] == program_id
+            )
+            self.assertIn("Issue #571", " ".join(effect["side_effects"]))
+            self.assertIn("active queue epoch", effect["control_plane_boundary"])
+            self.assertNotIn("Issue #423 comments only", effect["control_plane_boundary"])
+
+        for program_id in ("script_resource_lease_runtime", "script_task_scheduler"):
+            entry = next(
+                item for item in write_sets["confirmed_write_sets"]
+                if item["program_id"] == program_id
+            )
+            self.assertIn("github-issue-comment-chain:571-index+active-epoch", entry["lease_keys"])
+            self.assertNotIn("github-issue-comment-chain:423", entry["lease_keys"])
 
 
     def test_queue_consumer_permissions_match_issue_backed_store(self):

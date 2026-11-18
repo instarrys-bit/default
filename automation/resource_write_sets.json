@@ -788,12 +788,12 @@
       "program_id": "script_resource_lease_runtime",
       "source": "scripts/resource_lease_runtime.py",
       "writes": [
-        "GitHub Issue #423 comment snapshots (external durable queue state)"
+        "GitHub Issue #571 epoch-pointer comments and active queue epoch Issue comments (epoch 1 is #423)"
       ],
       "document_store": [],
       "dynamic_children": [],
       "read_resources": [
-        "GitHub Issue #423 queue snapshots; automation/task_queue_rebuild_seed.json is read-only bootstrap",
+        "GitHub active queue epoch Issue snapshots (epoch 1 is #423; indexed by Issue #571); automation/task_queue_rebuild_seed.json is read-only bootstrap",
         "automation/program_registry.json",
         "automation/execution_adapters.json",
         "automation/production_control.json"
@@ -803,7 +803,7 @@
       ],
       "evidence": "Queue mutations append compressed snapshots to the active queue epoch Issue, indexed by Issue #571, with SHA-256 previous-revision chaining and deterministic canonical comment ordering.",
       "lease_keys": [
-        "github-issue-comment-chain:423",
+        "github-issue-comment-chain:571-index+active-epoch",
         "resource:<canonical logical resource path>"
       ],
       "lease_enforcement": "Durable queue changes use append-only Issue-comment SHA-256 compare-and-swap through the active epoch pointer in Issue #571; resource fencing tokens are checked against the exact active task and lease proof.",
@@ -1023,17 +1023,17 @@
       "document_store": [],
       "dynamic_children": [],
       "read_resources": [
-        "GitHub Issue #423 queue snapshots; automation/task_queue_rebuild_seed.json is read-only bootstrap",
+        "GitHub active queue epoch Issue snapshots (epoch 1 is #423; indexed by Issue #571); automation/task_queue_rebuild_seed.json is read-only bootstrap",
         "automation/program_registry.json",
         "automation/execution_adapters.json",
         "automation/production_control.json"
       ],
       "side_effects": [
-        "Durable queue mutations append Issue #423 snapshots; direct temporary files remain isolated to the current task execution directory."
+        "Durable queue mutations append snapshots to the active queue epoch Issue indexed by Issue #571; direct temporary files remain isolated to the current task execution directory."
       ],
       "evidence": "run_scheduler_once() writes task-input.json, task-queue-lease-snapshot.json and task-result.json under isolated task/verifier temporary directories; durable queue transitions append snapshots through the GitHub Issue store.",
       "lease_keys": [
-        "github-issue-comment-chain:423"
+        "github-issue-comment-chain:571-index+active-epoch"
       ],
       "lease_enforcement": "Queue persistence uses append-only GitHub Issue-comment SHA-256 snapshots with the Issue #571 epoch index; temporary files are runner-local. This inventory entry does not treat local task_queue_runtime flock as a cross-runner lock.",
       "publish_resources": [],
@@ -1353,7 +1353,7 @@
     "Atomic multi-resource lease acquisition and compatibility of per-resource locks across all independent/cross-workflow writers remain unproven.",
     "Static entrypoint inventory does not prove absence of unregistered dynamic writes, subprocess writes, external API mutations or filesystem writes hidden behind imported helpers.",
     "All remaining registered Python components must be checked for indirect writes through imported helpers, subprocesses and dynamically selected outputs; runner-local report writers and runner-local source-activation proposal outputs must remain distinct.",
-    "The 52 registered Python components are now classified into direct/helper writers, read-only/non-writer components, and three external control-plane side-effect components (two Issue #423 queue stores and one GitHub workflow-dispatch adapter). Static classification still does not prove absence of writes hidden in runtime imports, shell subprocesses or dynamic caller paths.",
+    "The 52 registered Python components are now classified into direct/helper writers, read-only/non-writer components, and three external control-plane side-effect components (two indexed Issue-epoch queue stores and one GitHub workflow-dispatch adapter). Static classification still does not prove absence of writes hidden in runtime imports, shell subprocesses or dynamic caller paths.",
     "Static Python mutation-site and workflow-native scans do not prove transient write-and-revert activity, Git metadata changes, external side effects or unexecuted call paths. No global filesystem guard or Python audit hook is installed."
   ],
   "review_context": {
@@ -1362,7 +1362,7 @@
     "program_registry_blob_sha": "918449a926e5033d556200f371ed37729ec37610",
     "execution_adapters_blob_sha": "ac0d4a74d5cf1da6d1fe05ebe16a050b2e13fdbb",
     "added_after_release_baseline": true,
-    "note": "Independent Source Discovery and non-activating Assessment are enabled through Watchdog-owned tasks. Discovery/Assessment outputs are isolated immutable RUNNER_TEMP artifacts; Assessment's only shared mutation is the fenced Issue #423 checkpoint. Repository mutations are governed per capability by explicit exclusive resource_contract.resource_keys; control-plane metadata is separately inventoried. The production auto_sync publisher stages only the three rule-set deliverables under rulesets/**. The global static/transitive inventory remains partial for unrelated capabilities.",
+    "note": "Independent Source Discovery and non-activating Assessment are enabled through Watchdog-owned tasks. Discovery/Assessment outputs are isolated immutable RUNNER_TEMP artifacts; Assessment's only shared mutation is the fenced checkpoint in the active queue epoch Issue (epoch 1 is #423; indexed by Issue #571). Repository mutations are governed per capability by explicit exclusive resource_contract.resource_keys; control-plane metadata is separately inventoried. The production auto_sync publisher stages only the three rule-set deliverables under rulesets/**. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07"
   },
   "scheduler_lock_contract": {
@@ -1470,7 +1470,7 @@
       "program_id": "script_task_queue_runtime",
       "source": "scripts/task_queue_runtime.py",
       "classification": "legacy_local_ephemeral_queue_runtime_non_dispatchable",
-      "evidence": "This legacy local-only queue runtime has no workflow invocation and its adapter/orchestration remain disabled. Its default queue file is now under RUNNER_TEMP (or the OS temporary directory), and queue_lock rejects every repository-local path before directory creation or mutation. The local flock and atomic replace protect only the current runner's temporary queue. Production Watchdog scheduling uses the remote Issue #423 queue runtime instead."
+      "evidence": "This legacy local-only queue runtime has no workflow invocation and its adapter/orchestration remain disabled. Its default queue file is now under RUNNER_TEMP (or the OS temporary directory), and queue_lock rejects every repository-local path before directory creation or mutation. The local flock and atomic replace protect only the current runner's temporary queue. Production Watchdog scheduling uses the remote indexed Issue-epoch queue runtime instead."
     },
     {
       "program_id": "script_task_result_verifier",
@@ -1543,12 +1543,12 @@
     {
       "program_id": "script_github_queue_store",
       "source": "scripts/github_queue_store.py",
-      "classification": "external_issue_423_append_only_queue_snapshot_store",
+      "classification": "external_indexed_issue_epoch_queue_snapshot_store",
       "side_effects": [
-        "GitHub Issue #423 comment snapshots (external durable queue state)"
+        "GitHub Issue #571 epoch-pointer comments and active queue epoch Issue comments (epoch 1 is #423)"
       ],
       "file_writes": [],
-      "control_plane_boundary": "Mutates GitHub Issue #423 comments only; no repository filesystem or Contents API writes. Snapshot integrity is hash chained and queue state is re-read and validated before/after append. Concurrency/fencing proof for all concurrent queue writers remains an open Issue #193 acceptance item."
+      "control_plane_boundary": "Mutates only GitHub Issue #571 pointer comments and the currently indexed queue epoch Issue comments; no repository filesystem or Contents API writes. Before an epoch switch, the exact current snapshot is copied to a deterministic new Issue and independently read back; only then is the pointer appended and read back. Snapshot integrity is SHA-256 chained; bounded GET retry/backoff excludes ambiguous POST retries. Cross-writer concurrency/fencing proof remains an open Issue #193 acceptance item."
     },
     {
       "program_id": "script_github_workflow_adapter",
@@ -1564,12 +1564,12 @@
     {
       "program_id": "script_remote_task_queue_runtime",
       "source": "scripts/remote_task_queue_runtime.py",
-      "classification": "external_issue_423_append_only_queue_snapshot_store",
+      "classification": "external_indexed_issue_epoch_queue_snapshot_store",
       "side_effects": [
-        "GitHub Issue #423 comment snapshots (external durable queue state)"
+        "GitHub Issue #571 epoch-pointer comments and active queue epoch Issue comments (epoch 1 is #423)"
       ],
       "file_writes": [],
-      "control_plane_boundary": "Mutates GitHub Issue #423 comments only; no repository filesystem or Contents API writes. Snapshot integrity is hash chained and queue state is re-read and validated before/after append. Concurrency/fencing proof for all concurrent queue writers remains an open Issue #193 acceptance item."
+      "control_plane_boundary": "Mutates only GitHub Issue #571 pointer comments and the currently indexed queue epoch Issue comments; no repository filesystem or Contents API writes. Before an epoch switch, the exact current snapshot is copied to a deterministic new Issue and independently read back; only then is the pointer appended and read back. Snapshot integrity is SHA-256 chained; bounded GET retry/backoff excludes ambiguous POST retries. Cross-writer concurrency/fencing proof remains an open Issue #193 acceptance item."
     }
   ],
   "direct_mutation_scan": {
@@ -1654,9 +1654,9 @@
         "git_reset"
       ],
       "resources": [
-        "GitHub Issue #423 durable queue comments (external state)"
+        "GitHub Issue #571 epoch pointer and active queue epoch Issue comments (external state)"
       ],
-      "fence": "task_scheduler.py appends compressed SHA-256 chained queue snapshots to Issue #423 with bounded conflict retry.",
+      "fence": "task_scheduler.py appends compressed SHA-256 chained queue snapshots to the active queue epoch Issue indexed by Issue #571, with bounded conflict retry.",
       "boundary": "External control-plane state only; no repository file is written by queue persistence."
     },
     {
