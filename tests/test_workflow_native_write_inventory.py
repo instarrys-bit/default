@@ -162,5 +162,19 @@ class WorkflowNativeWriteInventoryTests(unittest.TestCase):
         self.assertIn("Issue #571", queue_resource["note"])
 
 
+    def test_queue_consumer_permissions_match_issue_backed_store(self):
+        registry = json.loads((ROOT / "automation/program_registry.json").read_text(encoding="utf-8"))
+        programs = {item["id"]: item for item in registry["programs"]}
+        verifier = programs["script_task_result_verifier"]["permission_boundary"]
+        scheduler = programs["script_task_scheduler"]["permission_boundary"]
+
+        for boundary in (verifier, scheduler):
+            self.assertIn("GitHub Issues read/write permission", boundary)
+            self.assertIn("no repository contents write permission", boundary.lower())
+            self.assertNotIn("Contents read/write permission", boundary)
+
+        self.assertIn("GitHub Actions read/write permission", scheduler)
+
+
 if __name__ == "__main__":
     unittest.main()
