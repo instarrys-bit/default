@@ -21,7 +21,6 @@ jobs:
     permissions:
       actions: write
       contents: read
-      issues: write
     if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.conclusion == 'failure' || github.event.workflow_run.conclusion == 'timed_out' || github.event.workflow_run.conclusion == 'startup_failure') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
@@ -137,66 +136,49 @@ jobs:
           echo "Automatic repository code repair is disabled. Diagnosis and incident reporting remain active."
           echo "changed=false" >> "$GITHUB_OUTPUT"
 
-      - name: Open incident when no safe repair applies
-        if: ${{ always() && steps.supersession.outputs.stale != 'true' && steps.diagnosis.outcome == 'success' && steps.diagnosis.outputs.classification != 'STALE_SUPERSEDED' && (steps.diagnosis.outputs.failed_steps_count != '0' || steps.diagnosis.outputs.classification == 'WORKFLOW_TIMEOUT' || github.event.workflow_run.conclusion == 'startup_failure') && (steps.repair.outcome != 'success' || steps.repair.outputs.changed != 'true') }}
+      - name: Dispatch diagnosed incident to Storage Management
+        if: \${{ always() && steps.supersession.outputs.stale != 'true' && steps.diagnosis.outcome == 'success' && steps.diagnosis.outputs.classification != 'STALE_SUPERSEDED' && (steps.diagnosis.outputs.failed_steps_count != '0' || steps.diagnosis.outputs.classification == 'WORKFLOW_TIMEOUT' || github.event.workflow_run.conclusion == 'startup_failure') && (steps.repair.outcome != 'success' || steps.repair.outputs.changed != 'true') }}
         env:
-          GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
-          RUN_ID: ${{ github.event.workflow_run.id }}
-          RUN_URL: ${{ github.event.workflow_run.html_url }}
-          SOURCE_WORKFLOW: ${{ github.event.workflow_run.name }}
-          FAILED_SHA: ${{ github.event.workflow_run.head_sha }}
+          GH_TOKEN: \${{ github.token }}
+          REPO: \${{ github.repository }}
+          RUN_ID: \${{ github.event.workflow_run.id }}
+          RUN_URL: \${{ github.event.workflow_run.html_url }}
+          FAILED_SHA: \${{ github.event.workflow_run.head_sha }}
+          SOURCE_WORKFLOW: \${{ github.event.workflow_run.name }}
         run: |
           set -euo pipefail
           case "$SOURCE_WORKFLOW" in
             "Shadowrocket Deterministic Domain Audit (User Config Baseline)") workflow_key="deterministic_audit" ;;
             "Validate Shadowrocket config against user baseline") workflow_key="config_validator" ;;
-            *) echo "Unsupported source workflow; refusing to open a misclassified incident."; exit 1 ;;
+            *) echo "Unsupported source workflow; refusing to record a misclassified incident."; exit 1 ;;
           esac
-          marker="<!-- shadowrocket-automation:workflow=$workflow_key;run_id=$RUN_ID -->"
-          classification="$(python3 -c 'import json; print(json.load(open("reports/self-healing/diagnosis.json"))["classification"])')"
-          body="$(cat reports/self-healing/diagnosis.json)"
-          title="Self-healing incident: $classification ($workflow_key; ${FAILED_SHA:0:8})"
-          existing="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title | jq --arg title "$title" -r '.[] | select(.title == $title) | .number' | head -n 1)"
-          if [ -n "$existing" ] && [ "$existing" != "null" ]; then
-            body_text="$(printf 'Repeated failure for run %s: %s\\n\\n\x60\x60\x60json\\n%s\\n\x60\x60\x60\\n' "$RUN_ID" "$RUN_URL" "$body")"
-            body_text="$(printf '%s\\n\\n%s' "$marker" "$body_text")"
-            gh issue comment "$existing" --repo "$REPO" --body "$body_text"
-          else
-            body_text="$(printf 'Failed workflow run %s: %s\\n\\nAutomatic repair was not applied. No speculative code changes were made.\\n\\nDiagnosis:\\n\\n\x60\x60\x60json\\n%s\\n\x60\x60\x60\\n' "$RUN_ID" "$RUN_URL" "$body")"
-            body_text="$(printf '%s\\n\\n%s' "$marker" "$body_text")"
-            created_url="$(gh issue create --repo "$REPO" --title "$title" --body "$body_text")"
-            existing="${created_url##*/}"
-          fi
-
-          gh issue view "$existing" --repo "$REPO" --json body --jq .body > /tmp/incident-body.md
-          python3 scripts/incident_state.py \
-            --body-file /tmp/incident-body.md \
-            --workflow "$workflow_key" \
-            --source-sha "$FAILED_SHA" \
-            --classification "$classification" \
-            --event-id "failure-run-$RUN_ID" \
-            --target-state MANUAL_INTERVENTION \
-            --out /tmp/incident-state-body.md
-          gh issue edit "$existing" --repo "$REPO" --body-file /tmp/incident-state-body.md
+          classification="$(jq -r '.classification' reports/self-healing/diagnosis.json)"
+          summary="$(jq -r '.summary' reports/self-healing/diagnosis.json)"
+          diagnosis_json="$(jq -c . reports/self-healing/diagnosis.json)"
+          gh workflow run storage-incident-management.yml --repo "$REPO" --ref main \
+            -f operation=record -f workflow="$workflow_key" \
+            -f event_id="failure-run-$RUN_ID" -f run_id="$RUN_ID" \
+            -f source_sha="$FAILED_SHA" -f classification="$classification" \
+            -f summary="$summary" -f run_url="$RUN_URL" -f diagnosis_json="$diagnosis_json"
 
 
   report-agent-failure:
     needs: [diagnose-and-repair]
-    if: ${{ always() && github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.conclusion == 'failure' || github.event.workflow_run.conclusion == 'timed_out' || github.event.workflow_run.conclusion == 'startup_failure') && needs.diagnose-and-repair.result == 'failure' }}
+    if: \${{ always() && github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.conclusion == 'failure' || github.event.workflow_run.conclusion == 'timed_out' || github.event.workflow_run.conclusion == 'startup_failure') && needs.diagnose-and-repair.result == 'failure' }}
     permissions:
-      issues: write
+      actions: write
     runs-on: ubuntu-24.04
     timeout-minutes: 3
     steps:
-      - name: Open self-healing agent execution incident
+      - name: Dispatch agent failure record to Storage Management
         env:
-          GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
-          SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
-          SOURCE_RUN_URL: ${{ github.event.workflow_run.html_url }}
-          SOURCE_WORKFLOW: ${{ github.event.workflow_run.name }}
-          AGENT_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          GH_TOKEN: \${{ github.token }}
+          REPO: \${{ github.repository }}
+          SOURCE_RUN_ID: \${{ github.event.workflow_run.id }}
+          SOURCE_RUN_URL: \${{ github.event.workflow_run.html_url }}
+          SOURCE_WORKFLOW: \${{ github.event.workflow_run.name }}
+          FAILED_SHA: \${{ github.event.workflow_run.head_sha }}
+          AGENT_RUN_URL: \${{ github.server_url }}/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
         run: |
           set -euo pipefail
           case "$SOURCE_WORKFLOW" in
@@ -204,16 +186,35 @@ jobs:
             "Validate Shadowrocket config against user baseline") workflow_key="config_validator" ;;
             *) echo "Unsupported source workflow; refusing to misclassify agent failure."; exit 1 ;;
           esac
-          title="Self-healing agent failure: $workflow_key (source run $SOURCE_RUN_ID)"
-          marker="<!-- shadowrocket-automation:agent_failure;workflow=$workflow_key;source_run_id=$SOURCE_RUN_ID -->"
-          body="The self-healing agent itself failed while processing a main-branch workflow failure.\n\nSource run: $SOURCE_RUN_URL\nAgent run: $AGENT_RUN_URL\n\n$marker\n\nNo speculative project changes were made. Inspect the agent run logs and diagnosis/repair stage."
-          existing="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title | jq --arg title "$title" -r '.[] | select(.title == $title) | .number' | head -n 1)"
-          if [ -n "$existing" ]; then
-            gh issue comment "$existing" --repo "$REPO" --body "$body"
-            gh issue edit "$existing" --repo "$REPO" --body "$body"
-          else
-            gh issue create --repo "$REPO" --title "$title" --body "$body"
-          fi
+          summary="The self-healing agent failed while processing source run $SOURCE_RUN_ID. Agent run: $AGENT_RUN_URL"
+          gh workflow run storage-incident-management.yml --repo "$REPO" --ref main \
+            -f operation=record -f workflow="$workflow_key" \
+            -f event_id="agent-failure-$SOURCE_RUN_ID" -f run_id="$SOURCE_RUN_ID" \
+            -f source_sha="$FAILED_SHA" -f classification=AGENT_FAILURE \
+            -f summary="$summary" -f run_url="$SOURCE_RUN_URL"
+
+  resolve-validator-incidents:
+    permissions:
+      actions: write
+      contents: read
+    if: \${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.name == 'Validate Shadowrocket config against user baseline' && github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - name: Dispatch verified validator recovery to Storage Management
+        env:
+          GH_TOKEN: \${{ github.token }}
+          REPO: \${{ github.repository }}
+          RUN_URL: \${{ github.event.workflow_run.html_url }}
+          RUN_ID: \${{ github.event.workflow_run.id }}
+        run: |
+          set -euo pipefail
+          gh workflow run storage-incident-management.yml --repo "$REPO" --ref main \
+            -f operation=resolve -f workflow=config_validator \
+            -f event_id="validator-recovery-$RUN_ID" -f before_run_id="$RUN_ID" \
+            -f classifications=CONFIG_BASELINE_MISMATCH,TEST_FAILURE,PYTHON_IMPORT_FAILURE,WORKFLOW_TIMEOUT,UNCLASSIFIED_STEP_FAILURE \
+            -f verification_url="$RUN_URL"
+
 
   resolve-validator-incidents:
     permissions:
@@ -291,6 +292,36 @@ jobs:
 
 
   resolve-audit-incidents:
+    permissions:
+      actions: write
+      contents: read
+    if: \${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.name == 'Shadowrocket Deterministic Domain Audit (User Config Baseline)' && github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout verifier code
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Verify recovery and dispatch incident resolution
+        env:
+          GH_TOKEN: \${{ github.token }}
+          REPO: \${{ github.repository }}
+          RUN_URL: \${{ github.event.workflow_run.html_url }}
+          RUN_SHA: \${{ github.event.workflow_run.head_sha }}
+          RUN_ID: \${{ github.event.workflow_run.id }}
+        run: |
+          set -euo pipefail
+          gh api "repos/$REPO/actions/runs/$RUN_ID" > /tmp/recovery-run.json
+          gh api --paginate --slurp "repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=100" > /tmp/recovery-jobs.json
+          python3 scripts/verify_recovery_run.py --run /tmp/recovery-run.json --jobs /tmp/recovery-jobs.json | tee /tmp/recovery-verification.json
+          cat /tmp/recovery-verification.json >> "$GITHUB_STEP_SUMMARY"
+          gh workflow run storage-incident-management.yml --repo "$REPO" --ref main \
+            -f operation=resolve -f workflow=deterministic_audit \
+            -f event_id="audit-recovery-$RUN_ID" -f before_run_id="$RUN_ID" \
+            -f classifications=UNCLASSIFIED_STEP_FAILURE,TEST_FAILURE,PYTHON_IMPORT_FAILURE,WORKFLOW_TIMEOUT,CONFIG_BASELINE_MISMATCH,RULESET_MANIFEST_COUNT_MISSING,RULESET_MANIFEST_COUNT_MISMATCH \
+            -f verification_url="$RUN_URL"
     permissions:
       actions: read
       contents: read

@@ -92,7 +92,6 @@ jobs:
     permissions:
       contents: read
       actions: read
-      issues: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -735,7 +734,6 @@ jobs:
       PYTHONPATH: scripts
     permissions:
       contents: write
-      issues: write
     steps:
       - name: Checkout exact audited commit
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -950,26 +948,25 @@ jobs:
     needs: [audit, preflight, publish]
     runs-on: ubuntu-24.04
     permissions:
-      issues: write
+      actions: write
     steps:
-      - name: Open or update automation incident
+      - name: Dispatch incident record to Storage Management
         env:
-          GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          COMMIT_SHA: ${{ github.sha }}
-          RUN_ID: ${{ github.run_id }}
-          AUDIT_RESULT: ${{ needs.audit.result }}
-          PUBLISH_RESULT: ${{ needs.publish.result }}
+          GH_TOKEN: \${{ github.token }}
+          REPO: \${{ github.repository }}
+          RUN_URL: \${{ github.server_url }}/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+          COMMIT_SHA: \${{ github.sha }}
+          RUN_ID: \${{ github.run_id }}
+          AUDIT_RESULT: \${{ needs.audit.result }}
+          PUBLISH_RESULT: \${{ needs.publish.result }}
         run: |
-          title="Shadowrocket automation incident (run $RUN_ID)"
-          body="The deterministic pipeline ended with audit=$AUDIT_RESULT and publish=$PUBLISH_RESULT.\n\nRun: $RUN_URL\nCommit: $COMMIT_SHA\n\n<!-- shadowrocket-automation:workflow=auto_sync;run_id=$RUN_ID -->\n\nPlease inspect the run and logs. This issue is maintained automatically."
-          existing="$(gh issue list --repo "$REPO" --state open --limit 100 --json number,title | jq --arg title "$title" -r '.[] | select(.title == $title) | .number' | head -n 1)"
-          if [ -n "$existing" ] && [ "$existing" != "null" ]; then
-            gh issue comment "$existing" --repo "$REPO" --body "$body"
-          else
-            gh issue create --repo "$REPO" --title "$title" --body "$body"
-          fi
+          set -euo pipefail
+          summary="The deterministic pipeline ended with audit=$AUDIT_RESULT and publish=$PUBLISH_RESULT."
+          gh workflow run storage-incident-management.yml --repo "$REPO" --ref main \
+            -f operation=record -f workflow=auto_sync \
+            -f event_id="auto-sync-failure-$RUN_ID" -f run_id="$RUN_ID" \
+            -f source_sha="$COMMIT_SHA" -f classification=PIPELINE_FAILURE \
+            -f summary="$summary" -f run_url="$RUN_URL"
 
 
   resolve-failure:
@@ -978,26 +975,21 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 3
     permissions:
-      issues: write
+      actions: write
     steps:
-      - name: Close recovered automation incidents
+      - name: Dispatch verified incident recovery to Storage Management
         env:
-          GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-          RUN_ID: ${{ github.run_id }}
+          GH_TOKEN: \${{ github.token }}
+          REPO: \${{ github.repository }}
+          RUN_URL: \${{ github.server_url }}/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+          RUN_ID: \${{ github.run_id }}
         run: |
           set -euo pipefail
-          issues="$(gh issue list --repo "$REPO" --state open --search '"Shadowrocket automation" in:title' --json number,title,body | jq --argjson run_id "$RUN_ID" '.[] | select((.title | startswith("Shadowrocket automation failure (run ")) or (.title | startswith("Shadowrocket automation incident (run "))) | select(.body | contains("shadowrocket-automation:workflow=auto_sync;run_id=")) | select(((.body | capture("shadowrocket-automation:workflow=auto_sync;run_id=(?<id>[0-9]+)") | .id | tonumber) < $run_id)) | .number')"
-          if [ -z "$issues" ]; then
-            echo "No earlier, explicitly linked auto_sync incident to resolve."
-            exit 0
-          fi
-          while IFS= read -r issue; do
-            [ -n "$issue" ] || continue
-            gh issue comment "$issue" --repo "$REPO" --body "A later full deterministic audit and publish succeeded. Recovery run: $RUN_URL"
-            gh issue close "$issue" --repo "$REPO"
-          done <<< "$issues"
+          gh workflow run storage-incident-management.yml --repo "$REPO" --ref main \
+            -f operation=resolve -f workflow=auto_sync \
+            -f event_id="auto-sync-recovery-$RUN_ID" -f before_run_id="$RUN_ID" \
+            -f classifications=PIPELINE_FAILURE -f verification_url="$RUN_URL"
+
 
   watchdog-reconciliation:
     name: Wake Watchdog after production workflow completion
