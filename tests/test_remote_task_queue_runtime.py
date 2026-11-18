@@ -170,6 +170,7 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
         first = enqueue_remote(self.payload(), self.store, self.registry, self.now)
         second = enqueue_remote(self.payload(), self.store, self.registry, self.now)
         self.assertTrue(first["created"])
+        self.assertEqual(first["task"]["execution_backend"], "github_issue_comments")
         self.assertFalse(second["created"])
         self.assertEqual(first["task"]["task_id"], second["task"]["task_id"])
         with self.assertRaisesRegex(ValueError, "different task payload"):
