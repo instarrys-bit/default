@@ -1,7 +1,7 @@
 import datetime
 import io
 import json
-from contextlib
+from contextlib import redirect_stdout
 import unittest
 import urllib.error
 from unittest.mock import MagicMock, patch
