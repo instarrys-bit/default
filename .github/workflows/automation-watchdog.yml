@@ -1,5 +1,5 @@
 name: Shadowrocket automation watchdog
-run-name: "Automation task ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.automation_task_id || github.run_id }}"
+run-name: "Automation task ${{ github.event.inputs.automation_task_id || github.run_id }}"
 
 on:
   pull_request:
@@ -77,6 +77,21 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  entrypoint-probe:
+    name: Watchdog entrypoint context
+    if: ${{ always() }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 1
+    permissions:
+      contents: read
+    steps:
+      - name: Record trigger context
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          printf 'event=%s\nref=%s\nref_name=%s\n' "$EVENT_NAME" "$REF" "$REF_NAME" >> "$GITHUB_STEP_SUMMARY"
   validate-four-system-workflows:
     name: Validate four-system workflow boundary
     if: ${{ github.event_name == 'pull_request' }}
