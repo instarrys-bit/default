@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "3321e99e1ee62674945495d7573ee395a9103a38",
+  "workflow_blob_sha": "302c0755f4b4d505829577807c2ea9cbf51b996a",
   "registry_blob_sha": "968c1ae613aa7c83eb4392ddb9eff6f7c6622767",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
@@ -360,7 +360,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "7f42003eaa869793e014e18a564fb4231b8e8ef6",
+    "release_manifest_blob_sha": "54a9acea04869005b7a1d9b595817763abe746bd",
     "program_registry_blob_sha": "968c1ae613aa7c83eb4392ddb9eff6f7c6622767",
     "execution_adapters_blob_sha": "af0f8d196c70a07fcd30cdc7f97eaba7a025cb56",
     "added_after_release_baseline": true,
