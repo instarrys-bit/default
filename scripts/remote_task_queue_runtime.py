@@ -444,105 +444,6 @@ def resolve_superseded_dead_letters(
     return store.mutate(mutate)
 
 
-def retire_legacy_source_tasks(store: GitHubContentsQueueStore, registry: dict, now=None) -> dict:
-    """Retire old independent Discovery/Assessment queue targets after Production consolidation.
-
-    Historical task IDs and evidence are retained. Discovery tasks are reclassified
-    to the registered in-Production discovery component; only unclaimed queued or
-    retryable failed tasks are terminalized. Any live lease or unresolved dispatch
-    intent fails closed.
-    """
-    now = now or now_utc()
-    control_path = ROOT / "automation" / "production_control.json"
-    try:
-        control = json.loads(control_path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
-        raise ValueError(f"cannot read Production control mode: {exc}") from exc
-    if control.get("source_discovery_mode") != "monolithic_fallback":
-        return {"changed_count": 0, "cancelled_count": 0, "cancelled_task_ids": [],
-                "tasks": [], "reason": "Production is not in monolithic_fallback mode"}
-
-    by_id = {item.get("id"): item for item in registry.get("programs", []) if isinstance(item, dict)}
-    discovery_program = by_id.get("script_discover_sources")
-    assessment_program = by_id.get("script_assess_sources")
-    if not isinstance(discovery_program, dict) or not isinstance(assessment_program, dict):
-        raise ValueError("consolidated Production discovery and assessment components must be registered")
-
-    def mutate(queue: dict):
-        validate_envelope(queue)
-        changed = []
-        cancelled = []
-        for task in queue.get("tasks", []):
-            if not isinstance(task, dict):
-                continue
-            original_target = task.get("target_program_id")
-            if original_target not in {"workflow_source_discovery", "script_assess_sources"}:
-                continue
-            previous_retirement = task.get("retirement")
-            if isinstance(previous_retirement, dict) and previous_retirement.get("source_discovery_mode") == "monolithic_fallback":
-                continue
-
-            if original_target == "workflow_source_discovery":
-                if task.get("capability") not in discovery_program.get("capabilities", []):
-                    raise ValueError(f"{task.get('task_id')} has a Discovery capability not supported by the Production component")
-                task["retired_target_program_id"] = original_target
-                dispatch = task.get("dispatch_intent")
-                if isinstance(dispatch, dict) and isinstance(dispatch.get("workflow_path"), str):
-                    task["retired_workflow_path"] = dispatch["workflow_path"]
-                else:
-                    task["retired_workflow_path"] = ".github/workflows/source-discovery.yml"
-                task["target_program_id"] = "script_discover_sources"
-
-            status = task.get("status")
-            retryable_failure = status == "FAILED" and task.get("attempts", 0) < task.get("max_attempts", 0)
-            if status in {"CLAIMED", "VERIFYING"}:
-                raise ValueError(f"{task.get('task_id')} has a live task state; resolve it before retiring the source DAG")
-            if status == "QUEUED" or retryable_failure:
-                if task.get("lease") is not None:
-                    raise ValueError(f"{task.get('task_id')} unexpectedly retains a task lease")
-                if isinstance(task.get("dispatch_intent"), dict):
-                    raise ValueError(f"{task.get('task_id')} has unresolved dispatch intent; refusing automatic cancellation")
-                resource_lease = task.get("resource_lease")
-                if isinstance(resource_lease, dict) and resource_lease.get("status") == "ACTIVE":
-                    raise ValueError(f"{task.get('task_id')} unexpectedly retains an active resource lease")
-                task["status"] = "CANCELLED"
-                task.setdefault("state_history", []).append("CANCELLED")
-                task["last_error"] = {
-                    "type": "retired_source_dag",
-                    "message": "Independent Discovery/Assessment tasks were superseded by same-run collection and assessment in Production auto_sync.",
-                    "retired_at": stamp(now),
-                }
-                cancelled.append(task.get("task_id"))
-
-            task["retirement"] = {
-                "schema_version": 1,
-                "retired_target_program_id": original_target,
-                "replacement_program_id": "script_discover_sources" if original_target == "workflow_source_discovery" else "script_assess_sources",
-                "source_discovery_mode": "monolithic_fallback",
-                "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-                "retired_at": stamp(now),
-            }
-            changed.append({
-                "task_id": task.get("task_id"),
-                "retired_target_program_id": original_target,
-                "replacement_program_id": task.get("target_program_id"),
-                "status": task.get("status"),
-            })
-
-        if changed:
-            queue["revision"] += 1
-        validate_candidate(queue, registry)
-        return queue, {
-            "changed_count": len(changed),
-            "cancelled_count": len(cancelled),
-            "cancelled_task_ids": cancelled,
-            "tasks": changed,
-            "revision": queue.get("revision"),
-        }
-
-    return store.mutate(mutate)
-
-
 def purge_legacy_source_tasks(store: GitHubContentsQueueStore, registry: dict, now=None) -> dict:
     """Remove superseded independent Discovery/Assessment tasks from the live queue.
 
@@ -560,11 +461,21 @@ def purge_legacy_source_tasks(store: GitHubContentsQueueStore, registry: dict, n
 
     legacy_targets = {"workflow_source_discovery", "script_assess_sources"}
 
+    def is_legacy_source_task(task: dict) -> bool:
+        if task.get("target_program_id") in legacy_targets:
+            return True
+        retirement = task.get("retirement")
+        return (
+            task.get("target_program_id") == "script_discover_sources"
+            and isinstance(retirement, dict)
+            and retirement.get("retired_target_program_id") == "workflow_source_discovery"
+            and retirement.get("source_discovery_mode") == "monolithic_fallback"
+        )
+
     def mutate(queue: dict):
         validate_envelope(queue)
         tasks = queue.get("tasks", [])
-        legacy = [task for task in tasks if isinstance(task, dict)
-                  and task.get("target_program_id") in legacy_targets]
+        legacy = [task for task in tasks if isinstance(task, dict) and is_legacy_source_task(task)]
         for task in legacy:
             if task.get("status") in {"CLAIMED", "VERIFYING"}:
                 raise ValueError(f"{task.get('task_id')} has a live task state; refusing queue purge")
@@ -624,7 +535,6 @@ def main() -> int:
     complete.add_argument("--result-json", type=Path)
     complete.add_argument("--error-json", type=Path)
     recover = subs.add_parser("recover-expired")
-    subs.add_parser("retire-legacy-source-tasks")
     subs.add_parser("purge-legacy-source-tasks")
     subs.add_parser("validate")
     snapshot = subs.add_parser("snapshot")
@@ -650,8 +560,6 @@ def main() -> int:
         elif args.command == "recover-expired":
             recovered = recover_remote(store, registry)
             output = {"recovered_count": len(recovered), "tasks": recovered}
-        elif args.command == "retire-legacy-source-tasks":
-            output = retire_legacy_source_tasks(store, registry)
         elif args.command == "purge-legacy-source-tasks":
             output = purge_legacy_source_tasks(store, registry)
         elif args.command == "snapshot":
