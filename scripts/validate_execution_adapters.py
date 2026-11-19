@@ -31,7 +31,7 @@ def dispatch_contract(path):
     return True,found
 def has_task_correlation_run_name(path):
     content=path.read_text(encoding="utf-8")
-    return bool(re.search(r"(?m)^run-name:.*\$\{\{\s*(?:inputs|github\.event\.inputs)\.automation_task_id\b",content))
+    return bool(re.search(r"(?m)^run-name:.*\$\{\{.*(?:inputs|github\.event\.inputs)\.automation_task_id\b",content))
 def validate_execution_adapters(root=ROOT,adapters_path=None,registry_path=None):
     ap=Path(adapters_path) if adapters_path else root/"automation/execution_adapters.json"
     rp=Path(registry_path) if registry_path else root/"automation/program_registry.json"
