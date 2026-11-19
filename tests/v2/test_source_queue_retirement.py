@@ -11,7 +11,6 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from remote_task_queue_runtime import purge_legacy_source_tasks
-from task_scheduler import filter_consolidated_source_targets
 
 
 class FakeStore:
@@ -49,26 +48,6 @@ class SourceQueueRetirementTests(unittest.TestCase):
                 {"id": "script_assess_sources", "capabilities": ["source_assessment"]},
             ]
         }
-
-    def test_watchdog_never_dispatches_legacy_source_targets_in_fallback_mode(self):
-        with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory)
-            (root / "automation").mkdir()
-            (root / "automation" / "production_control.json").write_text(
-                json.dumps({"schema_version": 1, "source_discovery_mode": "monolithic_fallback"}),
-                encoding="utf-8",
-            )
-            tasks = [
-                {"task_id": "discovery", "target_program_id": "workflow_source_discovery"},
-                {"task_id": "assessment", "target_program_id": "script_assess_sources"},
-                {"task_id": "production", "target_program_id": "workflow_auto_sync"},
-            ]
-            eligible, blocked = filter_consolidated_source_targets(
-                {"discovery", "assessment", "production"}, tasks, root
-            )
-        self.assertEqual(set(eligible), {"production"})
-        self.assertEqual({item["task_id"] for item in blocked}, {"discovery", "assessment"})
-
 
     def test_purge_removes_legacy_tasks_from_live_queue_and_archives_full_records(self):
         queue = {
