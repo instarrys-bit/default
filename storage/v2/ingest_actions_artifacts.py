@@ -258,7 +258,7 @@ def main() -> int:
             f"{API}/repos/{repository}/actions/artifacts/{artifact_id}/zip", token
         )
         if archive is None or len(archive) > MAX_ARCHIVE_BYTES:
-            raise RuntimeError(f"artifact {artifact_id} download is empty or exceeds 50 MiB")
+            raise RuntimeError(f"artifact {artifact_id} download is empty or exceeds 250 MiB")
         # Reject malformed archives before making a durable record.
         with zipfile.ZipFile(BytesIO(archive)) as zipped:
             bad = zipped.testzip()
