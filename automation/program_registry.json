@@ -1868,7 +1868,7 @@
       ],
       "depends_on": [
         "storage_incident_store",
-        "storage_actions_artifact_ingest",
+        "storage_ingest_actions_artifacts",
         "script_remote_task_queue_runtime",
         "script_validate_program_registry",
         "script_validate_execution_adapters"
@@ -1947,7 +1947,7 @@
       }
     },
     {
-      "id": "storage_actions_artifact_ingest",
+      "id": "storage_ingest_actions_artifacts",
       "path": "storage/v2/ingest_actions_artifacts.py",
       "kind": "python_component",
       "responsibility": "Ingest completed GitHub Actions workflow artifacts into the Storage Management SHA-256 CAS, publish immutable per-run provenance catalogs, verify read-back integrity, and delete source artifacts only after durable verification.",
