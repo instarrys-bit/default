@@ -83,7 +83,8 @@ concurrency:
   # PR validation is read-only and must not queue behind a long production artifact backfill.
   # Main-branch mutations remain serialized under one shared group.
   group: storage-management-${{ github.event.pull_request.number || 'main' }}
-  cancel-in-progress: false
+  # Ingestion is content-addressed and idempotent; a newer main run supersedes a stuck poll.
+  cancel-in-progress: true
 jobs:
   validate-storage:
     name: Validate Storage Management runtime and recovery
