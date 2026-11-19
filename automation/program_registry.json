@@ -1945,6 +1945,41 @@
       }
     },
     {
+      "id": "storage_actions_artifact_ingest",
+      "path": "storage/v2/ingest_actions_artifacts.py",
+      "kind": "python_component",
+      "responsibility": "Ingest completed GitHub Actions workflow artifacts into the Storage Management SHA-256 CAS, publish immutable per-run provenance catalogs, verify read-back integrity, and delete source artifacts only after durable verification.",
+      "capabilities": [
+        "storage_management_support",
+        "actions_artifact_ingestion",
+        "artifact_provenance_catalog",
+        "verified_artifact_cleanup"
+      ],
+      "invocation": "direct CLI step in workflow_storage_management workflow_run handler; no independent dispatch",
+      "inputs": [
+        "completed main-branch workflow run ID",
+        "GitHub Actions artifact archives",
+        "source workflow and commit provenance"
+      ],
+      "outputs": [
+        "content-addressed artifact manifests",
+        "immutable per-run artifact catalog",
+        "source artifact cleanup result"
+      ],
+      "depends_on": [
+        "storage_artifact_store"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Storage Management only; actions:write and contents:write are scoped to the ingestion job; writes are limited to SHA-addressed CAS objects and numeric per-run catalog files under storage/v2/artifacts/**; modules/** and rulesets/** are not writable by this component.",
+      "health_check": "Storage Management regression suite validates catalog path authorization; runtime verifies every staged object by read-back before committing the catalog and deleting source artifacts.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 1200
+      }
+    },
+    {
       "id": "storage_dashboard_snapshot",
       "path": "storage/v2/dashboard_snapshot.py",
       "kind": "python_component",
