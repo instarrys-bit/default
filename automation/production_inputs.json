@@ -9,7 +9,6 @@
     "sources/external_intelligence_catalog.json",
     "sources/legacy_managed_rules.json",
     "sources/policy.json",
-    "sources/policy_approvals.json",
     "sources/protected_domains.json",
     "sources/request_domain_observations.json",
     "scripts/restore_automation_state.py",
