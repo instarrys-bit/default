@@ -151,6 +151,25 @@ class WorkflowAdapterTests(unittest.TestCase):
         with self.assertRaises(AmbiguousWorkflowRun):
             find_correlated_run(self.client, intent)
 
+    def test_watchdog_run_id_title_correlates_by_dispatch_identity(self):
+        self.adapter["workflow"]["path"] = ".github/workflows/automation-watchdog.yml"
+        self.client.workflow["path"] = ".github/workflows/automation-watchdog.yml"
+        intent = self.prepare()
+        run = {
+            "id": 88,
+            "workflow_id": intent["workflow_id"],
+            "event": "workflow_dispatch",
+            "head_branch": intent["ref"],
+            "head_sha": intent["requested_head_sha"],
+            "display_title": "Automation watchdog / 88",
+            "created_at": intent["prepared_at"],
+            "status": "in_progress",
+            "html_url": "https://github.com/example/repo/actions/runs/88",
+        }
+        self.client.runs = [run]
+        self.client.run_detail[88] = dict(run)
+        self.assertEqual(find_correlated_run(self.client, intent), run)
+        self.assertEqual(inspect_correlated_run(self.client, intent)["state"], "pending")
     def test_find_and_inspect_accept_exact_legacy_source_discovery_title(self):
         intent = self.prepare()
         intent["workflow_path"] = ".github/workflows/source-discovery.yml"
