@@ -278,7 +278,7 @@
       "worker_id": "43755019767"
     }
   },
-  "revision": 877,
+  "revision": 878,
   "schema_version": 1,
   "tasks": [
     {
@@ -344,6 +344,16 @@
         "workflow_id": 407786628,
         "workflow_path": ".github/workflows/source-discovery.yml"
       },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -351,7 +361,7 @@
         "SUCCEEDED"
       ],
       "status": "SUCCEEDED",
-      "target_program_id": "workflow_source_discovery",
+      "target_program_id": "script_discover_sources",
       "task_id": "task_a5c0e180ee784adbb45b9da3",
       "trace_id": "source-discovery:2026-11-09:0879c8202e9c",
       "verification": {
@@ -430,6 +440,14 @@
         "bytes_read": 1320,
         "parser_candidates": 1,
         "policy_candidates": 0
+      },
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
       },
       "state_history": [
         "QUEUED",
@@ -511,6 +529,16 @@
         "workflow_id": 407786628,
         "workflow_path": ".github/workflows/source-discovery.yml"
       },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -518,7 +546,7 @@
         "SUCCEEDED"
       ],
       "status": "SUCCEEDED",
-      "target_program_id": "workflow_source_discovery",
+      "target_program_id": "script_discover_sources",
       "task_id": "task_64d721121ec749e1afc71abc",
       "trace_id": "source-discovery:2026-11-09:dbb7c6db826a",
       "verification": {
@@ -597,6 +625,14 @@
         "bytes_read": 373499,
         "parser_candidates": 2,
         "policy_candidates": 0
+      },
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
       },
       "state_history": [
         "QUEUED",
@@ -678,6 +714,16 @@
         "workflow_id": 407786628,
         "workflow_path": ".github/workflows/source-discovery.yml"
       },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -685,7 +731,7 @@
         "SUCCEEDED"
       ],
       "status": "SUCCEEDED",
-      "target_program_id": "workflow_source_discovery",
+      "target_program_id": "script_discover_sources",
       "task_id": "task_3d83d0830702486f9ec224df",
       "trace_id": "source-discovery:2026-11-09:9dfdb3786b93",
       "verification": {
@@ -920,6 +966,14 @@
         "parser_candidates": 1,
         "policy_candidates": 0
       },
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -1000,6 +1054,16 @@
         "workflow_id": 407786628,
         "workflow_path": ".github/workflows/source-discovery.yml"
       },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -1007,7 +1071,7 @@
         "SUCCEEDED"
       ],
       "status": "SUCCEEDED",
-      "target_program_id": "workflow_source_discovery",
+      "target_program_id": "script_discover_sources",
       "task_id": "task_5e52e0f218c34d2fb4853e02",
       "trace_id": "source-discovery:2026-11-09:9f884b124924",
       "verification": {
@@ -1086,6 +1150,14 @@
         "bytes_read": 3871,
         "parser_candidates": 0,
         "policy_candidates": 0
+      },
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
       },
       "state_history": [
         "QUEUED",
@@ -1167,6 +1239,16 @@
         "workflow_id": 407786628,
         "workflow_path": ".github/workflows/source-discovery.yml"
       },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -1174,7 +1256,7 @@
         "SUCCEEDED"
       ],
       "status": "SUCCEEDED",
-      "target_program_id": "workflow_source_discovery",
+      "target_program_id": "script_discover_sources",
       "task_id": "task_865ecae9f6df4cc781e98681",
       "trace_id": "source-discovery:2026-11-09:39e34a1116b1",
       "verification": {
@@ -1409,6 +1491,14 @@
         "bytes_read": 44846,
         "parser_candidates": 0,
         "policy_candidates": 0
+      },
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
       },
       "state_history": [
         "QUEUED",
@@ -1806,6 +1896,16 @@
         "workflow_id": 407786628,
         "workflow_path": ".github/workflows/source-discovery.yml"
       },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -1813,7 +1913,7 @@
         "SUCCEEDED"
       ],
       "status": "SUCCEEDED",
-      "target_program_id": "workflow_source_discovery",
+      "target_program_id": "script_discover_sources",
       "task_id": "task_e6bb3ea71ff74840b4eda2f3",
       "trace_id": "source-discovery:2026-11-09:5761dc1a71d8",
       "verification": {
@@ -1892,6 +1992,14 @@
         "bytes_read": 52215,
         "parser_candidates": 4,
         "policy_candidates": 2
+      },
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
       },
       "state_history": [
         "QUEUED",
@@ -2150,6 +2258,16 @@
         "workflow_id": 407786628,
         "workflow_path": ".github/workflows/source-discovery.yml"
       },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -2157,7 +2275,7 @@
         "SUCCEEDED"
       ],
       "status": "SUCCEEDED",
-      "target_program_id": "workflow_source_discovery",
+      "target_program_id": "script_discover_sources",
       "task_id": "task_33a787ee5aff4554b2810484",
       "trace_id": "source-discovery:2026-11-09:36c5a6a50344",
       "verification": {
@@ -2236,6 +2354,14 @@
         "bytes_read": 153733,
         "parser_candidates": 3,
         "policy_candidates": 3
+      },
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
       },
       "state_history": [
         "QUEUED",
@@ -2317,6 +2443,16 @@
         "workflow_id": 407786628,
         "workflow_path": ".github/workflows/source-discovery.yml"
       },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -2324,7 +2460,7 @@
         "SUCCEEDED"
       ],
       "status": "SUCCEEDED",
-      "target_program_id": "workflow_source_discovery",
+      "target_program_id": "script_discover_sources",
       "task_id": "task_ddd51514965e4c2c9aa91269",
       "trace_id": "source-discovery:2026-11-10:36c5a6a50344",
       "verification": {
@@ -2403,6 +2539,14 @@
         "bytes_read": 420785,
         "parser_candidates": 3,
         "policy_candidates": 2
+      },
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
       },
       "state_history": [
         "QUEUED",
@@ -2555,6 +2699,16 @@
         "workflow_id": 407786628,
         "workflow_path": ".github/workflows/source-discovery.yml"
       },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -2562,7 +2716,7 @@
         "SUCCEEDED"
       ],
       "status": "SUCCEEDED",
-      "target_program_id": "workflow_source_discovery",
+      "target_program_id": "script_discover_sources",
       "task_id": "task_a0dd3e5795064e7ead9ff0c5",
       "trace_id": "source-discovery:2026-11-10:f5a2194ce467",
       "verification": {
@@ -2641,6 +2795,14 @@
         "bytes_read": 904518,
         "parser_candidates": 7,
         "policy_candidates": 3
+      },
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
       },
       "state_history": [
         "QUEUED",
@@ -3140,6 +3302,16 @@
         "workflow_id": 407786628,
         "workflow_path": ".github/workflows/source-discovery.yml"
       },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -3147,7 +3319,7 @@
         "SUCCEEDED"
       ],
       "status": "SUCCEEDED",
-      "target_program_id": "workflow_source_discovery",
+      "target_program_id": "script_discover_sources",
       "task_id": "task_acefbad3c2d249e896f670ed",
       "trace_id": "source-discovery:2026-11-10:1a6db33d6800",
       "verification": {
@@ -3226,6 +3398,14 @@
         "bytes_read": 248650,
         "parser_candidates": 7,
         "policy_candidates": 2
+      },
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
       },
       "state_history": [
         "QUEUED",
@@ -3307,6 +3487,16 @@
         "workflow_id": 407786628,
         "workflow_path": ".github/workflows/source-discovery.yml"
       },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -3314,7 +3504,7 @@
         "SUCCEEDED"
       ],
       "status": "SUCCEEDED",
-      "target_program_id": "workflow_source_discovery",
+      "target_program_id": "script_discover_sources",
       "task_id": "task_d2a602bfee8a46f3ae75e6b5",
       "trace_id": "source-discovery:2026-11-10:65a7804a0f76",
       "verification": {
@@ -4498,6 +4688,14 @@
         "status": "RELEASED"
       },
       "result": null,
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -4614,6 +4812,14 @@
         "bytes_read": 119862,
         "parser_candidates": 3,
         "policy_candidates": 2
+      },
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
       },
       "state_history": [
         "QUEUED",
@@ -4850,6 +5056,16 @@
         "workflow_id": 407786628,
         "workflow_path": ".github/workflows/source-discovery.yml"
       },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -4857,7 +5073,7 @@
         "SUCCEEDED"
       ],
       "status": "SUCCEEDED",
-      "target_program_id": "workflow_source_discovery",
+      "target_program_id": "script_discover_sources",
       "task_id": "task_09dc6e4c2dd746eda0dcae3c",
       "trace_id": "source-discovery:2026-11-10:48593d1fbe40",
       "verification": {
@@ -5113,6 +5329,14 @@
         "bytes_read": 119862,
         "parser_candidates": 3,
         "policy_candidates": 2
+      },
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
       },
       "state_history": [
         "QUEUED",
@@ -5371,6 +5595,16 @@
         "workflow_id": 407786628,
         "workflow_path": ".github/workflows/source-discovery.yml"
       },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -5378,7 +5612,7 @@
         "SUCCEEDED"
       ],
       "status": "SUCCEEDED",
-      "target_program_id": "workflow_source_discovery",
+      "target_program_id": "script_discover_sources",
       "task_id": "task_0af73074454d496187d422f8",
       "trace_id": "source-discovery:2026-11-10:692035a8a7d2",
       "verification": {
@@ -5451,6 +5685,16 @@
         "workflow_id": 407786628,
         "workflow_path": ".github/workflows/source-discovery.yml"
       },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -5458,7 +5702,7 @@
         "SUCCEEDED"
       ],
       "status": "SUCCEEDED",
-      "target_program_id": "workflow_source_discovery",
+      "target_program_id": "script_discover_sources",
       "task_id": "task_291a8020fa0c45b686068932",
       "trace_id": "source-discovery:2026-11-11:692035a8a7d2",
       "verification": {
@@ -5660,6 +5904,14 @@
       "priority": 60,
       "requester_program_id": "workflow_automation_watchdog",
       "result": null,
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CANCELLED"
@@ -6979,6 +7231,14 @@
         "status": "RELEASED"
       },
       "result": null,
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -8550,6 +8810,14 @@
         "status": "RELEASED"
       },
       "result": null,
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -8860,6 +9128,14 @@
         "status": "RELEASED"
       },
       "result": null,
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -10541,6 +10817,16 @@
         "workflow_id": 407786628,
         "workflow_path": ".github/workflows/source-discovery.yml"
       },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -10548,7 +10834,7 @@
         "SUCCEEDED"
       ],
       "status": "SUCCEEDED",
-      "target_program_id": "workflow_source_discovery",
+      "target_program_id": "script_discover_sources",
       "task_id": "task_3be01a11b26744b4ab5f8af4",
       "trace_id": "source-discovery:2026-11-12:d145ee428375",
       "verification": {
@@ -10621,6 +10907,16 @@
         "workflow_id": 407786628,
         "workflow_path": ".github/workflows/source-discovery.yml"
       },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -10628,7 +10924,7 @@
         "SUCCEEDED"
       ],
       "status": "SUCCEEDED",
-      "target_program_id": "workflow_source_discovery",
+      "target_program_id": "script_discover_sources",
       "task_id": "task_b2d7efaf821e46efa331287e",
       "trace_id": "source-discovery:2026-11-12:5eec1ee30367",
       "verification": {
@@ -10895,6 +11191,14 @@
         "status": "RELEASED"
       },
       "result": null,
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -11125,6 +11429,14 @@
         "status": "RELEASED"
       },
       "result": null,
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -11320,6 +11632,14 @@
         "status": "RELEASED"
       },
       "result": null,
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -11520,6 +11840,14 @@
         "status": "RELEASED"
       },
       "result": null,
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -11594,6 +11922,16 @@
         "workflow_id": 407786628,
         "workflow_path": ".github/workflows/source-discovery.yml"
       },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -11601,7 +11939,7 @@
         "SUCCEEDED"
       ],
       "status": "SUCCEEDED",
-      "target_program_id": "workflow_source_discovery",
+      "target_program_id": "script_discover_sources",
       "task_id": "task_68d94b348312481aba46694b",
       "trace_id": "source-discovery:2026-11-13:5eec1ee30367",
       "verification": {
@@ -11760,6 +12098,14 @@
         "status": "RELEASED"
       },
       "result": null,
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -11950,6 +12296,14 @@
         "status": "RELEASED"
       },
       "result": null,
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -12185,6 +12539,14 @@
         "bytes_read": 22128,
         "parser_candidates": 1,
         "policy_candidates": 0
+      },
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
       },
       "state_history": [
         "QUEUED",
@@ -13028,6 +13390,14 @@
         "parser_candidates": 1,
         "policy_candidates": 0
       },
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -13108,6 +13478,16 @@
         "workflow_id": 407786628,
         "workflow_path": ".github/workflows/source-discovery.yml"
       },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -13115,7 +13495,7 @@
         "SUCCEEDED"
       ],
       "status": "SUCCEEDED",
-      "target_program_id": "workflow_source_discovery",
+      "target_program_id": "script_discover_sources",
       "task_id": "task_fef5a96728ed4952a17091a3",
       "trace_id": "source-discovery:2026-11-14:6744e8862e75",
       "verification": {
@@ -13451,6 +13831,14 @@
         "status": "RELEASED"
       },
       "result": null,
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -13756,6 +14144,14 @@
         "status": "RELEASED"
       },
       "result": null,
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -14493,6 +14889,14 @@
         "status": "RELEASED"
       },
       "result": null,
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -15053,6 +15457,16 @@
         "workflow_id": 407786628,
         "workflow_path": ".github/workflows/source-discovery.yml"
       },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -15060,7 +15474,7 @@
         "SUCCEEDED"
       ],
       "status": "SUCCEEDED",
-      "target_program_id": "workflow_source_discovery",
+      "target_program_id": "script_discover_sources",
       "task_id": "task_01870fbec74e481781a272ee",
       "trace_id": "source-discovery:2026-11-15:1c86fb74d42f",
       "verification": {
@@ -15438,6 +15852,14 @@
         "status": "RELEASED"
       },
       "result": null,
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -15889,6 +16311,14 @@
         "status": "RELEASED"
       },
       "result": null,
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -16165,6 +16595,14 @@
         "status": "RELEASED"
       },
       "result": null,
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -16593,6 +17031,16 @@
         "workflow_id": 407786628,
         "workflow_path": ".github/workflows/source-discovery.yml"
       },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
         "QUEUED",
         "CLAIMED",
@@ -16600,7 +17048,7 @@
         "SUCCEEDED"
       ],
       "status": "SUCCEEDED",
-      "target_program_id": "workflow_source_discovery",
+      "target_program_id": "script_discover_sources",
       "task_id": "task_07f49d7c852f4535b72566ff",
       "trace_id": "source-discovery:2026-11-15:2fc1de5292dc",
       "verification": {
@@ -16617,18 +17065,33 @@
       "execution_backend": "github_contents",
       "idempotency_key": "source-discovery:2026-11-15:91f691034a71",
       "input": {},
-      "last_error": null,
+      "last_error": {
+        "message": "Independent Discovery/Assessment tasks were superseded by same-run collection and assessment in Production auto_sync.",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "type": "retired_source_dag"
+      },
       "lease": null,
       "max_attempts": 1,
       "not_before": "2026-11-15T19:16:28Z",
       "priority": 55,
       "requester_program_id": "workflow_automation_watchdog",
       "result": null,
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
-        "QUEUED"
+        "QUEUED",
+        "CANCELLED"
       ],
-      "status": "QUEUED",
-      "target_program_id": "workflow_source_discovery",
+      "status": "CANCELLED",
+      "target_program_id": "script_discover_sources",
       "task_id": "task_22ad09a1a4ce4484846207d1",
       "trace_id": "source-discovery:2026-11-15:91f691034a71"
     },
@@ -16813,17 +17276,30 @@
           "workflow_run_id": "43754187241"
         }
       },
-      "last_error": null,
+      "last_error": {
+        "message": "Independent Discovery/Assessment tasks were superseded by same-run collection and assessment in Production auto_sync.",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "type": "retired_source_dag"
+      },
       "lease": null,
       "max_attempts": 1,
       "not_before": "2026-11-15T19:57:56Z",
       "priority": 60,
       "requester_program_id": "workflow_automation_watchdog",
       "result": null,
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_assess_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "script_assess_sources",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
       "state_history": [
-        "QUEUED"
+        "QUEUED",
+        "CANCELLED"
       ],
-      "status": "QUEUED",
+      "status": "CANCELLED",
       "target_program_id": "script_assess_sources",
       "task_id": "task_0d3481538c484613b096041c",
       "trace_id": "discovery-run:43754187241:e5979b89a2f5"
