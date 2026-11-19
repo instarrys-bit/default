@@ -687,6 +687,9 @@ def assert_automation_write_allowed(path: str, actor: str) -> None:
     if normalized in exact:
         return
     parts = normalized.split("/")
+    if (len(parts) == 5 and parts[:4] == ["storage", "v2", "artifacts", "catalog"]
+            and re.fullmatch(r"[0-9]{1,20}\.json", parts[4])):
+        return
     if (len(parts) == 5 and parts[:4] == ["storage", "v2", "artifacts", "sha256"]
             and re.fullmatch(r"[0-9a-f]{64}", parts[4])):
         return

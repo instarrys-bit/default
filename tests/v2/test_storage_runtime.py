@@ -236,6 +236,22 @@ class StorageV2Tests(unittest.TestCase):
         self.append("TASK_DEAD_LETTER", {"task_id":"task-1","reason":"retry budget exhausted"}, "dead-letter-expired", created_at="2026-11-17T00:12:00Z")
         self.assertEqual(project(self.state)["tasks"]["task-1"]["status"], "DEAD_LETTER")
 
+    def test_artifact_catalog_is_storage_management_only_and_allowlisted(self):
+        assert_automation_write_allowed(
+            "storage/v2/artifacts/catalog/123456789.json", "storage_management"
+        )
+        assert_automation_write_allowed(
+            "storage/v2/artifacts/sha256/" + "a" * 64, "storage_management"
+        )
+        with self.assertRaises(PermissionError):
+            assert_automation_write_allowed(
+                "storage/v2/artifacts/catalog/123456789.json", "production_worker"
+            )
+        with self.assertRaises(ValueError):
+            assert_automation_write_allowed(
+                "storage/v2/artifacts/catalog/../task_queue.json", "storage_management"
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
