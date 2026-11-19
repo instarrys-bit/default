@@ -7152,6 +7152,1948 @@
       "target_program_id": "script_assess_sources",
       "task_id": "task_0d3481538c484613b096041c",
       "trace_id": "discovery-run:43754187241:e5979b89a2f5"
+    },
+    {
+      "archive_metadata": {
+        "archived_at": "2026-11-19T13:25:19Z",
+        "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+        "schema_version": 1
+      },
+      "attempts": 1,
+      "capability": "source_discovery",
+      "created_at": "2026-11-09T15:28:21Z",
+      "dispatch_intent": {
+        "correlation_id": "task_a5c0e180ee784adbb45b9da3-a1",
+        "correlation_title": "Automation task task_a5c0e180ee784adbb45b9da3-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-09T15:28:26Z",
+        "ref": "main",
+        "requested_head_sha": "445a9f8908ebae98e864d85b961455d9e80888d5",
+        "task_id": "task_a5c0e180ee784adbb45b9da3",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-discovery:2026-11-09:0879c8202e9c",
+      "input": {},
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-09T15:28:21Z",
+      "priority": 55,
+      "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-09T15:28:25Z",
+        "expires_at": "2026-11-09T16:28:26Z",
+        "lease_seconds": 3600,
+        "released_at": "2026-11-09T15:58:06Z",
+        "resources": {
+          "logical/source-dag-supervision": {
+            "fencing_token": 1,
+            "lease_id": "49018f77452eb4790c219430d8d997dc"
+          },
+          "logical/source-discovery-run": {
+            "fencing_token": 1,
+            "lease_id": "49018f77452eb4790c219430d8d997dc"
+          }
+        },
+        "status": "RELEASED"
+      },
+      "result": {
+        "correlation_id": "task_a5c0e180ee784adbb45b9da3-a1",
+        "correlation_title": "Automation task task_a5c0e180ee784adbb45b9da3-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-09T15:28:26Z",
+        "ref": "main",
+        "requested_head_sha": "445a9f8908ebae98e864d85b961455d9e80888d5",
+        "run_evidence": {
+          "conclusion": "success",
+          "head_sha": "445a9f8908ebae98e864d85b961455d9e80888d5",
+          "head_sha_relationship": "exact",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42645018403",
+          "requested_head_sha": "445a9f8908ebae98e864d85b961455d9e80888d5",
+          "run_id": 42645018403,
+          "status": "completed"
+        },
+        "submitted_at": "2026-11-09T15:28:29Z",
+        "task_id": "task_a5c0e180ee784adbb45b9da3",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
+      "state_history": [
+        "QUEUED",
+        "CLAIMED",
+        "VERIFYING",
+        "SUCCEEDED"
+      ],
+      "status": "SUCCEEDED",
+      "target_program_id": "script_discover_sources",
+      "task_id": "task_a5c0e180ee784adbb45b9da3",
+      "trace_id": "source-discovery:2026-11-09:0879c8202e9c",
+      "verification": {
+        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
+        "status": "passed",
+        "verified_at": "2026-11-09T15:58:06Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
+    },
+    {
+      "archive_metadata": {
+        "archived_at": "2026-11-19T13:25:19Z",
+        "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+        "schema_version": 1
+      },
+      "attempts": 1,
+      "capability": "source_discovery",
+      "created_at": "2026-11-09T17:08:46Z",
+      "dispatch_intent": {
+        "correlation_id": "task_64d721121ec749e1afc71abc-a1",
+        "correlation_title": "Automation task task_64d721121ec749e1afc71abc-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-09T17:08:52Z",
+        "ref": "main",
+        "requested_head_sha": "6dae5e35faf64ecdeef80d1826992087e611f0a2",
+        "task_id": "task_64d721121ec749e1afc71abc",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-discovery:2026-11-09:dbb7c6db826a",
+      "input": {},
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-09T17:08:46Z",
+      "priority": 55,
+      "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-09T17:08:50Z",
+        "expires_at": "2026-11-09T18:08:51Z",
+        "lease_seconds": 3600,
+        "released_at": "2026-11-09T17:22:40Z",
+        "resources": {
+          "logical/source-dag-supervision": {
+            "fencing_token": 3,
+            "lease_id": "0f5ca898deda2bbb1400ead8e01ab071"
+          },
+          "logical/source-discovery-run": {
+            "fencing_token": 2,
+            "lease_id": "0f5ca898deda2bbb1400ead8e01ab071"
+          }
+        },
+        "status": "RELEASED"
+      },
+      "result": {
+        "correlation_id": "task_64d721121ec749e1afc71abc-a1",
+        "correlation_title": "Automation task task_64d721121ec749e1afc71abc-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-09T17:08:52Z",
+        "ref": "main",
+        "requested_head_sha": "6dae5e35faf64ecdeef80d1826992087e611f0a2",
+        "run_evidence": {
+          "conclusion": "success",
+          "head_sha": "6dae5e35faf64ecdeef80d1826992087e611f0a2",
+          "head_sha_relationship": "exact",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42661750368",
+          "requested_head_sha": "6dae5e35faf64ecdeef80d1826992087e611f0a2",
+          "run_id": 42661750368,
+          "status": "completed"
+        },
+        "submitted_at": "2026-11-09T17:08:55Z",
+        "task_id": "task_64d721121ec749e1afc71abc",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
+      "state_history": [
+        "QUEUED",
+        "CLAIMED",
+        "VERIFYING",
+        "SUCCEEDED"
+      ],
+      "status": "SUCCEEDED",
+      "target_program_id": "script_discover_sources",
+      "task_id": "task_64d721121ec749e1afc71abc",
+      "trace_id": "source-discovery:2026-11-09:dbb7c6db826a",
+      "verification": {
+        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
+        "status": "passed",
+        "verified_at": "2026-11-09T17:22:40Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
+    },
+    {
+      "archive_metadata": {
+        "archived_at": "2026-11-19T13:25:19Z",
+        "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+        "schema_version": 1
+      },
+      "attempts": 1,
+      "capability": "source_discovery",
+      "created_at": "2026-11-09T17:57:02Z",
+      "dispatch_intent": {
+        "correlation_id": "task_3d83d0830702486f9ec224df-a1",
+        "correlation_title": "Automation task task_3d83d0830702486f9ec224df-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-09T17:57:09Z",
+        "ref": "main",
+        "requested_head_sha": "d17b177d813384861558487eee99131afe3f8dd1",
+        "task_id": "task_3d83d0830702486f9ec224df",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-discovery:2026-11-09:9dfdb3786b93",
+      "input": {},
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-09T17:57:02Z",
+      "priority": 55,
+      "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-09T17:57:07Z",
+        "expires_at": "2026-11-09T19:00:28Z",
+        "lease_seconds": 3600,
+        "released_at": "2026-11-09T18:08:39Z",
+        "resources": {
+          "logical/source-dag-supervision": {
+            "fencing_token": 5,
+            "lease_id": "8d9ec4b064025482063a5e5f7e8f1ba7"
+          },
+          "logical/source-discovery-run": {
+            "fencing_token": 3,
+            "lease_id": "8d9ec4b064025482063a5e5f7e8f1ba7"
+          }
+        },
+        "status": "RELEASED"
+      },
+      "result": {
+        "correlation_id": "task_3d83d0830702486f9ec224df-a1",
+        "correlation_title": "Automation task task_3d83d0830702486f9ec224df-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-09T17:57:09Z",
+        "ref": "main",
+        "requested_head_sha": "d17b177d813384861558487eee99131afe3f8dd1",
+        "run_evidence": {
+          "conclusion": "success",
+          "head_sha": "d17b177d813384861558487eee99131afe3f8dd1",
+          "head_sha_relationship": "exact",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42669575227",
+          "requested_head_sha": "d17b177d813384861558487eee99131afe3f8dd1",
+          "run_id": 42669575227,
+          "status": "completed"
+        },
+        "submitted_at": "2026-11-09T17:57:11Z",
+        "task_id": "task_3d83d0830702486f9ec224df",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
+      "state_history": [
+        "QUEUED",
+        "CLAIMED",
+        "VERIFYING",
+        "SUCCEEDED"
+      ],
+      "status": "SUCCEEDED",
+      "target_program_id": "script_discover_sources",
+      "task_id": "task_3d83d0830702486f9ec224df",
+      "trace_id": "source-discovery:2026-11-09:9dfdb3786b93",
+      "verification": {
+        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
+        "status": "passed",
+        "verified_at": "2026-11-09T18:08:39Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
+    },
+    {
+      "archive_metadata": {
+        "archived_at": "2026-11-19T13:25:19Z",
+        "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+        "schema_version": 1
+      },
+      "attempts": 1,
+      "capability": "source_discovery",
+      "created_at": "2026-11-09T18:38:51Z",
+      "dispatch_intent": {
+        "correlation_id": "task_5e52e0f218c34d2fb4853e02-a1",
+        "correlation_title": "Automation task task_5e52e0f218c34d2fb4853e02-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-09T18:39:02Z",
+        "ref": "main",
+        "requested_head_sha": "72fff8f9482997e8601d7efe29e9257606ce7476",
+        "task_id": "task_5e52e0f218c34d2fb4853e02",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-discovery:2026-11-09:9f884b124924",
+      "input": {},
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-09T18:38:51Z",
+      "priority": 55,
+      "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-09T18:39:00Z",
+        "expires_at": "2026-11-09T19:39:01Z",
+        "lease_seconds": 3600,
+        "released_at": "2026-11-09T18:49:47Z",
+        "resources": {
+          "logical/source-dag-supervision": {
+            "fencing_token": 7,
+            "lease_id": "30b8eeced00a59b67500e726db955aba"
+          },
+          "logical/source-discovery-run": {
+            "fencing_token": 4,
+            "lease_id": "30b8eeced00a59b67500e726db955aba"
+          }
+        },
+        "status": "RELEASED"
+      },
+      "result": {
+        "correlation_id": "task_5e52e0f218c34d2fb4853e02-a1",
+        "correlation_title": "Automation task task_5e52e0f218c34d2fb4853e02-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-09T18:39:02Z",
+        "ref": "main",
+        "requested_head_sha": "72fff8f9482997e8601d7efe29e9257606ce7476",
+        "run_evidence": {
+          "conclusion": "success",
+          "head_sha": "72fff8f9482997e8601d7efe29e9257606ce7476",
+          "head_sha_relationship": "exact",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42675880157",
+          "requested_head_sha": "72fff8f9482997e8601d7efe29e9257606ce7476",
+          "run_id": 42675880157,
+          "status": "completed"
+        },
+        "submitted_at": "2026-11-09T18:39:04Z",
+        "task_id": "task_5e52e0f218c34d2fb4853e02",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
+      "state_history": [
+        "QUEUED",
+        "CLAIMED",
+        "VERIFYING",
+        "SUCCEEDED"
+      ],
+      "status": "SUCCEEDED",
+      "target_program_id": "script_discover_sources",
+      "task_id": "task_5e52e0f218c34d2fb4853e02",
+      "trace_id": "source-discovery:2026-11-09:9f884b124924",
+      "verification": {
+        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
+        "status": "passed",
+        "verified_at": "2026-11-09T18:49:47Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
+    },
+    {
+      "archive_metadata": {
+        "archived_at": "2026-11-19T13:25:19Z",
+        "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+        "schema_version": 1
+      },
+      "attempts": 1,
+      "capability": "source_discovery",
+      "created_at": "2026-11-09T19:00:32Z",
+      "dispatch_intent": {
+        "correlation_id": "task_865ecae9f6df4cc781e98681-a1",
+        "correlation_title": "Automation task task_865ecae9f6df4cc781e98681-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-09T19:00:41Z",
+        "ref": "main",
+        "requested_head_sha": "9fd4d5241e75600133f00379a2ee55976d9a1348",
+        "task_id": "task_865ecae9f6df4cc781e98681",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-discovery:2026-11-09:39e34a1116b1",
+      "input": {},
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-09T19:00:32Z",
+      "priority": 55,
+      "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-09T19:00:39Z",
+        "expires_at": "2026-11-09T20:06:03Z",
+        "lease_seconds": 3600,
+        "released_at": "2026-11-09T19:11:56Z",
+        "resources": {
+          "logical/source-dag-supervision": {
+            "fencing_token": 9,
+            "lease_id": "064c204dbba3f03102821dd036f9942b"
+          },
+          "logical/source-discovery-run": {
+            "fencing_token": 5,
+            "lease_id": "064c204dbba3f03102821dd036f9942b"
+          }
+        },
+        "status": "RELEASED"
+      },
+      "result": {
+        "correlation_id": "task_865ecae9f6df4cc781e98681-a1",
+        "correlation_title": "Automation task task_865ecae9f6df4cc781e98681-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-09T19:00:41Z",
+        "ref": "main",
+        "requested_head_sha": "9fd4d5241e75600133f00379a2ee55976d9a1348",
+        "run_evidence": {
+          "conclusion": "success",
+          "head_sha": "9fd4d5241e75600133f00379a2ee55976d9a1348",
+          "head_sha_relationship": "exact",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42679215902",
+          "requested_head_sha": "9fd4d5241e75600133f00379a2ee55976d9a1348",
+          "run_id": 42679215902,
+          "status": "completed"
+        },
+        "submitted_at": "2026-11-09T19:00:44Z",
+        "task_id": "task_865ecae9f6df4cc781e98681",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
+      "state_history": [
+        "QUEUED",
+        "CLAIMED",
+        "VERIFYING",
+        "SUCCEEDED"
+      ],
+      "status": "SUCCEEDED",
+      "target_program_id": "script_discover_sources",
+      "task_id": "task_865ecae9f6df4cc781e98681",
+      "trace_id": "source-discovery:2026-11-09:39e34a1116b1",
+      "verification": {
+        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
+        "status": "passed",
+        "verified_at": "2026-11-09T19:11:56Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
+    },
+    {
+      "archive_metadata": {
+        "archived_at": "2026-11-19T13:25:19Z",
+        "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+        "schema_version": 1
+      },
+      "attempts": 1,
+      "capability": "source_discovery",
+      "created_at": "2026-11-09T20:52:46Z",
+      "dispatch_intent": {
+        "correlation_id": "task_e6bb3ea71ff74840b4eda2f3-a1",
+        "correlation_title": "Automation task task_e6bb3ea71ff74840b4eda2f3-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-09T20:53:08Z",
+        "ref": "main",
+        "requested_head_sha": "3d4f4e4cb5824fd7ee7d9223571afe706d0ddfb9",
+        "task_id": "task_e6bb3ea71ff74840b4eda2f3",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-discovery:2026-11-09:5761dc1a71d8",
+      "input": {},
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-09T20:52:46Z",
+      "priority": 55,
+      "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-09T20:53:05Z",
+        "expires_at": "2026-11-09T21:53:08Z",
+        "lease_seconds": 3600,
+        "released_at": "2026-11-09T21:03:01Z",
+        "resources": {
+          "logical/source-dag-supervision": {
+            "fencing_token": 11,
+            "lease_id": "6cab9311a856ee8f4a8e3308fd9bee2e"
+          },
+          "logical/source-discovery-run": {
+            "fencing_token": 6,
+            "lease_id": "6cab9311a856ee8f4a8e3308fd9bee2e"
+          }
+        },
+        "status": "RELEASED"
+      },
+      "result": {
+        "correlation_id": "task_e6bb3ea71ff74840b4eda2f3-a1",
+        "correlation_title": "Automation task task_e6bb3ea71ff74840b4eda2f3-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-09T20:53:08Z",
+        "ref": "main",
+        "requested_head_sha": "3d4f4e4cb5824fd7ee7d9223571afe706d0ddfb9",
+        "run_evidence": {
+          "conclusion": "success",
+          "head_sha": "3d4f4e4cb5824fd7ee7d9223571afe706d0ddfb9",
+          "head_sha_relationship": "exact",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42697202258",
+          "requested_head_sha": "3d4f4e4cb5824fd7ee7d9223571afe706d0ddfb9",
+          "run_id": 42697202258,
+          "status": "completed"
+        },
+        "submitted_at": "2026-11-09T20:53:13Z",
+        "task_id": "task_e6bb3ea71ff74840b4eda2f3",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
+      "state_history": [
+        "QUEUED",
+        "CLAIMED",
+        "VERIFYING",
+        "SUCCEEDED"
+      ],
+      "status": "SUCCEEDED",
+      "target_program_id": "script_discover_sources",
+      "task_id": "task_e6bb3ea71ff74840b4eda2f3",
+      "trace_id": "source-discovery:2026-11-09:5761dc1a71d8",
+      "verification": {
+        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
+        "status": "passed",
+        "verified_at": "2026-11-09T21:03:01Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
+    },
+    {
+      "archive_metadata": {
+        "archived_at": "2026-11-19T13:25:19Z",
+        "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+        "schema_version": 1
+      },
+      "attempts": 1,
+      "capability": "source_discovery",
+      "created_at": "2026-11-09T21:35:36Z",
+      "dispatch_intent": {
+        "correlation_id": "task_33a787ee5aff4554b2810484-a1",
+        "correlation_title": "Automation task task_33a787ee5aff4554b2810484-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-09T21:35:58Z",
+        "ref": "main",
+        "requested_head_sha": "9edfef9422caabf2dfd92b69357dfddc6f4ff106",
+        "task_id": "task_33a787ee5aff4554b2810484",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-discovery:2026-11-09:36c5a6a50344",
+      "input": {},
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-09T21:35:36Z",
+      "priority": 55,
+      "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-09T21:35:55Z",
+        "expires_at": "2026-11-09T22:35:58Z",
+        "lease_seconds": 3600,
+        "released_at": "2026-11-09T21:47:54Z",
+        "resources": {
+          "logical/source-dag-supervision": {
+            "fencing_token": 13,
+            "lease_id": "f90e5a2a988ace0f15f3f2f9eb9f7cb3"
+          },
+          "logical/source-discovery-run": {
+            "fencing_token": 7,
+            "lease_id": "f90e5a2a988ace0f15f3f2f9eb9f7cb3"
+          }
+        },
+        "status": "RELEASED"
+      },
+      "result": {
+        "correlation_id": "task_33a787ee5aff4554b2810484-a1",
+        "correlation_title": "Automation task task_33a787ee5aff4554b2810484-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-09T21:35:58Z",
+        "ref": "main",
+        "requested_head_sha": "9edfef9422caabf2dfd92b69357dfddc6f4ff106",
+        "run_evidence": {
+          "conclusion": "success",
+          "head_sha": "9edfef9422caabf2dfd92b69357dfddc6f4ff106",
+          "head_sha_relationship": "exact",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42704028161",
+          "requested_head_sha": "9edfef9422caabf2dfd92b69357dfddc6f4ff106",
+          "run_id": 42704028161,
+          "status": "completed"
+        },
+        "submitted_at": "2026-11-09T21:36:03Z",
+        "task_id": "task_33a787ee5aff4554b2810484",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
+      "state_history": [
+        "QUEUED",
+        "CLAIMED",
+        "VERIFYING",
+        "SUCCEEDED"
+      ],
+      "status": "SUCCEEDED",
+      "target_program_id": "script_discover_sources",
+      "task_id": "task_33a787ee5aff4554b2810484",
+      "trace_id": "source-discovery:2026-11-09:36c5a6a50344",
+      "verification": {
+        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
+        "status": "passed",
+        "verified_at": "2026-11-09T21:47:54Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
+    },
+    {
+      "archive_metadata": {
+        "archived_at": "2026-11-19T13:25:19Z",
+        "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+        "schema_version": 1
+      },
+      "attempts": 1,
+      "capability": "source_discovery",
+      "created_at": "2026-11-10T02:45:40Z",
+      "dispatch_intent": {
+        "correlation_id": "task_ddd51514965e4c2c9aa91269-a1",
+        "correlation_title": "Automation task task_ddd51514965e4c2c9aa91269-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-10T02:45:56Z",
+        "ref": "main",
+        "requested_head_sha": "9edfef9422caabf2dfd92b69357dfddc6f4ff106",
+        "task_id": "task_ddd51514965e4c2c9aa91269",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-discovery:2026-11-10:36c5a6a50344",
+      "input": {},
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-10T02:45:40Z",
+      "priority": 55,
+      "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-10T02:45:54Z",
+        "expires_at": "2026-11-10T03:45:56Z",
+        "lease_seconds": 3600,
+        "released_at": "2026-11-10T02:58:41Z",
+        "resources": {
+          "logical/source-dag-supervision": {
+            "fencing_token": 15,
+            "lease_id": "26bdaadb9a3142bd75effcb3c28448cf"
+          },
+          "logical/source-discovery-run": {
+            "fencing_token": 8,
+            "lease_id": "26bdaadb9a3142bd75effcb3c28448cf"
+          }
+        },
+        "status": "RELEASED"
+      },
+      "result": {
+        "correlation_id": "task_ddd51514965e4c2c9aa91269-a1",
+        "correlation_title": "Automation task task_ddd51514965e4c2c9aa91269-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-10T02:45:56Z",
+        "ref": "main",
+        "requested_head_sha": "9edfef9422caabf2dfd92b69357dfddc6f4ff106",
+        "run_evidence": {
+          "conclusion": "success",
+          "head_sha": "9edfef9422caabf2dfd92b69357dfddc6f4ff106",
+          "head_sha_relationship": "exact",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42744978594",
+          "requested_head_sha": "9edfef9422caabf2dfd92b69357dfddc6f4ff106",
+          "run_id": 42744978594,
+          "status": "completed"
+        },
+        "submitted_at": "2026-11-10T02:45:59Z",
+        "task_id": "task_ddd51514965e4c2c9aa91269",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
+      "state_history": [
+        "QUEUED",
+        "CLAIMED",
+        "VERIFYING",
+        "SUCCEEDED"
+      ],
+      "status": "SUCCEEDED",
+      "target_program_id": "script_discover_sources",
+      "task_id": "task_ddd51514965e4c2c9aa91269",
+      "trace_id": "source-discovery:2026-11-10:36c5a6a50344",
+      "verification": {
+        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
+        "status": "passed",
+        "verified_at": "2026-11-10T02:58:41Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
+    },
+    {
+      "archive_metadata": {
+        "archived_at": "2026-11-19T13:25:19Z",
+        "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+        "schema_version": 1
+      },
+      "attempts": 1,
+      "capability": "source_discovery",
+      "created_at": "2026-11-10T05:40:42Z",
+      "dispatch_intent": {
+        "correlation_id": "task_a0dd3e5795064e7ead9ff0c5-a1",
+        "correlation_title": "Automation task task_a0dd3e5795064e7ead9ff0c5-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-10T05:41:12Z",
+        "ref": "main",
+        "requested_head_sha": "f6882977d87b1bc65544544e95b61b90f9e510c6",
+        "task_id": "task_a0dd3e5795064e7ead9ff0c5",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-discovery:2026-11-10:f5a2194ce467",
+      "input": {},
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-10T05:40:42Z",
+      "priority": 55,
+      "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-10T05:41:07Z",
+        "expires_at": "2026-11-10T06:41:12Z",
+        "lease_seconds": 3600,
+        "released_at": "2026-11-10T05:52:42Z",
+        "resources": {
+          "logical/source-dag-supervision": {
+            "fencing_token": 17,
+            "lease_id": "10b640c0f641a328c2a1b4a584359363"
+          },
+          "logical/source-discovery-run": {
+            "fencing_token": 9,
+            "lease_id": "10b640c0f641a328c2a1b4a584359363"
+          }
+        },
+        "status": "RELEASED"
+      },
+      "result": {
+        "correlation_id": "task_a0dd3e5795064e7ead9ff0c5-a1",
+        "correlation_title": "Automation task task_a0dd3e5795064e7ead9ff0c5-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-10T05:41:12Z",
+        "ref": "main",
+        "requested_head_sha": "f6882977d87b1bc65544544e95b61b90f9e510c6",
+        "run_evidence": {
+          "conclusion": "success",
+          "head_sha": "f6882977d87b1bc65544544e95b61b90f9e510c6",
+          "head_sha_relationship": "exact",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42763679914",
+          "requested_head_sha": "f6882977d87b1bc65544544e95b61b90f9e510c6",
+          "run_id": 42763679914,
+          "status": "completed"
+        },
+        "submitted_at": "2026-11-10T05:41:18Z",
+        "task_id": "task_a0dd3e5795064e7ead9ff0c5",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
+      "state_history": [
+        "QUEUED",
+        "CLAIMED",
+        "VERIFYING",
+        "SUCCEEDED"
+      ],
+      "status": "SUCCEEDED",
+      "target_program_id": "script_discover_sources",
+      "task_id": "task_a0dd3e5795064e7ead9ff0c5",
+      "trace_id": "source-discovery:2026-11-10:f5a2194ce467",
+      "verification": {
+        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
+        "status": "passed",
+        "verified_at": "2026-11-10T05:52:42Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
+    },
+    {
+      "archive_metadata": {
+        "archived_at": "2026-11-19T13:25:19Z",
+        "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+        "schema_version": 1
+      },
+      "attempts": 1,
+      "capability": "source_discovery",
+      "created_at": "2026-11-10T20:08:32Z",
+      "dispatch_intent": {
+        "correlation_id": "task_acefbad3c2d249e896f670ed-a1",
+        "correlation_title": "Automation task task_acefbad3c2d249e896f670ed-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-10T20:09:08Z",
+        "ref": "main",
+        "requested_head_sha": "d964130e2ad93c1adaa148c5b8a8adb93dd1aafc",
+        "task_id": "task_acefbad3c2d249e896f670ed",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-discovery:2026-11-10:1a6db33d6800",
+      "input": {},
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-10T20:08:32Z",
+      "priority": 55,
+      "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-10T20:09:03Z",
+        "expires_at": "2026-11-10T21:09:07Z",
+        "lease_seconds": 3600,
+        "released_at": "2026-11-10T20:18:06Z",
+        "resources": {
+          "logical/source-dag-supervision": {
+            "fencing_token": 19,
+            "lease_id": "f6b18aaccbaa8663b2a2f2a48dd5876d"
+          },
+          "logical/source-discovery-run": {
+            "fencing_token": 10,
+            "lease_id": "f6b18aaccbaa8663b2a2f2a48dd5876d"
+          }
+        },
+        "status": "RELEASED"
+      },
+      "result": {
+        "correlation_id": "task_acefbad3c2d249e896f670ed-a1",
+        "correlation_title": "Automation task task_acefbad3c2d249e896f670ed-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-10T20:09:08Z",
+        "ref": "main",
+        "requested_head_sha": "d964130e2ad93c1adaa148c5b8a8adb93dd1aafc",
+        "run_evidence": {
+          "conclusion": "success",
+          "head_sha": "d964130e2ad93c1adaa148c5b8a8adb93dd1aafc",
+          "head_sha_relationship": "exact",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42892414037",
+          "requested_head_sha": "d964130e2ad93c1adaa148c5b8a8adb93dd1aafc",
+          "run_id": 42892414037,
+          "status": "completed"
+        },
+        "submitted_at": "2026-11-10T20:09:13Z",
+        "task_id": "task_acefbad3c2d249e896f670ed",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
+      "state_history": [
+        "QUEUED",
+        "CLAIMED",
+        "VERIFYING",
+        "SUCCEEDED"
+      ],
+      "status": "SUCCEEDED",
+      "target_program_id": "script_discover_sources",
+      "task_id": "task_acefbad3c2d249e896f670ed",
+      "trace_id": "source-discovery:2026-11-10:1a6db33d6800",
+      "verification": {
+        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
+        "status": "passed",
+        "verified_at": "2026-11-10T20:18:06Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
+    },
+    {
+      "archive_metadata": {
+        "archived_at": "2026-11-19T13:25:19Z",
+        "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+        "schema_version": 1
+      },
+      "attempts": 1,
+      "capability": "source_discovery",
+      "created_at": "2026-11-10T20:30:38Z",
+      "dispatch_intent": {
+        "correlation_id": "task_d2a602bfee8a46f3ae75e6b5-a1",
+        "correlation_title": "Automation task task_d2a602bfee8a46f3ae75e6b5-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-10T20:31:27Z",
+        "ref": "main",
+        "requested_head_sha": "c419dd4632364943a1c048000f55e2f781029858",
+        "task_id": "task_d2a602bfee8a46f3ae75e6b5",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-discovery:2026-11-10:65a7804a0f76",
+      "input": {},
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-10T20:30:38Z",
+      "priority": 55,
+      "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-10T20:31:21Z",
+        "expires_at": "2026-11-10T21:40:39Z",
+        "lease_seconds": 3600,
+        "released_at": "2026-11-10T20:41:07Z",
+        "resources": {
+          "logical/source-dag-supervision": {
+            "fencing_token": 21,
+            "lease_id": "11617968d4cfeaafaf7725db9d39277f"
+          },
+          "logical/source-discovery-run": {
+            "fencing_token": 11,
+            "lease_id": "11617968d4cfeaafaf7725db9d39277f"
+          }
+        },
+        "status": "RELEASED"
+      },
+      "result": {
+        "correlation_id": "task_d2a602bfee8a46f3ae75e6b5-a1",
+        "correlation_title": "Automation task task_d2a602bfee8a46f3ae75e6b5-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-10T20:31:27Z",
+        "ref": "main",
+        "requested_head_sha": "c419dd4632364943a1c048000f55e2f781029858",
+        "run_evidence": {
+          "conclusion": "success",
+          "head_sha": "c419dd4632364943a1c048000f55e2f781029858",
+          "head_sha_relationship": "exact",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42896135814",
+          "requested_head_sha": "c419dd4632364943a1c048000f55e2f781029858",
+          "run_id": 42896135814,
+          "status": "completed"
+        },
+        "submitted_at": "2026-11-10T20:31:34Z",
+        "task_id": "task_d2a602bfee8a46f3ae75e6b5",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
+      "state_history": [
+        "QUEUED",
+        "CLAIMED",
+        "VERIFYING",
+        "SUCCEEDED"
+      ],
+      "status": "SUCCEEDED",
+      "target_program_id": "script_discover_sources",
+      "task_id": "task_d2a602bfee8a46f3ae75e6b5",
+      "trace_id": "source-discovery:2026-11-10:65a7804a0f76",
+      "verification": {
+        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
+        "status": "passed",
+        "verified_at": "2026-11-10T20:41:07Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
+    },
+    {
+      "archive_metadata": {
+        "archived_at": "2026-11-19T13:25:19Z",
+        "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+        "schema_version": 1
+      },
+      "attempts": 1,
+      "capability": "source_discovery",
+      "created_at": "2026-11-10T21:30:05Z",
+      "dispatch_intent": {
+        "correlation_id": "task_09dc6e4c2dd746eda0dcae3c-a1",
+        "correlation_title": "Automation task task_09dc6e4c2dd746eda0dcae3c-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-10T21:31:29Z",
+        "ref": "main",
+        "requested_head_sha": "2f3a20aac2c62dcf10fbf61d47cd529f6676b1a2",
+        "task_id": "task_09dc6e4c2dd746eda0dcae3c",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-discovery:2026-11-10:48593d1fbe40",
+      "input": {},
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-10T21:30:05Z",
+      "priority": 55,
+      "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-10T21:31:18Z",
+        "expires_at": "2026-11-10T22:39:00Z",
+        "lease_seconds": 3600,
+        "released_at": "2026-11-10T21:44:29Z",
+        "resources": {
+          "logical/source-dag-supervision": {
+            "fencing_token": 24,
+            "lease_id": "ff5499aee8067cdbbb8a3eae3da904fd"
+          },
+          "logical/source-discovery-run": {
+            "fencing_token": 12,
+            "lease_id": "ff5499aee8067cdbbb8a3eae3da904fd"
+          }
+        },
+        "status": "RELEASED"
+      },
+      "result": {
+        "correlation_id": "task_09dc6e4c2dd746eda0dcae3c-a1",
+        "correlation_title": "Automation task task_09dc6e4c2dd746eda0dcae3c-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-10T21:31:29Z",
+        "ref": "main",
+        "requested_head_sha": "2f3a20aac2c62dcf10fbf61d47cd529f6676b1a2",
+        "run_evidence": {
+          "conclusion": "success",
+          "head_sha": "2f3a20aac2c62dcf10fbf61d47cd529f6676b1a2",
+          "head_sha_relationship": "exact",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42905899022",
+          "requested_head_sha": "2f3a20aac2c62dcf10fbf61d47cd529f6676b1a2",
+          "run_id": 42905899022,
+          "status": "completed"
+        },
+        "submitted_at": "2026-11-10T21:31:39Z",
+        "task_id": "task_09dc6e4c2dd746eda0dcae3c",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
+      "state_history": [
+        "QUEUED",
+        "CLAIMED",
+        "VERIFYING",
+        "SUCCEEDED"
+      ],
+      "status": "SUCCEEDED",
+      "target_program_id": "script_discover_sources",
+      "task_id": "task_09dc6e4c2dd746eda0dcae3c",
+      "trace_id": "source-discovery:2026-11-10:48593d1fbe40",
+      "verification": {
+        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
+        "status": "passed",
+        "verified_at": "2026-11-10T21:44:29Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
+    },
+    {
+      "archive_metadata": {
+        "archived_at": "2026-11-19T13:25:19Z",
+        "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+        "schema_version": 1
+      },
+      "attempts": 1,
+      "capability": "source_discovery",
+      "created_at": "2026-11-10T23:26:26Z",
+      "dispatch_intent": {
+        "correlation_id": "task_0af73074454d496187d422f8-a1",
+        "correlation_title": "Automation task task_0af73074454d496187d422f8-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-11T00:30:25Z",
+        "ref": "main",
+        "requested_head_sha": "5ce43ac594d8be51d6a8481c70c757e517e5855b",
+        "task_id": "task_0af73074454d496187d422f8",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-discovery:2026-11-10:692035a8a7d2",
+      "input": {},
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-10T23:26:26Z",
+      "priority": 55,
+      "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-11T00:30:11Z",
+        "expires_at": "2026-11-11T01:30:25Z",
+        "lease_seconds": 3600,
+        "released_at": "2026-11-11T00:39:31Z",
+        "resources": {
+          "logical/source-dag-supervision": {
+            "fencing_token": 26,
+            "lease_id": "70ebdd8b06316306ea94fb91be90b2a9"
+          },
+          "logical/source-discovery-run": {
+            "fencing_token": 13,
+            "lease_id": "70ebdd8b06316306ea94fb91be90b2a9"
+          }
+        },
+        "status": "RELEASED"
+      },
+      "result": {
+        "correlation_id": "task_0af73074454d496187d422f8-a1",
+        "correlation_title": "Automation task task_0af73074454d496187d422f8-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-11T00:30:25Z",
+        "ref": "main",
+        "requested_head_sha": "5ce43ac594d8be51d6a8481c70c757e517e5855b",
+        "run_evidence": {
+          "conclusion": "success",
+          "head_sha": "5ce43ac594d8be51d6a8481c70c757e517e5855b",
+          "head_sha_relationship": "exact",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42931914274",
+          "requested_head_sha": "5ce43ac594d8be51d6a8481c70c757e517e5855b",
+          "run_id": 42931914274,
+          "status": "completed"
+        },
+        "submitted_at": "2026-11-11T00:30:40Z",
+        "task_id": "task_0af73074454d496187d422f8",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
+      "state_history": [
+        "QUEUED",
+        "CLAIMED",
+        "VERIFYING",
+        "SUCCEEDED"
+      ],
+      "status": "SUCCEEDED",
+      "target_program_id": "script_discover_sources",
+      "task_id": "task_0af73074454d496187d422f8",
+      "trace_id": "source-discovery:2026-11-10:692035a8a7d2",
+      "verification": {
+        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
+        "status": "passed",
+        "verified_at": "2026-11-11T00:39:31Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
+    },
+    {
+      "archive_metadata": {
+        "archived_at": "2026-11-19T13:25:19Z",
+        "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+        "schema_version": 1
+      },
+      "attempts": 1,
+      "capability": "source_discovery",
+      "created_at": "2026-11-11T00:12:21Z",
+      "dispatch_intent": {
+        "correlation_id": "task_291a8020fa0c45b686068932-a1",
+        "correlation_title": "Automation task task_291a8020fa0c45b686068932-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-11T01:33:47Z",
+        "ref": "main",
+        "requested_head_sha": "c8f3dd9f91866e7591bbcedef420d336792d3837",
+        "task_id": "task_291a8020fa0c45b686068932",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-discovery:2026-11-11:692035a8a7d2",
+      "input": {},
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-11T00:12:21Z",
+      "priority": 55,
+      "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-11T01:33:36Z",
+        "expires_at": "2026-11-11T02:33:46Z",
+        "lease_seconds": 3600,
+        "released_at": "2026-11-11T01:43:03Z",
+        "resources": {
+          "logical/source-dag-supervision": {
+            "fencing_token": 27,
+            "lease_id": "39156ddcee5e8829c141b1d4092bb2d3"
+          },
+          "logical/source-discovery-run": {
+            "fencing_token": 14,
+            "lease_id": "39156ddcee5e8829c141b1d4092bb2d3"
+          }
+        },
+        "status": "RELEASED"
+      },
+      "result": {
+        "correlation_id": "task_291a8020fa0c45b686068932-a1",
+        "correlation_title": "Automation task task_291a8020fa0c45b686068932-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-11T01:33:47Z",
+        "ref": "main",
+        "requested_head_sha": "c8f3dd9f91866e7591bbcedef420d336792d3837",
+        "run_evidence": {
+          "conclusion": "success",
+          "head_sha": "c8f3dd9f91866e7591bbcedef420d336792d3837",
+          "head_sha_relationship": "exact",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42939875322",
+          "requested_head_sha": "c8f3dd9f91866e7591bbcedef420d336792d3837",
+          "run_id": 42939875322,
+          "status": "completed"
+        },
+        "submitted_at": "2026-11-11T01:33:59Z",
+        "task_id": "task_291a8020fa0c45b686068932",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
+      "state_history": [
+        "QUEUED",
+        "CLAIMED",
+        "VERIFYING",
+        "SUCCEEDED"
+      ],
+      "status": "SUCCEEDED",
+      "target_program_id": "script_discover_sources",
+      "task_id": "task_291a8020fa0c45b686068932",
+      "trace_id": "source-discovery:2026-11-11:692035a8a7d2",
+      "verification": {
+        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
+        "status": "passed",
+        "verified_at": "2026-11-11T01:43:03Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
+    },
+    {
+      "archive_metadata": {
+        "archived_at": "2026-11-19T13:25:19Z",
+        "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+        "schema_version": 1
+      },
+      "attempts": 1,
+      "capability": "source_discovery",
+      "created_at": "2026-11-12T17:29:08Z",
+      "dispatch_intent": {
+        "correlation_id": "task_3be01a11b26744b4ab5f8af4-a1",
+        "correlation_title": "Automation task task_3be01a11b26744b4ab5f8af4-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-12T20:45:17Z",
+        "ref": "main",
+        "requested_head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
+        "task_id": "task_3be01a11b26744b4ab5f8af4",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-discovery:2026-11-12:d145ee428375",
+      "input": {},
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-12T17:29:08Z",
+      "priority": 55,
+      "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-12T20:44:44Z",
+        "expires_at": "2026-11-12T21:45:17Z",
+        "lease_seconds": 3600,
+        "released_at": "2026-11-12T21:00:19Z",
+        "resources": {
+          "logical/source-dag-supervision": {
+            "fencing_token": 31,
+            "lease_id": "cdc2363f603b6a829c61583a64145854"
+          },
+          "logical/source-discovery-run": {
+            "fencing_token": 15,
+            "lease_id": "cdc2363f603b6a829c61583a64145854"
+          }
+        },
+        "status": "RELEASED"
+      },
+      "result": {
+        "correlation_id": "task_3be01a11b26744b4ab5f8af4-a1",
+        "correlation_title": "Automation task task_3be01a11b26744b4ab5f8af4-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-12T20:45:17Z",
+        "ref": "main",
+        "requested_head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
+        "run_evidence": {
+          "conclusion": "success",
+          "head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
+          "head_sha_relationship": "exact",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/43303518729",
+          "requested_head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
+          "run_id": 43303518729,
+          "status": "completed"
+        },
+        "submitted_at": "2026-11-12T20:45:51Z",
+        "task_id": "task_3be01a11b26744b4ab5f8af4",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
+      "state_history": [
+        "QUEUED",
+        "CLAIMED",
+        "VERIFYING",
+        "SUCCEEDED"
+      ],
+      "status": "SUCCEEDED",
+      "target_program_id": "script_discover_sources",
+      "task_id": "task_3be01a11b26744b4ab5f8af4",
+      "trace_id": "source-discovery:2026-11-12:d145ee428375",
+      "verification": {
+        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
+        "status": "passed",
+        "verified_at": "2026-11-12T21:00:19Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
+    },
+    {
+      "archive_metadata": {
+        "archived_at": "2026-11-19T13:25:19Z",
+        "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+        "schema_version": 1
+      },
+      "attempts": 1,
+      "capability": "source_discovery",
+      "created_at": "2026-11-12T17:33:14Z",
+      "dispatch_intent": {
+        "correlation_id": "task_b2d7efaf821e46efa331287e-a1",
+        "correlation_title": "Automation task task_b2d7efaf821e46efa331287e-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-12T22:18:55Z",
+        "ref": "main",
+        "requested_head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
+        "task_id": "task_b2d7efaf821e46efa331287e",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-discovery:2026-11-12:5eec1ee30367",
+      "input": {},
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-12T17:33:14Z",
+      "priority": 55,
+      "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-12T22:18:23Z",
+        "expires_at": "2026-11-12T23:18:55Z",
+        "lease_seconds": 3600,
+        "released_at": "2026-11-12T22:32:17Z",
+        "resources": {
+          "logical/source-dag-supervision": {
+            "fencing_token": 33,
+            "lease_id": "815e270724e4a68d22b297b8eb0ed005"
+          },
+          "logical/source-discovery-run": {
+            "fencing_token": 16,
+            "lease_id": "815e270724e4a68d22b297b8eb0ed005"
+          }
+        },
+        "status": "RELEASED"
+      },
+      "result": {
+        "correlation_id": "task_b2d7efaf821e46efa331287e-a1",
+        "correlation_title": "Automation task task_b2d7efaf821e46efa331287e-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-12T22:18:55Z",
+        "ref": "main",
+        "requested_head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
+        "run_evidence": {
+          "conclusion": "success",
+          "head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
+          "head_sha_relationship": "exact",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/43318798963",
+          "requested_head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
+          "run_id": 43318798963,
+          "status": "completed"
+        },
+        "submitted_at": "2026-11-12T22:19:30Z",
+        "task_id": "task_b2d7efaf821e46efa331287e",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
+      "state_history": [
+        "QUEUED",
+        "CLAIMED",
+        "VERIFYING",
+        "SUCCEEDED"
+      ],
+      "status": "SUCCEEDED",
+      "target_program_id": "script_discover_sources",
+      "task_id": "task_b2d7efaf821e46efa331287e",
+      "trace_id": "source-discovery:2026-11-12:5eec1ee30367",
+      "verification": {
+        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
+        "status": "passed",
+        "verified_at": "2026-11-12T22:32:17Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
+    },
+    {
+      "archive_metadata": {
+        "archived_at": "2026-11-19T13:25:19Z",
+        "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+        "schema_version": 1
+      },
+      "attempts": 1,
+      "capability": "source_discovery",
+      "created_at": "2026-11-13T10:01:39Z",
+      "dispatch_intent": {
+        "correlation_id": "task_68d94b348312481aba46694b-a1",
+        "correlation_title": "Automation task task_68d94b348312481aba46694b-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-13T10:06:26Z",
+        "ref": "main",
+        "requested_head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
+        "task_id": "task_68d94b348312481aba46694b",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-discovery:2026-11-13:5eec1ee30367",
+      "input": {},
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-13T10:01:39Z",
+      "priority": 55,
+      "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-13T10:05:45Z",
+        "expires_at": "2026-11-13T11:06:26Z",
+        "lease_seconds": 3600,
+        "released_at": "2026-11-13T10:22:26Z",
+        "resources": {
+          "logical/source-dag-supervision": {
+            "fencing_token": 37,
+            "lease_id": "cac2208c67a5afa1e88bb5d768acfec5"
+          },
+          "logical/source-discovery-run": {
+            "fencing_token": 17,
+            "lease_id": "cac2208c67a5afa1e88bb5d768acfec5"
+          }
+        },
+        "status": "RELEASED"
+      },
+      "result": {
+        "correlation_id": "task_68d94b348312481aba46694b-a1",
+        "correlation_title": "Automation task task_68d94b348312481aba46694b-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-13T10:06:26Z",
+        "ref": "main",
+        "requested_head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
+        "run_evidence": {
+          "conclusion": "success",
+          "head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
+          "head_sha_relationship": "exact",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/43406661354",
+          "requested_head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
+          "run_id": 43406661354,
+          "status": "completed"
+        },
+        "submitted_at": "2026-11-13T10:07:08Z",
+        "task_id": "task_68d94b348312481aba46694b",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
+      "state_history": [
+        "QUEUED",
+        "CLAIMED",
+        "VERIFYING",
+        "SUCCEEDED"
+      ],
+      "status": "SUCCEEDED",
+      "target_program_id": "script_discover_sources",
+      "task_id": "task_68d94b348312481aba46694b",
+      "trace_id": "source-discovery:2026-11-13:5eec1ee30367",
+      "verification": {
+        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
+        "status": "passed",
+        "verified_at": "2026-11-13T10:22:26Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
+    },
+    {
+      "archive_metadata": {
+        "archived_at": "2026-11-19T13:25:19Z",
+        "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+        "schema_version": 1
+      },
+      "attempts": 1,
+      "capability": "source_discovery",
+      "created_at": "2026-11-14T21:54:10Z",
+      "dispatch_intent": {
+        "correlation_id": "task_fef5a96728ed4952a17091a3-a1",
+        "correlation_title": "Automation task task_fef5a96728ed4952a17091a3-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-14T21:59:29Z",
+        "ref": "main",
+        "requested_head_sha": "33d068d81f616e3f307789767dc679864b2281d4",
+        "task_id": "task_fef5a96728ed4952a17091a3",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-discovery:2026-11-14:6744e8862e75",
+      "input": {},
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-14T21:54:10Z",
+      "priority": 55,
+      "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-14T21:58:46Z",
+        "expires_at": "2026-11-14T23:05:04Z",
+        "lease_seconds": 3600,
+        "released_at": "2026-11-14T22:08:54Z",
+        "resources": {
+          "logical/source-dag-supervision": {
+            "fencing_token": 42,
+            "lease_id": "07a5482edace568550bdae34e18b0867"
+          },
+          "logical/source-discovery-run": {
+            "fencing_token": 18,
+            "lease_id": "07a5482edace568550bdae34e18b0867"
+          }
+        },
+        "status": "RELEASED"
+      },
+      "result": {
+        "correlation_id": "task_fef5a96728ed4952a17091a3-a1",
+        "correlation_title": "Automation task task_fef5a96728ed4952a17091a3-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-14T21:59:29Z",
+        "ref": "main",
+        "requested_head_sha": "33d068d81f616e3f307789767dc679864b2281d4",
+        "run_evidence": {
+          "conclusion": "success",
+          "head_sha": "33d068d81f616e3f307789767dc679864b2281d4",
+          "head_sha_relationship": "exact",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/43645740024",
+          "requested_head_sha": "33d068d81f616e3f307789767dc679864b2281d4",
+          "run_id": 43645740024,
+          "status": "completed"
+        },
+        "submitted_at": "2026-11-14T22:00:14Z",
+        "task_id": "task_fef5a96728ed4952a17091a3",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
+      "state_history": [
+        "QUEUED",
+        "CLAIMED",
+        "VERIFYING",
+        "SUCCEEDED"
+      ],
+      "status": "SUCCEEDED",
+      "target_program_id": "script_discover_sources",
+      "task_id": "task_fef5a96728ed4952a17091a3",
+      "trace_id": "source-discovery:2026-11-14:6744e8862e75",
+      "verification": {
+        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
+        "status": "passed",
+        "verified_at": "2026-11-14T22:08:54Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
+    },
+    {
+      "archive_metadata": {
+        "archived_at": "2026-11-19T13:25:19Z",
+        "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+        "schema_version": 1
+      },
+      "attempts": 1,
+      "capability": "source_discovery",
+      "created_at": "2026-11-15T10:21:07Z",
+      "dispatch_intent": {
+        "correlation_id": "task_01870fbec74e481781a272ee-a1",
+        "correlation_title": "Automation task task_01870fbec74e481781a272ee-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-15T10:26:31Z",
+        "ref": "main",
+        "requested_head_sha": "95bb3055b9f309a42a23596d2da3ddbcc7dcaddf",
+        "task_id": "task_01870fbec74e481781a272ee",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-discovery:2026-11-15:1c86fb74d42f",
+      "input": {},
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-15T10:21:07Z",
+      "priority": 55,
+      "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-15T10:25:51Z",
+        "expires_at": "2026-11-15T11:36:47Z",
+        "lease_seconds": 3600,
+        "released_at": "2026-11-15T10:44:39Z",
+        "resources": {
+          "logical/source-dag-supervision": {
+            "fencing_token": 46,
+            "lease_id": "dd54baeb469418c536a274fa44d72b0e"
+          },
+          "logical/source-discovery-run": {
+            "fencing_token": 19,
+            "lease_id": "dd54baeb469418c536a274fa44d72b0e"
+          }
+        },
+        "status": "RELEASED"
+      },
+      "result": {
+        "correlation_id": "task_01870fbec74e481781a272ee-a1",
+        "correlation_title": "Automation task task_01870fbec74e481781a272ee-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-15T10:26:31Z",
+        "ref": "main",
+        "requested_head_sha": "95bb3055b9f309a42a23596d2da3ddbcc7dcaddf",
+        "run_evidence": {
+          "conclusion": "success",
+          "head_sha": "95bb3055b9f309a42a23596d2da3ddbcc7dcaddf",
+          "head_sha_relationship": "exact",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/43704193017",
+          "requested_head_sha": "95bb3055b9f309a42a23596d2da3ddbcc7dcaddf",
+          "run_id": 43704193017,
+          "status": "completed"
+        },
+        "submitted_at": "2026-11-15T10:27:52Z",
+        "task_id": "task_01870fbec74e481781a272ee",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
+      "state_history": [
+        "QUEUED",
+        "CLAIMED",
+        "VERIFYING",
+        "SUCCEEDED"
+      ],
+      "status": "SUCCEEDED",
+      "target_program_id": "script_discover_sources",
+      "task_id": "task_01870fbec74e481781a272ee",
+      "trace_id": "source-discovery:2026-11-15:1c86fb74d42f",
+      "verification": {
+        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
+        "status": "passed",
+        "verified_at": "2026-11-15T10:44:39Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
+    },
+    {
+      "archive_metadata": {
+        "archived_at": "2026-11-19T13:25:19Z",
+        "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+        "schema_version": 1
+      },
+      "attempts": 1,
+      "capability": "source_discovery",
+      "created_at": "2026-11-15T19:02:45Z",
+      "dispatch_intent": {
+        "correlation_id": "task_07f49d7c852f4535b72566ff-a1",
+        "correlation_title": "Automation task task_07f49d7c852f4535b72566ff-a1",
+        "dispatch_attempt": 1,
+        "prepared_at": "2026-11-15T19:44:04Z",
+        "ref": "main",
+        "requested_head_sha": "e5979b89a2f5745e9f615deb2cf48e0d51ab7415",
+        "task_id": "task_07f49d7c852f4535b72566ff",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-discovery:2026-11-15:2fc1de5292dc",
+      "input": {},
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-15T19:02:45Z",
+      "priority": 55,
+      "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-15T19:42:44Z",
+        "expires_at": "2026-11-15T20:44:04Z",
+        "lease_seconds": 3600,
+        "released_at": "2026-11-15T19:58:58Z",
+        "resources": {
+          "logical/source-dag-supervision": {
+            "fencing_token": 50,
+            "lease_id": "dcbbdfc1755fa7fdf0c77daea8277c52"
+          },
+          "logical/source-discovery-run": {
+            "fencing_token": 20,
+            "lease_id": "dcbbdfc1755fa7fdf0c77daea8277c52"
+          }
+        },
+        "status": "RELEASED"
+      },
+      "result": {
+        "correlation_id": "task_07f49d7c852f4535b72566ff-a1",
+        "correlation_title": "Automation task task_07f49d7c852f4535b72566ff-a1",
+        "dispatch_attempt": 1,
+        "dispatch_state": "submitted",
+        "prepared_at": "2026-11-15T19:44:04Z",
+        "ref": "main",
+        "requested_head_sha": "e5979b89a2f5745e9f615deb2cf48e0d51ab7415",
+        "run_evidence": {
+          "conclusion": "success",
+          "head_sha": "e5979b89a2f5745e9f615deb2cf48e0d51ab7415",
+          "head_sha_relationship": "exact",
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/43754187241",
+          "requested_head_sha": "e5979b89a2f5745e9f615deb2cf48e0d51ab7415",
+          "run_id": 43754187241,
+          "status": "completed"
+        },
+        "submitted_at": "2026-11-15T19:45:27Z",
+        "task_id": "task_07f49d7c852f4535b72566ff",
+        "workflow_id": 407786628,
+        "workflow_path": ".github/workflows/source-discovery.yml"
+      },
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
+      "state_history": [
+        "QUEUED",
+        "CLAIMED",
+        "VERIFYING",
+        "SUCCEEDED"
+      ],
+      "status": "SUCCEEDED",
+      "target_program_id": "script_discover_sources",
+      "task_id": "task_07f49d7c852f4535b72566ff",
+      "trace_id": "source-discovery:2026-11-15:2fc1de5292dc",
+      "verification": {
+        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
+        "status": "passed",
+        "verified_at": "2026-11-15T19:58:58Z",
+        "verifier_program_id": "script_task_result_verifier"
+      }
+    },
+    {
+      "archive_metadata": {
+        "archived_at": "2026-11-19T13:25:19Z",
+        "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+        "schema_version": 1
+      },
+      "attempts": 0,
+      "capability": "source_discovery",
+      "created_at": "2026-11-15T19:16:28Z",
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-discovery:2026-11-15:91f691034a71",
+      "input": {},
+      "last_error": {
+        "message": "Independent Discovery/Assessment tasks were superseded by same-run collection and assessment in Production auto_sync.",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "type": "retired_source_dag"
+      },
+      "lease": null,
+      "max_attempts": 1,
+      "not_before": "2026-11-15T19:16:28Z",
+      "priority": 55,
+      "requester_program_id": "workflow_automation_watchdog",
+      "result": null,
+      "retired_target_program_id": "workflow_source_discovery",
+      "retired_workflow_path": ".github/workflows/source-discovery.yml",
+      "retirement": {
+        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
+        "replacement_program_id": "script_discover_sources",
+        "retired_at": "2026-11-19T13:15:45Z",
+        "retired_target_program_id": "workflow_source_discovery",
+        "schema_version": 1,
+        "source_discovery_mode": "monolithic_fallback"
+      },
+      "state_history": [
+        "QUEUED",
+        "CANCELLED"
+      ],
+      "status": "CANCELLED",
+      "target_program_id": "script_discover_sources",
+      "task_id": "task_22ad09a1a4ce4484846207d1",
+      "trace_id": "source-discovery:2026-11-15:91f691034a71"
     }
   ],
   "manual_authorizations": {},
@@ -7433,279 +9375,9 @@
       "worker_id": "43755019767"
     }
   },
-  "revision": 879,
+  "revision": 880,
   "schema_version": 1,
   "tasks": [
-    {
-      "attempts": 1,
-      "capability": "source_discovery",
-      "created_at": "2026-11-09T15:28:21Z",
-      "dispatch_intent": {
-        "correlation_id": "task_a5c0e180ee784adbb45b9da3-a1",
-        "correlation_title": "Automation task task_a5c0e180ee784adbb45b9da3-a1",
-        "dispatch_attempt": 1,
-        "prepared_at": "2026-11-09T15:28:26Z",
-        "ref": "main",
-        "requested_head_sha": "445a9f8908ebae98e864d85b961455d9e80888d5",
-        "task_id": "task_a5c0e180ee784adbb45b9da3",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "execution_backend": "github_contents",
-      "idempotency_key": "source-discovery:2026-11-09:0879c8202e9c",
-      "input": {},
-      "last_error": null,
-      "lease": null,
-      "max_attempts": 1,
-      "not_before": "2026-11-09T15:28:21Z",
-      "priority": 55,
-      "requester_program_id": "workflow_automation_watchdog",
-      "resource_lease": {
-        "acquired_at": "2026-11-09T15:28:25Z",
-        "expires_at": "2026-11-09T16:28:26Z",
-        "lease_seconds": 3600,
-        "released_at": "2026-11-09T15:58:06Z",
-        "resources": {
-          "logical/source-dag-supervision": {
-            "fencing_token": 1,
-            "lease_id": "49018f77452eb4790c219430d8d997dc"
-          },
-          "logical/source-discovery-run": {
-            "fencing_token": 1,
-            "lease_id": "49018f77452eb4790c219430d8d997dc"
-          }
-        },
-        "status": "RELEASED"
-      },
-      "result": {
-        "correlation_id": "task_a5c0e180ee784adbb45b9da3-a1",
-        "correlation_title": "Automation task task_a5c0e180ee784adbb45b9da3-a1",
-        "dispatch_attempt": 1,
-        "dispatch_state": "submitted",
-        "prepared_at": "2026-11-09T15:28:26Z",
-        "ref": "main",
-        "requested_head_sha": "445a9f8908ebae98e864d85b961455d9e80888d5",
-        "run_evidence": {
-          "conclusion": "success",
-          "head_sha": "445a9f8908ebae98e864d85b961455d9e80888d5",
-          "head_sha_relationship": "exact",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42645018403",
-          "requested_head_sha": "445a9f8908ebae98e864d85b961455d9e80888d5",
-          "run_id": 42645018403,
-          "status": "completed"
-        },
-        "submitted_at": "2026-11-09T15:28:29Z",
-        "task_id": "task_a5c0e180ee784adbb45b9da3",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "retired_target_program_id": "workflow_source_discovery",
-      "retired_workflow_path": ".github/workflows/source-discovery.yml",
-      "retirement": {
-        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-        "replacement_program_id": "script_discover_sources",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "retired_target_program_id": "workflow_source_discovery",
-        "schema_version": 1,
-        "source_discovery_mode": "monolithic_fallback"
-      },
-      "state_history": [
-        "QUEUED",
-        "CLAIMED",
-        "VERIFYING",
-        "SUCCEEDED"
-      ],
-      "status": "SUCCEEDED",
-      "target_program_id": "script_discover_sources",
-      "task_id": "task_a5c0e180ee784adbb45b9da3",
-      "trace_id": "source-discovery:2026-11-09:0879c8202e9c",
-      "verification": {
-        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
-        "status": "passed",
-        "verified_at": "2026-11-09T15:58:06Z",
-        "verifier_program_id": "script_task_result_verifier"
-      }
-    },
-    {
-      "attempts": 1,
-      "capability": "source_discovery",
-      "created_at": "2026-11-09T17:08:46Z",
-      "dispatch_intent": {
-        "correlation_id": "task_64d721121ec749e1afc71abc-a1",
-        "correlation_title": "Automation task task_64d721121ec749e1afc71abc-a1",
-        "dispatch_attempt": 1,
-        "prepared_at": "2026-11-09T17:08:52Z",
-        "ref": "main",
-        "requested_head_sha": "6dae5e35faf64ecdeef80d1826992087e611f0a2",
-        "task_id": "task_64d721121ec749e1afc71abc",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "execution_backend": "github_contents",
-      "idempotency_key": "source-discovery:2026-11-09:dbb7c6db826a",
-      "input": {},
-      "last_error": null,
-      "lease": null,
-      "max_attempts": 1,
-      "not_before": "2026-11-09T17:08:46Z",
-      "priority": 55,
-      "requester_program_id": "workflow_automation_watchdog",
-      "resource_lease": {
-        "acquired_at": "2026-11-09T17:08:50Z",
-        "expires_at": "2026-11-09T18:08:51Z",
-        "lease_seconds": 3600,
-        "released_at": "2026-11-09T17:22:40Z",
-        "resources": {
-          "logical/source-dag-supervision": {
-            "fencing_token": 3,
-            "lease_id": "0f5ca898deda2bbb1400ead8e01ab071"
-          },
-          "logical/source-discovery-run": {
-            "fencing_token": 2,
-            "lease_id": "0f5ca898deda2bbb1400ead8e01ab071"
-          }
-        },
-        "status": "RELEASED"
-      },
-      "result": {
-        "correlation_id": "task_64d721121ec749e1afc71abc-a1",
-        "correlation_title": "Automation task task_64d721121ec749e1afc71abc-a1",
-        "dispatch_attempt": 1,
-        "dispatch_state": "submitted",
-        "prepared_at": "2026-11-09T17:08:52Z",
-        "ref": "main",
-        "requested_head_sha": "6dae5e35faf64ecdeef80d1826992087e611f0a2",
-        "run_evidence": {
-          "conclusion": "success",
-          "head_sha": "6dae5e35faf64ecdeef80d1826992087e611f0a2",
-          "head_sha_relationship": "exact",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42661750368",
-          "requested_head_sha": "6dae5e35faf64ecdeef80d1826992087e611f0a2",
-          "run_id": 42661750368,
-          "status": "completed"
-        },
-        "submitted_at": "2026-11-09T17:08:55Z",
-        "task_id": "task_64d721121ec749e1afc71abc",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "retired_target_program_id": "workflow_source_discovery",
-      "retired_workflow_path": ".github/workflows/source-discovery.yml",
-      "retirement": {
-        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-        "replacement_program_id": "script_discover_sources",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "retired_target_program_id": "workflow_source_discovery",
-        "schema_version": 1,
-        "source_discovery_mode": "monolithic_fallback"
-      },
-      "state_history": [
-        "QUEUED",
-        "CLAIMED",
-        "VERIFYING",
-        "SUCCEEDED"
-      ],
-      "status": "SUCCEEDED",
-      "target_program_id": "script_discover_sources",
-      "task_id": "task_64d721121ec749e1afc71abc",
-      "trace_id": "source-discovery:2026-11-09:dbb7c6db826a",
-      "verification": {
-        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
-        "status": "passed",
-        "verified_at": "2026-11-09T17:22:40Z",
-        "verifier_program_id": "script_task_result_verifier"
-      }
-    },
-    {
-      "attempts": 1,
-      "capability": "source_discovery",
-      "created_at": "2026-11-09T17:57:02Z",
-      "dispatch_intent": {
-        "correlation_id": "task_3d83d0830702486f9ec224df-a1",
-        "correlation_title": "Automation task task_3d83d0830702486f9ec224df-a1",
-        "dispatch_attempt": 1,
-        "prepared_at": "2026-11-09T17:57:09Z",
-        "ref": "main",
-        "requested_head_sha": "d17b177d813384861558487eee99131afe3f8dd1",
-        "task_id": "task_3d83d0830702486f9ec224df",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "execution_backend": "github_contents",
-      "idempotency_key": "source-discovery:2026-11-09:9dfdb3786b93",
-      "input": {},
-      "last_error": null,
-      "lease": null,
-      "max_attempts": 1,
-      "not_before": "2026-11-09T17:57:02Z",
-      "priority": 55,
-      "requester_program_id": "workflow_automation_watchdog",
-      "resource_lease": {
-        "acquired_at": "2026-11-09T17:57:07Z",
-        "expires_at": "2026-11-09T19:00:28Z",
-        "lease_seconds": 3600,
-        "released_at": "2026-11-09T18:08:39Z",
-        "resources": {
-          "logical/source-dag-supervision": {
-            "fencing_token": 5,
-            "lease_id": "8d9ec4b064025482063a5e5f7e8f1ba7"
-          },
-          "logical/source-discovery-run": {
-            "fencing_token": 3,
-            "lease_id": "8d9ec4b064025482063a5e5f7e8f1ba7"
-          }
-        },
-        "status": "RELEASED"
-      },
-      "result": {
-        "correlation_id": "task_3d83d0830702486f9ec224df-a1",
-        "correlation_title": "Automation task task_3d83d0830702486f9ec224df-a1",
-        "dispatch_attempt": 1,
-        "dispatch_state": "submitted",
-        "prepared_at": "2026-11-09T17:57:09Z",
-        "ref": "main",
-        "requested_head_sha": "d17b177d813384861558487eee99131afe3f8dd1",
-        "run_evidence": {
-          "conclusion": "success",
-          "head_sha": "d17b177d813384861558487eee99131afe3f8dd1",
-          "head_sha_relationship": "exact",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42669575227",
-          "requested_head_sha": "d17b177d813384861558487eee99131afe3f8dd1",
-          "run_id": 42669575227,
-          "status": "completed"
-        },
-        "submitted_at": "2026-11-09T17:57:11Z",
-        "task_id": "task_3d83d0830702486f9ec224df",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "retired_target_program_id": "workflow_source_discovery",
-      "retired_workflow_path": ".github/workflows/source-discovery.yml",
-      "retirement": {
-        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-        "replacement_program_id": "script_discover_sources",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "retired_target_program_id": "workflow_source_discovery",
-        "schema_version": 1,
-        "source_discovery_mode": "monolithic_fallback"
-      },
-      "state_history": [
-        "QUEUED",
-        "CLAIMED",
-        "VERIFYING",
-        "SUCCEEDED"
-      ],
-      "status": "SUCCEEDED",
-      "target_program_id": "script_discover_sources",
-      "task_id": "task_3d83d0830702486f9ec224df",
-      "trace_id": "source-discovery:2026-11-09:9dfdb3786b93",
-      "verification": {
-        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
-        "status": "passed",
-        "verified_at": "2026-11-09T18:08:39Z",
-        "verifier_program_id": "script_task_result_verifier"
-      }
-    },
     {
       "attempts": 1,
       "capability": "deterministic_audit",
@@ -7858,186 +9530,6 @@
         "contract_sha256": "65dc85382c70def69382d67513eb000a21b542ce8e9c587ec00af50c089daa5a",
         "status": "failed",
         "verified_at": "2026-11-09T18:55:34Z",
-        "verifier_program_id": "script_task_result_verifier"
-      }
-    },
-    {
-      "attempts": 1,
-      "capability": "source_discovery",
-      "created_at": "2026-11-09T18:38:51Z",
-      "dispatch_intent": {
-        "correlation_id": "task_5e52e0f218c34d2fb4853e02-a1",
-        "correlation_title": "Automation task task_5e52e0f218c34d2fb4853e02-a1",
-        "dispatch_attempt": 1,
-        "prepared_at": "2026-11-09T18:39:02Z",
-        "ref": "main",
-        "requested_head_sha": "72fff8f9482997e8601d7efe29e9257606ce7476",
-        "task_id": "task_5e52e0f218c34d2fb4853e02",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "execution_backend": "github_contents",
-      "idempotency_key": "source-discovery:2026-11-09:9f884b124924",
-      "input": {},
-      "last_error": null,
-      "lease": null,
-      "max_attempts": 1,
-      "not_before": "2026-11-09T18:38:51Z",
-      "priority": 55,
-      "requester_program_id": "workflow_automation_watchdog",
-      "resource_lease": {
-        "acquired_at": "2026-11-09T18:39:00Z",
-        "expires_at": "2026-11-09T19:39:01Z",
-        "lease_seconds": 3600,
-        "released_at": "2026-11-09T18:49:47Z",
-        "resources": {
-          "logical/source-dag-supervision": {
-            "fencing_token": 7,
-            "lease_id": "30b8eeced00a59b67500e726db955aba"
-          },
-          "logical/source-discovery-run": {
-            "fencing_token": 4,
-            "lease_id": "30b8eeced00a59b67500e726db955aba"
-          }
-        },
-        "status": "RELEASED"
-      },
-      "result": {
-        "correlation_id": "task_5e52e0f218c34d2fb4853e02-a1",
-        "correlation_title": "Automation task task_5e52e0f218c34d2fb4853e02-a1",
-        "dispatch_attempt": 1,
-        "dispatch_state": "submitted",
-        "prepared_at": "2026-11-09T18:39:02Z",
-        "ref": "main",
-        "requested_head_sha": "72fff8f9482997e8601d7efe29e9257606ce7476",
-        "run_evidence": {
-          "conclusion": "success",
-          "head_sha": "72fff8f9482997e8601d7efe29e9257606ce7476",
-          "head_sha_relationship": "exact",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42675880157",
-          "requested_head_sha": "72fff8f9482997e8601d7efe29e9257606ce7476",
-          "run_id": 42675880157,
-          "status": "completed"
-        },
-        "submitted_at": "2026-11-09T18:39:04Z",
-        "task_id": "task_5e52e0f218c34d2fb4853e02",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "retired_target_program_id": "workflow_source_discovery",
-      "retired_workflow_path": ".github/workflows/source-discovery.yml",
-      "retirement": {
-        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-        "replacement_program_id": "script_discover_sources",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "retired_target_program_id": "workflow_source_discovery",
-        "schema_version": 1,
-        "source_discovery_mode": "monolithic_fallback"
-      },
-      "state_history": [
-        "QUEUED",
-        "CLAIMED",
-        "VERIFYING",
-        "SUCCEEDED"
-      ],
-      "status": "SUCCEEDED",
-      "target_program_id": "script_discover_sources",
-      "task_id": "task_5e52e0f218c34d2fb4853e02",
-      "trace_id": "source-discovery:2026-11-09:9f884b124924",
-      "verification": {
-        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
-        "status": "passed",
-        "verified_at": "2026-11-09T18:49:47Z",
-        "verifier_program_id": "script_task_result_verifier"
-      }
-    },
-    {
-      "attempts": 1,
-      "capability": "source_discovery",
-      "created_at": "2026-11-09T19:00:32Z",
-      "dispatch_intent": {
-        "correlation_id": "task_865ecae9f6df4cc781e98681-a1",
-        "correlation_title": "Automation task task_865ecae9f6df4cc781e98681-a1",
-        "dispatch_attempt": 1,
-        "prepared_at": "2026-11-09T19:00:41Z",
-        "ref": "main",
-        "requested_head_sha": "9fd4d5241e75600133f00379a2ee55976d9a1348",
-        "task_id": "task_865ecae9f6df4cc781e98681",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "execution_backend": "github_contents",
-      "idempotency_key": "source-discovery:2026-11-09:39e34a1116b1",
-      "input": {},
-      "last_error": null,
-      "lease": null,
-      "max_attempts": 1,
-      "not_before": "2026-11-09T19:00:32Z",
-      "priority": 55,
-      "requester_program_id": "workflow_automation_watchdog",
-      "resource_lease": {
-        "acquired_at": "2026-11-09T19:00:39Z",
-        "expires_at": "2026-11-09T20:06:03Z",
-        "lease_seconds": 3600,
-        "released_at": "2026-11-09T19:11:56Z",
-        "resources": {
-          "logical/source-dag-supervision": {
-            "fencing_token": 9,
-            "lease_id": "064c204dbba3f03102821dd036f9942b"
-          },
-          "logical/source-discovery-run": {
-            "fencing_token": 5,
-            "lease_id": "064c204dbba3f03102821dd036f9942b"
-          }
-        },
-        "status": "RELEASED"
-      },
-      "result": {
-        "correlation_id": "task_865ecae9f6df4cc781e98681-a1",
-        "correlation_title": "Automation task task_865ecae9f6df4cc781e98681-a1",
-        "dispatch_attempt": 1,
-        "dispatch_state": "submitted",
-        "prepared_at": "2026-11-09T19:00:41Z",
-        "ref": "main",
-        "requested_head_sha": "9fd4d5241e75600133f00379a2ee55976d9a1348",
-        "run_evidence": {
-          "conclusion": "success",
-          "head_sha": "9fd4d5241e75600133f00379a2ee55976d9a1348",
-          "head_sha_relationship": "exact",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42679215902",
-          "requested_head_sha": "9fd4d5241e75600133f00379a2ee55976d9a1348",
-          "run_id": 42679215902,
-          "status": "completed"
-        },
-        "submitted_at": "2026-11-09T19:00:44Z",
-        "task_id": "task_865ecae9f6df4cc781e98681",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "retired_target_program_id": "workflow_source_discovery",
-      "retired_workflow_path": ".github/workflows/source-discovery.yml",
-      "retirement": {
-        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-        "replacement_program_id": "script_discover_sources",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "retired_target_program_id": "workflow_source_discovery",
-        "schema_version": 1,
-        "source_discovery_mode": "monolithic_fallback"
-      },
-      "state_history": [
-        "QUEUED",
-        "CLAIMED",
-        "VERIFYING",
-        "SUCCEEDED"
-      ],
-      "status": "SUCCEEDED",
-      "target_program_id": "script_discover_sources",
-      "task_id": "task_865ecae9f6df4cc781e98681",
-      "trace_id": "source-discovery:2026-11-09:39e34a1116b1",
-      "verification": {
-        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
-        "status": "passed",
-        "verified_at": "2026-11-09T19:11:56Z",
         "verifier_program_id": "script_task_result_verifier"
       }
     },
@@ -8514,96 +10006,6 @@
       }
     },
     {
-      "attempts": 1,
-      "capability": "source_discovery",
-      "created_at": "2026-11-09T20:52:46Z",
-      "dispatch_intent": {
-        "correlation_id": "task_e6bb3ea71ff74840b4eda2f3-a1",
-        "correlation_title": "Automation task task_e6bb3ea71ff74840b4eda2f3-a1",
-        "dispatch_attempt": 1,
-        "prepared_at": "2026-11-09T20:53:08Z",
-        "ref": "main",
-        "requested_head_sha": "3d4f4e4cb5824fd7ee7d9223571afe706d0ddfb9",
-        "task_id": "task_e6bb3ea71ff74840b4eda2f3",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "execution_backend": "github_contents",
-      "idempotency_key": "source-discovery:2026-11-09:5761dc1a71d8",
-      "input": {},
-      "last_error": null,
-      "lease": null,
-      "max_attempts": 1,
-      "not_before": "2026-11-09T20:52:46Z",
-      "priority": 55,
-      "requester_program_id": "workflow_automation_watchdog",
-      "resource_lease": {
-        "acquired_at": "2026-11-09T20:53:05Z",
-        "expires_at": "2026-11-09T21:53:08Z",
-        "lease_seconds": 3600,
-        "released_at": "2026-11-09T21:03:01Z",
-        "resources": {
-          "logical/source-dag-supervision": {
-            "fencing_token": 11,
-            "lease_id": "6cab9311a856ee8f4a8e3308fd9bee2e"
-          },
-          "logical/source-discovery-run": {
-            "fencing_token": 6,
-            "lease_id": "6cab9311a856ee8f4a8e3308fd9bee2e"
-          }
-        },
-        "status": "RELEASED"
-      },
-      "result": {
-        "correlation_id": "task_e6bb3ea71ff74840b4eda2f3-a1",
-        "correlation_title": "Automation task task_e6bb3ea71ff74840b4eda2f3-a1",
-        "dispatch_attempt": 1,
-        "dispatch_state": "submitted",
-        "prepared_at": "2026-11-09T20:53:08Z",
-        "ref": "main",
-        "requested_head_sha": "3d4f4e4cb5824fd7ee7d9223571afe706d0ddfb9",
-        "run_evidence": {
-          "conclusion": "success",
-          "head_sha": "3d4f4e4cb5824fd7ee7d9223571afe706d0ddfb9",
-          "head_sha_relationship": "exact",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42697202258",
-          "requested_head_sha": "3d4f4e4cb5824fd7ee7d9223571afe706d0ddfb9",
-          "run_id": 42697202258,
-          "status": "completed"
-        },
-        "submitted_at": "2026-11-09T20:53:13Z",
-        "task_id": "task_e6bb3ea71ff74840b4eda2f3",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "retired_target_program_id": "workflow_source_discovery",
-      "retired_workflow_path": ".github/workflows/source-discovery.yml",
-      "retirement": {
-        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-        "replacement_program_id": "script_discover_sources",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "retired_target_program_id": "workflow_source_discovery",
-        "schema_version": 1,
-        "source_discovery_mode": "monolithic_fallback"
-      },
-      "state_history": [
-        "QUEUED",
-        "CLAIMED",
-        "VERIFYING",
-        "SUCCEEDED"
-      ],
-      "status": "SUCCEEDED",
-      "target_program_id": "script_discover_sources",
-      "task_id": "task_e6bb3ea71ff74840b4eda2f3",
-      "trace_id": "source-discovery:2026-11-09:5761dc1a71d8",
-      "verification": {
-        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
-        "status": "passed",
-        "verified_at": "2026-11-09T21:03:01Z",
-        "verifier_program_id": "script_task_result_verifier"
-      }
-    },
-    {
       "attempts": 2,
       "capability": "deterministic_audit",
       "created_at": "2026-11-09T21:33:58Z",
@@ -8781,186 +10183,6 @@
       }
     },
     {
-      "attempts": 1,
-      "capability": "source_discovery",
-      "created_at": "2026-11-09T21:35:36Z",
-      "dispatch_intent": {
-        "correlation_id": "task_33a787ee5aff4554b2810484-a1",
-        "correlation_title": "Automation task task_33a787ee5aff4554b2810484-a1",
-        "dispatch_attempt": 1,
-        "prepared_at": "2026-11-09T21:35:58Z",
-        "ref": "main",
-        "requested_head_sha": "9edfef9422caabf2dfd92b69357dfddc6f4ff106",
-        "task_id": "task_33a787ee5aff4554b2810484",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "execution_backend": "github_contents",
-      "idempotency_key": "source-discovery:2026-11-09:36c5a6a50344",
-      "input": {},
-      "last_error": null,
-      "lease": null,
-      "max_attempts": 1,
-      "not_before": "2026-11-09T21:35:36Z",
-      "priority": 55,
-      "requester_program_id": "workflow_automation_watchdog",
-      "resource_lease": {
-        "acquired_at": "2026-11-09T21:35:55Z",
-        "expires_at": "2026-11-09T22:35:58Z",
-        "lease_seconds": 3600,
-        "released_at": "2026-11-09T21:47:54Z",
-        "resources": {
-          "logical/source-dag-supervision": {
-            "fencing_token": 13,
-            "lease_id": "f90e5a2a988ace0f15f3f2f9eb9f7cb3"
-          },
-          "logical/source-discovery-run": {
-            "fencing_token": 7,
-            "lease_id": "f90e5a2a988ace0f15f3f2f9eb9f7cb3"
-          }
-        },
-        "status": "RELEASED"
-      },
-      "result": {
-        "correlation_id": "task_33a787ee5aff4554b2810484-a1",
-        "correlation_title": "Automation task task_33a787ee5aff4554b2810484-a1",
-        "dispatch_attempt": 1,
-        "dispatch_state": "submitted",
-        "prepared_at": "2026-11-09T21:35:58Z",
-        "ref": "main",
-        "requested_head_sha": "9edfef9422caabf2dfd92b69357dfddc6f4ff106",
-        "run_evidence": {
-          "conclusion": "success",
-          "head_sha": "9edfef9422caabf2dfd92b69357dfddc6f4ff106",
-          "head_sha_relationship": "exact",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42704028161",
-          "requested_head_sha": "9edfef9422caabf2dfd92b69357dfddc6f4ff106",
-          "run_id": 42704028161,
-          "status": "completed"
-        },
-        "submitted_at": "2026-11-09T21:36:03Z",
-        "task_id": "task_33a787ee5aff4554b2810484",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "retired_target_program_id": "workflow_source_discovery",
-      "retired_workflow_path": ".github/workflows/source-discovery.yml",
-      "retirement": {
-        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-        "replacement_program_id": "script_discover_sources",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "retired_target_program_id": "workflow_source_discovery",
-        "schema_version": 1,
-        "source_discovery_mode": "monolithic_fallback"
-      },
-      "state_history": [
-        "QUEUED",
-        "CLAIMED",
-        "VERIFYING",
-        "SUCCEEDED"
-      ],
-      "status": "SUCCEEDED",
-      "target_program_id": "script_discover_sources",
-      "task_id": "task_33a787ee5aff4554b2810484",
-      "trace_id": "source-discovery:2026-11-09:36c5a6a50344",
-      "verification": {
-        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
-        "status": "passed",
-        "verified_at": "2026-11-09T21:47:54Z",
-        "verifier_program_id": "script_task_result_verifier"
-      }
-    },
-    {
-      "attempts": 1,
-      "capability": "source_discovery",
-      "created_at": "2026-11-10T02:45:40Z",
-      "dispatch_intent": {
-        "correlation_id": "task_ddd51514965e4c2c9aa91269-a1",
-        "correlation_title": "Automation task task_ddd51514965e4c2c9aa91269-a1",
-        "dispatch_attempt": 1,
-        "prepared_at": "2026-11-10T02:45:56Z",
-        "ref": "main",
-        "requested_head_sha": "9edfef9422caabf2dfd92b69357dfddc6f4ff106",
-        "task_id": "task_ddd51514965e4c2c9aa91269",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "execution_backend": "github_contents",
-      "idempotency_key": "source-discovery:2026-11-10:36c5a6a50344",
-      "input": {},
-      "last_error": null,
-      "lease": null,
-      "max_attempts": 1,
-      "not_before": "2026-11-10T02:45:40Z",
-      "priority": 55,
-      "requester_program_id": "workflow_automation_watchdog",
-      "resource_lease": {
-        "acquired_at": "2026-11-10T02:45:54Z",
-        "expires_at": "2026-11-10T03:45:56Z",
-        "lease_seconds": 3600,
-        "released_at": "2026-11-10T02:58:41Z",
-        "resources": {
-          "logical/source-dag-supervision": {
-            "fencing_token": 15,
-            "lease_id": "26bdaadb9a3142bd75effcb3c28448cf"
-          },
-          "logical/source-discovery-run": {
-            "fencing_token": 8,
-            "lease_id": "26bdaadb9a3142bd75effcb3c28448cf"
-          }
-        },
-        "status": "RELEASED"
-      },
-      "result": {
-        "correlation_id": "task_ddd51514965e4c2c9aa91269-a1",
-        "correlation_title": "Automation task task_ddd51514965e4c2c9aa91269-a1",
-        "dispatch_attempt": 1,
-        "dispatch_state": "submitted",
-        "prepared_at": "2026-11-10T02:45:56Z",
-        "ref": "main",
-        "requested_head_sha": "9edfef9422caabf2dfd92b69357dfddc6f4ff106",
-        "run_evidence": {
-          "conclusion": "success",
-          "head_sha": "9edfef9422caabf2dfd92b69357dfddc6f4ff106",
-          "head_sha_relationship": "exact",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42744978594",
-          "requested_head_sha": "9edfef9422caabf2dfd92b69357dfddc6f4ff106",
-          "run_id": 42744978594,
-          "status": "completed"
-        },
-        "submitted_at": "2026-11-10T02:45:59Z",
-        "task_id": "task_ddd51514965e4c2c9aa91269",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "retired_target_program_id": "workflow_source_discovery",
-      "retired_workflow_path": ".github/workflows/source-discovery.yml",
-      "retirement": {
-        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-        "replacement_program_id": "script_discover_sources",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "retired_target_program_id": "workflow_source_discovery",
-        "schema_version": 1,
-        "source_discovery_mode": "monolithic_fallback"
-      },
-      "state_history": [
-        "QUEUED",
-        "CLAIMED",
-        "VERIFYING",
-        "SUCCEEDED"
-      ],
-      "status": "SUCCEEDED",
-      "target_program_id": "script_discover_sources",
-      "task_id": "task_ddd51514965e4c2c9aa91269",
-      "trace_id": "source-discovery:2026-11-10:36c5a6a50344",
-      "verification": {
-        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
-        "status": "passed",
-        "verified_at": "2026-11-10T02:58:41Z",
-        "verifier_program_id": "script_task_result_verifier"
-      }
-    },
-    {
       "attempts": 0,
       "capability": "deterministic_audit",
       "created_at": "2026-11-10T04:55:40Z",
@@ -9030,96 +10252,6 @@
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_38892b04d9c74010ac5cda98",
       "trace_id": "752441b8ff7141fab2bca5a5ed930f3e"
-    },
-    {
-      "attempts": 1,
-      "capability": "source_discovery",
-      "created_at": "2026-11-10T05:40:42Z",
-      "dispatch_intent": {
-        "correlation_id": "task_a0dd3e5795064e7ead9ff0c5-a1",
-        "correlation_title": "Automation task task_a0dd3e5795064e7ead9ff0c5-a1",
-        "dispatch_attempt": 1,
-        "prepared_at": "2026-11-10T05:41:12Z",
-        "ref": "main",
-        "requested_head_sha": "f6882977d87b1bc65544544e95b61b90f9e510c6",
-        "task_id": "task_a0dd3e5795064e7ead9ff0c5",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "execution_backend": "github_contents",
-      "idempotency_key": "source-discovery:2026-11-10:f5a2194ce467",
-      "input": {},
-      "last_error": null,
-      "lease": null,
-      "max_attempts": 1,
-      "not_before": "2026-11-10T05:40:42Z",
-      "priority": 55,
-      "requester_program_id": "workflow_automation_watchdog",
-      "resource_lease": {
-        "acquired_at": "2026-11-10T05:41:07Z",
-        "expires_at": "2026-11-10T06:41:12Z",
-        "lease_seconds": 3600,
-        "released_at": "2026-11-10T05:52:42Z",
-        "resources": {
-          "logical/source-dag-supervision": {
-            "fencing_token": 17,
-            "lease_id": "10b640c0f641a328c2a1b4a584359363"
-          },
-          "logical/source-discovery-run": {
-            "fencing_token": 9,
-            "lease_id": "10b640c0f641a328c2a1b4a584359363"
-          }
-        },
-        "status": "RELEASED"
-      },
-      "result": {
-        "correlation_id": "task_a0dd3e5795064e7ead9ff0c5-a1",
-        "correlation_title": "Automation task task_a0dd3e5795064e7ead9ff0c5-a1",
-        "dispatch_attempt": 1,
-        "dispatch_state": "submitted",
-        "prepared_at": "2026-11-10T05:41:12Z",
-        "ref": "main",
-        "requested_head_sha": "f6882977d87b1bc65544544e95b61b90f9e510c6",
-        "run_evidence": {
-          "conclusion": "success",
-          "head_sha": "f6882977d87b1bc65544544e95b61b90f9e510c6",
-          "head_sha_relationship": "exact",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42763679914",
-          "requested_head_sha": "f6882977d87b1bc65544544e95b61b90f9e510c6",
-          "run_id": 42763679914,
-          "status": "completed"
-        },
-        "submitted_at": "2026-11-10T05:41:18Z",
-        "task_id": "task_a0dd3e5795064e7ead9ff0c5",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "retired_target_program_id": "workflow_source_discovery",
-      "retired_workflow_path": ".github/workflows/source-discovery.yml",
-      "retirement": {
-        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-        "replacement_program_id": "script_discover_sources",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "retired_target_program_id": "workflow_source_discovery",
-        "schema_version": 1,
-        "source_discovery_mode": "monolithic_fallback"
-      },
-      "state_history": [
-        "QUEUED",
-        "CLAIMED",
-        "VERIFYING",
-        "SUCCEEDED"
-      ],
-      "status": "SUCCEEDED",
-      "target_program_id": "script_discover_sources",
-      "task_id": "task_a0dd3e5795064e7ead9ff0c5",
-      "trace_id": "source-discovery:2026-11-10:f5a2194ce467",
-      "verification": {
-        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
-        "status": "passed",
-        "verified_at": "2026-11-10T05:52:42Z",
-        "verifier_program_id": "script_task_result_verifier"
-      }
     },
     {
       "attempts": 1,
@@ -9540,186 +10672,6 @@
       }
     },
     {
-      "attempts": 1,
-      "capability": "source_discovery",
-      "created_at": "2026-11-10T20:08:32Z",
-      "dispatch_intent": {
-        "correlation_id": "task_acefbad3c2d249e896f670ed-a1",
-        "correlation_title": "Automation task task_acefbad3c2d249e896f670ed-a1",
-        "dispatch_attempt": 1,
-        "prepared_at": "2026-11-10T20:09:08Z",
-        "ref": "main",
-        "requested_head_sha": "d964130e2ad93c1adaa148c5b8a8adb93dd1aafc",
-        "task_id": "task_acefbad3c2d249e896f670ed",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "execution_backend": "github_contents",
-      "idempotency_key": "source-discovery:2026-11-10:1a6db33d6800",
-      "input": {},
-      "last_error": null,
-      "lease": null,
-      "max_attempts": 1,
-      "not_before": "2026-11-10T20:08:32Z",
-      "priority": 55,
-      "requester_program_id": "workflow_automation_watchdog",
-      "resource_lease": {
-        "acquired_at": "2026-11-10T20:09:03Z",
-        "expires_at": "2026-11-10T21:09:07Z",
-        "lease_seconds": 3600,
-        "released_at": "2026-11-10T20:18:06Z",
-        "resources": {
-          "logical/source-dag-supervision": {
-            "fencing_token": 19,
-            "lease_id": "f6b18aaccbaa8663b2a2f2a48dd5876d"
-          },
-          "logical/source-discovery-run": {
-            "fencing_token": 10,
-            "lease_id": "f6b18aaccbaa8663b2a2f2a48dd5876d"
-          }
-        },
-        "status": "RELEASED"
-      },
-      "result": {
-        "correlation_id": "task_acefbad3c2d249e896f670ed-a1",
-        "correlation_title": "Automation task task_acefbad3c2d249e896f670ed-a1",
-        "dispatch_attempt": 1,
-        "dispatch_state": "submitted",
-        "prepared_at": "2026-11-10T20:09:08Z",
-        "ref": "main",
-        "requested_head_sha": "d964130e2ad93c1adaa148c5b8a8adb93dd1aafc",
-        "run_evidence": {
-          "conclusion": "success",
-          "head_sha": "d964130e2ad93c1adaa148c5b8a8adb93dd1aafc",
-          "head_sha_relationship": "exact",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42892414037",
-          "requested_head_sha": "d964130e2ad93c1adaa148c5b8a8adb93dd1aafc",
-          "run_id": 42892414037,
-          "status": "completed"
-        },
-        "submitted_at": "2026-11-10T20:09:13Z",
-        "task_id": "task_acefbad3c2d249e896f670ed",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "retired_target_program_id": "workflow_source_discovery",
-      "retired_workflow_path": ".github/workflows/source-discovery.yml",
-      "retirement": {
-        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-        "replacement_program_id": "script_discover_sources",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "retired_target_program_id": "workflow_source_discovery",
-        "schema_version": 1,
-        "source_discovery_mode": "monolithic_fallback"
-      },
-      "state_history": [
-        "QUEUED",
-        "CLAIMED",
-        "VERIFYING",
-        "SUCCEEDED"
-      ],
-      "status": "SUCCEEDED",
-      "target_program_id": "script_discover_sources",
-      "task_id": "task_acefbad3c2d249e896f670ed",
-      "trace_id": "source-discovery:2026-11-10:1a6db33d6800",
-      "verification": {
-        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
-        "status": "passed",
-        "verified_at": "2026-11-10T20:18:06Z",
-        "verifier_program_id": "script_task_result_verifier"
-      }
-    },
-    {
-      "attempts": 1,
-      "capability": "source_discovery",
-      "created_at": "2026-11-10T20:30:38Z",
-      "dispatch_intent": {
-        "correlation_id": "task_d2a602bfee8a46f3ae75e6b5-a1",
-        "correlation_title": "Automation task task_d2a602bfee8a46f3ae75e6b5-a1",
-        "dispatch_attempt": 1,
-        "prepared_at": "2026-11-10T20:31:27Z",
-        "ref": "main",
-        "requested_head_sha": "c419dd4632364943a1c048000f55e2f781029858",
-        "task_id": "task_d2a602bfee8a46f3ae75e6b5",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "execution_backend": "github_contents",
-      "idempotency_key": "source-discovery:2026-11-10:65a7804a0f76",
-      "input": {},
-      "last_error": null,
-      "lease": null,
-      "max_attempts": 1,
-      "not_before": "2026-11-10T20:30:38Z",
-      "priority": 55,
-      "requester_program_id": "workflow_automation_watchdog",
-      "resource_lease": {
-        "acquired_at": "2026-11-10T20:31:21Z",
-        "expires_at": "2026-11-10T21:40:39Z",
-        "lease_seconds": 3600,
-        "released_at": "2026-11-10T20:41:07Z",
-        "resources": {
-          "logical/source-dag-supervision": {
-            "fencing_token": 21,
-            "lease_id": "11617968d4cfeaafaf7725db9d39277f"
-          },
-          "logical/source-discovery-run": {
-            "fencing_token": 11,
-            "lease_id": "11617968d4cfeaafaf7725db9d39277f"
-          }
-        },
-        "status": "RELEASED"
-      },
-      "result": {
-        "correlation_id": "task_d2a602bfee8a46f3ae75e6b5-a1",
-        "correlation_title": "Automation task task_d2a602bfee8a46f3ae75e6b5-a1",
-        "dispatch_attempt": 1,
-        "dispatch_state": "submitted",
-        "prepared_at": "2026-11-10T20:31:27Z",
-        "ref": "main",
-        "requested_head_sha": "c419dd4632364943a1c048000f55e2f781029858",
-        "run_evidence": {
-          "conclusion": "success",
-          "head_sha": "c419dd4632364943a1c048000f55e2f781029858",
-          "head_sha_relationship": "exact",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42896135814",
-          "requested_head_sha": "c419dd4632364943a1c048000f55e2f781029858",
-          "run_id": 42896135814,
-          "status": "completed"
-        },
-        "submitted_at": "2026-11-10T20:31:34Z",
-        "task_id": "task_d2a602bfee8a46f3ae75e6b5",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "retired_target_program_id": "workflow_source_discovery",
-      "retired_workflow_path": ".github/workflows/source-discovery.yml",
-      "retirement": {
-        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-        "replacement_program_id": "script_discover_sources",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "retired_target_program_id": "workflow_source_discovery",
-        "schema_version": 1,
-        "source_discovery_mode": "monolithic_fallback"
-      },
-      "state_history": [
-        "QUEUED",
-        "CLAIMED",
-        "VERIFYING",
-        "SUCCEEDED"
-      ],
-      "status": "SUCCEEDED",
-      "target_program_id": "script_discover_sources",
-      "task_id": "task_d2a602bfee8a46f3ae75e6b5",
-      "trace_id": "source-discovery:2026-11-10:65a7804a0f76",
-      "verification": {
-        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
-        "status": "passed",
-        "verified_at": "2026-11-10T20:41:07Z",
-        "verifier_program_id": "script_task_result_verifier"
-      }
-    },
-    {
       "attempts": 0,
       "capability": "deterministic_audit",
       "created_at": "2026-11-10T20:41:19Z",
@@ -9943,96 +10895,6 @@
         "contract_sha256": "65dc85382c70def69382d67513eb000a21b542ce8e9c587ec00af50c089daa5a",
         "status": "failed",
         "verified_at": "2026-11-10T21:30:14Z",
-        "verifier_program_id": "script_task_result_verifier"
-      }
-    },
-    {
-      "attempts": 1,
-      "capability": "source_discovery",
-      "created_at": "2026-11-10T21:30:05Z",
-      "dispatch_intent": {
-        "correlation_id": "task_09dc6e4c2dd746eda0dcae3c-a1",
-        "correlation_title": "Automation task task_09dc6e4c2dd746eda0dcae3c-a1",
-        "dispatch_attempt": 1,
-        "prepared_at": "2026-11-10T21:31:29Z",
-        "ref": "main",
-        "requested_head_sha": "2f3a20aac2c62dcf10fbf61d47cd529f6676b1a2",
-        "task_id": "task_09dc6e4c2dd746eda0dcae3c",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "execution_backend": "github_contents",
-      "idempotency_key": "source-discovery:2026-11-10:48593d1fbe40",
-      "input": {},
-      "last_error": null,
-      "lease": null,
-      "max_attempts": 1,
-      "not_before": "2026-11-10T21:30:05Z",
-      "priority": 55,
-      "requester_program_id": "workflow_automation_watchdog",
-      "resource_lease": {
-        "acquired_at": "2026-11-10T21:31:18Z",
-        "expires_at": "2026-11-10T22:39:00Z",
-        "lease_seconds": 3600,
-        "released_at": "2026-11-10T21:44:29Z",
-        "resources": {
-          "logical/source-dag-supervision": {
-            "fencing_token": 24,
-            "lease_id": "ff5499aee8067cdbbb8a3eae3da904fd"
-          },
-          "logical/source-discovery-run": {
-            "fencing_token": 12,
-            "lease_id": "ff5499aee8067cdbbb8a3eae3da904fd"
-          }
-        },
-        "status": "RELEASED"
-      },
-      "result": {
-        "correlation_id": "task_09dc6e4c2dd746eda0dcae3c-a1",
-        "correlation_title": "Automation task task_09dc6e4c2dd746eda0dcae3c-a1",
-        "dispatch_attempt": 1,
-        "dispatch_state": "submitted",
-        "prepared_at": "2026-11-10T21:31:29Z",
-        "ref": "main",
-        "requested_head_sha": "2f3a20aac2c62dcf10fbf61d47cd529f6676b1a2",
-        "run_evidence": {
-          "conclusion": "success",
-          "head_sha": "2f3a20aac2c62dcf10fbf61d47cd529f6676b1a2",
-          "head_sha_relationship": "exact",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42905899022",
-          "requested_head_sha": "2f3a20aac2c62dcf10fbf61d47cd529f6676b1a2",
-          "run_id": 42905899022,
-          "status": "completed"
-        },
-        "submitted_at": "2026-11-10T21:31:39Z",
-        "task_id": "task_09dc6e4c2dd746eda0dcae3c",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "retired_target_program_id": "workflow_source_discovery",
-      "retired_workflow_path": ".github/workflows/source-discovery.yml",
-      "retirement": {
-        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-        "replacement_program_id": "script_discover_sources",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "retired_target_program_id": "workflow_source_discovery",
-        "schema_version": 1,
-        "source_discovery_mode": "monolithic_fallback"
-      },
-      "state_history": [
-        "QUEUED",
-        "CLAIMED",
-        "VERIFYING",
-        "SUCCEEDED"
-      ],
-      "status": "SUCCEEDED",
-      "target_program_id": "script_discover_sources",
-      "task_id": "task_09dc6e4c2dd746eda0dcae3c",
-      "trace_id": "source-discovery:2026-11-10:48593d1fbe40",
-      "verification": {
-        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
-        "status": "passed",
-        "verified_at": "2026-11-10T21:44:29Z",
         "verifier_program_id": "script_task_result_verifier"
       }
     },
@@ -10387,186 +11249,6 @@
         "contract_sha256": "65dc85382c70def69382d67513eb000a21b542ce8e9c587ec00af50c089daa5a",
         "status": "failed",
         "verified_at": "2026-11-11T00:28:56Z",
-        "verifier_program_id": "script_task_result_verifier"
-      }
-    },
-    {
-      "attempts": 1,
-      "capability": "source_discovery",
-      "created_at": "2026-11-10T23:26:26Z",
-      "dispatch_intent": {
-        "correlation_id": "task_0af73074454d496187d422f8-a1",
-        "correlation_title": "Automation task task_0af73074454d496187d422f8-a1",
-        "dispatch_attempt": 1,
-        "prepared_at": "2026-11-11T00:30:25Z",
-        "ref": "main",
-        "requested_head_sha": "5ce43ac594d8be51d6a8481c70c757e517e5855b",
-        "task_id": "task_0af73074454d496187d422f8",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "execution_backend": "github_contents",
-      "idempotency_key": "source-discovery:2026-11-10:692035a8a7d2",
-      "input": {},
-      "last_error": null,
-      "lease": null,
-      "max_attempts": 1,
-      "not_before": "2026-11-10T23:26:26Z",
-      "priority": 55,
-      "requester_program_id": "workflow_automation_watchdog",
-      "resource_lease": {
-        "acquired_at": "2026-11-11T00:30:11Z",
-        "expires_at": "2026-11-11T01:30:25Z",
-        "lease_seconds": 3600,
-        "released_at": "2026-11-11T00:39:31Z",
-        "resources": {
-          "logical/source-dag-supervision": {
-            "fencing_token": 26,
-            "lease_id": "70ebdd8b06316306ea94fb91be90b2a9"
-          },
-          "logical/source-discovery-run": {
-            "fencing_token": 13,
-            "lease_id": "70ebdd8b06316306ea94fb91be90b2a9"
-          }
-        },
-        "status": "RELEASED"
-      },
-      "result": {
-        "correlation_id": "task_0af73074454d496187d422f8-a1",
-        "correlation_title": "Automation task task_0af73074454d496187d422f8-a1",
-        "dispatch_attempt": 1,
-        "dispatch_state": "submitted",
-        "prepared_at": "2026-11-11T00:30:25Z",
-        "ref": "main",
-        "requested_head_sha": "5ce43ac594d8be51d6a8481c70c757e517e5855b",
-        "run_evidence": {
-          "conclusion": "success",
-          "head_sha": "5ce43ac594d8be51d6a8481c70c757e517e5855b",
-          "head_sha_relationship": "exact",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42931914274",
-          "requested_head_sha": "5ce43ac594d8be51d6a8481c70c757e517e5855b",
-          "run_id": 42931914274,
-          "status": "completed"
-        },
-        "submitted_at": "2026-11-11T00:30:40Z",
-        "task_id": "task_0af73074454d496187d422f8",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "retired_target_program_id": "workflow_source_discovery",
-      "retired_workflow_path": ".github/workflows/source-discovery.yml",
-      "retirement": {
-        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-        "replacement_program_id": "script_discover_sources",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "retired_target_program_id": "workflow_source_discovery",
-        "schema_version": 1,
-        "source_discovery_mode": "monolithic_fallback"
-      },
-      "state_history": [
-        "QUEUED",
-        "CLAIMED",
-        "VERIFYING",
-        "SUCCEEDED"
-      ],
-      "status": "SUCCEEDED",
-      "target_program_id": "script_discover_sources",
-      "task_id": "task_0af73074454d496187d422f8",
-      "trace_id": "source-discovery:2026-11-10:692035a8a7d2",
-      "verification": {
-        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
-        "status": "passed",
-        "verified_at": "2026-11-11T00:39:31Z",
-        "verifier_program_id": "script_task_result_verifier"
-      }
-    },
-    {
-      "attempts": 1,
-      "capability": "source_discovery",
-      "created_at": "2026-11-11T00:12:21Z",
-      "dispatch_intent": {
-        "correlation_id": "task_291a8020fa0c45b686068932-a1",
-        "correlation_title": "Automation task task_291a8020fa0c45b686068932-a1",
-        "dispatch_attempt": 1,
-        "prepared_at": "2026-11-11T01:33:47Z",
-        "ref": "main",
-        "requested_head_sha": "c8f3dd9f91866e7591bbcedef420d336792d3837",
-        "task_id": "task_291a8020fa0c45b686068932",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "execution_backend": "github_contents",
-      "idempotency_key": "source-discovery:2026-11-11:692035a8a7d2",
-      "input": {},
-      "last_error": null,
-      "lease": null,
-      "max_attempts": 1,
-      "not_before": "2026-11-11T00:12:21Z",
-      "priority": 55,
-      "requester_program_id": "workflow_automation_watchdog",
-      "resource_lease": {
-        "acquired_at": "2026-11-11T01:33:36Z",
-        "expires_at": "2026-11-11T02:33:46Z",
-        "lease_seconds": 3600,
-        "released_at": "2026-11-11T01:43:03Z",
-        "resources": {
-          "logical/source-dag-supervision": {
-            "fencing_token": 27,
-            "lease_id": "39156ddcee5e8829c141b1d4092bb2d3"
-          },
-          "logical/source-discovery-run": {
-            "fencing_token": 14,
-            "lease_id": "39156ddcee5e8829c141b1d4092bb2d3"
-          }
-        },
-        "status": "RELEASED"
-      },
-      "result": {
-        "correlation_id": "task_291a8020fa0c45b686068932-a1",
-        "correlation_title": "Automation task task_291a8020fa0c45b686068932-a1",
-        "dispatch_attempt": 1,
-        "dispatch_state": "submitted",
-        "prepared_at": "2026-11-11T01:33:47Z",
-        "ref": "main",
-        "requested_head_sha": "c8f3dd9f91866e7591bbcedef420d336792d3837",
-        "run_evidence": {
-          "conclusion": "success",
-          "head_sha": "c8f3dd9f91866e7591bbcedef420d336792d3837",
-          "head_sha_relationship": "exact",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/42939875322",
-          "requested_head_sha": "c8f3dd9f91866e7591bbcedef420d336792d3837",
-          "run_id": 42939875322,
-          "status": "completed"
-        },
-        "submitted_at": "2026-11-11T01:33:59Z",
-        "task_id": "task_291a8020fa0c45b686068932",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "retired_target_program_id": "workflow_source_discovery",
-      "retired_workflow_path": ".github/workflows/source-discovery.yml",
-      "retirement": {
-        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-        "replacement_program_id": "script_discover_sources",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "retired_target_program_id": "workflow_source_discovery",
-        "schema_version": 1,
-        "source_discovery_mode": "monolithic_fallback"
-      },
-      "state_history": [
-        "QUEUED",
-        "CLAIMED",
-        "VERIFYING",
-        "SUCCEEDED"
-      ],
-      "status": "SUCCEEDED",
-      "target_program_id": "script_discover_sources",
-      "task_id": "task_291a8020fa0c45b686068932",
-      "trace_id": "source-discovery:2026-11-11:692035a8a7d2",
-      "verification": {
-        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
-        "status": "passed",
-        "verified_at": "2026-11-11T01:43:03Z",
         "verifier_program_id": "script_task_result_verifier"
       }
     },
@@ -13356,276 +14038,6 @@
     },
     {
       "attempts": 1,
-      "capability": "source_discovery",
-      "created_at": "2026-11-12T17:29:08Z",
-      "dispatch_intent": {
-        "correlation_id": "task_3be01a11b26744b4ab5f8af4-a1",
-        "correlation_title": "Automation task task_3be01a11b26744b4ab5f8af4-a1",
-        "dispatch_attempt": 1,
-        "prepared_at": "2026-11-12T20:45:17Z",
-        "ref": "main",
-        "requested_head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
-        "task_id": "task_3be01a11b26744b4ab5f8af4",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "execution_backend": "github_contents",
-      "idempotency_key": "source-discovery:2026-11-12:d145ee428375",
-      "input": {},
-      "last_error": null,
-      "lease": null,
-      "max_attempts": 1,
-      "not_before": "2026-11-12T17:29:08Z",
-      "priority": 55,
-      "requester_program_id": "workflow_automation_watchdog",
-      "resource_lease": {
-        "acquired_at": "2026-11-12T20:44:44Z",
-        "expires_at": "2026-11-12T21:45:17Z",
-        "lease_seconds": 3600,
-        "released_at": "2026-11-12T21:00:19Z",
-        "resources": {
-          "logical/source-dag-supervision": {
-            "fencing_token": 31,
-            "lease_id": "cdc2363f603b6a829c61583a64145854"
-          },
-          "logical/source-discovery-run": {
-            "fencing_token": 15,
-            "lease_id": "cdc2363f603b6a829c61583a64145854"
-          }
-        },
-        "status": "RELEASED"
-      },
-      "result": {
-        "correlation_id": "task_3be01a11b26744b4ab5f8af4-a1",
-        "correlation_title": "Automation task task_3be01a11b26744b4ab5f8af4-a1",
-        "dispatch_attempt": 1,
-        "dispatch_state": "submitted",
-        "prepared_at": "2026-11-12T20:45:17Z",
-        "ref": "main",
-        "requested_head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
-        "run_evidence": {
-          "conclusion": "success",
-          "head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
-          "head_sha_relationship": "exact",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/43303518729",
-          "requested_head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
-          "run_id": 43303518729,
-          "status": "completed"
-        },
-        "submitted_at": "2026-11-12T20:45:51Z",
-        "task_id": "task_3be01a11b26744b4ab5f8af4",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "retired_target_program_id": "workflow_source_discovery",
-      "retired_workflow_path": ".github/workflows/source-discovery.yml",
-      "retirement": {
-        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-        "replacement_program_id": "script_discover_sources",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "retired_target_program_id": "workflow_source_discovery",
-        "schema_version": 1,
-        "source_discovery_mode": "monolithic_fallback"
-      },
-      "state_history": [
-        "QUEUED",
-        "CLAIMED",
-        "VERIFYING",
-        "SUCCEEDED"
-      ],
-      "status": "SUCCEEDED",
-      "target_program_id": "script_discover_sources",
-      "task_id": "task_3be01a11b26744b4ab5f8af4",
-      "trace_id": "source-discovery:2026-11-12:d145ee428375",
-      "verification": {
-        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
-        "status": "passed",
-        "verified_at": "2026-11-12T21:00:19Z",
-        "verifier_program_id": "script_task_result_verifier"
-      }
-    },
-    {
-      "attempts": 1,
-      "capability": "source_discovery",
-      "created_at": "2026-11-12T17:33:14Z",
-      "dispatch_intent": {
-        "correlation_id": "task_b2d7efaf821e46efa331287e-a1",
-        "correlation_title": "Automation task task_b2d7efaf821e46efa331287e-a1",
-        "dispatch_attempt": 1,
-        "prepared_at": "2026-11-12T22:18:55Z",
-        "ref": "main",
-        "requested_head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
-        "task_id": "task_b2d7efaf821e46efa331287e",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "execution_backend": "github_contents",
-      "idempotency_key": "source-discovery:2026-11-12:5eec1ee30367",
-      "input": {},
-      "last_error": null,
-      "lease": null,
-      "max_attempts": 1,
-      "not_before": "2026-11-12T17:33:14Z",
-      "priority": 55,
-      "requester_program_id": "workflow_automation_watchdog",
-      "resource_lease": {
-        "acquired_at": "2026-11-12T22:18:23Z",
-        "expires_at": "2026-11-12T23:18:55Z",
-        "lease_seconds": 3600,
-        "released_at": "2026-11-12T22:32:17Z",
-        "resources": {
-          "logical/source-dag-supervision": {
-            "fencing_token": 33,
-            "lease_id": "815e270724e4a68d22b297b8eb0ed005"
-          },
-          "logical/source-discovery-run": {
-            "fencing_token": 16,
-            "lease_id": "815e270724e4a68d22b297b8eb0ed005"
-          }
-        },
-        "status": "RELEASED"
-      },
-      "result": {
-        "correlation_id": "task_b2d7efaf821e46efa331287e-a1",
-        "correlation_title": "Automation task task_b2d7efaf821e46efa331287e-a1",
-        "dispatch_attempt": 1,
-        "dispatch_state": "submitted",
-        "prepared_at": "2026-11-12T22:18:55Z",
-        "ref": "main",
-        "requested_head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
-        "run_evidence": {
-          "conclusion": "success",
-          "head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
-          "head_sha_relationship": "exact",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/43318798963",
-          "requested_head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
-          "run_id": 43318798963,
-          "status": "completed"
-        },
-        "submitted_at": "2026-11-12T22:19:30Z",
-        "task_id": "task_b2d7efaf821e46efa331287e",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "retired_target_program_id": "workflow_source_discovery",
-      "retired_workflow_path": ".github/workflows/source-discovery.yml",
-      "retirement": {
-        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-        "replacement_program_id": "script_discover_sources",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "retired_target_program_id": "workflow_source_discovery",
-        "schema_version": 1,
-        "source_discovery_mode": "monolithic_fallback"
-      },
-      "state_history": [
-        "QUEUED",
-        "CLAIMED",
-        "VERIFYING",
-        "SUCCEEDED"
-      ],
-      "status": "SUCCEEDED",
-      "target_program_id": "script_discover_sources",
-      "task_id": "task_b2d7efaf821e46efa331287e",
-      "trace_id": "source-discovery:2026-11-12:5eec1ee30367",
-      "verification": {
-        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
-        "status": "passed",
-        "verified_at": "2026-11-12T22:32:17Z",
-        "verifier_program_id": "script_task_result_verifier"
-      }
-    },
-    {
-      "attempts": 1,
-      "capability": "source_discovery",
-      "created_at": "2026-11-13T10:01:39Z",
-      "dispatch_intent": {
-        "correlation_id": "task_68d94b348312481aba46694b-a1",
-        "correlation_title": "Automation task task_68d94b348312481aba46694b-a1",
-        "dispatch_attempt": 1,
-        "prepared_at": "2026-11-13T10:06:26Z",
-        "ref": "main",
-        "requested_head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
-        "task_id": "task_68d94b348312481aba46694b",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "execution_backend": "github_contents",
-      "idempotency_key": "source-discovery:2026-11-13:5eec1ee30367",
-      "input": {},
-      "last_error": null,
-      "lease": null,
-      "max_attempts": 1,
-      "not_before": "2026-11-13T10:01:39Z",
-      "priority": 55,
-      "requester_program_id": "workflow_automation_watchdog",
-      "resource_lease": {
-        "acquired_at": "2026-11-13T10:05:45Z",
-        "expires_at": "2026-11-13T11:06:26Z",
-        "lease_seconds": 3600,
-        "released_at": "2026-11-13T10:22:26Z",
-        "resources": {
-          "logical/source-dag-supervision": {
-            "fencing_token": 37,
-            "lease_id": "cac2208c67a5afa1e88bb5d768acfec5"
-          },
-          "logical/source-discovery-run": {
-            "fencing_token": 17,
-            "lease_id": "cac2208c67a5afa1e88bb5d768acfec5"
-          }
-        },
-        "status": "RELEASED"
-      },
-      "result": {
-        "correlation_id": "task_68d94b348312481aba46694b-a1",
-        "correlation_title": "Automation task task_68d94b348312481aba46694b-a1",
-        "dispatch_attempt": 1,
-        "dispatch_state": "submitted",
-        "prepared_at": "2026-11-13T10:06:26Z",
-        "ref": "main",
-        "requested_head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
-        "run_evidence": {
-          "conclusion": "success",
-          "head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
-          "head_sha_relationship": "exact",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/43406661354",
-          "requested_head_sha": "f4b36738bc7746ee1aaa084b794252a4a0c17cc1",
-          "run_id": 43406661354,
-          "status": "completed"
-        },
-        "submitted_at": "2026-11-13T10:07:08Z",
-        "task_id": "task_68d94b348312481aba46694b",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "retired_target_program_id": "workflow_source_discovery",
-      "retired_workflow_path": ".github/workflows/source-discovery.yml",
-      "retirement": {
-        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-        "replacement_program_id": "script_discover_sources",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "retired_target_program_id": "workflow_source_discovery",
-        "schema_version": 1,
-        "source_discovery_mode": "monolithic_fallback"
-      },
-      "state_history": [
-        "QUEUED",
-        "CLAIMED",
-        "VERIFYING",
-        "SUCCEEDED"
-      ],
-      "status": "SUCCEEDED",
-      "target_program_id": "script_discover_sources",
-      "task_id": "task_68d94b348312481aba46694b",
-      "trace_id": "source-discovery:2026-11-13:5eec1ee30367",
-      "verification": {
-        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
-        "status": "passed",
-        "verified_at": "2026-11-13T10:22:26Z",
-        "verifier_program_id": "script_task_result_verifier"
-      }
-    },
-    {
-      "attempts": 1,
       "capability": "deterministic_audit",
       "created_at": "2026-11-13T13:15:31Z",
       "execution_backend": "github_contents",
@@ -14533,96 +14945,6 @@
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_34092e2db8304b02a6f82627",
       "trace_id": "9e316e5533c048a6b539a837b2e450fe"
-    },
-    {
-      "attempts": 1,
-      "capability": "source_discovery",
-      "created_at": "2026-11-14T21:54:10Z",
-      "dispatch_intent": {
-        "correlation_id": "task_fef5a96728ed4952a17091a3-a1",
-        "correlation_title": "Automation task task_fef5a96728ed4952a17091a3-a1",
-        "dispatch_attempt": 1,
-        "prepared_at": "2026-11-14T21:59:29Z",
-        "ref": "main",
-        "requested_head_sha": "33d068d81f616e3f307789767dc679864b2281d4",
-        "task_id": "task_fef5a96728ed4952a17091a3",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "execution_backend": "github_contents",
-      "idempotency_key": "source-discovery:2026-11-14:6744e8862e75",
-      "input": {},
-      "last_error": null,
-      "lease": null,
-      "max_attempts": 1,
-      "not_before": "2026-11-14T21:54:10Z",
-      "priority": 55,
-      "requester_program_id": "workflow_automation_watchdog",
-      "resource_lease": {
-        "acquired_at": "2026-11-14T21:58:46Z",
-        "expires_at": "2026-11-14T23:05:04Z",
-        "lease_seconds": 3600,
-        "released_at": "2026-11-14T22:08:54Z",
-        "resources": {
-          "logical/source-dag-supervision": {
-            "fencing_token": 42,
-            "lease_id": "07a5482edace568550bdae34e18b0867"
-          },
-          "logical/source-discovery-run": {
-            "fencing_token": 18,
-            "lease_id": "07a5482edace568550bdae34e18b0867"
-          }
-        },
-        "status": "RELEASED"
-      },
-      "result": {
-        "correlation_id": "task_fef5a96728ed4952a17091a3-a1",
-        "correlation_title": "Automation task task_fef5a96728ed4952a17091a3-a1",
-        "dispatch_attempt": 1,
-        "dispatch_state": "submitted",
-        "prepared_at": "2026-11-14T21:59:29Z",
-        "ref": "main",
-        "requested_head_sha": "33d068d81f616e3f307789767dc679864b2281d4",
-        "run_evidence": {
-          "conclusion": "success",
-          "head_sha": "33d068d81f616e3f307789767dc679864b2281d4",
-          "head_sha_relationship": "exact",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/43645740024",
-          "requested_head_sha": "33d068d81f616e3f307789767dc679864b2281d4",
-          "run_id": 43645740024,
-          "status": "completed"
-        },
-        "submitted_at": "2026-11-14T22:00:14Z",
-        "task_id": "task_fef5a96728ed4952a17091a3",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "retired_target_program_id": "workflow_source_discovery",
-      "retired_workflow_path": ".github/workflows/source-discovery.yml",
-      "retirement": {
-        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-        "replacement_program_id": "script_discover_sources",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "retired_target_program_id": "workflow_source_discovery",
-        "schema_version": 1,
-        "source_discovery_mode": "monolithic_fallback"
-      },
-      "state_history": [
-        "QUEUED",
-        "CLAIMED",
-        "VERIFYING",
-        "SUCCEEDED"
-      ],
-      "status": "SUCCEEDED",
-      "target_program_id": "script_discover_sources",
-      "task_id": "task_fef5a96728ed4952a17091a3",
-      "trace_id": "source-discovery:2026-11-14:6744e8862e75",
-      "verification": {
-        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
-        "status": "passed",
-        "verified_at": "2026-11-14T22:08:54Z",
-        "verifier_program_id": "script_task_result_verifier"
-      }
     },
     {
       "attempts": 2,
@@ -16028,96 +16350,6 @@
       "trace_id": "658aaab1f629469390a39e3388f26eb0"
     },
     {
-      "attempts": 1,
-      "capability": "source_discovery",
-      "created_at": "2026-11-15T10:21:07Z",
-      "dispatch_intent": {
-        "correlation_id": "task_01870fbec74e481781a272ee-a1",
-        "correlation_title": "Automation task task_01870fbec74e481781a272ee-a1",
-        "dispatch_attempt": 1,
-        "prepared_at": "2026-11-15T10:26:31Z",
-        "ref": "main",
-        "requested_head_sha": "95bb3055b9f309a42a23596d2da3ddbcc7dcaddf",
-        "task_id": "task_01870fbec74e481781a272ee",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "execution_backend": "github_contents",
-      "idempotency_key": "source-discovery:2026-11-15:1c86fb74d42f",
-      "input": {},
-      "last_error": null,
-      "lease": null,
-      "max_attempts": 1,
-      "not_before": "2026-11-15T10:21:07Z",
-      "priority": 55,
-      "requester_program_id": "workflow_automation_watchdog",
-      "resource_lease": {
-        "acquired_at": "2026-11-15T10:25:51Z",
-        "expires_at": "2026-11-15T11:36:47Z",
-        "lease_seconds": 3600,
-        "released_at": "2026-11-15T10:44:39Z",
-        "resources": {
-          "logical/source-dag-supervision": {
-            "fencing_token": 46,
-            "lease_id": "dd54baeb469418c536a274fa44d72b0e"
-          },
-          "logical/source-discovery-run": {
-            "fencing_token": 19,
-            "lease_id": "dd54baeb469418c536a274fa44d72b0e"
-          }
-        },
-        "status": "RELEASED"
-      },
-      "result": {
-        "correlation_id": "task_01870fbec74e481781a272ee-a1",
-        "correlation_title": "Automation task task_01870fbec74e481781a272ee-a1",
-        "dispatch_attempt": 1,
-        "dispatch_state": "submitted",
-        "prepared_at": "2026-11-15T10:26:31Z",
-        "ref": "main",
-        "requested_head_sha": "95bb3055b9f309a42a23596d2da3ddbcc7dcaddf",
-        "run_evidence": {
-          "conclusion": "success",
-          "head_sha": "95bb3055b9f309a42a23596d2da3ddbcc7dcaddf",
-          "head_sha_relationship": "exact",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/43704193017",
-          "requested_head_sha": "95bb3055b9f309a42a23596d2da3ddbcc7dcaddf",
-          "run_id": 43704193017,
-          "status": "completed"
-        },
-        "submitted_at": "2026-11-15T10:27:52Z",
-        "task_id": "task_01870fbec74e481781a272ee",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "retired_target_program_id": "workflow_source_discovery",
-      "retired_workflow_path": ".github/workflows/source-discovery.yml",
-      "retirement": {
-        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-        "replacement_program_id": "script_discover_sources",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "retired_target_program_id": "workflow_source_discovery",
-        "schema_version": 1,
-        "source_discovery_mode": "monolithic_fallback"
-      },
-      "state_history": [
-        "QUEUED",
-        "CLAIMED",
-        "VERIFYING",
-        "SUCCEEDED"
-      ],
-      "status": "SUCCEEDED",
-      "target_program_id": "script_discover_sources",
-      "task_id": "task_01870fbec74e481781a272ee",
-      "trace_id": "source-discovery:2026-11-15:1c86fb74d42f",
-      "verification": {
-        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
-        "status": "passed",
-        "verified_at": "2026-11-15T10:44:39Z",
-        "verifier_program_id": "script_task_result_verifier"
-      }
-    },
-    {
       "attempts": 0,
       "capability": "deterministic_audit",
       "created_at": "2026-11-15T10:22:01Z",
@@ -17176,133 +17408,6 @@
         "verified_at": "2026-11-15T19:27:25Z",
         "verifier_program_id": "script_task_result_verifier"
       }
-    },
-    {
-      "attempts": 1,
-      "capability": "source_discovery",
-      "created_at": "2026-11-15T19:02:45Z",
-      "dispatch_intent": {
-        "correlation_id": "task_07f49d7c852f4535b72566ff-a1",
-        "correlation_title": "Automation task task_07f49d7c852f4535b72566ff-a1",
-        "dispatch_attempt": 1,
-        "prepared_at": "2026-11-15T19:44:04Z",
-        "ref": "main",
-        "requested_head_sha": "e5979b89a2f5745e9f615deb2cf48e0d51ab7415",
-        "task_id": "task_07f49d7c852f4535b72566ff",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "execution_backend": "github_contents",
-      "idempotency_key": "source-discovery:2026-11-15:2fc1de5292dc",
-      "input": {},
-      "last_error": null,
-      "lease": null,
-      "max_attempts": 1,
-      "not_before": "2026-11-15T19:02:45Z",
-      "priority": 55,
-      "requester_program_id": "workflow_automation_watchdog",
-      "resource_lease": {
-        "acquired_at": "2026-11-15T19:42:44Z",
-        "expires_at": "2026-11-15T20:44:04Z",
-        "lease_seconds": 3600,
-        "released_at": "2026-11-15T19:58:58Z",
-        "resources": {
-          "logical/source-dag-supervision": {
-            "fencing_token": 50,
-            "lease_id": "dcbbdfc1755fa7fdf0c77daea8277c52"
-          },
-          "logical/source-discovery-run": {
-            "fencing_token": 20,
-            "lease_id": "dcbbdfc1755fa7fdf0c77daea8277c52"
-          }
-        },
-        "status": "RELEASED"
-      },
-      "result": {
-        "correlation_id": "task_07f49d7c852f4535b72566ff-a1",
-        "correlation_title": "Automation task task_07f49d7c852f4535b72566ff-a1",
-        "dispatch_attempt": 1,
-        "dispatch_state": "submitted",
-        "prepared_at": "2026-11-15T19:44:04Z",
-        "ref": "main",
-        "requested_head_sha": "e5979b89a2f5745e9f615deb2cf48e0d51ab7415",
-        "run_evidence": {
-          "conclusion": "success",
-          "head_sha": "e5979b89a2f5745e9f615deb2cf48e0d51ab7415",
-          "head_sha_relationship": "exact",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/43754187241",
-          "requested_head_sha": "e5979b89a2f5745e9f615deb2cf48e0d51ab7415",
-          "run_id": 43754187241,
-          "status": "completed"
-        },
-        "submitted_at": "2026-11-15T19:45:27Z",
-        "task_id": "task_07f49d7c852f4535b72566ff",
-        "workflow_id": 407786628,
-        "workflow_path": ".github/workflows/source-discovery.yml"
-      },
-      "retired_target_program_id": "workflow_source_discovery",
-      "retired_workflow_path": ".github/workflows/source-discovery.yml",
-      "retirement": {
-        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-        "replacement_program_id": "script_discover_sources",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "retired_target_program_id": "workflow_source_discovery",
-        "schema_version": 1,
-        "source_discovery_mode": "monolithic_fallback"
-      },
-      "state_history": [
-        "QUEUED",
-        "CLAIMED",
-        "VERIFYING",
-        "SUCCEEDED"
-      ],
-      "status": "SUCCEEDED",
-      "target_program_id": "script_discover_sources",
-      "task_id": "task_07f49d7c852f4535b72566ff",
-      "trace_id": "source-discovery:2026-11-15:2fc1de5292dc",
-      "verification": {
-        "contract_sha256": "e746e5015edb75d9bc6f9eb5185739e90aa9ba07b1bcfd2a08e14655248c1d18",
-        "status": "passed",
-        "verified_at": "2026-11-15T19:58:58Z",
-        "verifier_program_id": "script_task_result_verifier"
-      }
-    },
-    {
-      "attempts": 0,
-      "capability": "source_discovery",
-      "created_at": "2026-11-15T19:16:28Z",
-      "execution_backend": "github_contents",
-      "idempotency_key": "source-discovery:2026-11-15:91f691034a71",
-      "input": {},
-      "last_error": {
-        "message": "Independent Discovery/Assessment tasks were superseded by same-run collection and assessment in Production auto_sync.",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "type": "retired_source_dag"
-      },
-      "lease": null,
-      "max_attempts": 1,
-      "not_before": "2026-11-15T19:16:28Z",
-      "priority": 55,
-      "requester_program_id": "workflow_automation_watchdog",
-      "result": null,
-      "retired_target_program_id": "workflow_source_discovery",
-      "retired_workflow_path": ".github/workflows/source-discovery.yml",
-      "retirement": {
-        "reason": "Production owns source collection and non-activating assessment; no separate Source Discovery workflow remains.",
-        "replacement_program_id": "script_discover_sources",
-        "retired_at": "2026-11-19T13:15:45Z",
-        "retired_target_program_id": "workflow_source_discovery",
-        "schema_version": 1,
-        "source_discovery_mode": "monolithic_fallback"
-      },
-      "state_history": [
-        "QUEUED",
-        "CANCELLED"
-      ],
-      "status": "CANCELLED",
-      "target_program_id": "script_discover_sources",
-      "task_id": "task_22ad09a1a4ce4484846207d1",
-      "trace_id": "source-discovery:2026-11-15:91f691034a71"
     },
     {
       "attempts": 1,
