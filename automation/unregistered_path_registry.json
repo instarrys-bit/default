@@ -591,18 +591,6 @@
       "classification_basis": "Verified absent from the current main tree and no active references remain. The helper is not invoked by current workflows and does not supply DIRECT/PROXY/REJECT evidence or publish rulesets."
     },
     {
-      "path": "scripts/select_domain_rules.py",
-      "status": "CLASSIFIED_CONTROL_PLANE",
-      "first_seen_at": "2026-11-04T03:15:02.736672Z",
-      "last_seen_at": "2026-11-04T04:56:47.404975Z",
-      "seen_count": 8,
-      "last_seen_event": "push",
-      "last_seen_revision": "b9a701dd6752693c167b030a5cbd13d617e52da0",
-      "last_seen_run_id": "41776163056",
-      "last_seen_run_url": "https://github.com/instarrys-bit/default/actions/runs/41776163056",
-      "classification_basis": "Reviewed implementation and callers: currently invoked only for --self-test by validate-config; its normal mode reads uu.conf and explicit policy approvals but writes only reports/approved-domain-rules.list and reports/rule-selector-audit.md. It is not wired to published ruleset generation or production dispatch. Keep as control-plane analysis; any future integration into publication must explicitly reclassify/register its outputs as production inputs first."
-    },
-    {
       "path": "scripts/source_handoff_policy.py",
       "status": "CLASSIFIED_CONTROL_PLANE",
       "first_seen_at": "2026-11-07T15:37:00Z",
