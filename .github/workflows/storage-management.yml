@@ -86,6 +86,33 @@ concurrency:
   # Ingestion is content-addressed and idempotent; a newer main run supersedes a stuck poll.
   cancel-in-progress: true
 jobs:
+  ensure-watchdog-enabled:
+    name: Ensure Watchdog workflow is enabled
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    permissions:
+      actions: write
+    steps:
+      - name: Read Watchdog workflow state
+        id: state
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          state="$(gh api "repos/$GH_REPO/actions/workflows/403552201" --jq '.state')"
+          echo "state=$state" >> "$GITHUB_OUTPUT"
+          echo "Watchdog workflow state: $state" >> "$GITHUB_STEP_SUMMARY"
+      - name: Enable Watchdog when disabled
+        if: ${{ steps.state.outputs.state != 'active' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh api --method PUT "repos/$GH_REPO/actions/workflows/403552201/enable"
+          state="$(gh api "repos/$GH_REPO/actions/workflows/403552201" --jq '.state')"
+          test "$state" = "active"
+          echo "Watchdog workflow enabled and verified." >> "$GITHUB_STEP_SUMMARY"
   validate-storage:
     name: Validate Storage Management runtime and recovery
     if: ${{ (github.event_name == 'pull_request' && github.event.action != 'closed') || (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
