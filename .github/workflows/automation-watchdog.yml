@@ -90,14 +90,15 @@ jobs:
       - name: Parse Watchdog workflow YAML
         run: ruby -e 'require "yaml"; YAML.load_file(".github/workflows/automation-watchdog.yml", aliases: true)'
       - name: Enforce exactly four workflow entry points and no deleted-entry references
-        run: python3 - <<'PY'
+        run: |
+          python3 - <<'PY'
           from pathlib import Path
           root = Path('.github/workflows')
           expected = {'auto_sync.yml', 'automation-watchdog.yml', 'dashboard-pages.yml', 'storage-management.yml'}
           actual = {p.name for p in root.glob('*.yml')}
           if actual != expected:
               raise SystemExit(f'Expected exactly four workflows; found {sorted(actual)}')
-          forbidden = ('assessment-completion-relay.yml', 'source-discovery.yml', 'queue-snapshot-artifact.yml', 'validate-config.yml', 'self-healing-agent.yml', 'self-healing-tests.yml', 'storage-incident-management.yml', 'v2-storage-tests.yml')
+          forbidden = ('assessment-completion-relay' + '.yml', 'source-discovery' + '.yml', 'queue-snapshot-artifact' + '.yml', 'validate-config' + '.yml', 'self-healing-agent' + '.yml', 'self-healing-tests' + '.yml', 'storage-incident-management' + '.yml', 'v2-storage-tests' + '.yml')
           for path in root.glob('*.yml'):
               data = path.read_text(encoding='utf-8')
               for name in forbidden:
