@@ -116,7 +116,9 @@ class SourceQueueRetirementTests(unittest.TestCase):
             "tasks": [
                 task("task_" + "a" * 24, "workflow_source_discovery", "source_discovery"),
                 task("task_" + "b" * 24, "script_assess_sources", "source_assessment",
-                     status="SUCCEEDED", attempts=1, max_attempts=1),
+                     status="SUCCEEDED", attempts=1, max_attempts=1,
+                     dispatch_intent={"workflow_path": ".github/workflows/source-discovery.yml"},
+                     result={"dispatch_state": "submitted", "run_evidence": {"status": "completed", "conclusion": "success"}}),
                 task("task_" + "c" * 24, "workflow_auto_sync", "production_audit"),
             ],
         }
