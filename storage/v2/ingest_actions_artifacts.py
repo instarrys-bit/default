@@ -165,9 +165,8 @@ def scan_recent_runs(repository: str, token: str) -> int:
     failures = []
     processed = 0
     ordered_run_ids = sorted(run_ids)
-    selected_run_ids = ordered_run_ids[:MAX_RUNS_PER_SCAN]
-    deferred_run_count = max(0, len(ordered_run_ids) - len(selected_run_ids))
-    for source_run_id in selected_run_ids:
+    eligible_runs = []
+    for source_run_id in ordered_run_ids:
         run = get_json(f"{API}/repos/{repository}/actions/runs/{source_run_id}", token)
         path = run.get("path", "")
         if run.get("status") != "completed" or run.get("head_branch") != "main":
@@ -177,6 +176,11 @@ def scan_recent_runs(repository: str, token: str) -> int:
             ".github/workflows/automation-watchdog.yml",
         }:
             continue
+        eligible_runs.append(source_run_id)
+
+    selected_run_ids = eligible_runs[:MAX_RUNS_PER_SCAN]
+    deferred_run_count = max(0, len(eligible_runs) - len(selected_run_ids))
+    for source_run_id in selected_run_ids:
         env = os.environ.copy()
         env["SOURCE_RUN_ID"] = str(source_run_id)
         result = subprocess.run(
@@ -197,6 +201,7 @@ def scan_recent_runs(repository: str, token: str) -> int:
     print(json.dumps({
         "scan_mode": "recent_repository_artifacts",
         "candidate_run_count": len(run_ids),
+        "eligible_run_count": len(eligible_runs),
         "selected_run_count": len(selected_run_ids),
         "processed_run_count": processed,
         "deferred_run_count": deferred_run_count,
