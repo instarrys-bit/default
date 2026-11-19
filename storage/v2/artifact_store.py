@@ -226,7 +226,7 @@ class GitHubContentsObjectBackend:
     """Create-only GitHub Contents API object backend under the V2 SHA allowlist."""
 
     def __init__(self, repository: str, branch: str, token: str, timeout: int = 30):
-        if not isinstance(repository, str) or not re.fullmatch(r"[^/\\s]+/[^/\\s]+", repository):
+        if not isinstance(repository, str) or not re.fullmatch(r"[^/\s]+/[^/\s]+", repository):
             raise ValueError("repository must be owner/name")
         if not isinstance(branch, str) or not branch.strip() or not isinstance(token, str) or not token:
             raise ValueError("branch and token are required")
