@@ -49,14 +49,6 @@
       "promotion_status": "QUARANTINED_PENDING_VALIDATION"
     },
     {
-      "source_path": "automation/task_queue.json",
-      "source_blob_sha": "13da59249c3bd2db437a3a989136c035773bdfbc",
-      "source_size_bytes": 728426,
-      "asset_class": "LEGACY_QUEUE_SNAPSHOT_HISTORICAL_ONLY",
-      "migration_status": "DISCOVERED_NOT_IMPORTED",
-      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
-    },
-    {
       "source_path": "data/candidates.json",
       "source_blob_sha": "defeeb111995221a0e0c858d7b045b3bdb710fa9",
       "source_size_bytes": 12139598,
@@ -172,14 +164,6 @@
       "source_path": "reports/automation/state_store.json",
       "source_blob_sha": "f2a9ed9a3832379270a0559093cfff05de7e3d25",
       "source_size_bytes": 355,
-      "asset_class": "AUDIT_AND_RUN_EVIDENCE",
-      "migration_status": "DISCOVERED_NOT_IMPORTED",
-      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
-    },
-    {
-      "source_path": "reports/automation/task-queue-archive-2026-11-05.json",
-      "source_blob_sha": "e9411f37194e73d9f7d6e99d390a037c7e6105f7",
-      "source_size_bytes": 47508,
       "asset_class": "AUDIT_AND_RUN_EVIDENCE",
       "migration_status": "DISCOVERED_NOT_IMPORTED",
       "promotion_status": "QUARANTINED_PENDING_VALIDATION"
@@ -505,14 +489,6 @@
       "promotion_status": "QUARANTINED_PENDING_VALIDATION"
     },
     {
-      "source_path": "sources/reject_manual_approvals.json",
-      "source_blob_sha": "f96d2be5ed188cfb6339190bdd6b82a38084ca75",
-      "source_size_bytes": 29270,
-      "asset_class": "SOURCE_CATALOG_OR_EVIDENCE",
-      "migration_status": "DISCOVERED_NOT_IMPORTED",
-      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
-    },
-    {
       "source_path": "sources/request_domain_observations.json",
       "source_blob_sha": "91882e28863344ab12899dfcb9da7a6e9d141e04",
       "source_size_bytes": 48,
@@ -554,14 +530,13 @@
     }
   ],
   "summary": {
-    "entry_count": 66,
+    "entry_count": 63,
     "by_asset_class": {
       "LEGACY_AUTOMATION_CONTROL_METADATA": 3,
-      "LEGACY_QUEUE_SNAPSHOT_HISTORICAL_ONLY": 1,
       "CANDIDATE_OR_SOURCE_DATA": 13,
-      "AUDIT_AND_RUN_EVIDENCE": 22,
+      "AUDIT_AND_RUN_EVIDENCE": 21,
       "RULESET_OR_RELEASE_DATA": 13,
-      "SOURCE_CATALOG_OR_EVIDENCE": 14
+      "SOURCE_CATALOG_OR_EVIDENCE": 13
     },
     "all_status": "DISCOVERED_NOT_IMPORTED"
   },
