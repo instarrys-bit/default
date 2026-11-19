@@ -108,7 +108,7 @@ jobs:
 
       - name: Export durable queue snapshot from repository JSON state
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
@@ -123,7 +123,7 @@ jobs:
       - name: Resolve exact independent Discovery and Assessment artifacts
         if: ${{ steps.source-mode.outputs.mode == 'independent' }}
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
@@ -131,7 +131,7 @@ jobs:
 
       - name: Verify Watchdog-owned durable task dispatch
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
           AUTOMATION_TASK_ID: ${{ inputs.automation_task_id }}
@@ -277,7 +277,7 @@ jobs:
 
       - name: Verify live Watchdog resource lease before production audit
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
         run: |
@@ -288,7 +288,7 @@ jobs:
       - name: Register repository-owner-approved uu.conf changes (never edit the config)
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REF: ${{ github.ref }}
           GITHUB_EVENT_NAME: ${{ inputs.baseline_source_event || github.event_name }}
@@ -320,7 +320,7 @@ jobs:
       - name: Capture and verify the exact production input fingerprint
         env:
           PRODUCTION_FINGERPRINT: ${{ inputs.production_fingerprint }}
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
@@ -342,7 +342,7 @@ jobs:
 
       - name: Stop stale audit before discovery and source downloads
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
           RUN_SHA: ${{ github.sha }}
         run: |
@@ -352,7 +352,7 @@ jobs:
       - name: Discover candidate source repositories (non-activating)
         if: ${{ steps.source-mode.outputs.mode != 'independent' }}
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
         run: python3 scripts/discover_sources.py
 
       - name: Assess discovered rule-list syntax and policy claims
@@ -374,7 +374,7 @@ jobs:
 
       - name: Restore prior high-volume automation state
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
           CURRENT_RUN_ID: ${{ github.run_id }}
         run: |
@@ -428,7 +428,7 @@ jobs:
 
       - name: Import observed request hostnames as unclassified candidates
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: python3 scripts/import_request_observations.py
 
@@ -458,14 +458,14 @@ jobs:
 
       - name: Stop stale audit before expensive deterministic review
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
           bash scripts/verify_publish_base.sh --check-only
       - name: Restore latest failed-run review checkpoint and delta journal
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
           CURRENT_RUN_ID: ${{ github.run_id }}
         run: |
@@ -575,7 +575,7 @@ jobs:
 
       - name: Write successful audit heartbeat
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_RUN_ID: ${{ github.run_id }}
           GITHUB_RUN_ATTEMPT: ${{ github.run_attempt }}
@@ -744,7 +744,7 @@ jobs:
 
       - name: Export durable queue snapshot from repository JSON state
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
@@ -753,7 +753,7 @@ jobs:
 
       - name: Revalidate Watchdog task and export canonical lease context
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           AUTOMATION_TASK_ID: ${{ inputs.automation_task_id }}
           RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
@@ -835,7 +835,7 @@ jobs:
 
       - name: Verify live Watchdog resource lease before artifact restoration
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
         run: |
@@ -851,7 +851,7 @@ jobs:
 
       - name: Verify base commit and safely publish allowlisted outputs
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           RESOURCE_LEASE_PROOF: ${{ inputs.resource_lease_proof }}
         run: |
@@ -952,7 +952,7 @@ jobs:
     steps:
       - name: Dispatch incident record to Storage Management
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           COMMIT_SHA: ${{ github.sha }}
@@ -979,7 +979,7 @@ jobs:
     steps:
       - name: Dispatch verified incident recovery to Storage Management
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           RUN_ID: ${{ github.run_id }}
@@ -1002,7 +1002,7 @@ jobs:
     steps:
       - name: Dispatch Watchdog reconciliation for this exact production run
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_API_URL: ${{ github.api_url }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           PRODUCTION_RUN_ID: ${{ github.run_id }}
