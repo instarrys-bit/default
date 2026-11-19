@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -9,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from remote_task_queue_runtime import retire_legacy_source_tasks
+from task_scheduler import filter_consolidated_source_targets
 
 
 class FakeStore:
@@ -85,6 +88,25 @@ class SourceQueueRetirementTests(unittest.TestCase):
             repeated = retire_legacy_source_tasks(store, self.registry)
         self.assertEqual(repeated["changed_count"], 0)
         self.assertEqual(store.document["revision"], 11)
+
+    def test_watchdog_never_dispatches_legacy_source_targets_in_fallback_mode(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "automation").mkdir()
+            (root / "automation" / "production_control.json").write_text(
+                json.dumps({"schema_version": 1, "source_discovery_mode": "monolithic_fallback"}),
+                encoding="utf-8",
+            )
+            tasks = [
+                {"task_id": "discovery", "target_program_id": "workflow_source_discovery"},
+                {"task_id": "assessment", "target_program_id": "script_assess_sources"},
+                {"task_id": "production", "target_program_id": "workflow_auto_sync"},
+            ]
+            eligible, blocked = filter_consolidated_source_targets(
+                {"discovery", "assessment", "production"}, tasks, root
+            )
+        self.assertEqual(set(eligible), {"production"})
+        self.assertEqual({item["task_id"] for item in blocked}, {"discovery", "assessment"})
 
     def test_refuses_to_cancel_a_live_task_or_unresolved_dispatch(self):
         live = {

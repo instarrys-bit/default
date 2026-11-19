@@ -67,21 +67,74 @@
       "target_program_id": "script_assess_sources",
       "target_kind": "python_component",
       "adapter_type": "python_cli",
-      "enabled": false,
-      "interface_status": "unreviewed",
-      "allowed_callers": [],
+      "enabled": true,
+      "interface_status": "reviewed",
+      "allowed_callers": [
+        "workflow_automation_watchdog"
+      ],
       "entrypoint": {
         "path": "scripts/assess_sources.py",
         "executable": "python3",
-        "argv_template": [],
+        "argv_template": [
+          "--task-input-file",
+          "{task_input_file}"
+        ],
         "shell": false
       },
-      "input_contract": null,
-      "output_contract": null,
+      "input_contract": {
+        "type": "object",
+        "required": [
+          "predecessor"
+        ],
+        "properties": {
+          "predecessor": {
+            "type": "object",
+            "required": [
+              "program_id",
+              "workflow_name",
+              "workflow_run_id",
+              "workflow_head_sha",
+              "artifact_path",
+              "artifact_sha256"
+            ],
+            "properties": {
+              "program_id": {
+                "const": "script_discover_sources"
+              },
+              "workflow_name": {
+                "type": "string"
+              },
+              "workflow_run_id": {
+                "type": "string"
+              },
+              "workflow_head_sha": {
+                "type": "string"
+              },
+              "artifact_path": {
+                "type": "string"
+              },
+              "artifact_sha256": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "output_contract": {
+        "type": "object",
+        "required": [
+          "assessment_status"
+        ],
+        "properties": {
+          "assessment_status": {
+            "type": "string"
+          }
+        }
+      },
       "timeout_seconds": 300,
       "retry": {
-        "max_attempts": 0,
-        "policy": "library-only or same-run workflow step; direct adapter dispatch disabled"
+        "max_attempts": 1,
+        "policy": "legacy queue compatibility only; scheduler excludes this adapter in monolithic_fallback mode"
       },
       "completion": {
         "success_condition": "exit_zero_schema_valid_and_independent_artifact_verifier_valid",
@@ -1990,6 +2043,45 @@
       "retry": {
         "max_attempts": 0,
         "policy": "library-only or same-run workflow step; direct adapter dispatch disabled"
+      },
+      "completion": {
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "workflow_source_discovery",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": true,
+      "interface_status": "reviewed",
+      "allowed_callers": [
+        "workflow_automation_watchdog"
+      ],
+      "entrypoint": {
+        "path": "scripts/retired_source_discovery_target.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": {
+        "type": "object",
+        "properties": {}
+      },
+      "output_contract": {
+        "type": "object",
+        "required": [
+          "retired"
+        ],
+        "properties": {
+          "retired": {
+            "type": "boolean"
+          }
+        }
+      },
+      "timeout_seconds": 60,
+      "retry": {
+        "max_attempts": 1,
+        "policy": "compatibility target; scheduler excludes execution in monolithic_fallback mode"
       },
       "completion": {
         "independent_verification_required": true
