@@ -87,10 +87,12 @@
       "permission_boundary": "Runs as a same-run Production stage after source discovery. Reads the runner-local discovered source document and baseline; writes assessment outputs only in the isolated Production runner workspace. No independent workflow dispatch, source activation, or write to modules/uu.conf.",
       "health_check": "Production verifies the assessor exit status and deterministic output reports; all source assessment remains non-activating and is included only in the runner-local audit artifact.",
       "orchestration": {
-        "enabled": false,
-        "allowed_callers": [],
-        "max_attempts": 0,
-        "timeout_seconds": 900
+        "enabled": true,
+        "allowed_callers": [
+          "workflow_automation_watchdog"
+        ],
+        "max_attempts": 1,
+        "timeout_seconds": 1800
       }
     },
     {
@@ -2034,6 +2036,34 @@
         "enabled": false,
         "allowed_callers": [],
         "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "workflow_source_discovery",
+      "path": "scripts/retired_source_discovery_target.py",
+      "kind": "python_component",
+      "responsibility": "Temporary compatibility target for historical durable queue records only. New Discovery work is executed by script_discover_sources inside Production auto_sync; this tombstone must never be scheduled.",
+      "capabilities": [
+        "source_discovery"
+      ],
+      "invocation": "historical queue validation only; run_scheduler_once excludes this target whenever source_discovery_mode is monolithic_fallback",
+      "inputs": [
+        "historical source discovery queue task envelope"
+      ],
+      "outputs": [
+        "no worker output; invocation fails closed"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No repository writes, no workflow dispatch, no ruleset access and no access to modules/uu.conf. This component exists only until Storage Management terminalizes old queue records.",
+      "health_check": "Queue validator accepts preserved historical tasks; scheduler tests prove this target is excluded in monolithic_fallback mode.",
+      "orchestration": {
+        "enabled": true,
+        "allowed_callers": [
+          "workflow_automation_watchdog"
+        ],
+        "max_attempts": 1,
         "timeout_seconds": 300
       }
     }
