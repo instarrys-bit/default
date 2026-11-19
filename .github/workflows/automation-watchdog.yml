@@ -1,5 +1,5 @@
 name: Shadowrocket automation watchdog
-run-name: Automation task ${{ github.event.inputs.automation_task_id || 'event' }} | Assessment reconcile ${{ github.event.inputs.assessment_producer_run_id || 'none' }} | Discovery reconcile ${{ github.event.inputs.source_discovery_run_id || 'none' }} | Production reconcile ${{ github.event.inputs.production_producer_run_id || 'none' }}
+run-name: "Automation watchdog / ${{ github.run_id }}"
 
 on:
   pull_request:
@@ -108,38 +108,6 @@ jobs:
           print('Exactly four workflow entry points; no deleted workflow references.')
           PY
 
-  dispatch-storage-queue-migration:
-    name: Dispatch source queue migration through Storage Management
-    if: ${{ github.ref == 'refs/heads/main' && ((github.event_name == 'push' && contains(github.event.head_commit.message, '[source-dag-migration]')) || github.event_name == 'schedule') }}
-    runs-on: ubuntu-24.04
-    timeout-minutes: 3
-    permissions:
-      actions: write
-      contents: read
-    steps:
-      - name: Dispatch the idempotent Storage Management migration
-        env:
-          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
-        run: |
-          set -euo pipefail
-          if [ "${GITHUB_EVENT_NAME}" = "schedule" ]; then
-            queue_json="$(gh api "repos/${GITHUB_REPOSITORY}/contents/automation/task_queue.json?ref=main" --jq .content | base64 -d)"
-            pending="$(jq '[.tasks[]? | select(
-              .target_program_id == "workflow_source_discovery"
-              or .target_program_id == "script_assess_sources"
-              or (.target_program_id == "script_discover_sources"
-                  and .retirement.retired_target_program_id == "workflow_source_discovery"
-                  and .retirement.source_discovery_mode == "monolithic_fallback")
-            )] | length' <<< "$queue_json")"
-            if [ "$pending" -eq 0 ]; then
-              echo "No legacy source tasks remain in the live queue; Storage Management purge is not needed."
-              exit 0
-            fi
-          fi
-          gh workflow run storage-management.yml --ref main \
-            -f operation=purge_legacy_source_tasks \
-            -f workflow=automation-watchdog \
-            -f automation_task_id="source-dag-migration-${GITHUB_SHA}"
 
   non-main-noop:
     if: ${{ github.ref_name != 'main' }}
