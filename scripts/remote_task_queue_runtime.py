@@ -570,7 +570,8 @@ def purge_legacy_source_tasks(store: GitHubContentsQueueStore, registry: dict, n
                 raise ValueError(f"{task.get('task_id')} has a live task state; refusing queue purge")
             if task.get("lease") is not None:
                 raise ValueError(f"{task.get('task_id')} retains a task lease; refusing queue purge")
-            if isinstance(task.get("dispatch_intent"), dict):
+            if (isinstance(task.get("dispatch_intent"), dict)
+                    and task.get("status") not in {"SUCCEEDED", "DEAD_LETTER", "CANCELLED"}):
                 raise ValueError(f"{task.get('task_id')} has unresolved dispatch intent; refusing queue purge")
             resource_lease = task.get("resource_lease")
             if isinstance(resource_lease, dict) and resource_lease.get("status") == "ACTIVE":
