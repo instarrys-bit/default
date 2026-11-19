@@ -55,6 +55,45 @@ def get_json(url: str, token: str):
     return json.loads(raw.decode("utf-8"))
 
 
+def download_artifact_zip(url: str, token: str):
+    """Download the GitHub redirect target without forwarding the API bearer token."""
+    headers = {
+        "Accept": "application/vnd.github+json",
+        "Authorization": "Bearer " + token,
+        "X-GitHub-Api-Version": "2022-11-28",
+        "User-Agent": "shadowrocket-storage-management-artifact-ingest",
+    }
+    req = urllib.request.Request(url, headers=headers, method="GET")
+
+    class NoRedirect(urllib.request.HTTPRedirectHandler):
+        def redirect_request(self, request, file_pointer, code, message, response_headers, new_url):
+            return None
+
+    opener = urllib.request.build_opener(NoRedirect)
+    try:
+        with opener.open(req, timeout=90) as response:
+            return response.read(), response.headers.get("Content-Type", "")
+    except urllib.error.HTTPError as exc:
+        if exc.code not in (301, 302, 303, 307, 308):
+            detail = exc.read(500).decode("utf-8", "replace")
+            raise RuntimeError(f"GitHub artifact download HTTP {exc.code}: {detail[:300]}") from None
+        location = exc.headers.get("Location")
+        parsed = urllib.parse.urlparse(location or "")
+        if parsed.scheme != "https" or not parsed.netloc:
+            raise RuntimeError("GitHub artifact download returned an invalid redirect URL") from None
+        # Deliberately omit Authorization on the signed blob-storage URL.
+        redirected = urllib.request.Request(
+            location, headers={"User-Agent": "shadowrocket-storage-management-artifact-ingest"},
+            method="GET",
+        )
+        try:
+            with urllib.request.urlopen(redirected, timeout=90) as response:
+                return response.read(), response.headers.get("Content-Type", "")
+        except urllib.error.HTTPError as blob_error:
+            detail = blob_error.read(500).decode("utf-8", "replace")
+            raise RuntimeError(f"artifact blob download HTTP {blob_error.code}: {detail[:300]}") from None
+
+
 def load_catalog(repository: str, branch: str, token: str, run_id: int):
     path = f"storage/v2/artifacts/catalog/{run_id}.json"
     url = f"{API}/repos/{repository}/contents/{urllib.parse.quote(path, safe='/')}?" + urllib.parse.urlencode({"ref": branch})
@@ -146,6 +185,9 @@ def scan_recent_runs(repository: str, token: str) -> int:
             failures.append(source_run_id)
             if result.stderr:
                 print(result.stderr.rstrip(), file=sys.stderr)
+            if "GitHub API HTTP 401" in result.stderr or "GitHub API HTTP 403" in result.stderr:
+                print("artifact-ingest: stopping scan after systemic GitHub authentication/permission failure", file=sys.stderr)
+                break
         else:
             processed += 1
     print(json.dumps({
@@ -212,11 +254,11 @@ def main() -> int:
         size = int(item.get("size_in_bytes") or 0)
         if size <= 0 or size > MAX_ARCHIVE_BYTES:
             raise RuntimeError(f"artifact {artifact_id} ({name}) size {size} is outside supported bounds")
-        archive, _ = request(
-            "GET", f"{API}/repos/{repository}/actions/artifacts/{artifact_id}/zip", token
+        archive, _ = download_artifact_zip(
+            f"{API}/repos/{repository}/actions/artifacts/{artifact_id}/zip", token
         )
         if archive is None or len(archive) > MAX_ARCHIVE_BYTES:
-            raise RuntimeError(f"artifact {artifact_id} download is empty or exceeds 50 MiB")
+            raise RuntimeError(f"artifact {artifact_id} download is empty or exceeds 250 MiB")
         # Reject malformed archives before making a durable record.
         with zipfile.ZipFile(BytesIO(archive)) as zipped:
             bad = zipped.testzip()
