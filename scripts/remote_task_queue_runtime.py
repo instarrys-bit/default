@@ -459,7 +459,8 @@ def retire_legacy_source_tasks(store: GitHubContentsQueueStore, registry: dict, 
     except (OSError, json.JSONDecodeError) as exc:
         raise ValueError(f"cannot read Production control mode: {exc}") from exc
     if control.get("source_discovery_mode") != "monolithic_fallback":
-        raise ValueError("legacy source tasks may be retired only after Production monolithic_fallback is enabled")
+        return {"changed_count": 0, "cancelled_count": 0, "cancelled_task_ids": [],
+                "tasks": [], "reason": "Production is not in monolithic_fallback mode"}
 
     by_id = {item.get("id"): item for item in registry.get("programs", []) if isinstance(item, dict)}
     discovery_program = by_id.get("script_discover_sources")
@@ -476,6 +477,9 @@ def retire_legacy_source_tasks(store: GitHubContentsQueueStore, registry: dict, 
                 continue
             original_target = task.get("target_program_id")
             if original_target not in {"workflow_source_discovery", "script_assess_sources"}:
+                continue
+            previous_retirement = task.get("retirement")
+            if isinstance(previous_retirement, dict) and previous_retirement.get("source_discovery_mode") == "monolithic_fallback":
                 continue
 
             if original_target == "workflow_source_discovery":
