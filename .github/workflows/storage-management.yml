@@ -151,7 +151,7 @@ jobs:
           python-version: "3.11"
       - name: Retire legacy Discovery and Assessment queue tasks through Storage Management
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
@@ -175,7 +175,7 @@ jobs:
           python-version: "3.11"
       - name: Apply allowlisted incident ledger operation
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           OPERATION: ${{ inputs.operation }}
           WORKFLOW_KEY: ${{ inputs.workflow }}
