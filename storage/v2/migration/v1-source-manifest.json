@@ -4,11 +4,11 @@
   "generated_at": "2026-11-17",
   "source_archive": {
     "branch": "archive/v1-pre-v2-2026-11-17",
-    "commit": "8f5132d99f087bd2c2708eff93e2ad0b36bfaa3e",
-    "tree_sha": "37b3765f977878e1b86efe24395a6fc8cf5f8eaa",
+    "commit": "90fed7ce73d21236aa91d5e56ba6a50e32a294b7",
+    "tree_sha": "e229ea80d3263b588d8b06e375202eafa216bd9e",
     "inventory_path": "docs/v2/legacy-v1-inventory.json",
-    "inventory_blob_sha": "087315a870afa70c1f66d7ace3e8ff7d6a9bf0fd",
-    "tracked_file_count": 232
+    "inventory_blob_sha": "05e0b8f025c6a69aa9616f229f52a459657e4359",
+    "tracked_file_count": 230
   },
   "policy": {
     "mode": "reference_only_staging",
@@ -465,14 +465,6 @@
       "promotion_status": "QUARANTINED_PENDING_VALIDATION"
     },
     {
-      "source_path": "sources/policy_approvals.json",
-      "source_blob_sha": "8a90291f82ba82743f73a8368373c7d07c73f651",
-      "source_size_bytes": 45,
-      "asset_class": "SOURCE_CATALOG_OR_EVIDENCE",
-      "migration_status": "DISCOVERED_NOT_IMPORTED",
-      "promotion_status": "QUARANTINED_PENDING_VALIDATION"
-    },
-    {
       "source_path": "sources/policy_source_overlap.json",
       "source_blob_sha": "55c1fed359e0b10fd07c04a28bb60cf4e1a45021",
       "source_size_bytes": 351616,
@@ -530,13 +522,13 @@
     }
   ],
   "summary": {
-    "entry_count": 63,
+    "entry_count": 62,
     "by_asset_class": {
       "LEGACY_AUTOMATION_CONTROL_METADATA": 3,
       "CANDIDATE_OR_SOURCE_DATA": 13,
       "AUDIT_AND_RUN_EVIDENCE": 21,
       "RULESET_OR_RELEASE_DATA": 13,
-      "SOURCE_CATALOG_OR_EVIDENCE": 13
+      "SOURCE_CATALOG_OR_EVIDENCE": 12
     },
     "all_status": "DISCOVERED_NOT_IMPORTED"
   },
