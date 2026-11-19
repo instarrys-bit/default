@@ -160,7 +160,7 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Export durable queue snapshot from Issue state
+      - name: Export durable repository JSON queue snapshot
         env:
           GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
