@@ -6,11 +6,9 @@ on:
     paths:
       - ".github/workflows/purge-retired-queue-comments.yml"
 permissions:
-  contents: read
   issues: write
 jobs:
   purge:
-    if: ${{ startsWith(github.event.head_commit.message, 'ops: purge retired queue comments') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 360
     permissions:
@@ -28,23 +26,25 @@ jobs:
             mapfile -t ids < "$ids_file"
             total="${#ids[@]}"
             echo "Issue #$issue: deleting $total comments."
-            for ((start=0; start<total; start+=25)); do
-              batch=("${ids[@]:start:25}")
-              query="$(python3 - "${batch[@]}" <<'PY'
-          import sys
-          ids = sys.argv[1:]
-          fields = [
-              f'c{i}: deleteIssueComment(input: {{id: "{node_id}"}}) {{ clientMutationId }}'
-              for i, node_id in enumerate(ids)
-          ]
-          print("mutation {\n" + "\n".join(fields) + "\n}")
-          PY
-          )"
-              gh api graphql -f query="$query" > /dev/null
-              sleep 0.5
+            query="mutation {"
+            batch=0
+            for node_id in "${ids[@]}"; do
+              query+=" c$batch: deleteIssueComment(input: {id: \"$node_id\"}) { clientMutationId }"
+              batch=$((batch + 1))
+              if [ "$batch" -eq 25 ]; then
+                query+=" }"
+                gh api graphql -f query="$query" > /dev/null
+                query="mutation {"
+                batch=0
+                sleep 0.5
+              fi
             done
+            if [ "$batch" -gt 0 ]; then
+              query+=" }"
+              gh api graphql -f query="$query" > /dev/null
+            fi
             remaining="$(gh api "repos/$REPO/issues/$issue" --jq '.comments')"
             echo "Issue #$issue remaining comments: $remaining"
             test "$remaining" -eq 0
           done
-          echo "Retired queue issue comment bodies have been deleted." >> "$GITHUB_STEP_SUMMARY"
+          echo "Retired queue issue comments have been deleted." >> "$GITHUB_STEP_SUMMARY"
