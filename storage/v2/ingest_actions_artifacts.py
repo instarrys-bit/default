@@ -12,6 +12,7 @@ import json
 import os
 import re
 import sys
+import subprocess
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -90,10 +91,81 @@ def put_catalog(repository: str, branch: str, token: str, run_id: int, catalog: 
             raise RuntimeError(f"immutable artifact catalog conflict for run {run_id}") from None
 
 
+def scan_recent_runs(repository: str, token: str) -> int:
+    """Poll recent repository artifacts because GITHUB_TOKEN completions may not emit workflow_run."""
+    import datetime
+    cutoff = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=90)
+    run_ids = set()
+    for page in range(1, 21):
+        listing = get_json(
+            f"{API}/repos/{repository}/actions/artifacts?per_page=100&page={page}",
+            token,
+        )
+        batch = listing.get("artifacts", [])
+        if not batch:
+            break
+        for artifact in batch:
+            if artifact.get("expired") or artifact.get("deleted"):
+                continue
+            source = artifact.get("workflow_run") or {}
+            if source.get("head_branch") != "main" or not source.get("id"):
+                continue
+            created = artifact.get("created_at")
+            if created:
+                stamp = datetime.datetime.fromisoformat(created.replace("Z", "+00:00"))
+                if stamp < cutoff:
+                    continue
+            run_ids.add(int(source["id"]))
+        oldest = batch[-1].get("created_at")
+        if oldest:
+            stamp = datetime.datetime.fromisoformat(oldest.replace("Z", "+00:00"))
+            if stamp < cutoff:
+                break
+
+    failures = []
+    processed = 0
+    for source_run_id in sorted(run_ids):
+        run = get_json(f"{API}/repos/{repository}/actions/runs/{source_run_id}", token)
+        path = run.get("path", "")
+        if run.get("status") != "completed" or run.get("head_branch") != "main":
+            continue
+        if path not in {
+            ".github/workflows/auto_sync.yml",
+            ".github/workflows/automation-watchdog.yml",
+        }:
+            continue
+        env = os.environ.copy()
+        env["SOURCE_RUN_ID"] = str(source_run_id)
+        result = subprocess.run(
+            [sys.executable, os.path.abspath(__file__)],
+            env=env, capture_output=True, text=True, check=False,
+        )
+        if result.stdout:
+            print(result.stdout.rstrip())
+        if result.returncode:
+            failures.append(source_run_id)
+            if result.stderr:
+                print(result.stderr.rstrip(), file=sys.stderr)
+        else:
+            processed += 1
+    print(json.dumps({
+        "scan_mode": "recent_repository_artifacts",
+        "candidate_run_count": len(run_ids),
+        "processed_run_count": processed,
+        "failed_run_ids": failures,
+        "lookback_days": 90,
+    }, ensure_ascii=False))
+    return 1 if failures else 0
+
+
 def main() -> int:
     repository = os.environ["GITHUB_REPOSITORY"]
     token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN", "")
     branch = os.environ.get("GITHUB_REF_NAME", "main")
+    if not token:
+        raise ValueError("GITHUB_TOKEN is required")
+    if sys.argv[1:] == ["--scan-recent"]:
+        return scan_recent_runs(repository, token)
     run_id = int(os.environ["SOURCE_RUN_ID"])
     if not token or run_id < 1:
         raise ValueError("GITHUB_TOKEN and a positive SOURCE_RUN_ID are required")
