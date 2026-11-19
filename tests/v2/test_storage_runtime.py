@@ -247,7 +247,7 @@ class StorageV2Tests(unittest.TestCase):
             assert_automation_write_allowed(
                 "storage/v2/artifacts/catalog/123456789.json", "production_worker"
             )
-        with self.assertRaises(PermissionError):
+        with self.assertRaises(ValueError):
             assert_automation_write_allowed(
                 "storage/v2/artifacts/catalog/../task_queue.json", "storage_management"
             )
