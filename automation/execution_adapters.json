@@ -2064,7 +2064,8 @@
         "shell": false
       },
       "input_contract": {
-        "type": "object"
+        "type": "object",
+        "properties": {}
       },
       "output_contract": {
         "type": "object",
@@ -2077,7 +2078,7 @@
           }
         }
       },
-      "timeout_seconds": 300,
+      "timeout_seconds": 60,
       "retry": {
         "max_attempts": 1,
         "policy": "compatibility target; scheduler excludes execution in monolithic_fallback mode"
