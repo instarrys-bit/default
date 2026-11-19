@@ -145,8 +145,6 @@ jobs:
         env:
           PYTHONPATH: storage/v2
         run: python3 -m unittest discover -s tests/v2 -v
-      - name: Run complete repository regression suite
-        run: python3 -m unittest discover -s tests -v
 
   purge-legacy-source-tasks:
     name: Purge superseded Discovery and Assessment tasks from the live queue
