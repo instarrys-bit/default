@@ -99,7 +99,8 @@ jobs:
       - name: Checkout proposed Storage Management changes
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Parse all retained workflow YAML files
-        run: ruby -e 'require "yaml"; Dir.glob(".github/workflows/*.yml").each { |file| YAML.load_file(file, aliases: true) }'
+        run: |
+          ruby -e 'require "yaml"; Dir.glob(".github/workflows/*.yml").each { |file| YAML.load_file(file, aliases: true) }'
       - name: Verify the four-system workflow boundary
         run: |
           python3 - <<'PY'
