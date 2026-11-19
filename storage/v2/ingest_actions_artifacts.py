@@ -25,7 +25,8 @@ from runtime import assert_automation_write_allowed
 API = "https://api.github.com"
 MAX_ARCHIVE_BYTES = 250 * 1024 * 1024
 MAX_SEGMENT_BYTES = 48 * 1024 * 1024
-MAX_RUNS_PER_SCAN = 30
+MAX_RUNS_PER_SCAN = 2
+PER_RUN_INGEST_TIMEOUT_SECONDS = 600
 
 
 def request(method: str, url: str, token: str, payload: dict | None = None):
@@ -183,10 +184,20 @@ def scan_recent_runs(repository: str, token: str) -> int:
     for source_run_id in selected_run_ids:
         env = os.environ.copy()
         env["SOURCE_RUN_ID"] = str(source_run_id)
-        result = subprocess.run(
-            [sys.executable, os.path.abspath(__file__)],
-            env=env, capture_output=True, text=True, check=False,
-        )
+        try:
+            result = subprocess.run(
+                [sys.executable, os.path.abspath(__file__)],
+                env=env, capture_output=True, text=True, check=False,
+                timeout=PER_RUN_INGEST_TIMEOUT_SECONDS,
+            )
+        except subprocess.TimeoutExpired:
+            failures.append(source_run_id)
+            print(
+                f"artifact-ingest: run {source_run_id} exceeded {PER_RUN_INGEST_TIMEOUT_SECONDS}s; "
+                "content-addressed partial staging is safe to retry",
+                file=sys.stderr,
+            )
+            continue
         if result.stdout:
             print(result.stdout.rstrip())
         if result.returncode:
