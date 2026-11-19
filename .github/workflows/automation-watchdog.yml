@@ -124,14 +124,20 @@ jobs:
           set -euo pipefail
           if [ "${GITHUB_EVENT_NAME}" = "schedule" ]; then
             queue_json="$(gh api "repos/${GITHUB_REPOSITORY}/contents/automation/task_queue.json?ref=main" --jq .content | base64 -d)"
-            pending="$(jq '[.tasks[]? | select((.target_program_id == "workflow_source_discovery" or .target_program_id == "script_assess_sources") and (.status == "QUEUED" or .status == "FAILED" or .status == "RETRY_WAIT"))] | length' <<< "$queue_json")"
+            pending="$(jq '[.tasks[]? | select(
+              .target_program_id == "workflow_source_discovery"
+              or .target_program_id == "script_assess_sources"
+              or (.target_program_id == "script_discover_sources"
+                  and .retirement.retired_target_program_id == "workflow_source_discovery"
+                  and .retirement.source_discovery_mode == "monolithic_fallback")
+            )] | length' <<< "$queue_json")"
             if [ "$pending" -eq 0 ]; then
-              echo "No legacy source tasks remain; Storage Management migration dispatch is not needed."
+              echo "No legacy source tasks remain in the live queue; Storage Management purge is not needed."
               exit 0
             fi
           fi
           gh workflow run storage-management.yml --ref main \
-            -f operation=retire_legacy_source_tasks \
+            -f operation=purge_legacy_source_tasks \
             -f workflow=automation-watchdog \
             -f event_id="source-dag-migration-${GITHUB_SHA}"
 
