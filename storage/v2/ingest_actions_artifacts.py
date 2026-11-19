@@ -187,6 +187,15 @@ def main() -> int:
             break
         page += 1
 
+    if not artifacts:
+        print(json.dumps({
+            "source_run_id": run_id,
+            "ingested_count": 0,
+            "deleted_source_artifact_count": 0,
+            "skipped": "source run has no remaining artifacts",
+        }, ensure_ascii=False))
+        return 0
+
     store = GitHubContentsArtifactStore(repository, branch, token)
     existing_catalog = load_catalog(repository, branch, token, run_id)
     catalog_items = list((existing_catalog or {}).get("artifacts", []))
