@@ -17,8 +17,6 @@ on:
       - "scripts/validate_program_registry.py"
       - "scripts/validate_execution_adapters.py"
       - "scripts/remote_task_queue_runtime.py"
-      - "scripts/task_scheduler.py"
-      - "scripts/retired_source_discovery_target.py"
   push:
     branches: [main]
     paths:
