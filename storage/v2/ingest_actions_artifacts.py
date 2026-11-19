@@ -22,7 +22,8 @@ from artifact_store import GitHubContentsArtifactStore, ArtifactConflict, canoni
 from runtime import assert_automation_write_allowed
 
 API = "https://api.github.com"
-MAX_ARCHIVE_BYTES = 50 * 1024 * 1024
+MAX_ARCHIVE_BYTES = 250 * 1024 * 1024
+MAX_SEGMENT_BYTES = 48 * 1024 * 1024
 
 
 def request(method: str, url: str, token: str, payload: dict | None = None):
@@ -154,23 +155,40 @@ def main() -> int:
             "source_repository": repository,
             "archive_sha256": sha256(archive),
         }
-        staged = store.stage(
-            archive,
-            artifact_type="github_actions_artifact",
-            provenance=provenance,
-            schema_version=1,
-            producer_version="storage-management-v1",
-        )
-        verified = store.verify(staged["record_id"])
-        if not verified.get("valid") or verified.get("content_sha256") != sha256(archive):
-            raise RuntimeError(f"artifact {artifact_id} failed CAS read-back verification")
+        segment_records = []
+        segment_count = (len(archive) + MAX_SEGMENT_BYTES - 1) // MAX_SEGMENT_BYTES
+        for segment_index in range(segment_count):
+            segment = archive[segment_index * MAX_SEGMENT_BYTES:(segment_index + 1) * MAX_SEGMENT_BYTES]
+            segment_provenance = {
+                **provenance,
+                "source_id": f"{run_id}:{artifact_id}:{segment_index}",
+                "segment_index": segment_index,
+                "segment_count": segment_count,
+            }
+            staged = store.stage(
+                segment,
+                artifact_type="github_actions_artifact",
+                provenance=segment_provenance,
+                schema_version=1,
+                producer_version="storage-management-v1",
+            )
+            verified = store.verify(staged["record_id"])
+            if not verified.get("valid") or verified.get("content_sha256") != sha256(segment):
+                raise RuntimeError(f"artifact {artifact_id} segment {segment_index} failed CAS read-back verification")
+            segment_records.append({
+                "segment_index": segment_index,
+                "size_in_bytes": len(segment),
+                "content_sha256": sha256(segment),
+                "cas_artifact_id": staged["artifact_id"],
+                "manifest_record_id": staged["record_id"],
+            })
         catalog_items.append({
             "artifact_id": artifact_id,
             "name": name,
             "size_in_bytes": len(archive),
             "archive_sha256": sha256(archive),
-            "cas_artifact_id": staged["artifact_id"],
-            "manifest_record_id": staged["record_id"],
+            "segment_count": segment_count,
+            "segments": segment_records,
             "verified": True,
         })
         pending_delete.append(artifact_id)
