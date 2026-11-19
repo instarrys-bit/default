@@ -7,13 +7,22 @@ on:
       - ".github/workflows/storage-management.yml"
       - "storage/v2/**"
       - "tests/v2/**"
+      - ".github/workflows/automation-watchdog.yml"
+      - ".github/workflows/auto_sync.yml"
+      - ".github/workflows/dashboard-pages.yml"
+      - "automation/program_registry.json"
+      - "automation/execution_adapters.json"
+      - "automation/production_control.json"
+      - "scripts/validate_program_registry.py"
+      - "scripts/validate_execution_adapters.py"
+      - "scripts/remote_task_queue_runtime.py"
   workflow_dispatch:
     inputs:
       operation:
-        description: Incident ledger operation
+        description: Storage Management operation
         required: true
         type: choice
-        options: [record, resolve]
+        options: [record, resolve, retire_legacy_source_tasks]
       workflow:
         description: Originating workflow key
         required: true
@@ -103,6 +112,10 @@ jobs:
           python-version: "3.11"
       - name: Compile Storage Management runtime
         run: python3 -m compileall -q storage/v2
+      - name: Validate program registry
+        run: python3 scripts/validate_program_registry.py
+      - name: Validate execution adapter contracts
+        run: python3 scripts/validate_execution_adapters.py
       - name: Run Storage Management regression suite
         env:
           PYTHONPATH: storage/v2
@@ -142,6 +155,10 @@ jobs:
           DIAGNOSIS_JSON: ${{ inputs.diagnosis_json }}
         run: |
           set -euo pipefail
+          if [ "$OPERATION" = "retire_legacy_source_tasks" ]; then
+            python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main retire-legacy-source-tasks | tee "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
           args=("$OPERATION" --workflow "$WORKFLOW_KEY" --event-id "$EVENT_ID")
           if [ "$OPERATION" = "record" ]; then
             args+=(--run-id "$RUN_ID" --source-sha "$SOURCE_SHA" --classification "$CLASSIFICATION" --summary "$SUMMARY" --run-url "$RUN_URL")
