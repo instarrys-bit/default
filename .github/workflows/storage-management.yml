@@ -1,5 +1,5 @@
 name: Storage Management
-run-name: Storage Management / ${{ github.event.inputs.automation_task_id || github.event.inputs.event_id || github.run_id }}
+run-name: Storage Management / ${{ github.event.inputs.event_id || github.run_id }}
 on:
   pull_request:
     types: [opened, synchronize, reopened, closed]
@@ -32,17 +32,9 @@ on:
         required: true
         type: choice
         options: [record, resolve, purge_legacy_source_tasks]
-      workflow:
-        description: Originating workflow key
-        required: true
-        type: string
       event_id:
         description: Idempotent event identifier
         required: true
-        type: string
-      automation_task_id:
-        description: Correlated event identifier for the run name
-        required: false
         type: string
       run_id:
         description: Originating workflow run ID for record operations
@@ -74,10 +66,6 @@ on:
         type: string
       verification_url:
         description: Independently verified recovery run URL
-        required: false
-        type: string
-      diagnosis_json:
-        description: Optional compact diagnosis JSON
         required: false
         type: string
 permissions:
@@ -199,7 +187,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           OPERATION: ${{ inputs.operation }}
-          WORKFLOW_KEY: ${{ inputs.workflow }}
+          WORKFLOW_KEY: automation_watchdog
           EVENT_ID: ${{ inputs.event_id }}
           RUN_ID: ${{ inputs.run_id }}
           SOURCE_SHA: ${{ inputs.source_sha }}
@@ -209,7 +197,6 @@ jobs:
           BEFORE_RUN_ID: ${{ inputs.before_run_id }}
           CLASSIFICATIONS: ${{ inputs.classifications }}
           VERIFICATION_URL: ${{ inputs.verification_url }}
-          DIAGNOSIS_JSON: ${{ inputs.diagnosis_json }}
         run: |
           set -euo pipefail
           if [ "$OPERATION" = "purge_legacy_source_tasks" ]; then
@@ -219,10 +206,6 @@ jobs:
           args=("$OPERATION" --workflow "$WORKFLOW_KEY" --event-id "$EVENT_ID")
           if [ "$OPERATION" = "record" ]; then
             args+=(--run-id "$RUN_ID" --source-sha "$SOURCE_SHA" --classification "$CLASSIFICATION" --summary "$SUMMARY" --run-url "$RUN_URL")
-            if [ -n "$DIAGNOSIS_JSON" ]; then
-              printf '%s' "$DIAGNOSIS_JSON" > "$RUNNER_TEMP/diagnosis.json"
-              args+=(--diagnosis-file "$RUNNER_TEMP/diagnosis.json")
-            fi
           else
             args+=(--before-run-id "$BEFORE_RUN_ID" --classifications "$CLASSIFICATIONS" --verification-url "$VERIFICATION_URL")
           fi
