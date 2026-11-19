@@ -4,6 +4,7 @@ import json
 from contextlib import redirect_stdout
 import unittest
 import urllib.error
+import subprocess
 from unittest.mock import MagicMock, patch
 
 from ingest_actions_artifacts import download_artifact_zip, scan_recent_runs
@@ -40,6 +41,35 @@ class ArtifactIngestionPollingTests(unittest.TestCase):
         self.assertEqual(opener.request.headers.get("Authorization"), "Bearer secret-token")
         redirected_request = urlopen.call_args.args[0]
         self.assertNotIn("Authorization", redirected_request.headers)
+
+    def test_artifact_blob_download_retries_transient_503(self):
+        class RedirectOpener:
+            def open(self, request, timeout):
+                raise urllib.error.HTTPError(
+                    request.full_url, 302, "Found",
+                    {"Location": "https://blob.example/signed-artifact.zip"},
+                    io.BytesIO(),
+                )
+
+        opener = RedirectOpener()
+        response = MagicMock()
+        response.__enter__.return_value.read.return_value = b"zip-bytes"
+        response.__enter__.return_value.headers.get.return_value = "application/zip"
+        transient = urllib.error.HTTPError(
+            "https://blob.example/signed-artifact.zip", 503, "Server Busy",
+            {"Retry-After": "0"}, io.BytesIO(),
+        )
+        with patch("ingest_actions_artifacts.urllib.request.build_opener", return_value=opener), patch(
+            "ingest_actions_artifacts.urllib.request.urlopen", side_effect=[transient, response]
+        ) as urlopen, patch("ingest_actions_artifacts.time.sleep"):
+            payload, mime = download_artifact_zip(
+                "https://api.github.com/repos/owner/repo/actions/artifacts/1/zip",
+                "token",
+            )
+        self.assertEqual(payload, b"zip-bytes")
+        self.assertEqual(mime, "application/zip")
+        self.assertEqual(urlopen.call_count, 2)
+
 
     def test_polling_dispatches_only_completed_main_auto_sync_and_watchdog_runs(self):
         now = datetime.datetime.now(datetime.timezone.utc).isoformat().replace("+00:00", "Z")
