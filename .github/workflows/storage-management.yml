@@ -28,6 +28,8 @@ on:
       - "scripts/remote_task_queue_runtime.py"
       - "storage/v2/artifact_store.py"
       - "storage/v2/ingest_actions_artifacts.py"
+      - "storage/v2/**"
+      - "tests/v2/**"
   schedule:
     - cron: "*/15 * * * *"
   workflow_run:
