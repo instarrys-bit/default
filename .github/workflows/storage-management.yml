@@ -78,6 +78,25 @@ jobs:
     steps:
       - name: Checkout proposed Storage Management changes
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Parse all retained workflow YAML files
+        run: ruby -e 'require "yaml"; Dir.glob(".github/workflows/*.yml").each { |file| YAML.load_file(file, aliases: true) }'
+      - name: Verify the four-system workflow boundary
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          root = Path('.github/workflows')
+          expected = {'auto_sync.yml', 'automation-watchdog.yml', 'dashboard-pages.yml', 'storage-management.yml'}
+          actual = {p.name for p in root.glob('*.yml')}
+          if actual != expected:
+              raise SystemExit(f'Expected exactly four workflows; found {sorted(actual)}')
+          forbidden = ('assessment-completion-relay' + '.yml', 'source-discovery' + '.yml', 'queue-snapshot-artifact' + '.yml', 'validate-config' + '.yml', 'self-healing-agent' + '.yml', 'self-healing-tests' + '.yml', 'storage-incident-management' + '.yml', 'v2-storage-tests' + '.yml')
+          for file in root.glob('*.yml'):
+              content = file.read_text(encoding='utf-8')
+              for name in forbidden:
+                  if name in content:
+                      raise SystemExit(f'{file} references deleted workflow {name}')
+          print('Four workflows present; all YAML parsed; no deleted workflow references.')
+          PY
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
