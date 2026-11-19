@@ -1921,8 +1921,8 @@ jobs:
           PRODUCER_RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
-          payload="$(jq -cn --arg run_id "$PRODUCER_RUN_ID" '{ref:"main",inputs:{producer_run_id:$run_id}}')"
-          gh api -X POST "repos/$REPO/actions/workflows/assessment-completion-relay.yml/dispatches" --input - <<< "$payload"
+          payload="$(jq -cn --arg run_id "$PRODUCER_RUN_ID" '{ref:"main",inputs:{assessment_producer_run_id:$run_id}}')"
+          gh api -X POST "repos/$REPO/actions/workflows/automation-watchdog.yml/dispatches" --input - <<< "$payload"
 
   stale-run-watch:
     outputs:
