@@ -1842,7 +1842,8 @@
       "capabilities": [
         "incident_ledger_persistence",
         "durable_state_management",
-        "storage_runtime_validation"
+        "storage_runtime_validation",
+        "actions_artifact_ingestion"
       ],
       "invocation": "push-triggered one-time migration of superseded source tasks; workflow_dispatch from Production and Watchdog for incident operations; read-only pull-request validation",
       "inputs": [
@@ -1867,6 +1868,7 @@
       ],
       "depends_on": [
         "storage_incident_store",
+        "storage_actions_artifact_ingest",
         "script_remote_task_queue_runtime",
         "script_validate_program_registry",
         "script_validate_execution_adapters"
