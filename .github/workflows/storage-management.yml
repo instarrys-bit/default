@@ -219,7 +219,7 @@ jobs:
           python3 storage/v2/incident_store.py "\${args[@]}" | tee "$GITHUB_STEP_SUMMARY"
   poll-recent-actions-artifacts:
     name: Poll and ingest recent completed workflow artifacts
-    if: ${{ github.event_name == 'schedule' && github.ref == 'refs/heads/main' }}
+    if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'push') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     permissions:
