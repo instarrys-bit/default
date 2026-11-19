@@ -45,7 +45,6 @@ on:
       - ".github/workflows/**"
       - "sources/policy.json"
       - "sources/domain_sources.json"
-      - "sources/policy_approvals.json"
       - "sources/protected_domains.json"
       - "sources/request_domain_observations.json"
       - "scripts/**"
