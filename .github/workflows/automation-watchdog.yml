@@ -991,57 +991,6 @@ jobs:
           echo "Source collection and non-activating assessment execute inside the Production auto_sync workflow."
           echo "No separate Source Discovery workflow is registered or dispatched."
 
-      - name: Enqueue one artifact-recovery Assessment after verified success without supervisor upload
-        if: ${{ steps.verify-latest-assessment-artifact.outputs.valid == 'false' && steps.verify-latest-assessment-artifact.outputs.assessment_task_id != '' && steps.verify-discovery-artifact.outputs.valid == 'true' && (steps.resolve-discovery-run.outputs.handoff_state == 'already_assessed' || steps.verify-latest-assessment-artifact.outputs.assessment_task_id != '') && steps.source-mode.outputs.mode == 'independent' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          SOURCE_RUN_ID: ${{ steps.verify-latest-assessment-artifact.outputs.discovery_run_id }}
-          ASSESSMENT_TASK_ID_TO_RECOVER: ${{ steps.verify-latest-assessment-artifact.outputs.assessment_task_id }}
-          AUTOMATION_QUEUE_SNAPSHOT: ${{ runner.temp }}/task_queue.json
-        run: |
-          set -euo pipefail
-          base_key="source-assessment:$SOURCE_RUN_ID:parser-v2"
-          recovery_two_key="$base_key:recovery:2"
-          artifact_recovery_key="$base_key:artifact-recovery:1"
-          recovery_two="$(jq -c --arg key "$recovery_two_key" '[.tasks[]? | select(.idempotency_key == $key)] | last // empty' "$AUTOMATION_QUEUE_SNAPSHOT")"
-          verified_task_id="$ASSESSMENT_TASK_ID_TO_RECOVER"
-          verified_task="$(jq -c --arg task "$verified_task_id" '[.tasks[]? | select(.task_id == $task)] | last // empty' "$AUTOMATION_QUEUE_SNAPSHOT")"
-          # "already_assessed" without a matching immutable artifact is the only
-          # condition that can enqueue this one bounded artifact-recovery task.
-          if [ -z "$verified_task" ] || [ "$(jq -r '.status // ""' <<< "$verified_task")" != "SUCCEEDED" ] || [ "$(jq -r '.verification.status // ""' <<< "$verified_task")" != "passed" ] || [ "$(jq -r '.result.artifact_verification.valid // false' <<< "$verified_task")" != "true" ] || [ "$(jq -r '.result.artifact_verification.activation_count // -1' <<< "$verified_task")" != "0" ]; then
-            echo "No exact independently verified Assessment task requires artifact recovery."
-            exit 0
-          fi
-          recovery_two="$verified_task"
-          existing="$(jq -r --arg key "$artifact_recovery_key" '[.tasks[]? | select(.idempotency_key == $key)] | last | .task_id // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
-          if [ -n "$existing" ]; then
-            existing_status="$(jq -r --arg task "$existing" '[.tasks[]? | select(.task_id == $task)] | last | .status // ""' "$AUTOMATION_QUEUE_SNAPSHOT")"
-            case "$existing_status" in
-              QUEUED|CLAIMED|VERIFYING)
-                echo "Artifact-recovery task $existing is $existing_status; no duplicate will be enqueued."
-                exit 0
-                ;;
-              SUCCEEDED|DEAD_LETTER|CANCELLED|FAILED)
-                echo "Artifact-recovery task $existing ended in $existing_status without a matching immutable artifact; production remains blocked."
-                printf '%s\n' "Artifact recovery task $existing reached $existing_status, but no matching source-assessment-output artifact was found for Discovery run $SOURCE_RUN_ID." >> "$GITHUB_STEP_SUMMARY"
-                exit 1
-                ;;
-              *)
-                echo "Artifact-recovery task $existing has unknown status '$existing_status'; production remains blocked."
-                exit 1
-                ;;
-            esac
-          fi
-          verified_task_id="$(jq -r '.task_id' <<< "$verified_task")"
-          predecessor="$(jq -c '.input.predecessor' <<< "$recovery_two")"
-          task_input="$(jq -cn --argjson predecessor "$predecessor" '{max_urls:4,max_file_bytes:1000000,max_total_bytes:10000000,predecessor:$predecessor}')"
-          echo "Enqueueing one bounded artifact-recovery Assessment for Discovery run $SOURCE_RUN_ID."
-          queue_token="$GITHUB_TOKEN"
-          unset GITHUB_TOKEN
-          printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin --idempotency-key "$artifact_recovery_key" --recovery-of-task-id "$verified_task_id" --priority 100 --input-json "$task_input" enqueue-source-assessment
-          unset queue_token
-
       - name: Recover leases, verify results, and dispatch one task before artifact upload
         id: run-queue
         env:
@@ -1049,18 +998,17 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REF_NAME: main
           AUTOMATION_ARTIFACT_ROOT: ${{ runner.temp }}/source-assessment-output
-          RESOLVER_SOURCE_RUN_ID: ${{ steps.resolve-discovery-run.outputs.run_id }}
-          SOURCE_RUN_ID: ${{ (steps.verify-latest-assessment-artifact.outputs.valid == 'false' && steps.verify-latest-assessment-artifact.outputs.assessment_task_id != '' && steps.verify-latest-assessment-artifact.outputs.discovery_run_id) || steps.resolve-discovery-run.outputs.run_id }}
-          SOURCE_ASSESSMENT_RETRY_EXHAUSTED: ${{ steps.enqueue-assessment.outputs.retry_exhausted }}
+          SOURCE_RUN_ID: ''
+          SOURCE_ASSESSMENT_RETRY_EXHAUSTED: ''
           SOURCE_DISCOVERY_MODE: ${{ steps.source-mode.outputs.mode }}
-          ASSESSMENT_ARTIFACT_VERIFIED: ${{ steps.verify-latest-assessment-artifact.outputs.valid }}
+          ASSESSMENT_ARTIFACT_VERIFIED: 'false'
         run: |
           set -euo pipefail
           rm -rf "$AUTOMATION_ARTIFACT_ROOT"
           mkdir -p "$AUTOMATION_ARTIFACT_ROOT"
           queue_token="$GITHUB_TOKEN"
           unset GITHUB_TOKEN
-          SCHEDULER_ACTION="run""-once"
+          SCHEDULER_ACTION="run-once"
           printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin --verify-only "$SCHEDULER_ACTION" | tee "$RUNNER_TEMP/pending-result-verification.json"
           GITHUB_TOKEN="$queue_token" python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue_before_dispatch.json"
           selected_task_id="$(python3 - <<'PY'
@@ -1303,7 +1251,6 @@ jobs:
           ' <<< "$runs")"
 
           timed_out_any=0
-          timed_out_run_id=""
           cancelled_audit_ids=()
           if [ -n "$stale_lines" ]; then
             while read -r stale_id reason run_sha; do
@@ -1324,7 +1271,7 @@ jobs:
               echo "Cancelling audit $stale_id ($reason); current main is $current_main."
               gh run cancel "$stale_id" --repo "$REPO" || true
               cancelled_audit_ids+=("$stale_id")
-              if [ "$reason" = "timeout" ]; then timed_out_any=1; timed_out_run_id="$stale_id"; fi
+              if [ "$reason" = "timeout" ]; then timed_out_any=1; fi
             done <<< "$stale_lines"
             sleep 10
             if ! runs_response="$(gh api "repos/$REPO/actions/workflows/$AUTO_SYNC_WORKFLOW_ID/runs?per_page=100" 2>"$RUNNER_TEMP/auto-sync-refresh.err")"; then
