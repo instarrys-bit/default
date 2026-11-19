@@ -1,5 +1,5 @@
 name: Shadowrocket automation watchdog
-run-name: "Automation task ${{ github.event.inputs.automation_task_id || github.run_id }}"
+run-name: "Automation watchdog / ${{ github.run_id }}"
 
 on:
   pull_request:
@@ -38,7 +38,6 @@ on:
     workflows:
       - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
       - "Storage Management"
-      - "Shadowrocket automation watchdog"
     types: [completed]
   push:
     branches: [main]
@@ -135,7 +134,7 @@ jobs:
         run: echo "Watchdog control plane is main-only; no queue or production actions were run."
 
   health-check:
-    if: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.path == '.github/workflows/auto_sync.yml' || github.event.workflow_run.path == '.github/workflows/storage-management.yml' || github.event.workflow_run.path == '.github/workflows/automation-watchdog.yml'))) && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[source-dag-migration]')) }}
+    if: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main') }}
     # Queue mutations are Git-blob-SHA CAS; production outputs are protected by
     # live resource leases and fencing tokens. Keep supervision independent of
     # the publisher mutex so it can renew and verify long-running tasks.
