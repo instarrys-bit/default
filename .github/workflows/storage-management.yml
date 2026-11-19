@@ -16,6 +16,14 @@ on:
       - "scripts/validate_program_registry.py"
       - "scripts/validate_execution_adapters.py"
       - "scripts/remote_task_queue_runtime.py"
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/storage-management.yml"
+      - "automation/program_registry.json"
+      - "automation/execution_adapters.json"
+      - "automation/production_control.json"
+      - "scripts/remote_task_queue_runtime.py"
   workflow_dispatch:
     inputs:
       operation:
@@ -121,8 +129,33 @@ jobs:
           PYTHONPATH: storage/v2
         run: python3 -m unittest discover -s tests/v2 -v
 
+  retire-legacy-source-tasks:
+    name: Retire superseded independent source queue tasks
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Storage Management code
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+      - name: Retire legacy Discovery and Assessment queue tasks through Storage Management
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main retire-legacy-source-tasks | tee "$GITHUB_STEP_SUMMARY"
+
   mutate-ledger:
-    if: ${{ github.ref == 'refs/heads/main' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
