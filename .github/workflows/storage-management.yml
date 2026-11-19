@@ -21,6 +21,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/storage-management.yml"
+      - ".github/workflows/automation-watchdog.yml"
       - "automation/program_registry.json"
       - "automation/execution_adapters.json"
       - "automation/production_control.json"
@@ -32,7 +33,6 @@ on:
   workflow_run:
     workflows:
       - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
-      - "Shadowrocket automation watchdog"
     types: [completed]
   workflow_dispatch:
     inputs:
