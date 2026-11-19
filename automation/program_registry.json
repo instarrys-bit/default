@@ -1868,6 +1868,7 @@
       ],
       "depends_on": [
         "storage_incident_store",
+        "storage_artifact_store",
         "storage_ingest_actions_artifacts",
         "script_remote_task_queue_runtime",
         "script_validate_program_registry",
