@@ -1957,7 +1957,7 @@
         "artifact_provenance_catalog",
         "verified_artifact_cleanup"
       ],
-      "invocation": "direct CLI step in workflow_storage_management workflow_run handler; no independent dispatch",
+      "invocation": "direct CLI step in Storage Management workflow_run handler and 15-minute scheduled artifact-recovery poll; no independent dispatch",
       "inputs": [
         "completed main-branch workflow run ID",
         "GitHub Actions artifact archives",
