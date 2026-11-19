@@ -85,13 +85,11 @@
       ],
       "dispatches": [],
       "permission_boundary": "Runs as a same-run Production stage after source discovery. Reads the runner-local discovered source document and baseline; writes assessment outputs only in the isolated Production runner workspace. No independent workflow dispatch, source activation, or write to modules/uu.conf.",
-      "health_check": "Production verifies the assessor exit status and deterministic output reports; all source assessment remains non-activating and is included only in the runner-local audit artifact.",
+      "health_check": "Invoked only as a same-run Production stage in monolithic_fallback mode; Production checks the assessor exit status and deterministic output report. No standalone Watchdog dispatch is authorized.",
       "orchestration": {
-        "enabled": true,
-        "allowed_callers": [
-          "workflow_automation_watchdog"
-        ],
-        "max_attempts": 1,
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
         "timeout_seconds": 1800
       }
     },
