@@ -12,7 +12,7 @@ on:
     workflows:
       - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
       - "Shadowrocket automation watchdog"
-      - "Shadowrocket Source Discovery (Watchdog)"
+      - "Storage Management"
     types: [completed]
   schedule:
     - cron: "*/30 * * * *"
