@@ -13,6 +13,7 @@ import os
 import re
 import sys
 import subprocess
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -27,6 +28,29 @@ MAX_ARCHIVE_BYTES = 250 * 1024 * 1024
 MAX_SEGMENT_BYTES = 48 * 1024 * 1024
 MAX_RUNS_PER_SCAN = 2
 PER_RUN_INGEST_TIMEOUT_SECONDS = 600
+MAX_HTTP_RETRIES = 3
+
+
+def _urlopen_with_retries(request_obj, timeout: int, opener=None):
+    """Retry bounded transient GitHub/blob-storage failures without leaking auth."""
+    open_call = opener.open if opener is not None else urllib.request.urlopen
+    for attempt in range(MAX_HTTP_RETRIES + 1):
+        try:
+            return open_call(request_obj, timeout=timeout)
+        except urllib.error.HTTPError as exc:
+            if exc.code not in {429, 500, 502, 503, 504} or attempt >= MAX_HTTP_RETRIES:
+                raise
+            retry_after = exc.headers.get("Retry-After") if exc.headers else None
+            try:
+                delay = float(retry_after) if retry_after is not None else float(2 ** attempt)
+            except (TypeError, ValueError):
+                delay = float(2 ** attempt)
+            time.sleep(min(8.0, max(0.0, delay)))
+        except (urllib.error.URLError, TimeoutError, OSError):
+            if attempt >= MAX_HTTP_RETRIES:
+                raise
+            time.sleep(min(8.0, float(2 ** attempt)))
+    raise RuntimeError("HTTP request exhausted bounded retries")
 
 
 def request(method: str, url: str, token: str, payload: dict | None = None):
@@ -39,7 +63,7 @@ def request(method: str, url: str, token: str, payload: dict | None = None):
     body = json.dumps(payload, separators=(",", ":")).encode() if payload is not None else None
     req = urllib.request.Request(url, data=body, headers=headers, method=method)
     try:
-        with urllib.request.urlopen(req, timeout=90) as response:
+        with _urlopen_with_retries(req, timeout=90) as response:
             return response.read(), response.headers.get("Content-Type", "")
     except urllib.error.HTTPError as exc:
         if exc.code == 404 and method == "GET":
@@ -48,6 +72,8 @@ def request(method: str, url: str, token: str, payload: dict | None = None):
             raise ArtifactConflict(f"GitHub immutable catalog conflict ({exc.code})") from None
         detail = exc.read(500).decode("utf-8", "replace")
         raise RuntimeError(f"GitHub API HTTP {exc.code}: {detail[:300]}") from None
+    except (urllib.error.URLError, TimeoutError, OSError) as exc:
+        raise RuntimeError(f"GitHub API request failed after bounded retries: {exc}") from None
 
 
 def get_json(url: str, token: str):
@@ -73,7 +99,7 @@ def download_artifact_zip(url: str, token: str):
 
     opener = urllib.request.build_opener(NoRedirect)
     try:
-        with opener.open(req, timeout=90) as response:
+        with _urlopen_with_retries(req, timeout=90, opener=opener) as response:
             return response.read(), response.headers.get("Content-Type", "")
     except urllib.error.HTTPError as exc:
         if exc.code not in (301, 302, 303, 307, 308):
@@ -89,7 +115,7 @@ def download_artifact_zip(url: str, token: str):
             method="GET",
         )
         try:
-            with urllib.request.urlopen(redirected, timeout=90) as response:
+            with _urlopen_with_retries(redirected, timeout=90) as response:
                 return response.read(), response.headers.get("Content-Type", "")
         except urllib.error.HTTPError as blob_error:
             detail = blob_error.read(500).decode("utf-8", "replace")
@@ -116,20 +142,33 @@ def put_catalog(repository: str, branch: str, token: str, run_id: int, catalog: 
     path = f"storage/v2/artifacts/catalog/{run_id}.json"
     assert_automation_write_allowed(path, "storage_management")
     url = f"{API}/repos/{repository}/contents/{urllib.parse.quote(path, safe='/')}"
-    raw = canonical_bytes(catalog) + b"\n"
+    raw = canonical_bytes(catalog) + b"\\n"
     payload = {
         "message": f"storage: catalog Actions artifacts for run {run_id}",
         "content": base64.b64encode(raw).decode("ascii"),
         "branch": branch,
     }
-    try:
-        request("PUT", url, token, payload)
-    except ArtifactConflict:
-        existing = get_json(url + "?" + urllib.parse.urlencode({"ref": branch}), token)
-        encoded = existing.get("content", "").replace("\n", "")
-        current = base64.b64decode(encoded) if encoded else b""
-        if current != raw:
-            raise RuntimeError(f"immutable artifact catalog conflict for run {run_id}") from None
+    for attempt in range(MAX_HTTP_RETRIES + 1):
+        try:
+            request("PUT", url, token, payload)
+            return
+        except ArtifactConflict:
+            existing_raw, _ = request(
+                "GET", url + "?" + urllib.parse.urlencode({"ref": branch}), token
+            )
+            if existing_raw is not None:
+                existing = json.loads(existing_raw.decode("utf-8"))
+                encoded = existing.get("content", "").replace("\\n", "")
+                current = base64.b64decode(encoded) if encoded else b""
+                if current == raw:
+                    return
+                raise RuntimeError(f"immutable artifact catalog conflict for run {run_id}") from None
+            if attempt < MAX_HTTP_RETRIES:
+                time.sleep(min(8.0, float(2 ** attempt)))
+                continue
+            raise RuntimeError(
+                f"artifact catalog branch update conflicted but catalog {run_id} remained absent"
+            ) from None
 
 
 def scan_recent_runs(repository: str, token: str) -> int:
