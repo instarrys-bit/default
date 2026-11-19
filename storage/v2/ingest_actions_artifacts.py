@@ -25,6 +25,7 @@ from runtime import assert_automation_write_allowed
 API = "https://api.github.com"
 MAX_ARCHIVE_BYTES = 250 * 1024 * 1024
 MAX_SEGMENT_BYTES = 48 * 1024 * 1024
+MAX_RUNS_PER_SCAN = 30
 
 
 def request(method: str, url: str, token: str, payload: dict | None = None):
@@ -163,7 +164,10 @@ def scan_recent_runs(repository: str, token: str) -> int:
 
     failures = []
     processed = 0
-    for source_run_id in sorted(run_ids):
+    ordered_run_ids = sorted(run_ids)
+    selected_run_ids = ordered_run_ids[:MAX_RUNS_PER_SCAN]
+    deferred_run_count = max(0, len(ordered_run_ids) - len(selected_run_ids))
+    for source_run_id in selected_run_ids:
         run = get_json(f"{API}/repos/{repository}/actions/runs/{source_run_id}", token)
         path = run.get("path", "")
         if run.get("status") != "completed" or run.get("head_branch") != "main":
@@ -193,7 +197,9 @@ def scan_recent_runs(repository: str, token: str) -> int:
     print(json.dumps({
         "scan_mode": "recent_repository_artifacts",
         "candidate_run_count": len(run_ids),
+        "selected_run_count": len(selected_run_ids),
         "processed_run_count": processed,
+        "deferred_run_count": deferred_run_count,
         "failed_run_ids": failures,
         "lookback_days": 90,
     }, ensure_ascii=False))
