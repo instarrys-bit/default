@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Storage Management JSON state store with Contents API SHA-CAS."""
+"""Storage Management JSON state store with Contents API SHA-CAS; revision-0 empty queues are valid fresh state."""
 from __future__ import annotations
 import base64, copy, hashlib, json, os
 from dataclasses import dataclass
