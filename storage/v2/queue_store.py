@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Storage Management JSON state store with Contents API SHA-CAS; revision-0 empty queues are valid fresh state."""
+"""Storage Management JSON state store with Contents API SHA-CAS; empty revision-0 queues are valid fresh epochs, not Issue-comment snapshots."""
 from __future__ import annotations
 import base64, copy, hashlib, json, os
 from dataclasses import dataclass
