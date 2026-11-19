@@ -53,6 +53,22 @@ def get_json(url: str, token: str):
     return json.loads(raw.decode("utf-8"))
 
 
+def load_catalog(repository: str, branch: str, token: str, run_id: int):
+    path = f"storage/v2/artifacts/catalog/{run_id}.json"
+    url = f"{API}/repos/{repository}/contents/{urllib.parse.quote(path, safe='/')}?" + urllib.parse.urlencode({"ref": branch})
+    raw, _ = request("GET", url, token)
+    if raw is None:
+        return None
+    metadata = json.loads(raw.decode("utf-8"))
+    encoded = metadata.get("content", "").replace("\\n", "")
+    if metadata.get("encoding") != "base64" or not encoded:
+        raise RuntimeError("existing artifact catalog is not readable")
+    catalog = json.loads(base64.b64decode(encoded).decode("utf-8"))
+    if catalog.get("source_run_id") != run_id or catalog.get("schema_version") != 1:
+        raise RuntimeError("existing artifact catalog identity mismatch")
+    return catalog
+
+
 def put_catalog(repository: str, branch: str, token: str, run_id: int, catalog: dict):
     path = f"storage/v2/artifacts/catalog/{run_id}.json"
     assert_automation_write_allowed(path, "storage_management")
@@ -99,12 +115,17 @@ def main() -> int:
         page += 1
 
     store = GitHubContentsArtifactStore(repository, branch, token)
-    catalog_items = []
+    existing_catalog = load_catalog(repository, branch, token, run_id)
+    catalog_items = list((existing_catalog or {}).get("artifacts", []))
+    already_cataloged = {int(item["artifact_id"]) for item in catalog_items}
     pending_delete = []
     for item in artifacts:
         if item.get("expired") or item.get("deleted"):
             continue
         artifact_id = int(item["id"])
+        if artifact_id in already_cataloged:
+            pending_delete.append(artifact_id)
+            continue
         name = item.get("name") or f"artifact-{artifact_id}"
         size = int(item.get("size_in_bytes") or 0)
         if size <= 0 or size > MAX_ARCHIVE_BYTES:
@@ -163,7 +184,6 @@ def main() -> int:
         "source_commit": run.get("head_sha", ""),
         "source_branch": run.get("head_branch", ""),
         "source_event": run.get("event", ""),
-        "ingested_by_run_id": int(os.environ.get("GITHUB_RUN_ID", "0")),
         "artifacts": catalog_items,
         "all_artifacts_verified": True,
     }
