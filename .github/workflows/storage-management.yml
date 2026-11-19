@@ -88,7 +88,7 @@ concurrency:
 jobs:
   validate-storage:
     name: Validate Storage Management runtime and recovery
-    if: ${{ github.event_name == 'pull_request' && github.event.action != 'closed' }}
+    if: ${{ (github.event_name == 'pull_request' && github.event.action != 'closed') || (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
