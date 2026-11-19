@@ -80,7 +80,9 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: storage-management-main
+  # PR validation is read-only and must not queue behind a long production artifact backfill.
+  # Main-branch mutations remain serialized under one shared group.
+  group: storage-management-${{ github.event.pull_request.number || 'main' }}
   cancel-in-progress: false
 jobs:
   validate-storage:
