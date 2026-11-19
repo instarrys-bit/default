@@ -68,15 +68,12 @@
       "target_kind": "python_component",
       "adapter_type": "python_cli",
       "enabled": false,
-      "interface_status": "workflow_step_only",
+      "interface_status": "unreviewed",
       "allowed_callers": [],
       "entrypoint": {
         "path": "scripts/assess_sources.py",
         "executable": "python3",
-        "argv_template": [
-          "--task-input",
-          "{task_input_file}"
-        ],
+        "argv_template": [],
         "shell": false
       },
       "input_contract": null,
@@ -84,7 +81,7 @@
       "timeout_seconds": 300,
       "retry": {
         "max_attempts": 0,
-        "policy": "same-run Production workflow step; independent task dispatch is disabled under monolithic_fallback"
+        "policy": "library-only or same-run workflow step; direct adapter dispatch disabled"
       },
       "completion": {
         "success_condition": "exit_zero_schema_valid_and_independent_artifact_verifier_valid",
@@ -1883,7 +1880,7 @@
       "target_kind": "python_component",
       "adapter_type": "python_cli",
       "enabled": false,
-      "interface_status": "library_only",
+      "interface_status": "unreviewed",
       "allowed_callers": [],
       "entrypoint": {
         "path": "storage/v2/runtime.py",
@@ -1896,7 +1893,7 @@
       "timeout_seconds": 300,
       "retry": {
         "max_attempts": 0,
-        "policy": "library-only; direct adapter dispatch disabled"
+        "policy": "library-only or same-run workflow step; direct adapter dispatch disabled"
       },
       "completion": {
         "independent_verification_required": true
@@ -1907,7 +1904,7 @@
       "target_kind": "python_component",
       "adapter_type": "python_cli",
       "enabled": false,
-      "interface_status": "library_only",
+      "interface_status": "unreviewed",
       "allowed_callers": [],
       "entrypoint": {
         "path": "storage/v2/artifact_store.py",
@@ -1920,7 +1917,7 @@
       "timeout_seconds": 300,
       "retry": {
         "max_attempts": 0,
-        "policy": "library-only; direct adapter dispatch disabled"
+        "policy": "library-only or same-run workflow step; direct adapter dispatch disabled"
       },
       "completion": {
         "independent_verification_required": true
@@ -1931,7 +1928,7 @@
       "target_kind": "python_component",
       "adapter_type": "python_cli",
       "enabled": false,
-      "interface_status": "library_only",
+      "interface_status": "unreviewed",
       "allowed_callers": [],
       "entrypoint": {
         "path": "storage/v2/dashboard_snapshot.py",
@@ -1944,7 +1941,7 @@
       "timeout_seconds": 300,
       "retry": {
         "max_attempts": 0,
-        "policy": "library-only; direct adapter dispatch disabled"
+        "policy": "library-only or same-run workflow step; direct adapter dispatch disabled"
       },
       "completion": {
         "independent_verification_required": true
@@ -1955,7 +1952,7 @@
       "target_kind": "python_component",
       "adapter_type": "python_cli",
       "enabled": false,
-      "interface_status": "library_only",
+      "interface_status": "unreviewed",
       "allowed_callers": [],
       "entrypoint": {
         "path": "storage/v2/source_handoff.py",
@@ -1968,7 +1965,7 @@
       "timeout_seconds": 300,
       "retry": {
         "max_attempts": 0,
-        "policy": "library-only; direct adapter dispatch disabled"
+        "policy": "library-only or same-run workflow step; direct adapter dispatch disabled"
       },
       "completion": {
         "independent_verification_required": true
@@ -1979,7 +1976,7 @@
       "target_kind": "python_component",
       "adapter_type": "python_cli",
       "enabled": false,
-      "interface_status": "library_only",
+      "interface_status": "unreviewed",
       "allowed_callers": [],
       "entrypoint": {
         "path": "storage/v2/watchdog_supervisor.py",
@@ -1992,7 +1989,7 @@
       "timeout_seconds": 300,
       "retry": {
         "max_attempts": 0,
-        "policy": "library-only; direct adapter dispatch disabled"
+        "policy": "library-only or same-run workflow step; direct adapter dispatch disabled"
       },
       "completion": {
         "independent_verification_required": true
