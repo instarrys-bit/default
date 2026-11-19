@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "archive_branch": "archive/v1-pre-v2-2026-11-17",
-  "archive_commit": "8f5132d99f087bd2c2708eff93e2ad0b36bfaa3e",
-  "tree_sha": "37b3765f977878e1b86efe24395a6fc8cf5f8eaa",
+  "archive_commit": "90fed7ce73d21236aa91d5e56ba6a50e32a294b7",
+  "tree_sha": "e229ea80d3263b588d8b06e375202eafa216bd9e",
   "generated_at": "2026-11-17",
-  "file_count": 232,
-  "total_bytes": 279660125,
+  "file_count": 230,
+  "total_bytes": 279650234,
   "policy": "Exact V1 tracked-file inventory. Presence and hash do not certify freshness or eligibility for automatic republication.",
   "files": [
     {
@@ -735,12 +735,6 @@
       "category": "scripts"
     },
     {
-      "path": "scripts/select_domain_rules.py",
-      "size_bytes": 9846,
-      "blob_sha": "ef05a300205d0e9996579f94fb0bce98a2472fbe",
-      "category": "scripts"
-    },
-    {
       "path": "scripts/source_handoff_policy.py",
       "size_bytes": 17388,
       "blob_sha": "d72364cf34f48d0df78bfda8a6652d21e297bb60",
@@ -876,12 +870,6 @@
       "path": "sources/policy.json",
       "size_bytes": 8431,
       "blob_sha": "ad6b117a150c47a5bd49fe624c1f72845e177161",
-      "category": "sources"
-    },
-    {
-      "path": "sources/policy_approvals.json",
-      "size_bytes": 45,
-      "blob_sha": "8a90291f82ba82743f73a8368373c7d07c73f651",
       "category": "sources"
     },
     {
