@@ -96,9 +96,29 @@ jobs:
     steps:
       - name: Checkout proposed Storage Management changes
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Parse all retained workflow YAML files
+      - name: Validate all retained workflow YAML files and reject duplicate keys
         run: |
-          ruby -e 'require "yaml"; Dir.glob(".github/workflows/*.yml").each { |file| YAML.load_file(file, aliases: true) }'
+          ruby <<'RUBY'
+          require "psych"
+          def check_unique_keys(node, file)
+            return unless node
+            if node.is_a?(Psych::Nodes::Mapping)
+              seen = {}
+              node.children.each_slice(2) do |key, value|
+                name = key.respond_to?(:value) ? key.value : key.class.name
+                raise "#{file}: duplicate YAML key #{name.inspect}" if seen.key?(name)
+                seen[name] = true
+                check_unique_keys(value, file)
+              end
+            elsif node.respond_to?(:children)
+              node.children.each { |child| check_unique_keys(child, file) }
+            end
+          end
+          Dir.glob(".github/workflows/*.yml").sort.each do |file|
+            check_unique_keys(Psych.parse_file(file), file)
+            puts "Valid YAML with unique mapping keys: #{file}"
+          end
+          RUBY
       - name: Verify the four-system workflow boundary
         run: |
           python3 - <<'PY'
