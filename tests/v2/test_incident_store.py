@@ -34,7 +34,7 @@ class IncidentStoreTests(unittest.TestCase):
         doc,result=resolve_incidents(doc,workflow="config_validator",before_run_id="199",
             classifications=["TEST_FAILURE"],event_id="success-199",verification_url="https://github.com/example/run/199")
         self.assertEqual(result["resolved"],0); self.assertEqual(doc["incidents"][0]["lifecycle_status"],"MANUAL_INTERVENTION")
-        self.assertEqual(doc["revision"], 2)
+        self.assertEqual(doc["revision"], 3)  # record + audited resolve event
         self.assertEqual(doc["events"][-1]["operation"], "resolve")
     def test_resolve_does_not_close_unlisted_classifications(self):
         doc,_=record_incident(seed(),workflow="config_validator",run_id="100",source_sha="a"*40,
