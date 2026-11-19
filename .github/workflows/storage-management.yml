@@ -110,7 +110,7 @@ jobs:
                 seen[name] = true
                 check_unique_keys(value, file)
               end
-            elsif node.respond_to?(:children)
+            elsif node.respond_to?(:children) && node.children
               node.children.each { |child| check_unique_keys(child, file) }
             end
           end
