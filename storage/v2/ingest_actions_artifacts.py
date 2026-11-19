@@ -142,7 +142,7 @@ def put_catalog(repository: str, branch: str, token: str, run_id: int, catalog: 
     path = f"storage/v2/artifacts/catalog/{run_id}.json"
     assert_automation_write_allowed(path, "storage_management")
     url = f"{API}/repos/{repository}/contents/{urllib.parse.quote(path, safe='/')}"
-    raw = canonical_bytes(catalog) + b"\\n"
+    raw = canonical_bytes(catalog) + b"\n"
     payload = {
         "message": f"storage: catalog Actions artifacts for run {run_id}",
         "content": base64.b64encode(raw).decode("ascii"),
@@ -158,7 +158,7 @@ def put_catalog(repository: str, branch: str, token: str, run_id: int, catalog: 
             )
             if existing_raw is not None:
                 existing = json.loads(existing_raw.decode("utf-8"))
-                encoded = existing.get("content", "").replace("\\n", "")
+                encoded = existing.get("content", "").replace("\n", "")
                 current = base64.b64decode(encoded) if encoded else b""
                 if current == raw:
                     return
