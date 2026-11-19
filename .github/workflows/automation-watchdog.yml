@@ -88,7 +88,8 @@ jobs:
       - name: Checkout proposed workflow changes
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Parse Watchdog workflow YAML
-        run: ruby -e 'require "yaml"; YAML.load_file(".github/workflows/automation-watchdog.yml", aliases: true)'
+        run: |
+          ruby -e 'require "yaml"; YAML.load_file(".github/workflows/automation-watchdog.yml", aliases: true)'
       - name: Enforce exactly four workflow entry points and no deleted-entry references
         run: |
           python3 - <<'PY'
