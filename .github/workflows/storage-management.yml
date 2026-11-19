@@ -1,5 +1,5 @@
 name: Storage Management
-run-name: Storage Management / ${{ github.event.inputs.event_id || github.run_id }}
+run-name: Storage Management / ${{ github.event.inputs.automation_task_id || github.run_id }}
 on:
   pull_request:
     types: [opened, synchronize, reopened, closed]
@@ -32,8 +32,8 @@ on:
         required: true
         type: choice
         options: [record, resolve, purge_legacy_source_tasks]
-      event_id:
-        description: Idempotent event identifier
+      automation_task_id:
+        description: Idempotent event identifier and run correlation ID
         required: true
         type: string
       run_id:
@@ -188,7 +188,7 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
           OPERATION: ${{ inputs.operation }}
           WORKFLOW_KEY: automation_watchdog
-          EVENT_ID: ${{ inputs.event_id }}
+          EVENT_ID: ${{ inputs.automation_task_id }}
           RUN_ID: ${{ inputs.run_id }}
           SOURCE_SHA: ${{ inputs.source_sha }}
           CLASSIFICATION: ${{ inputs.classification }}
