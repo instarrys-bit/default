@@ -1,5 +1,5 @@
 name: Storage Management
-run-name: Storage incident ledger / ${{ inputs.automation_task_id || inputs.event_id }}
+run-name: Storage Management / ${{ inputs.automation_task_id || inputs.event_id }}
 on:
   pull_request:
     branches: [main]
@@ -82,7 +82,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: storage-incident-ledger-main
+  group: storage-management-main
   cancel-in-progress: false
 jobs:
   validate-storage:
