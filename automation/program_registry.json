@@ -7,7 +7,7 @@
     "permission_rule": "Registry declarations describe boundaries; they never grant permissions. The workflow job's least-privilege permissions remain authoritative.",
     "activation_rule": "Registration is mandatory for CI acceptance, but does not by itself authorize automatic dispatch, rule activation, publication, or modification of modules/uu.conf.",
     "excluded_legacy_workflow_paths": [],
-    "exclusion_rule": "Only the four retained workflow entry points are registered. Deleted workflow entry points must not remain as program or adapter targets; their capabilities are owned by Watchdog, Dashboard, Production or Storage Management."
+    "exclusion_rule": "Exactly four GitHub Actions workflow entry points are registered. During queue migration, historical target IDs may be represented by non-workflow compatibility components; deleted workflow paths and deleted workflow-dispatch adapters must never be restored."
   },
   "programs": [
     {
