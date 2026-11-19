@@ -4,8 +4,8 @@
   "status": "partial_static_audit",
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
-    "registry_blob_sha": "e32da1d883ad0c40d99c4e19e12a8e21683eb388",
-    "adapters_blob_sha": "e252c588903f1807124e027b2cf237b09b73b2c7",
+    "registry_blob_sha": "968c1ae613aa7c83eb4392ddb9eff6f7c6622767",
+    "adapters_blob_sha": "af0f8d196c70a07fcd30cdc7f97eaba7a025cb56",
     "inspected_sources": [
       ".github/workflow_helpers/check_source_assessment_artifact.py",
       ".github/workflows/assessment-completion-relay.yml",
@@ -52,7 +52,6 @@
       "scripts/resource_lease_runtime.py",
       "scripts/restore_automation_state.py",
       "scripts/review_cursor.py",
-      "scripts/select_domain_rules.py",
       "scripts/source_handoff_policy.py",
       "scripts/source_registry.py",
       "scripts/sync_ruleset_config_conflicts.py",
@@ -300,20 +299,6 @@
       "required_mode": "exclusive_exact_path_resource_lease",
       "status": "fenced_at_each_writer_mutation",
       "note": "lifecycle_gate.py now explicitly asserts the exact rulesets/lifecycle_state.json lease before every state write; lifecycle audit and restore paths share the same production lease."
-    },
-    {
-      "id": "manual_domain_selector_reports",
-      "paths": [
-        "reports/approved-domain-rules.list",
-        "reports/rule-selector-audit.md"
-      ],
-      "known_writers": [
-        "script_select_domain_rules"
-      ],
-      "lock_key": "reports/approved-domain-rules.list + reports/rule-selector-audit.md",
-      "required_mode": "exclusive_live_resource_leases_asserted_at_each_mutation",
-      "status": "bounded_fenced_non_dispatchable",
-      "note": "The selector is disabled and has no production workflow edge. Its script now asserts both exact live resource leases immediately before the corresponding output directory/file mutations. It cannot publish these reports; publication remains rulesets/** only."
     },
     {
       "id": "owner_config_baseline_metadata",
