@@ -33,7 +33,7 @@ on:
         description: Storage Management operation
         required: true
         type: choice
-        options: [record, resolve, retire_legacy_source_tasks]
+        options: [record, resolve, retire_legacy_source_tasks, purge_legacy_source_tasks]
       workflow:
         description: Originating workflow key
         required: true
@@ -157,6 +157,31 @@ jobs:
           set -euo pipefail
           python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main retire-legacy-source-tasks | tee "$GITHUB_STEP_SUMMARY"
 
+  purge-legacy-source-tasks:
+    name: Purge superseded Discovery and Assessment tasks from the live queue
+    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Storage Management code
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+      - name: Archive and remove legacy tasks through Storage Management
+        env:
+          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main purge-legacy-source-tasks | tee "$GITHUB_STEP_SUMMARY"
+
   mutate-ledger:
     if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-24.04
@@ -193,6 +218,10 @@ jobs:
           set -euo pipefail
           if [ "$OPERATION" = "retire_legacy_source_tasks" ]; then
             python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main retire-legacy-source-tasks | tee "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          if [ "$OPERATION" = "purge_legacy_source_tasks" ]; then
+            python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main purge-legacy-source-tasks | tee "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
           args=("$OPERATION" --workflow "$WORKFLOW_KEY" --event-id "$EVENT_ID")
