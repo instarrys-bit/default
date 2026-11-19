@@ -1,5 +1,5 @@
 name: Shadowrocket automation watchdog
-run-name: "Automation task ${{ github.event.inputs.automation_task_id || github.run_id }}"
+run-name: "Automation task ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.automation_task_id || github.run_id }}"
 
 on:
   pull_request:
