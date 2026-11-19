@@ -1,5 +1,5 @@
 name: Shadowrocket automation watchdog
-run-name: "Automation watchdog / ${{ github.run_id }}"
+run-name: "Automation task ${{ github.event.inputs.automation_task_id || 'event' }} | Assessment reconcile ${{ github.event.inputs.assessment_producer_run_id || 'none' }} | Discovery reconcile ${{ github.event.inputs.source_discovery_run_id || 'none' }} | Production reconcile ${{ github.event.inputs.production_producer_run_id || 'none' }}"
 
 on:
   pull_request:
@@ -110,7 +110,7 @@ jobs:
 
 
   non-main-noop:
-    if: ${{ github.ref_name != 'main' }}
+    if: ${{ github.ref != 'refs/heads/main' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 2
     permissions:
@@ -120,7 +120,7 @@ jobs:
         run: echo "Watchdog control plane is main-only; no queue or production actions were run."
 
   health-check:
-    if: ${{ github.ref_name == 'main' && (github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.path == '.github/workflows/auto_sync.yml' || github.event.workflow_run.path == '.github/workflows/storage-management.yml' || github.event.workflow_run.path == '.github/workflows/automation-watchdog.yml'))) && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[source-dag-migration]')) }}
+    if: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.path == '.github/workflows/auto_sync.yml' || github.event.workflow_run.path == '.github/workflows/storage-management.yml' || github.event.workflow_run.path == '.github/workflows/automation-watchdog.yml'))) && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[source-dag-migration]')) }}
     # Queue mutations are Git-blob-SHA CAS; production outputs are protected by
     # live resource leases and fencing tokens. Keep supervision independent of
     # the publisher mutex so it can renew and verify long-running tasks.
@@ -365,7 +365,7 @@ jobs:
 
       - name: Detect stale successful audit and recover
         id: stale-recovery
-        if: ${{ github.ref_name == 'main' && (github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[source-dag-migration]')) }}
+        if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[source-dag-migration]')) }}
         env:
           GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
@@ -1140,7 +1140,7 @@ jobs:
     permissions:
       actions: write
       contents: read
-    if: ${{ github.ref_name == 'main' && (github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') }}
+    if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     steps:
@@ -1286,7 +1286,7 @@ jobs:
     concurrency:
       group: shadowrocket-main-writer
       cancel-in-progress: false
-    if: ${{ github.ref_name == 'main' && ((github.event_name == 'workflow_dispatch' && github.event.inputs.source_discovery_run_id == '' && github.event.inputs.assessment_producer_run_id == '' && github.event.inputs.production_producer_run_id == '') || (github.event_name == 'schedule' && github.event.schedule == '30 22 * * *')) && needs.health-check.outputs.block_manifest != 'true' }}
+    if: ${{ github.ref == 'refs/heads/main' && ((github.event_name == 'workflow_dispatch' && github.event.inputs.source_discovery_run_id == '' && github.event.inputs.assessment_producer_run_id == '' && github.event.inputs.production_producer_run_id == '') || (github.event_name == 'schedule' && github.event.schedule == '30 22 * * *')) && needs.health-check.outputs.block_manifest != 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     permissions:
