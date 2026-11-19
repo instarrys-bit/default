@@ -17,8 +17,15 @@ class V1MigrationManifestTests(unittest.TestCase):
     def test_manifest_covers_allowlisted_v1_data_without_importing_it(self):
         result = validate_migration_manifest(self.manifest, self.inventory)
         self.assertTrue(result["valid"])
-        self.assertEqual(result["entry_count"], 66)
+        self.assertEqual(result["entry_count"], 62)
         self.assertFalse(result["legacy_queue_imported"])
+        source_paths = {entry["source_path"] for entry in self.manifest["entries"]}
+        self.assertTrue({
+            "automation/task_queue.json",
+            "reports/automation/task-queue-archive-2026-11-05.json",
+            "sources/reject_manual_approvals.json",
+            "sources/policy_approvals.json",
+        }.isdisjoint(source_paths))
 
     def test_user_configuration_is_reference_only_and_manual_edits_are_allowed(self):
         result = validate_migration_manifest(self.manifest, self.inventory)
