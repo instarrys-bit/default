@@ -11,7 +11,7 @@ sys.path.insert(0, str(ROOT / "storage" / "v2"))
 
 from artifact_store import (
     ArtifactConflict, ArtifactError, ContentAddressedArtifactStore,
-    FilesystemArtifactStore, MAX_ARTIFACT_BYTES, build_manifest,
+    FilesystemArtifactStore, GitHubContentsObjectBackend, MAX_ARTIFACT_BYTES, build_manifest,
     manifest_record_id, sha256, verify_manifest,
 )
 
@@ -148,6 +148,14 @@ class ArtifactStoreTests(unittest.TestCase):
                 build_manifest(b"four", artifact_type="candidate",
                     provenance=self.provenance, schema_version=1,
                     producer_version="test")
+
+    def test_github_backend_accepts_real_repository_names_with_s(self):
+        backend = GitHubContentsObjectBackend(
+            "instarrys-bit/default", "main", "test-token"
+        )
+        self.assertEqual(backend.repository, "instarrys-bit/default")
+        with self.assertRaisesRegex(ValueError, "repository must be owner/name"):
+            GitHubContentsObjectBackend("invalid-repository", "main", "test-token")
 
 
 
