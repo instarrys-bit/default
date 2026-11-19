@@ -8,12 +8,12 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "bc05f1c0419ac784fae1cceb0314ad9339f141ed"
+      "git_blob_sha": "968c1ae613aa7c83eb4392ddb9eff6f7c6622767"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "71d2ba5061d9f0b7cbca3961dd0d85e8e0ad5a45"
+      "git_blob_sha": "af0f8d196c70a07fcd30cdc7f97eaba7a025cb56"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -78,19 +78,19 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "bc05f1c0419ac784fae1cceb0314ad9339f141ed"
+      "git_blob_sha": "968c1ae613aa7c83eb4392ddb9eff6f7c6622767"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "7583f53e8a6429d0bc99284b29ddccaa7b47cd25"
+      "git_blob_sha": "af0f8d196c70a07fcd30cdc7f97eaba7a025cb56"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "db653a02b793295463c729706cf54e61a2b72a5b"
+      "git_blob_sha": "79075cfdb8522db8848c75f1b846722848374a94"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "a6dc8eababb19f8c2567c994042f1480c253cec5"
+      "git_blob_sha": "768255754cd64714cea3ce601018993d6be229f2"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -106,7 +106,7 @@
     },
     "production_input_manifest": {
       "path": "automation/production_inputs.json",
-      "git_blob_sha": "20b543b28cf0a2c9f6e6fa33c18b3fa09fdeb23a"
+      "git_blob_sha": "203b3f7997b8768100a19d36b504969b3ee08739"
     },
     "task_queue_store": {
       "path": "scripts/github_queue_store.py",
@@ -123,10 +123,6 @@
     "release_manifest_validator": {
       "path": "scripts/validate_release_manifest.py",
       "git_blob_sha": "e0a6aeac5278440820320592a61ac15563060d60"
-    },
-    "manual_domain_selector": {
-      "path": "scripts/select_domain_rules.py",
-      "git_blob_sha": "ef05a300205d0e9996579f94fb0bce98a2472fbe"
     },
     "legacy_local_queue_runtime": {
       "path": "scripts/task_queue_runtime.py",
