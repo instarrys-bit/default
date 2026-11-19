@@ -278,6 +278,29 @@ def expected_correlation_titles(intent: dict) -> set[str]:
             titles.add(f"Source discovery {correlation_id}")
     return titles
 
+
+def run_name_matches_intent(run: dict, intent: dict) -> bool:
+    """Match task titles or the watchdog's unique run-ID title.
+
+    The watchdog also runs on push and schedule events. Its run ID is the
+    stable run-name; task_id remains persisted in the dispatch intent/queue.
+    """
+    if run.get("display_title") in expected_correlation_titles(intent):
+        return True
+    if intent.get("workflow_path") != ".github/workflows/automation-watchdog.yml":
+        return False
+    run_id = run.get("id")
+    prepared_at = intent.get("prepared_at")
+    created_at = run.get("created_at")
+    return (
+        isinstance(run_id, int)
+        and not isinstance(run_id, bool)
+        and run.get("display_title") == f"Automation watchdog / {run_id}"
+        and isinstance(prepared_at, str)
+        and isinstance(created_at, str)
+        and created_at >= prepared_at
+    )
+
 def find_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict | None:
     """Find exactly one run by workflow ID, ref, SHA, event, and unique run-name."""
     titles = expected_correlation_titles(intent)
@@ -296,7 +319,7 @@ def find_correlated_run(client: GitHubWorkflowClient, intent: dict) -> dict | No
             raise WorkflowAPIError("workflow runs response is missing workflow_runs")
         matches.extend(
             run for run in runs
-            if isinstance(run, dict) and run.get("display_title") in titles
+            if isinstance(run, dict) and run_name_matches_intent(run, intent)
         )
         if len(matches) > 1:
             raise AmbiguousWorkflowRun("multiple workflow runs match one task correlation ID")
@@ -343,7 +366,7 @@ def inspect_correlated_run(client: GitHubWorkflowClient, intent: dict,
         "head_branch": intent["ref"],
     }
     if (any(run.get(key) != value for key, value in required.items())
-            or run.get("display_title") not in expected_correlation_titles(intent)):
+            or not run_name_matches_intent(run, intent)):
         raise WorkflowAPIError("workflow run identity does not match the persisted dispatch intent")
     try:
         if listed is not None and run.get("head_sha") != listed.get("head_sha"):
