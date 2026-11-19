@@ -60,7 +60,7 @@ def load_catalog(repository: str, branch: str, token: str, run_id: int):
     if raw is None:
         return None
     metadata = json.loads(raw.decode("utf-8"))
-    encoded = metadata.get("content", "").replace("\\n", "")
+    encoded = metadata.get("content", "").replace("\n", "")
     if metadata.get("encoding") != "base64" or not encoded:
         raise RuntimeError("existing artifact catalog is not readable")
     catalog = json.loads(base64.b64decode(encoded).decode("utf-8"))
