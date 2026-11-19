@@ -1,5 +1,7 @@
 import datetime
 import io
+import json
+from contextlib import redirect_stdout
 import unittest
 import urllib.error
 from unittest.mock import MagicMock, patch
@@ -68,6 +70,35 @@ class ArtifactIngestionPollingTests(unittest.TestCase):
         self.assertEqual(result, 0)
         run.assert_called_once()
         self.assertEqual(run.call_args.kwargs["env"]["SOURCE_RUN_ID"], "101")
+
+    def test_polling_bounds_each_scan_and_reports_deferred_runs(self):
+        now = datetime.datetime.now(datetime.timezone.utc).isoformat().replace("+00:00", "Z")
+        artifacts = [
+            {"id": i, "created_at": now, "workflow_run": {"id": i + 300, "head_branch": "main"}}
+            for i in range(4)
+        ]
+
+        def fake_get_json(url, token):
+            if "/actions/artifacts?" in url:
+                return {"artifacts": artifacts if "page=1" in url else []}
+            return {
+                "status": "completed",
+                "head_branch": "main",
+                "path": ".github/workflows/auto_sync.yml",
+            }
+
+        output = io.StringIO()
+        with patch("ingest_actions_artifacts.get_json", side_effect=fake_get_json), patch(
+            "ingest_actions_artifacts.subprocess.run"
+        ) as run, patch("ingest_actions_artifacts.MAX_RUNS_PER_SCAN", 2), redirect_stdout(output):
+            run.return_value.returncode = 0
+            result = scan_recent_runs("owner/repo", "token")
+
+        self.assertEqual(result, 0)
+        self.assertEqual(run.call_count, 2)
+        summary = json.loads(output.getvalue().strip().splitlines()[-1])
+        self.assertEqual(summary["selected_run_count"], 2)
+        self.assertEqual(summary["deferred_run_count"], 2)
 
     def test_polling_reports_failed_ingestion_without_claiming_success(self):
         now = datetime.datetime.now(datetime.timezone.utc).isoformat().replace("+00:00", "Z")
