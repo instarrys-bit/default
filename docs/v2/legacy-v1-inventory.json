@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "archive_branch": "archive/v1-pre-v2-2026-11-17",
-  "archive_commit": "c6c95b1282826dbc9fb74858f707001e874f7459",
-  "tree_sha": "721f9bd67d6e6bd9dd55953748794417211628b8",
+  "archive_commit": "8f5132d99f087bd2c2708eff93e2ad0b36bfaa3e",
+  "tree_sha": "37b3765f977878e1b86efe24395a6fc8cf5f8eaa",
   "generated_at": "2026-11-17",
-  "file_count": 239,
-  "total_bytes": 280466056,
+  "file_count": 232,
+  "total_bytes": 279660125,
   "policy": "Exact V1 tracked-file inventory. Presence and hash do not certify freshness or eligibility for automatic republication.",
   "files": [
     {
@@ -141,24 +141,6 @@
       "category": "automation"
     },
     {
-      "path": "automation/queue_mig_part_0.txt",
-      "size_bytes": 11,
-      "blob_sha": "b3a425249b207819e63bf9a2716fd16f63b0f7b7",
-      "category": "automation"
-    },
-    {
-      "path": "automation/queue_repo_json_bundle.json",
-      "size_bytes": 21,
-      "blob_sha": "7a95ed815512d6a0097507720a6897defab1fca3",
-      "category": "automation"
-    },
-    {
-      "path": "automation/queue_store_pointer.json",
-      "size_bytes": 581,
-      "blob_sha": "d84f6bc9b7acf62c1e5b6360a2d3d8c8d731c02b",
-      "category": "automation"
-    },
-    {
       "path": "automation/release_manifest.json",
       "size_bytes": 12905,
       "blob_sha": "75ea172c5ac973e3fed7f9c2329037ad824f44bd",
@@ -174,18 +156,6 @@
       "path": "automation/resource_write_sets.json",
       "size_bytes": 106249,
       "blob_sha": "f10f85976d846527d523bbb67fdf2ac6ab4472dd",
-      "category": "automation"
-    },
-    {
-      "path": "automation/task_queue.json",
-      "size_bytes": 728426,
-      "blob_sha": "13da59249c3bd2db437a3a989136c035773bdfbc",
-      "category": "automation"
-    },
-    {
-      "path": "automation/task_queue_rebuild_seed.json",
-      "size_bytes": 114,
-      "blob_sha": "c7818a773ec33f14d40e02edea0dda53363d977b",
       "category": "automation"
     },
     {
@@ -342,12 +312,6 @@
       "path": "reports/automation/state_store.json",
       "size_bytes": 355,
       "blob_sha": "f2a9ed9a3832379270a0559093cfff05de7e3d25",
-      "category": "reports"
-    },
-    {
-      "path": "reports/automation/task-queue-archive-2026-11-05.json",
-      "size_bytes": 47508,
-      "blob_sha": "e9411f37194e73d9f7d6e99d390a037c7e6105f7",
       "category": "reports"
     },
     {
@@ -930,12 +894,6 @@
       "path": "sources/protected_domains.json",
       "size_bytes": 871,
       "blob_sha": "8cbf57dbf079cc061892bb4d4d93ad0ffab709a6",
-      "category": "sources"
-    },
-    {
-      "path": "sources/reject_manual_approvals.json",
-      "size_bytes": 29270,
-      "blob_sha": "f96d2be5ed188cfb6339190bdd6b82a38084ca75",
       "category": "sources"
     },
     {
