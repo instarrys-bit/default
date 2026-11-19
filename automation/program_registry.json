@@ -1865,7 +1865,10 @@
         "idempotent event result"
       ],
       "depends_on": [
-        "storage_incident_store"
+        "storage_incident_store",
+        "script_remote_task_queue_runtime",
+        "script_validate_program_registry",
+        "script_validate_execution_adapters"
       ],
       "dispatches": [],
       "permission_boundary": "contents:write exists only in this Storage Management workflow; storage_queue_store restricts writes to storage/v2/incidents.json. No Issues API, ruleset writes, or modules/uu.conf access.",
