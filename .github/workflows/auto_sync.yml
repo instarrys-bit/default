@@ -5,12 +5,8 @@ run-name: Automation task ${{ inputs.automation_task_id || 'manual' }}
 on:
   workflow_dispatch:
     inputs:
-      restore_ids:
-        description: 'Comma-separated lifecycle deletion IDs to restore (optional)'
-        required: false
-        type: string
-      restore_conflict_ids:
-        description: 'Comma-separated config-conflict archive IDs to restore after rechecking uu.conf (optional)'
+      restore_requests_json:
+        description: 'Optional JSON object with lifecycle_ids and config_conflict_ids arrays'
         required: false
         type: string
       automation_task_id:
@@ -420,7 +416,7 @@ jobs:
 
       - name: Remove published and queued rules that conflict with uu.conf
         env:
-          RULESET_CONFIG_RESTORE_IDS: ${{ github.event.inputs.restore_conflict_ids || '' }}
+          RULESET_CONFIG_RESTORE_IDS: ${{ fromJSON(inputs.restore_requests_json || '{}').config_conflict_ids || '' }}
           RULESET_CONFIG_REPORT_AGGREGATION: "1"
         run: |
           python3 scripts/sync_ruleset_config_conflicts.py
@@ -525,7 +521,7 @@ jobs:
 
       - name: Run conservative lifecycle audit and selectable restoration
         env:
-          LIFECYCLE_RESTORE_IDS: ${{ github.event.inputs.restore_ids || '' }}
+          LIFECYCLE_RESTORE_IDS: ${{ fromJSON(inputs.restore_requests_json || '{}').lifecycle_ids || '' }}
         run: |
           python3 scripts/lifecycle_audit.py
           if [ -f reports/lifecycle/latest.md ]; then python3 scripts/append_step_summary.py --input reports/lifecycle/latest.md; fi
