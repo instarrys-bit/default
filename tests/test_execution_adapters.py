@@ -7,7 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from validate_execution_adapters import validate_execution_adapters
+from validate_execution_adapters import has_task_correlation_run_name, validate_execution_adapters
 
 
 class ExecutionAdapterTests(unittest.TestCase):
@@ -97,6 +97,12 @@ class ExecutionAdapterTests(unittest.TestCase):
         self.assertLess(adapter["timeout_seconds"], program["orchestration"]["timeout_seconds"])
         self.assertEqual(program["orchestration"]["timeout_seconds"], 900)
 
+    def test_watchdog_run_id_correlation_is_scoped_to_watchdog_path(self):
+        root, _, _, _ = self.make_repo()
+        workflow = root / ".github" / "workflows" / "run.yml"
+        workflow.write_text("run-name: Automation watchdog / \\${{ github.run_id }}\\n", encoding="utf-8")
+        self.assertFalse(has_task_correlation_run_name(workflow))
+        self.assertTrue(has_task_correlation_run_name(workflow, allow_run_id=True))
     def test_valid_minimal_inventory(self):
         root, ap, rp, _ = self.make_repo()
         self.assertEqual(validate_execution_adapters(root, ap, rp)["adapter_count"], 2)
