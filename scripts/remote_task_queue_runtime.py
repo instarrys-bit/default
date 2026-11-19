@@ -543,6 +543,70 @@ def retire_legacy_source_tasks(store: GitHubContentsQueueStore, registry: dict, 
     return store.mutate(mutate)
 
 
+def purge_legacy_source_tasks(store: GitHubContentsQueueStore, registry: dict, now=None) -> dict:
+    """Remove superseded independent Discovery/Assessment tasks from the live queue.
+
+    Complete task records are retained in a root-level archive for audit. The
+    operation refuses to remove any task with a live lease or unresolved dispatch.
+    """
+    now = now or now_utc()
+    control_path = ROOT / "automation" / "production_control.json"
+    try:
+        control = json.loads(control_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(f"cannot read Production control mode: {exc}") from exc
+    if control.get("source_discovery_mode") != "monolithic_fallback":
+        raise ValueError("legacy source queue purge requires Production monolithic_fallback mode")
+
+    legacy_targets = {"workflow_source_discovery", "script_assess_sources"}
+
+    def mutate(queue: dict):
+        validate_envelope(queue)
+        tasks = queue.get("tasks", [])
+        legacy = [task for task in tasks if isinstance(task, dict)
+                  and task.get("target_program_id") in legacy_targets]
+        for task in legacy:
+            if task.get("status") in {"CLAIMED", "VERIFYING"}:
+                raise ValueError(f"{task.get('task_id')} has a live task state; refusing queue purge")
+            if task.get("lease") is not None:
+                raise ValueError(f"{task.get('task_id')} retains a task lease; refusing queue purge")
+            if isinstance(task.get("dispatch_intent"), dict):
+                raise ValueError(f"{task.get('task_id')} has unresolved dispatch intent; refusing queue purge")
+            resource_lease = task.get("resource_lease")
+            if isinstance(resource_lease, dict) and resource_lease.get("status") == "ACTIVE":
+                raise ValueError(f"{task.get('task_id')} retains an active resource lease; refusing queue purge")
+
+        archive = queue.setdefault("archived_legacy_source_tasks", [])
+        if not isinstance(archive, list):
+            raise ValueError("archived_legacy_source_tasks must be an array")
+        archived_ids = {item.get("task_id") for item in archive if isinstance(item, dict)}
+        newly_archived = []
+        for task in legacy:
+            if task.get("task_id") in archived_ids:
+                raise ValueError(f"{task.get('task_id')} already exists in the legacy task archive")
+            record = dict(task)
+            record["archive_metadata"] = {
+                "schema_version": 1,
+                "archived_at": stamp(now),
+                "reason": "Independent Discovery/Assessment was consolidated into the Production auto_sync workflow.",
+            }
+            newly_archived.append(record)
+        if newly_archived:
+            archive.extend(newly_archived)
+            legacy_ids = {task.get("task_id") for task in legacy}
+            queue["tasks"] = [task for task in tasks if task.get("task_id") not in legacy_ids]
+            queue["revision"] += 1
+        validate_candidate(queue, registry)
+        return queue, {
+            "removed_from_live_queue": len(newly_archived),
+            "archived_count": len(archive),
+            "removed_task_ids": [task.get("task_id") for task in legacy],
+            "revision": queue.get("revision"),
+        }
+
+    return store.mutate(mutate)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repository")
@@ -560,6 +624,7 @@ def main() -> int:
     complete.add_argument("--error-json", type=Path)
     recover = subs.add_parser("recover-expired")
     subs.add_parser("retire-legacy-source-tasks")
+    subs.add_parser("purge-legacy-source-tasks")
     subs.add_parser("validate")
     snapshot = subs.add_parser("snapshot")
     snapshot.add_argument("--output", type=Path, required=True)
@@ -586,6 +651,8 @@ def main() -> int:
             output = {"recovered_count": len(recovered), "tasks": recovered}
         elif args.command == "retire-legacy-source-tasks":
             output = retire_legacy_source_tasks(store, registry)
+        elif args.command == "purge-legacy-source-tasks":
+            output = purge_legacy_source_tasks(store, registry)
         elif args.command == "snapshot":
             snapshot = store.read()
             validate_envelope(snapshot.document)
