@@ -119,7 +119,7 @@ jobs:
         with:
           python-version: "3.11"
       - name: Compile Storage Management runtime
-        run: python3 -m compileall -q storage/v2
+        run: python3 -m compileall -q scripts storage/v2
       - name: Validate program registry
         run: python3 scripts/validate_program_registry.py
       - name: Validate execution adapter contracts
