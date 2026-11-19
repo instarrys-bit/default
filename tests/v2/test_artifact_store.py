@@ -158,6 +158,20 @@ class ArtifactStoreTests(unittest.TestCase):
             GitHubContentsObjectBackend("invalid-repository", "main", "test-token")
 
 
+    def test_put_if_absent_retries_branch_conflict_when_object_is_not_visible_yet(self):
+        backend = GitHubContentsObjectBackend("owner/repo", "main", "test-token")
+        payload = b"retry-after-contents-branch-conflict"
+        digest = sha256(payload)
+        with patch.object(
+            backend, "_request",
+            side_effect=[ArtifactConflict("branch ref moved"), {}],
+        ) as request, patch.object(backend, "get_object", return_value=None), patch(
+            "artifact_store.time.sleep"
+        ):
+            self.assertTrue(backend.put_if_absent(digest, payload))
+        self.assertEqual(request.call_count, 2)
+
+
 
 if __name__ == "__main__":
     unittest.main()
