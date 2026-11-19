@@ -17,8 +17,6 @@ on:
       - "scripts/validate_program_registry.py"
       - "scripts/validate_execution_adapters.py"
       - "scripts/remote_task_queue_runtime.py"
-      - "storage/v2/artifact_store.py"
-      - "storage/v2/ingest_actions_artifacts.py"
   push:
     branches: [main]
     paths:
@@ -27,6 +25,8 @@ on:
       - "automation/execution_adapters.json"
       - "automation/production_control.json"
       - "scripts/remote_task_queue_runtime.py"
+      - "storage/v2/artifact_store.py"
+      - "storage/v2/ingest_actions_artifacts.py"
   schedule:
     - cron: "*/15 * * * *"
   workflow_run:
