@@ -801,7 +801,7 @@
       "side_effects": [
         "Acquires, renews, asserts and releases durable resource leases by mutating the task queue through GitHubContentsQueueStore."
       ],
-      "evidence": "Queue mutations append compressed snapshots to automation/task_queue.json comments with SHA-256 previous-revision chaining and deterministic canonical comment ordering.",
+      "evidence": "Queue mutations update automation/task_queue.json through GitHub Contents API SHA-CAS; each mutation re-reads the current blob SHA, validates the complete queue document, writes one canonical JSON snapshot, and verifies the persisted revision.",
       "lease_keys": [
         "github-contents-cas:automation/task_queue.json",
         "resource:<canonical logical resource path>"
@@ -810,7 +810,7 @@
       "publish_resources": [],
       "ephemeral_unpublished_resources": [],
       "control_plane_consistency": "repository_json_contents_sha_cas_revision_chain",
-      "write_boundary_fencing": "No GitHub Contents API or repository-file write is used for durable queue state; candidate queues are validated before and after each append, with bounded re-read/reapply after conflicts."
+      "write_boundary_fencing": "GitHub Contents API writes are restricted to the allowlisted automation/task_queue.json and storage/v2/incidents.json documents. Queue mutations use SHA-CAS, bounded conflict retry, schema validation, and read-after-write verification; GitHub Issues comments are not a queue backend."
     },
     {
       "program_id": "script_restore_automation_state",
@@ -1694,9 +1694,9 @@
         "git_reset"
       ],
       "resources": [
-        "automation/task_queue.json durable queue comments (external state)"
+        "automation/task_queue.json repository JSON queue state"
       ],
-      "fence": "task_scheduler.py appends compressed SHA-256 chained queue snapshots to automation/task_queue.json with bounded conflict retry.",
+      "fence": "task_scheduler.py mutates the repository JSON queue through Storage Management Contents API SHA-CAS with bounded conflict retry and read-after-write verification.",
       "boundary": "External control-plane state only; no repository file is written by queue persistence."
     },
     {
