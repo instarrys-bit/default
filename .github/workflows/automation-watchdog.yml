@@ -88,7 +88,8 @@ jobs:
       - name: Checkout proposed workflow changes
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - name: Parse Watchdog workflow YAML
-        run: ruby -e 'require "yaml"; YAML.load_file(".github/workflows/automation-watchdog.yml", aliases: true)'
+        run: |
+          ruby -e 'require "yaml"; YAML.load_file(".github/workflows/automation-watchdog.yml", aliases: true)'
       - name: Enforce exactly four workflow entry points and no deleted-entry references
         run: |
           python3 - <<'PY'
@@ -154,7 +155,7 @@ jobs:
       cancel-in-progress: false
     env:
       GITHUB_ACTOR_ID: ${{ github.actor_id }}
-      GITHUB_MANUAL_AUDIT_REQUEST: ${{ inputs.request_deterministic_audit }}
+      GITHUB_MANUAL_AUDIT_REQUEST: ${{ github.event.inputs.request_deterministic_audit }}
     outputs:
       block_manifest: ${{ steps.stale-recovery.outputs.block_manifest }}
     runs-on: ubuntu-24.04
@@ -418,7 +419,7 @@ jobs:
 
           # A manual authorization is an explicit one-shot request, not a bypass
           # of the normal Watchdog queue, unknown-path gate, or protected baseline.
-          if [ "$ORIGIN_EVENT" = "workflow_dispatch" ] && [ "${{ inputs.request_deterministic_audit }}" = "true" ]; then
+          if [ "$ORIGIN_EVENT" = "workflow_dispatch" ] && [ "${{ github.event.inputs.request_deterministic_audit }}" = "true" ]; then
             manual_dispatch_mode="$(python3 - <<'PY'
           import json
           from pathlib import Path
@@ -912,7 +913,7 @@ jobs:
       cancel-in-progress: false
     env:
       GITHUB_ACTOR_ID: ${{ github.actor_id }}
-      GITHUB_MANUAL_AUDIT_REQUEST: ${{ inputs.request_deterministic_audit }}
+      GITHUB_MANUAL_AUDIT_REQUEST: ${{ github.event.inputs.request_deterministic_audit }}
       PYTHONDONTWRITEBYTECODE: "1"
     needs: [health-check, stale-run-watch, manifest-integrity]
     if: ${{ always() && needs.health-check.result == 'success' && (github.event_name == 'workflow_run' || needs.stale-run-watch.result == 'success') && (github.event_name == 'workflow_run' || needs.stale-run-watch.outputs.queue_blocked != 'true') && (needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped') && (github.event_name != 'workflow_run' || (github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.path == '.github/workflows/auto_sync.yml' || github.event.workflow_run.path == '.github/workflows/auto_sync.yml'))) && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[assessment-canary]')) }}
@@ -1238,7 +1239,7 @@ jobs:
           GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
           CURRENT_WATCHDOG_RUN_ID: ${{ github.run_id }}
-          EXPECTED_COMPLETION_RUN_ID: ${{ inputs.production_producer_run_id || '' }}
+          EXPECTED_COMPLETION_RUN_ID: ${{ github.event.inputs.production_producer_run_id || '' }}
         run: |
           set -euo pipefail
           echo "queue_blocked=false" >> "$GITHUB_OUTPUT"
@@ -1360,15 +1361,13 @@ jobs:
               -f summary="$summary" -f run_url="$GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID"
           fi
 
-  manifest-integrity:
-          fi
 
   manifest-integrity:
     needs: [health-check]
     concurrency:
       group: shadowrocket-main-writer
       cancel-in-progress: false
-    if: ${{ github.ref_name == 'main' && ((github.event_name == 'workflow_dispatch' && inputs.source_discovery_run_id == '' && inputs.assessment_producer_run_id == '' && inputs.production_producer_run_id == '') || (github.event_name == 'schedule' && github.event.schedule == '30 22 * * *')) && needs.health-check.outputs.block_manifest != 'true' }}
+    if: ${{ github.ref_name == 'main' && ((github.event_name == 'workflow_dispatch' && github.event.github.event.inputs.source_discovery_run_id == '' && github.event.github.event.inputs.assessment_producer_run_id == '' && github.event.github.event.inputs.production_producer_run_id == '') || (github.event_name == 'schedule' && github.event.schedule == '30 22 * * *')) && needs.health-check.outputs.block_manifest != 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     permissions:

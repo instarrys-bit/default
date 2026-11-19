@@ -85,13 +85,11 @@
       ],
       "dispatches": [],
       "permission_boundary": "Runs as a same-run Production stage after source discovery. Reads the runner-local discovered source document and baseline; writes assessment outputs only in the isolated Production runner workspace. No independent workflow dispatch, source activation, or write to modules/uu.conf.",
-      "health_check": "Production verifies the assessor exit status and deterministic output reports; all source assessment remains non-activating and is included only in the runner-local audit artifact.",
+      "health_check": "Invoked only as a same-run Production stage in monolithic_fallback mode; Production checks the assessor exit status and deterministic output report. No standalone Watchdog dispatch is authorized.",
       "orchestration": {
-        "enabled": true,
-        "allowed_callers": [
-          "workflow_automation_watchdog"
-        ],
-        "max_attempts": 1,
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
         "timeout_seconds": 1800
       }
     },
@@ -1874,7 +1872,7 @@
         "script_validate_execution_adapters"
       ],
       "dispatches": [],
-      "permission_boundary": "contents:write exists only in this Storage Management workflow; storage_queue_store restricts writes to storage/v2/incidents.json. No Issues API, ruleset writes, or modules/uu.conf access.",
+      "permission_boundary": "Storage Management is the sole writer of automation/task_queue.json through script_remote_task_queue_runtime and of storage/v2/incidents.json through storage_incident_store. Queue writes use SHA-CAS and remain isolated from incident-ledger writes. No ruleset writes or modules/uu.conf access.",
       "health_check": "Queue retirement uses GitHub Contents SHA-CAS and validates the migrated queue against the four-system registry; incident operations use idempotent event IDs, revision checks and read-after-write verification; pull requests run registry, adapter and V2 regression validation.",
       "orchestration": {
         "enabled": true,
