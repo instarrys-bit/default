@@ -139,7 +139,7 @@ jobs:
           gh workflow run storage-management.yml --ref main \
             -f operation=purge_legacy_source_tasks \
             -f workflow=automation-watchdog \
-            -f event_id="source-dag-migration-${GITHUB_SHA}"
+            -f automation_task_id="source-dag-migration-${GITHUB_SHA}"
 
   non-main-noop:
     if: ${{ github.ref_name != 'main' }}
@@ -284,7 +284,7 @@ jobs:
                   summary="The failed audit's production fingerprint matches current main, but publish-base changes cannot be safely classified. No replacement task was created."
                   gh workflow run storage-management.yml --repo "$REPO" --ref main \
                     -f operation=record \
-                    -f event_id="input-review-$GITHUB_RUN_ID" -f run_id="$GITHUB_RUN_ID" \
+                    -f automation_task_id="input-review-$GITHUB_RUN_ID" -f run_id="$GITHUB_RUN_ID" \
                     -f source_sha="$SOURCE_SHA" -f classification=PRODUCTION_INPUT_REVIEW \
                     -f summary="$summary" -f run_url="$GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID" \
                   exit 0
@@ -385,13 +385,13 @@ jobs:
             summary="Source discovery health is $health. Search errors=$search_errors; tree errors=$tree_errors; coverage stalled=$coverage_stalled. Inventory remains non-activating pending deterministic review."
             gh workflow run storage-management.yml --repo "$REPO" --ref main \
               -f operation=record \
-              -f event_id="source-health-$RUN_ID" -f run_id="$RUN_ID" \
+              -f automation_task_id="source-health-$RUN_ID" -f run_id="$RUN_ID" \
               -f source_sha="$SOURCE_SHA" -f classification=SOURCE_DISCOVERY_DEGRADED \
               -f summary="$summary" -f run_url="$RUN_URL"
           else
             gh workflow run storage-management.yml --repo "$REPO" --ref main \
               -f operation=resolve \
-              -f event_id="source-health-recovered-$RUN_ID" -f before_run_id="$RUN_ID" \
+              -f automation_task_id="source-health-recovered-$RUN_ID" -f before_run_id="$RUN_ID" \
               -f classifications=SOURCE_DISCOVERY_DEGRADED -f verification_url="$RUN_URL"
           fi
 
@@ -711,7 +711,7 @@ jobs:
               summary="$(printf 'These paths are not registered as ruleset production inputs and remain excluded from automatic production. No registry was modified. Paths: %s' "$unknown_paths")"
               gh workflow run storage-management.yml --repo "$REPO" --ref main \
                 -f operation=record \
-                -f event_id="input-review-$GITHUB_RUN_ID" -f run_id="$GITHUB_RUN_ID" \
+                -f automation_task_id="input-review-$GITHUB_RUN_ID" -f run_id="$GITHUB_RUN_ID" \
                 -f source_sha="$GITHUB_SHA" -f classification=PRODUCTION_INPUT_REVIEW \
                 -f summary="$summary" -f run_url="$GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID"
               ;;
@@ -1307,7 +1307,7 @@ jobs:
             summary="The watchdog cancelled an audit exceeding six hours and queued a bounded replacement on current main $current_main."
             gh workflow run storage-management.yml --repo "$REPO" --ref main \
               -f operation=record \
-              -f event_id="stalled-audit-$GITHUB_RUN_ID" -f run_id="$GITHUB_RUN_ID" \
+              -f automation_task_id="stalled-audit-$GITHUB_RUN_ID" -f run_id="$GITHUB_RUN_ID" \
               -f source_sha="$current_main" -f classification=STALLED_AUDIT \
               -f summary="$summary" -f run_url="$GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID"
           fi
@@ -1380,7 +1380,7 @@ jobs:
           set -euo pipefail
           gh workflow run storage-management.yml --repo "$REPO" --ref main \
             -f operation=resolve \
-            -f event_id="manifest-recovery-$RUN_ID" -f before_run_id="$RUN_ID" \
+            -f automation_task_id="manifest-recovery-$RUN_ID" -f before_run_id="$RUN_ID" \
             -f classifications=MANIFEST_METADATA_REPAIR_FAILURE,PUBLISHED_RULESET_INTEGRITY_FAILURE \
             -f verification_url="$RUN_URL"
 
@@ -1442,7 +1442,7 @@ jobs:
           summary="Watchdog could not safely reconcile manifest metadata from committed DIRECT/PROXY/REJECT files. No rule file or uu.conf was modified. Inspect manifest refresh and manifest-only publish."
           gh workflow run storage-management.yml --repo "$REPO" --ref main \
             -f operation=record \
-            -f event_id="manifest-repair-failure-$RUN_ID" -f run_id="$RUN_ID" \
+            -f automation_task_id="manifest-repair-failure-$RUN_ID" -f run_id="$RUN_ID" \
             -f source_sha="$GITHUB_SHA" -f classification=MANIFEST_METADATA_REPAIR_FAILURE \
             -f summary="$summary" -f run_url="$RUN_URL"
 
@@ -1458,6 +1458,6 @@ jobs:
           summary="Bounded reconciliation did not repair published ruleset integrity. No further automatic dispatch will be made; inspect independent published-ruleset verification."
           gh workflow run storage-management.yml --repo "$REPO" --ref main \
             -f operation=record \
-            -f event_id="published-integrity-failure-$RUN_ID" -f run_id="$RUN_ID" \
+            -f automation_task_id="published-integrity-failure-$RUN_ID" -f run_id="$RUN_ID" \
             -f source_sha="$GITHUB_SHA" -f classification=PUBLISHED_RULESET_INTEGRITY_FAILURE \
             -f summary="$summary" -f run_url="$RUN_URL"
