@@ -962,7 +962,7 @@ jobs:
         run: |
           set -euo pipefail
           summary="The deterministic pipeline ended with audit=$AUDIT_RESULT and publish=$PUBLISH_RESULT."
-          gh workflow run storage-incident-management.yml --repo "$REPO" --ref main \
+          gh workflow run storage-management.yml --repo "$REPO" --ref main \
             -f operation=record -f workflow=auto_sync \
             -f event_id="auto-sync-failure-$RUN_ID" -f run_id="$RUN_ID" \
             -f source_sha="$COMMIT_SHA" -f classification=PIPELINE_FAILURE \
@@ -985,7 +985,7 @@ jobs:
           RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
-          gh workflow run storage-incident-management.yml --repo "$REPO" --ref main \
+          gh workflow run storage-management.yml --repo "$REPO" --ref main \
             -f operation=resolve -f workflow=auto_sync \
             -f event_id="auto-sync-recovery-$RUN_ID" -f before_run_id="$RUN_ID" \
             -f classifications=PIPELINE_FAILURE -f verification_url="$RUN_URL"
