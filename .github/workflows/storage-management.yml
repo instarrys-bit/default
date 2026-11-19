@@ -25,6 +25,11 @@ on:
       - "automation/execution_adapters.json"
       - "automation/production_control.json"
       - "scripts/remote_task_queue_runtime.py"
+  workflow_run:
+    workflows:
+      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
+      - "Shadowrocket automation watchdog"
+    types: [completed]
   workflow_dispatch:
     inputs:
       operation:
@@ -210,3 +215,31 @@ jobs:
             args+=(--before-run-id "$BEFORE_RUN_ID" --classifications "$CLASSIFICATIONS" --verification-url "$VERIFICATION_URL")
           fi
           python3 storage/v2/incident_store.py "\${args[@]}" | tee "$GITHUB_STEP_SUMMARY"
+  ingest-actions-artifacts:
+    name: Ingest completed workflow artifacts into Storage Management
+    if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && (github.event.workflow_run.path == '.github/workflows/auto_sync.yml' || github.event.workflow_run.path == '.github/workflows/automation-watchdog.yml') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      actions: write
+      contents: write
+    steps:
+      - name: Checkout Storage Management runtime
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+      - name: Ingest, catalog, and verify source artifacts before cleanup
+        env:
+          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REF_NAME: main
+          SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          set -euo pipefail
+          PYTHONPATH=storage/v2 python3 storage/v2/ingest_actions_artifacts.py | tee "$GITHUB_STEP_SUMMARY"
+
