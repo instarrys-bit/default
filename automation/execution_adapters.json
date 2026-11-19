@@ -243,7 +243,7 @@
         ],
         "lease_seconds": 3600,
         "fencing_required": true,
-        "coverage": "Only the durable per-URL task assessment_checkpoint in GitHub Issue #423 is shared state. It is updated by append-only Issue snapshot CAS under the active task lease and these two logical resource fences. All assessment JSON and reports are runner-local outputs uploaded as an immutable Actions artifact; no repository file is written or published. Resource lease is 3600 seconds, at least four 15-minute Watchdog reconciliation intervals, so a missed workflow_run event cannot expire the fence before scheduled verification. Both source-DAG capabilities also acquire logical/source-dag-supervision; this common exclusive fence serializes Discovery and Assessment across concurrent Watchdog runs, while Issue #423 CAS and monotonically increasing fencing tokens remain the authority for task claims."
+        "coverage": "Only the durable per-URL task assessment_checkpoint in automation/task_queue.json is shared state. It is updated by repository JSON Contents API SHA-CAS under the active task lease and these two logical resource fences. All assessment JSON and reports are runner-local outputs uploaded as an immutable Actions artifact; no repository file is written or published. Resource lease is 3600 seconds, at least four 15-minute Watchdog reconciliation intervals, so a missed workflow_run event cannot expire the fence before scheduled verification. Both source-DAG capabilities also acquire logical/source-dag-supervision; this common exclusive fence serializes Discovery and Assessment across concurrent Watchdog runs, while automation/task_queue.json CAS and monotonically increasing fencing tokens remain the authority for task claims."
       },
       "read_only_resources": [
         "sources/discovered_sources.json",
@@ -1604,6 +1604,102 @@
       }
     },
     {
+      "target_program_id": "storage_incident_store",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "storage/v2/incident_store.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "import-only; direct execution is disabled"
+      },
+      "completion": {
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "storage_migration",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "storage/v2/migration.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "library-only; direct execution disabled"
+      },
+      "completion": {
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "storage_queue_store",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "storage/v2/queue_store.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "import-only; direct execution is disabled"
+      },
+      "completion": {
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "storage_verify_archive_inventory",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "storage/v2/verify_archive_inventory.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "library-only; direct execution disabled"
+      },
+      "completion": {
+        "independent_verification_required": true
+      }
+    },
+    {
       "target_program_id": "workflow_assessment_completion_relay",
       "target_kind": "github_actions_workflow",
       "adapter_type": "github_actions_workflow",
@@ -1629,8 +1725,7 @@
           "main"
         ],
         "caller_permissions_required": [
-          "actions:write",
-          "issues:write"
+          "actions:write"
         ]
       },
       "timeout_seconds": 480,
@@ -1722,8 +1817,7 @@
           "main"
         ],
         "caller_permissions_required": [
-          "actions:write",
-          "issues:write"
+          "actions:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1814,8 +1908,7 @@
           "main"
         ],
         "caller_permissions_required": [
-          "actions:write",
-          "issues:write"
+          "actions:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1836,6 +1929,47 @@
       }
     },
     {
+      "target_program_id": "workflow_queue_snapshot_artifact",
+      "target_kind": "github_actions_workflow",
+      "adapter_type": "github_actions_workflow",
+      "enabled": false,
+      "interface_status": "workflow_dispatch_reviewed",
+      "allowed_callers": [],
+      "workflow": {
+        "path": ".github/workflows/queue-snapshot-artifact.yml",
+        "dispatchable": true,
+        "inputs": [
+          {
+            "name": "automation_task_id",
+            "type": "string",
+            "required": false
+          }
+        ],
+        "allowed_refs": [
+          "main"
+        ],
+        "caller_permissions_required": [
+          "actions:write"
+        ]
+      },
+      "timeout_seconds": 600,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "event-triggered backup only; no dispatch or retry adapter is enabled"
+      },
+      "completion": {
+        "success_condition": "canonical_queue_snapshot_validated_and_unique_immutable_actions_artifact_uploaded",
+        "required_result_fields": [
+          "run_id",
+          "head_sha",
+          "artifact_id",
+          "artifact_name",
+          "artifact_digest"
+        ],
+        "independent_verification_required": true
+      }
+    },
+    {
       "target_program_id": "workflow_read_only_dashboard_pages",
       "target_kind": "github_actions_workflow",
       "adapter_type": "github_actions_workflow",
@@ -1850,8 +1984,7 @@
           "main"
         ],
         "caller_permissions_required": [
-          "actions:write",
-          "issues:write"
+          "actions:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1882,8 +2015,7 @@
           "main"
         ],
         "caller_permissions_required": [
-          "actions:write",
-          "issues:write"
+          "actions:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1926,8 +2058,7 @@
           "main"
         ],
         "caller_permissions_required": [
-          "actions:write",
-          "issues:write"
+          "actions:write"
         ]
       },
       "timeout_seconds": 30,
@@ -1975,8 +2106,7 @@
           "main"
         ],
         "caller_permissions_required": [
-          "actions:write",
-          "issues:write"
+          "actions:write"
         ]
       },
       "timeout_seconds": 30,
@@ -2009,54 +2139,82 @@
       "workflow_run_timeout_seconds": 1800
     },
     {
-      "target_program_id": "workflow_validate_config",
+      "target_program_id": "workflow_storage_incident_management",
       "target_kind": "github_actions_workflow",
       "adapter_type": "github_actions_workflow",
-      "enabled": false,
-      "interface_status": "event_only",
-      "allowed_callers": [],
-      "workflow": {
-        "path": ".github/workflows/validate-config.yml",
-        "dispatchable": false,
-        "inputs": [],
-        "allowed_refs": [
-          "main"
-        ],
-        "caller_permissions_required": [
-          "actions:write",
-          "issues:write"
-        ]
-      },
-      "timeout_seconds": 30,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_dispatcher_and_run_verifier"
-      },
-      "completion": {
-        "success_condition": "run_status_completed_and_conclusion_success",
-        "required_result_fields": [
-          "run_id",
-          "html_url",
-          "head_sha",
-          "status",
-          "conclusion"
-        ],
-        "independent_verification_required": true
-      }
-    },
-    {
-      "target_program_id": "workflow_queue_snapshot_artifact",
-      "target_kind": "github_actions_workflow",
-      "adapter_type": "github_actions_workflow",
-      "enabled": false,
+      "enabled": true,
       "interface_status": "workflow_dispatch_reviewed",
-      "allowed_callers": [],
+      "allowed_callers": [
+        "workflow_auto_sync",
+        "workflow_automation_watchdog",
+        "workflow_self_healing_agent"
+      ],
       "workflow": {
-        "path": ".github/workflows/queue-snapshot-artifact.yml",
+        "path": ".github/workflows/storage-incident-management.yml",
         "dispatchable": true,
         "inputs": [
           {
+            "name": "operation",
+            "type": "choice",
+            "required": true
+          },
+          {
+            "name": "workflow",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "event_id",
+            "type": "string",
+            "required": true
+          },
+          {
             "name": "automation_task_id",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "run_id",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "source_sha",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "classification",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "summary",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "run_url",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "before_run_id",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "classifications",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "verification_url",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "diagnosis_json",
             "type": "string",
             "required": false
           }
@@ -2065,26 +2223,24 @@
           "main"
         ],
         "caller_permissions_required": [
-          "actions:write",
-          "issues:write"
+          "actions:write"
         ]
       },
-      "timeout_seconds": 600,
+      "timeout_seconds": 300,
       "retry": {
         "max_attempts": 0,
-        "policy": "event-triggered backup only; no dispatch or retry adapter is enabled"
+        "policy": "no automatic redispatch; idempotent event IDs and internal SHA-CAS retries"
       },
       "completion": {
-        "success_condition": "canonical_queue_snapshot_validated_and_unique_immutable_actions_artifact_uploaded",
+        "success_condition": "incident ledger commit and read-after-write verification completed",
         "required_result_fields": [
           "run_id",
-          "head_sha",
-          "artifact_id",
-          "artifact_name",
-          "artifact_digest"
+          "status",
+          "conclusion"
         ],
         "independent_verification_required": true
-      }
+      },
+      "workflow_run_timeout_seconds": 300
     },
     {
       "target_program_id": "workflow_v2_storage_tests",
@@ -2101,8 +2257,7 @@
           "main"
         ],
         "caller_permissions_required": [
-          "actions:write",
-          "issues:write"
+          "actions:write"
         ]
       },
       "timeout_seconds": 300,
@@ -2122,40 +2277,39 @@
       "review_note": "read-only V2 unit test workflow"
     },
     {
-      "target_program_id": "workflow_v2_watchdog_supervisor",
+      "target_program_id": "workflow_validate_config",
       "target_kind": "github_actions_workflow",
       "adapter_type": "github_actions_workflow",
       "enabled": false,
       "interface_status": "event_only",
       "allowed_callers": [],
       "workflow": {
-        "path": ".github/workflows/v2-watchdog-supervisor.yml",
+        "path": ".github/workflows/validate-config.yml",
         "dispatchable": false,
         "inputs": [],
         "allowed_refs": [
           "main"
         ],
         "caller_permissions_required": [
-          "actions:write",
-          "issues:write"
+          "actions:write"
         ]
       },
-      "timeout_seconds": 300,
+      "timeout_seconds": 30,
       "retry": {
         "max_attempts": 0,
-        "policy": "read_only_schedule_only; no automated redispatch"
+        "policy": "disabled_until_dispatcher_and_run_verifier"
       },
       "completion": {
-        "success_condition": "read_only_recovery_plan_generated",
+        "success_condition": "run_status_completed_and_conclusion_success",
         "required_result_fields": [
           "run_id",
+          "html_url",
+          "head_sha",
           "status",
-          "conclusion",
-          "action_count"
+          "conclusion"
         ],
         "independent_verification_required": true
-      },
-      "review_note": "read-only V2 Watchdog; Storage Management remains the sole state writer"
+      }
     }
   ]
 }

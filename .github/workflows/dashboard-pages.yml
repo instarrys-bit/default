@@ -19,7 +19,6 @@ on:
 permissions:
   contents: read
   actions: read
-  issues: read
 
 concurrency:
   group: github-pages-dashboard

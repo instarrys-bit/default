@@ -53,7 +53,7 @@ class ExecutionAdapterTests(unittest.TestCase):
                  "workflow": {"path": ".github/workflows/run.yml", "dispatchable": True,
                  "inputs": [{"name": "item", "type": "string", "required": True},
                             {"name": "automation_task_id", "type": "string", "required": False}],
-                 "allowed_refs": ["main"], "caller_permissions_required": ["actions:write", "issues:write"]},
+                 "allowed_refs": ["main"], "caller_permissions_required": ["actions:write"]},
                  "timeout_seconds": 300, "retry": {"max_attempts": 0},
                  "completion": {"independent_verification_required": True}},
             ],
@@ -69,11 +69,11 @@ class ExecutionAdapterTests(unittest.TestCase):
         self.assertTrue(result["valid"])
         adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
         self.assertEqual(result["adapter_count"], len(adapters["adapters"]))
-        self.assertEqual(result["enabled_adapter_count"], 4)
+        self.assertEqual(result["enabled_adapter_count"], 5)
         registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
         adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
         enabled = [item["target_program_id"] for item in adapters["adapters"] if item["enabled"]]
-        self.assertEqual(set(enabled), {"script_assess_sources", "workflow_auto_sync", "workflow_self_healing_tests", "workflow_source_discovery"})
+        self.assertEqual(set(enabled), {"script_assess_sources", "workflow_auto_sync", "workflow_self_healing_tests", "workflow_source_discovery", "workflow_storage_incident_management"})
         program = next(item for item in registry["programs"] if item["id"] == "workflow_self_healing_tests")
         adapter = next(item for item in adapters["adapters"] if item["target_program_id"] == "workflow_self_healing_tests")
         self.assertEqual(program["orchestration"]["allowed_callers"], ["workflow_automation_watchdog"])
@@ -126,11 +126,11 @@ class ExecutionAdapterTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "automation_task_id"):
             validate_execution_adapters(root, ap, rp)
 
-    def test_rejects_workflow_caller_without_queue_storage_permission(self):
+    def test_rejects_workflow_caller_without_dispatch_permission(self):
         root, ap, rp, doc = self.make_repo()
-        doc["adapters"][1]["workflow"]["caller_permissions_required"] = ["actions:write"]
+        doc["adapters"][1]["workflow"]["caller_permissions_required"] = ["contents:write"]
         ap.write_text(json.dumps(doc), encoding="utf-8")
-        with self.assertRaisesRegex(ValueError, "actions:write and issues:write"):
+        with self.assertRaisesRegex(ValueError, "actions:write"):
             validate_execution_adapters(root, ap, rp)
 
     def test_rejects_invalid_resource_lease_contract(self):

@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "7a18801c347a6f530c7953896b02d6d0709fb328",
-  "registry_blob_sha": "97c4bc32325502c32ec7ccba40629dbc74086cf0",
+  "workflow_blob_sha": "3321e99e1ee62674945495d7573ee395a9103a38",
+  "registry_blob_sha": "e32da1d883ad0c40d99c4e19e12a8e21683eb388",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 7,
@@ -38,9 +38,8 @@
       "needs": [],
       "condition": null,
       "permissions": {
-        "contents": "read",
-        "actions": "read",
-        "issues": "write"
+        "contents": "write",
+        "actions": "read"
       },
       "steps": [
         {
@@ -52,7 +51,7 @@
           "order": 2
         },
         {
-          "name": "Export durable queue snapshot from Issue state",
+          "name": "Export durable queue snapshot from repository JSON state",
           "order": 3
         },
         {
@@ -237,8 +236,7 @@
       ],
       "condition": null,
       "permissions": {
-        "contents": "write",
-        "issues": "write"
+        "contents": "write"
       },
       "steps": [
         {
@@ -246,7 +244,7 @@
           "order": 1
         },
         {
-          "name": "Export durable queue snapshot from Issue state",
+          "name": "Export durable queue snapshot from repository JSON state",
           "order": 2
         },
         {
@@ -300,7 +298,7 @@
       ],
       "condition": "${{ always() && (needs.audit.result == 'failure' || needs.audit.result == 'cancelled' || needs.preflight.result == 'failure' || needs.preflight.result == 'cancelled' || needs.publish.result == 'failure' || needs.publish.result == 'cancelled') }}",
       "permissions": {
-        "issues": "write"
+        "actions": "write"
       },
       "steps": [
         {
@@ -317,7 +315,7 @@
       ],
       "condition": "${{ needs.audit.result == 'success' && needs.publish.result == 'success' }}",
       "permissions": {
-        "issues": "write"
+        "actions": "write"
       },
       "steps": [
         {
@@ -347,11 +345,11 @@
   "architecture_findings": [
     "The independent Source Discovery → Source Assessment DAG is active: both adapters are enabled and restricted to the Watchdog caller. Watchdog resolves the exact producer run, head SHA and immutable artifact digest, then deduplicates Assessment by exact predecessor run ID. The latest reconciliation verified Discovery run 42373818238 and its artifact; it found two historical Assessment tasks (one duplicate) and correctly suppressed a third enqueue because a verified Assessment already exists. A fresh one-to-one post-merge Assessment execution is still required.",
     "Both source capabilities write only to isolated RUNNER_TEMP artifact roots; the main-branch source documents are read-only baselines.",
-    "Assessment's only shared mutation is the per-URL task checkpoint in GitHub Issue #423, guarded by task lease and logical resource fences.",
+    "Assessment's only shared mutation is the per-URL task checkpoint in automation/task_queue.json, guarded by task lease and logical resource fences.",
     "The production publisher is the single controlled writer for the three policy outputs rulesets/direct.list, rulesets/proxy.list and rulesets/reject.list, together with their required manifest/lifecycle/queue metadata. This is a production-output boundary, not a system-wide automation write restriction. Watchdog queue/checkpoint state, immutable Actions artifacts and runner-local workspaces are inventoried separately; modules/uu.conf and user-managed module/JavaScript assets remain unwritable.",
     "Other non-dispatchable Python capabilities retain default-deny status until their own complete transitive side-effect and resource contracts are reviewed.",
     "Daily Discovery idempotency now fingerprints the producer, Watchdog handoff, durable queue, scheduler, fencing, Assessment, verifier and their active contracts; changes in the DAG receive a new same-day task key without weakening per-revision deduplication.",
-    "Watchdog queue reads and task supervision are serialized per main branch to reduce GitHub Issues API rate-limit pressure; the append-only queue remains authoritative and the 15-minute schedule recovers coalesced workflow_run callbacks. Discovery and Assessment are also serialized by the shared logical/source-dag-supervision lease acquired atomically with task claim and held through verification."
+    "Watchdog queue reads and task supervision are serialized per main branch to reduce GitHub Contents API rate-limit pressure; the append-only queue remains authoritative and the 15-minute schedule recovers coalesced workflow_run callbacks. Discovery and Assessment are also serialized by the shared logical/source-dag-supervision lease acquired atomically with task claim and held through verification."
   ],
   "decomposition_constraints": [
     "Preserve the audit -> publish dependency and the existing single-writer concurrency boundary.",
@@ -363,12 +361,12 @@
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
     "release_manifest_blob_sha": "75ea172c5ac973e3fed7f9c2329037ad824f44bd",
-    "program_registry_blob_sha": "97c4bc32325502c32ec7ccba40629dbc74086cf0",
-    "execution_adapters_blob_sha": "ac0d4a74d5cf1da6d1fe05ebe16a050b2e13fdbb",
+    "program_registry_blob_sha": "e32da1d883ad0c40d99c4e19e12a8e21683eb388",
+    "execution_adapters_blob_sha": "e252c588903f1807124e027b2cf237b09b73b2c7",
     "added_after_release_baseline": true,
     "note": "The independent source DAG is enabled under the scoped release allowlist. The production deliverables are exactly DIRECT, PROXY and REJECT; queue/checkpoint state and immutable runner-local artifacts are separate control-plane/runtime resources. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07",
-    "registry_blob_sha": "d9958268cf57c5d2ba507bf61a5ef8fc56b3240a",
+    "registry_blob_sha": "e32da1d883ad0c40d99c4e19e12a8e21683eb388",
     "source_dag_scope": "End-to-end Watchdog-owned Discovery → immutable artifact verification → non-activating Assessment → immutable Assessment artifact proof → production artifact re-verification → source matrix → deterministic admission → production collection. REJECT is automatically published after deterministic first-stage review, stricter secondary evidence gates and config-conflict checks; human review is exception-only; uu.conf is read-only."
   },
   "independent_dags": [

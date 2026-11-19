@@ -10,10 +10,6 @@ import json
 import os
 import re
 import sys
-import warnings
-from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode
-from urllib.request import Request, urlopen
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
@@ -132,80 +128,19 @@ def compute_fingerprint(root: Path, manifest: dict) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
-REQUEST_OBSERVATION_ISSUE_NUMBER = 317
-REQUEST_OBSERVATION_MARKER = "<!-- shadowrocket-domain-observation:v1 -->"
-
-
-def load_request_observation_ledger(root: Path, base_payload: dict | None = None,
-                                    repository: str | None = None, token: str | None = None) -> dict:
-    """Merge the read-only repository seed with append-only Issue #317 intake batches."""
+def load_request_observation_ledger(root: Path, base_payload: dict | None = None) -> dict:
+    """Load the checked-in request-observation seed; no external issue transport exists."""
     if base_payload is None:
         path = root / "sources/request_domain_observations.json"
         if path.is_file():
             base_payload = json.loads(path.read_text(encoding="utf-8"))
         else:
             base_payload = {"schema_version": 1, "observations": []}
-    if base_payload.get("schema_version") != 1 or not isinstance(base_payload.get("observations"), list):
+    if (not isinstance(base_payload, dict)
+            or base_payload.get("schema_version") != 1
+            or not isinstance(base_payload.get("observations"), list)):
         raise ValueError("unsupported request observation seed schema")
-    repository = repository or os.environ.get("GITHUB_REPOSITORY", "")
-    token = token or os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN", "")
-    if not repository or not token:
-        return base_payload
-    if "/" not in repository:
-        raise ValueError("GITHUB_REPOSITORY must be owner/name to read external request observations")
-    endpoint = f"https://api.github.com/repos/{repository}/issues/{REQUEST_OBSERVATION_ISSUE_NUMBER}/comments"
-    headers = {
-        "Accept": "application/vnd.github+json",
-        "Authorization": "Bearer " + token,
-        "X-GitHub-Api-Version": "2022-11-28",
-        "User-Agent": "shadowrocket-request-observation-reader",
-    }
-    merged = base_payload
-    page = 1
-    while True:
-        url = endpoint + "?" + urlencode({"per_page": 100, "page": page})
-        request = Request(url, headers=headers)
-        try:
-            with urlopen(request, timeout=15) as response:
-                comments = json.load(response)
-        except HTTPError as exc:
-            if exc.code in {404, 410}:
-                warnings.warn(
-                    f"external request observation ledger Issue #{REQUEST_OBSERVATION_ISSUE_NUMBER} "
-                    f"is unavailable (HTTP {exc.code}); using the checked-in seed only",
-                    RuntimeWarning,
-                    stacklevel=2,
-                )
-                return base_payload
-            raise ValueError(f"cannot read external request observation ledger: HTTP {exc.code}") from None
-        except (URLError, TimeoutError, OSError, json.JSONDecodeError) as exc:
-            raise ValueError(f"cannot read external request observation ledger: {type(exc).__name__}") from None
-        if not isinstance(comments, list):
-            raise ValueError("external request observation comments must be an array")
-        for comment in comments:
-            if not isinstance(comment, dict):
-                continue
-            body = comment.get("body")
-            if not isinstance(body, str) or not body.startswith(REQUEST_OBSERVATION_MARKER + "\n"):
-                continue
-            try:
-                batch = json.loads(body.split("\n", 1)[1])
-            except json.JSONDecodeError as exc:
-                raise ValueError("external request observation comment contains invalid JSON") from exc
-            if (not isinstance(batch, dict) or batch.get("schema_version") != 1
-                    or not isinstance(batch.get("run_id"), str) or not batch["run_id"]
-                    or not isinstance(batch.get("domains"), list)):
-                raise ValueError("external request observation batch has an invalid schema")
-            merged = merge_request_observations(
-                batch["domains"], merged, batch["run_id"],
-                now=batch.get("observed_at") or comment.get("created_at"),
-            )
-        if len(comments) < 100:
-            break
-        page += 1
-        if page > 100:
-            raise ValueError("external request observation history exceeds the pagination safety limit")
-    return merged
+    return base_payload
 
 
 UNFINGERPRINTED_ACTIVE_PRODUCTION = "__unfingerprinted_active_production_task__"
@@ -370,7 +305,6 @@ def merge_request_observations(submitted, payload, run_id, now=None):
         rows[domain] = old
     return {"schema_version": 1, "observations": [rows[key] for key in sorted(rows)]}
 
-
 def register_unclassified_paths(paths, ledger, event, revision, run_id, run_url, now=None):
     """Record unknown paths in the Watchdog inbox; never treat registration as approval."""
     if ledger.get("schema_version") != 1 or not isinstance(ledger.get("entries"), list):
@@ -426,51 +360,8 @@ def main() -> int:
     parser.add_argument("--active-fingerprints-json", default="[]")
     parser.add_argument("--successful-fingerprints-json", default="[]")
     parser.add_argument("--refresh-after-seconds", type=int, default=691200)
-    parser.add_argument("--register-ledger", type=Path)
-    parser.add_argument("--run-id", default="")
-    parser.add_argument("--run-url", default="")
-    parser.add_argument("--merge-observations", action="store_true")
-    parser.add_argument("--observations-input", type=Path)
-    parser.add_argument("--observation-ledger", type=Path, default=Path("sources/request_domain_observations.json"))
-    parser.add_argument("--intake-run-id", default="")
     args = parser.parse_args()
     try:
-        if args.register_ledger is not None:
-            paths = json.loads(args.paths_json)
-            if not isinstance(paths, list) or any(not isinstance(path, str) for path in paths):
-                raise ValueError("paths-json must be a JSON string array")
-            if not args.run_id or not args.run_url:
-                raise ValueError("run-id and run-url are required for Watchdog registration")
-            if args.register_ledger.exists():
-                ledger = json.loads(args.register_ledger.read_text(encoding="utf-8"))
-            else:
-                ledger = {"schema_version": 1, "purpose": "Watchdog inbox for unregistered repository paths; registration is not approval.", "entries": []}
-            ledger = register_unclassified_paths(
-                paths, ledger, args.event, args.revision, args.run_id, args.run_url
-            )
-            args.register_ledger.parent.mkdir(parents=True, exist_ok=True)
-            args.register_ledger.write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + chr(10), encoding="utf-8")
-            print(json.dumps({
-                "registered_count": len(set(paths)),
-                "pending_count": sum(item.get("status") == "PENDING_CLASSIFICATION" for item in ledger["entries"]),
-                "paths": sorted(set(paths)),
-            }, ensure_ascii=False))
-            return 0
-        if args.merge_observations:
-            if args.observations_input is None or not args.intake_run_id:
-                raise ValueError("observations-input and intake-run-id are required for intake merge")
-            submitted = json.loads(args.observations_input.read_text(encoding="utf-8"))
-            if not isinstance(submitted, list):
-                raise ValueError("observations input must be a JSON string array")
-            if args.observation_ledger.exists():
-                payload = json.loads(args.observation_ledger.read_text(encoding="utf-8"))
-            else:
-                payload = {"schema_version": 1, "observations": []}
-            merged = merge_request_observations(submitted, payload, args.intake_run_id)
-            args.observation_ledger.parent.mkdir(parents=True, exist_ok=True)
-            args.observation_ledger.write_text(json.dumps(merged, ensure_ascii=False, indent=2) + chr(10), encoding="utf-8")
-            print(json.dumps({"merged_domains": len(set(submitted)), "observation_count": len(merged["observations"])}, sort_keys=True))
-            return 0
         if isinstance(args.refresh_after_seconds, bool) or args.refresh_after_seconds < 1:
             raise ValueError("refresh-after-seconds must be a positive integer")
         manifest = load_manifest(args.manifest)

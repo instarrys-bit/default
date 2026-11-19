@@ -3,9 +3,6 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from io import BytesIO
-from urllib.error import HTTPError
-from unittest.mock import patch
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
@@ -37,77 +34,34 @@ class ProductionIntentTests(unittest.TestCase):
         for name, body in (("direct.list", "DIRECT\\n"), ("proxy.list", "PROXY\\n"), ("reject.list", "REJECT\\n")):
             (self.root / "rulesets" / name).write_text(body, encoding="utf-8")
 
-    def test_external_issue_observation_batches_are_merged_idempotently(self):
-        comment = {
-            "id": 901,
-            "created_at": "2026-11-07T01:00:00Z",
-            "body": "<!-- shadowrocket-domain-observation:v1 -->\n" + json.dumps({
-                "schema_version": 1,
-                "run_id": "intake-901",
-                "observed_at": "2026-11-07T01:00:00Z",
-                "domains": ["new.example", "new.example", "other.example"],
-            }),
+    def test_request_observation_ledger_reads_checked_in_seed(self):
+        seed = {
+            "schema_version": 1,
+            "observations": [
+                {"domain": "one.example", "observations": 2},
+                {"domain": "two.example", "observations": 1},
+            ],
         }
+        path = self.root / "sources" / "request_domain_observations.json"
+        path.write_text(json.dumps(seed), encoding="utf-8")
+        self.assertEqual(load_request_observation_ledger(self.root), seed)
 
-        class Response(BytesIO):
-            def __enter__(self):
-                return self
-            def __exit__(self, *_):
-                return False
+    def test_request_observation_ledger_rejects_invalid_seed_schema(self):
+        path = self.root / "sources" / "request_domain_observations.json"
+        path.write_text(json.dumps({"schema_version": 2, "observations": []}), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "unsupported request observation seed schema"):
+            load_request_observation_ledger(self.root)
 
-        with patch("production_intent.urlopen", return_value=Response(json.dumps([comment]).encode("utf-8"))):
-            ledger = load_request_observation_ledger(
-                self.root,
-                {"schema_version": 1, "observations": []},
-                repository="owner/repo",
-                token="test-token",
-            )
-        rows = {row["domain"]: row for row in ledger["observations"]}
-        self.assertEqual(rows["new.example"]["observations"], 2)
-        self.assertEqual(rows["new.example"]["observed_run_ids"], ["intake-901"])
-        self.assertEqual(rows["other.example"]["observations"], 1)
-
-    def test_deleted_external_observation_issue_falls_back_to_checked_in_seed(self):
-        seed = {"schema_version": 1, "observations": []}
-        error = HTTPError(
-            "https://api.github.com/repos/owner/repo/issues/317/comments",
-            410,
-            "Gone",
-            {},
-            None,
-        )
-        with patch("production_intent.urlopen", side_effect=error):
-            with self.assertWarnsRegex(RuntimeWarning, "using the checked-in seed only"):
-                ledger = load_request_observation_ledger(
-                    self.root, seed, repository="owner/repo", token="test-token"
-                )
-        self.assertEqual(ledger, seed)
-
-    def test_external_issue_observation_batches_change_production_fingerprint(self):
-        (self.root / "sources" / "request_domain_observations.json").write_text(
-            json.dumps({"schema_version": 1, "observations": []}), encoding="utf-8"
-        )
+    def test_checked_in_observation_seed_changes_production_fingerprint(self):
+        path = self.root / "sources" / "request_domain_observations.json"
+        path.write_text(json.dumps({"schema_version": 1, "observations": []}), encoding="utf-8")
         self.manifest["production_input_paths"].append("sources/request_domain_observations.json")
-        comment = {
-            "id": 902,
-            "created_at": "2026-11-07T01:00:00Z",
-            "body": "<!-- shadowrocket-domain-observation:v1 -->\n" + json.dumps({
-                "schema_version": 1,
-                "run_id": "intake-902",
-                "domains": ["fingerprint.example"],
-            }),
-        }
-
-        class Response(BytesIO):
-            def __enter__(self):
-                return self
-            def __exit__(self, *_):
-                return False
-
         baseline = compute_fingerprint(self.root, self.manifest)
-        with patch("production_intent.urlopen", return_value=Response(json.dumps([comment]).encode("utf-8"))):
-            with patch.dict("os.environ", {"GITHUB_REPOSITORY": "owner/repo", "GITHUB_TOKEN": "test-token"}):
-                observed = compute_fingerprint(self.root, self.manifest)
+        path.write_text(json.dumps({
+            "schema_version": 1,
+            "observations": [{"domain": "fingerprint.example", "observations": 1}],
+        }), encoding="utf-8")
+        observed = compute_fingerprint(self.root, self.manifest)
         self.assertNotEqual(baseline, observed)
 
     def test_input_change_is_classified_as_production_input(self):

@@ -20,6 +20,16 @@ def discover_program_paths(root: Path, excluded_workflows: set[str] | None = Non
         for path in (root / "scripts").rglob("*.py")
         if path.is_file()
     }
+    storage_components = {
+        path.relative_to(root).as_posix()
+        for path in (root / "storage" / "v2").rglob("*.py")
+        if path.is_file() and path.name != "__init__.py"
+    } if (root / "storage" / "v2").is_dir() else set()
+    storage_components = {
+        path.relative_to(root).as_posix()
+        for path in (root / "storage" / "v2").rglob("*.py")
+        if path.is_file()
+    } if (root / "storage" / "v2").is_dir() else set()
     excluded = excluded_workflows or set()
     workflows = {
         path.relative_to(root).as_posix()
@@ -27,7 +37,7 @@ def discover_program_paths(root: Path, excluded_workflows: set[str] | None = Non
         if path.is_file() and path.suffix in {".yml", ".yaml"}
         and path.relative_to(root).as_posix() not in excluded
     } if (root / ".github" / "workflows").is_dir() else set()
-    return scripts | workflows
+    return scripts | storage_components | workflows
 
 
 def validate_registry(root: Path = ROOT, registry_path: Path | None = None) -> dict:
@@ -74,8 +84,8 @@ def validate_registry(root: Path = ROOT, registry_path: Path | None = None) -> d
             raise ValueError(f"program path must stay inside the repository: {path}")
         if item["kind"] not in {"python_component", "github_actions_workflow"}:
             raise ValueError(f"unsupported program kind for {program_id}")
-        if item["kind"] == "python_component" and not path.startswith("scripts/"):
-            raise ValueError(f"Python component must live under scripts/: {program_id}")
+        if item["kind"] == "python_component" and not (path.startswith("scripts/") or path.startswith("storage/v2/")):
+            raise ValueError(f"Python component must live under scripts/ or storage/v2/: {program_id}")
         if item["kind"] == "github_actions_workflow" and not path.startswith(".github/workflows/"):
             raise ValueError(f"workflow must live under .github/workflows/: {program_id}")
         for field in ("responsibility", "invocation", "permission_boundary", "health_check"):
@@ -155,10 +165,10 @@ def validate_registry(root: Path = ROOT, registry_path: Path | None = None) -> d
         if item["kind"] != "github_actions_workflow":
             continue
         content = (root / path).read_text(encoding="utf-8")
-        actual_scripts = {
-            "script_" + match.group(1)[:-3]
-            for match in re.finditer(r"scripts/([A-Za-z0-9_.-]+\.py)", content)
-        }
+        actual_scripts = set()
+        for match in re.finditer(r"(scripts|storage/v2)/([A-Za-z0-9_.-]+\.py)", content):
+            prefix = "script_" if match.group(1) == "scripts" else "storage_"
+            actual_scripts.add(prefix + match.group(2)[:-3].replace("-", "_"))
         actual_dispatches = {
             "workflow_" + re.sub(r"\.(yml|yaml)$", "", match.group(1)).replace("-", "_")
             for match in re.finditer(r"gh workflow run ([A-Za-z0-9_.-]+)", content)

@@ -173,9 +173,9 @@ def audit_activation_readiness(root: Path = ROOT,
                 side_effects.append("possible_protected_config_write")
             row["side_effects"] = sorted(set(side_effects))
             if not caller_permissions_ready:
-                reasons.append("Watchdog queue job lacks required actions:write and issues:write caller scopes")
+                reasons.append("Watchdog queue job lacks required actions:write caller scope")
             required = workflow.get("caller_permissions_required", [])
-            if not all(scope in required for scope in ("actions:write", "issues:write")):
+            if not all(scope in required for scope in ("actions:write",)):
                 reasons.append("workflow adapter does not declare both required caller permission scopes")
             if "possible_protected_config_write" in side_effects:
                 reasons.append("workflow may write protected modules/uu.conf")

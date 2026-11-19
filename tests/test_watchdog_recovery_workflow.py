@@ -332,13 +332,14 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
 
     def test_successful_workflow_reports_degraded_source_discovery_health(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
-        self.assertIn("Report degraded source discovery health", workflow)
+        self.assertIn("Record or resolve source discovery health in Storage Management", workflow)
         self.assertIn(".source_discovery.search_error_count", workflow)
         self.assertIn(".coverage.stalled", workflow)
-        self.assertIn("Shadowrocket source discovery degraded health", workflow)
-        self.assertIn("gh issue create", workflow)
-        self.assertIn("gh issue close", workflow)
-        self.assertIn("issues: write", workflow)
+        self.assertIn("Source discovery health is $health", workflow)
+        self.assertIn("gh workflow run storage-incident-management.yml", workflow)
+        self.assertIn("classification=SOURCE_DISCOVERY_DEGRADED", workflow)
+        self.assertNotIn("gh issue", workflow)
+        self.assertNotIn("issues: write", workflow)
 
     def test_successful_audit_writes_and_publishes_a_durable_heartbeat(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
@@ -372,8 +373,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         job_end = workflow.index("  stale-run-watch:", job_start)
         queue_job = workflow[job_start:job_end]
         self.assertIn("      actions: write", queue_job)
-        self.assertIn("      contents: read", queue_job)
-        self.assertIn("      issues: write", queue_job)
+        self.assertIn("      contents: write", queue_job)
+        self.assertNotIn("issues: write", queue_job)
         self.assertIn("persist-credentials: false", queue_job)
         self.assertIn("GITHUB_TOKEN: ${{ github.token }}", workflow)
         self.assertIn('queue_token="$GITHUB_TOKEN"', workflow)
@@ -438,7 +439,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertNotIn("audit_base_stale", stale)
         self.assertNotIn("auto-sync-stale:", stale)
         self.assertIn("bounded timeout recovery", stale)
-        self.assertIn("production:recovery:$current_fingerprint:$timed_out_run_id", stale)
+        self.assertIn("production:recovery:$recovery_fingerprint:$SOURCE_RUN_ID", stale)
 
     def test_successful_heartbeat_persists_the_production_input_fingerprint(self):
         audit = AUTO_SYNC.read_text(encoding="utf-8")
@@ -449,7 +450,7 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("compute_fingerprint", audit)
         self.assertIn("automation/production_inputs.json", audit)
 
-    def test_production_intent_engine_is_registered_and_ss_conf_is_read_only_input(self):
+    def test_production_intent_engine_is_registered_and_uu_conf_is_read_only_input(self):
         registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
         manifest = json.loads((ROOT / "automation" / "production_inputs.json").read_text(encoding="utf-8"))
         self.assertIn("script_production_intent", {item["id"] for item in registry["programs"]})

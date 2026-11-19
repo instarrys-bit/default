@@ -2,15 +2,11 @@
   "schema_version": 1,
   "registry_policy": {
     "purpose": "Capability and dependency catalog for repository automation programs.",
-    "registration_required_for": "Any Python component under scripts/ and any active GitHub Actions workflow under .github/workflows/, excluding only the exact frozen legacy workflow paths listed in excluded_legacy_workflow_paths.",
+    "registration_required_for": "Every non-package Python component under scripts/ and storage/v2/, plus every active GitHub Actions workflow under .github/workflows/.",
     "collaboration_rule": "A program may run independently under its own entry point. Cross-program orchestration requires an explicit registry entry and declared workflow dependencies or dispatch targets.",
     "permission_rule": "Registry declarations describe boundaries; they never grant permissions. The workflow job's least-privilege permissions remain authoritative.",
     "activation_rule": "Registration is mandatory for CI acceptance, but does not by itself authorize automatic dispatch, rule activation, publication, or modification of modules/uu.conf.",
-    "excluded_legacy_workflow_paths": [
-      ".github/workflows/migrate-queue-to-repo-json.yml",
-      ".github/workflows/queue-lease-recovery.yml",
-      ".github/workflows/restore-queue-store.yml"
-    ],
+    "excluded_legacy_workflow_paths": [],
     "exclusion_rule": "These V1 legacy workflows are retained in the repository for historical recovery evidence only. They are not V2 dispatch targets and must not be called by V2. Removal or reactivation requires an explicit retirement/migration review."
   },
   "programs": [
@@ -83,13 +79,13 @@
       "outputs": [
         "stdout JSON: assessed, bytes_read, parser_candidates, policy_candidates, activated=0",
         "runner-local sources/source_assessments.json, data/source_assessments_runtime.json and reports/source-assessment.md uploaded as immutable Actions artifact",
-        "durable per-URL checkpoint in GitHub Issue #423 using CAS under task and logical resource leases"
+        "durable per-URL checkpoint in automation/task_queue.json using CAS under task and logical resource leases"
       ],
       "depends_on": [
         "script_discover_sources"
       ],
       "dispatches": [],
-      "permission_boundary": "Read only the exact verified discovery artifact and read-only baseline files. Write assessment documents only under the isolated RUNNER_TEMP artifact root; no repository file writes, commits, or GitHub Contents API writes. The sole shared mutation is the current task's bounded assessment_checkpoint in GitHub Issue #423, guarded by the active task lease, logical/source-assessment-checkpoints and logical/production-pipeline fences. No source activation; modules/uu.conf and sources/domain_sources.json remain read-only.",
+      "permission_boundary": "Read only the exact verified discovery artifact and read-only baseline files. Write assessment documents only under the isolated RUNNER_TEMP artifact root. The sole shared repository mutation is the bounded assessment_checkpoint in automation/task_queue.json through the allowlisted Storage Management queue store, guarded by the active task lease, logical/source-assessment-checkpoints and logical/production-pipeline fences. No source activation; modules/uu.conf and sources/domain_sources.json remain read-only.",
       "health_check": "Scheduler validates the exact discovery predecessor digest from the external runner-local artifact root, the assessor validates task/resource fencing before each queue checkpoint CAS, and verify_assess_sources_artifacts.py independently checks the runner-local output documents and non-activation.",
       "orchestration": {
         "enabled": true,
@@ -591,7 +587,7 @@
       "id": "script_github_queue_store",
       "path": "scripts/github_queue_store.py",
       "kind": "python_component",
-      "responsibility": "provide append-only GitHub Issue comment snapshot persistence for the cross-runner task queue; repository bootstrap JSON is read-only",
+      "responsibility": "Compatibility import shim only; delegates durable JSON persistence to Storage Management storage/v2/queue_store.py.",
       "capabilities": [
         "github_queue_storage"
       ],
@@ -607,9 +603,11 @@
         "new revision digest",
         "conflict or API error"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "storage_queue_store"
+      ],
       "dispatches": [],
-      "permission_boundary": "Requires caller-supplied GitHub Issues read/write permission to append and read compressed queue snapshots in Issue #423. It performs no repository Contents API writes and never logs token values.",
+      "permission_boundary": "Compatibility import shim only; delegates to storage_queue_store. It performs no network or repository writes independently.",
       "health_check": "Mocked API tests for snapshot compression, SHA-256 chain validation, canonical duplicate-revision resolution, bounded conflict retries, and fail-closed API errors.",
       "orchestration": {
         "enabled": false,
@@ -670,7 +668,7 @@
         "script_production_intent"
       ],
       "dispatches": [],
-      "permission_boundary": "Reads the read-only repository seed and append-only GitHub Issue #317 observation comments using caller-provided GitHub token; writes only the runner-local candidate buffer.",
+      "permission_boundary": "Reads the read-only repository seed and the checked-in sources/request_domain_observations.json observation seed only; no external transport or token required; writes only the runner-local candidate buffer.",
       "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
       "orchestration": {
         "enabled": false,
@@ -815,7 +813,7 @@
       "id": "script_production_intent",
       "path": "scripts/production_intent.py",
       "kind": "python_component",
-      "responsibility": "compute production fingerprints using repository inputs plus append-only external Issue #317 request observations, and classify whether a production audit is required",
+      "responsibility": "compute production fingerprints from read-only repository inputs and the checked-in request-observation seed, then classify whether a ruleset audit is required",
       "capabilities": [
         "production_intent_classification",
         "production_input_fingerprinting"
@@ -823,10 +821,10 @@
       "invocation": "python_cli_and_python_library",
       "inputs": [
         "automation/production_inputs.json",
-        "repository changed-path set",
+        "read-only repository changed-path set",
         "last successful audit fingerprint and timestamp",
         "active and successful task fingerprints",
-        "append-only hostname observation batches from GitHub Issue #317"
+        "checked-in sources/request_domain_observations.json observation seed"
       ],
       "outputs": [
         "deterministic production-demand decision",
@@ -835,7 +833,7 @@
       ],
       "depends_on": [],
       "dispatches": [],
-      "permission_boundary": "Read-only deterministic classification and hashing; may read Issue #317 comments using caller-provided token. No repository Contents writes, queue writes, ruleset writes, or modification of modules/uu.conf.",
+      "permission_boundary": "Read-only deterministic classification and hashing. No repository Contents writes, queue writes, observation-seed writes, ruleset writes, external Issues API or modification of modules/uu.conf.",
       "health_check": "Dedicated deterministic unit tests plus Watchdog workflow integration tests.",
       "orchestration": {
         "enabled": false,
@@ -930,7 +928,7 @@
       "id": "script_remote_task_queue_runtime",
       "path": "scripts/remote_task_queue_runtime.py",
       "kind": "python_component",
-      "responsibility": "execute durable task queue transitions through append-only GitHub Issue snapshots",
+      "responsibility": "execute durable task queue transitions through the Storage Management repository JSON Contents API SHA-CAS interface",
       "capabilities": [
         "remote_task_queue_runtime"
       ],
@@ -948,11 +946,12 @@
       "depends_on": [
         "script_github_queue_store",
         "script_task_queue_runtime",
-        "script_task_queue"
+        "script_task_queue",
+        "storage_queue_store"
       ],
       "dispatches": [],
-      "permission_boundary": "Requires caller-provided GitHub Issues read/write permission for Issue #423; repository task_queue_rebuild_seed.json is read-only bootstrap state and no repository Contents write is performed.",
-      "health_check": "Unit tests for Issue-backed enqueue, idempotency, priority claims, lease ownership, retry/dead-letter transitions, and expired-lease recovery.",
+      "permission_boundary": "Requires caller-provided GitHub Contents API read/write permission for automation/task_queue.json; repository task_queue_rebuild_seed.json is read-only bootstrap state and no path outside automation/task_queue.json may be written.",
+      "health_check": "Unit tests for repository JSON CAS enqueue, idempotency, priority claims, lease ownership, retry/dead-letter transitions, and expired-lease recovery.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],
@@ -1428,6 +1427,35 @@
       }
     },
     {
+      "id": "script_validate_source_registry_artifact",
+      "path": "scripts/validate_source_registry_artifact.py",
+      "kind": "python_component",
+      "responsibility": "Replay one pinned historical Source Discovery artifact through the exact candidate-registry migration, JSONL shard writer and SHA/count verifier in an isolated temporary directory without touching repository state.",
+      "capabilities": [
+        "source_candidate_registry_artifact_validation"
+      ],
+      "invocation": "read_only_validation_workflow_step",
+      "inputs": [
+        "Pinned source-discovery-output artifact ZIP, artifact SHA-256, inventory SHA-256, producer run ID and producer head SHA"
+      ],
+      "outputs": [
+        "Runner-local temporary sharded registry manifest and verified round-trip summary; no repository mutation"
+      ],
+      "depends_on": [
+        "script_json_document_store",
+        "script_register_discovered_sources"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Read-only validation component. It verifies artifact provenance, calls the production registry builder/encoder and JSON document store only against a temporary directory outside the checkout, then verifies every shard and reconstructed logical registry. It cannot write repository paths, modify modules/uu.conf, activate sources, or change DIRECT/PROXY/REJECT rules.",
+      "health_check": "Pinned artifact and inventory SHA-256 match; producer run/head match; exact repository/source counts match; every shard remains below 40,000,000 bytes; manifest and shard SHA/count checks pass; reconstructed registry equals the logical registry.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
       "id": "script_verify_assess_sources_artifacts",
       "path": "scripts/verify_assess_sources_artifacts.py",
       "kind": "python_component",
@@ -1561,6 +1589,119 @@
       }
     },
     {
+      "id": "storage_incident_store",
+      "path": "storage/v2/incident_store.py",
+      "kind": "python_component",
+      "responsibility": "idempotent incident ledger mutations and verified recovery transitions; sole code writer for storage/v2/incidents.json",
+      "capabilities": [
+        "incident_ledger_persistence"
+      ],
+      "invocation": "only from workflow_storage_incident_management",
+      "inputs": [
+        "validated incident event",
+        "verified recovery event"
+      ],
+      "outputs": [
+        "incident state transition",
+        "append-only event record"
+      ],
+      "depends_on": [
+        "storage_queue_store",
+        "script_incident_state"
+      ],
+      "dispatches": [],
+      "permission_boundary": "No direct GitHub Issues access. The only writable path is storage/v2/incidents.json through storage_queue_store.",
+      "health_check": "Unit tests verify idempotency, classification filtering, revision monotonicity and verification-gated recovery.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "storage_migration",
+      "path": "storage/v2/migration.py",
+      "kind": "python_component",
+      "responsibility": "explicitly gated migration and reconciliation utilities for durable state; not an active scheduler",
+      "capabilities": [
+        "storage_management_support"
+      ],
+      "invocation": "imported only by registered Watchdog, Dashboard, Production or Storage Management entry points",
+      "inputs": [
+        "validated state or artifact references"
+      ],
+      "outputs": [
+        "validated projection, migration result or integrity report"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent credential grant or workflow dispatch. Runtime write authority is determined by the calling four-system workflow and Storage Management allowlists.",
+      "health_check": "Dedicated unit tests validate deterministic behavior, integrity checks and fail-closed error handling.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "storage_queue_store",
+      "path": "storage/v2/queue_store.py",
+      "kind": "python_component",
+      "responsibility": "authoritative allowlisted repository JSON persistence adapter for task queue and incident ledger state using GitHub Contents API SHA-CAS",
+      "capabilities": [
+        "storage_json_sha_cas"
+      ],
+      "invocation": "Storage Management persistence adapter called by Watchdog queue clients and the Storage Management incident workflow.",
+      "inputs": [
+        "allowlisted repository path",
+        "repository token",
+        "expected logical revision"
+      ],
+      "outputs": [
+        "verified JSON document",
+        "Git blob SHA",
+        "logical revision SHA"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Only automation/task_queue.json and storage/v2/incidents.json are allowlisted. Watchdog queue clients and the incident workflow call this single Storage Management writer; all writes use Contents API SHA-CAS and read-after-write verification. No Issues API, rulesets/** or modules/** writes.",
+      "health_check": "Unit tests cover allowlisted paths, SHA-CAS, stale revisions, conflicts, permission failures and read-after-write verification.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "storage_verify_archive_inventory",
+      "path": "storage/v2/verify_archive_inventory.py",
+      "kind": "python_component",
+      "responsibility": "read-only integrity verifier for immutable Storage Management archives",
+      "capabilities": [
+        "storage_management_support"
+      ],
+      "invocation": "imported only by registered Watchdog, Dashboard, Production or Storage Management entry points",
+      "inputs": [
+        "validated state or artifact references"
+      ],
+      "outputs": [
+        "validated projection, migration result or integrity report"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent credential grant or workflow dispatch. Runtime write authority is determined by the calling four-system workflow and Storage Management allowlists.",
+      "health_check": "Dedicated unit tests validate deterministic behavior, integrity checks and fail-closed error handling.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
       "id": "workflow_assessment_completion_relay",
       "path": ".github/workflows/assessment-completion-relay.yml",
       "kind": "github_actions_workflow",
@@ -1637,7 +1778,9 @@
         "script_verify_baseline",
         "script_verify_published_rulesets"
       ],
-      "dispatches": [],
+      "dispatches": [
+        "workflow_storage_incident_management"
+      ],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
       "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",
       "orchestration": {
@@ -1677,7 +1820,8 @@
         "script_watchdog_recovery_policy"
       ],
       "dispatches": [
-        "workflow_auto_sync"
+        "workflow_auto_sync",
+        "workflow_storage_incident_management"
       ],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
       "health_check": "GitHub Actions job and step conclusions; independent publication verification and queue state validation are required where configured.",
@@ -1686,6 +1830,37 @@
         "allowed_callers": [],
         "max_attempts": 0,
         "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "workflow_queue_snapshot_artifact",
+      "path": ".github/workflows/queue-snapshot-artifact.yml",
+      "kind": "github_actions_workflow",
+      "responsibility": "periodically export the canonical durable queue snapshot from automation/task_queue.json and retain it as an immutable Actions artifact for disaster recovery",
+      "capabilities": [
+        "durable_queue_snapshot_export",
+        "queue_disaster_recovery"
+      ],
+      "invocation": "15-minute schedule and completion of Watchdog, config-validation or Source Discovery workflows; manual dispatch is available for recovery",
+      "inputs": [
+        "canonical append-only durable queue state in automation/task_queue.json",
+        "repository identity and triggering workflow run identity",
+        "optional automation_task_id for correlated manual backup runs"
+      ],
+      "outputs": [
+        "run-scoped durable-queue-snapshot-<run_id> Actions artifact containing the validated full queue snapshot, revision and task count"
+      ],
+      "depends_on": [
+        "script_remote_task_queue_runtime"
+      ],
+      "dispatches": [],
+      "permission_boundary": "contents:read only to read and validate the canonical queue; actions:write only to upload a run-scoped immutable Actions artifact. No repository contents writes, commits, branch updates, queue mutations, task dispatch, source activation, ruleset publication, or writes to modules/uu.conf.",
+      "health_check": "The snapshot CLI must validate the canonical automation/task_queue.json envelope and report revision/task count; the exact output file must be uploaded under a unique run ID. Missing or invalid snapshots fail the job; the upload step cannot turn a failed export into a successful run.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 600
       }
     },
     {
@@ -1732,15 +1907,16 @@
         "repository state and declared workflow inputs"
       ],
       "outputs": [
-        "workflow run diagnosis and incident reports through GitHub Issues; no repository changes"
+        "workflow diagnosis artifacts and Storage Management incident-ledger dispatch; no direct repository changes"
       ],
       "depends_on": [
         "script_diagnose_workflow_failure",
-        "script_incident_state",
         "script_verify_recovery_run"
       ],
-      "dispatches": [],
-      "permission_boundary": "Read-only repository access; may create/update GitHub Issues for incident reporting only. No repository contents, pull-request, branch, commit, or ruleset writes.",
+      "dispatches": [
+        "workflow_storage_incident_management"
+      ],
+      "permission_boundary": "Read-only repository access; dispatches Storage Management incident operations through actions:write. No direct repository contents, pull-request, branch, commit, or ruleset writes.",
       "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",
       "orchestration": {
         "enabled": false,
@@ -1815,7 +1991,7 @@
         "script_resource_lease_runtime"
       ],
       "dispatches": [],
-      "permission_boundary": "The workflow validates the exact Watchdog durable task and active resource lease proof, reads the main-branch source catalog/baseline, and writes only into isolated RUNNER_TEMP. It has contents:read, actions:read and issues:write only for external queue state; no repository file writes or publication. No source activation.",
+      "permission_boundary": "The workflow validates the exact Watchdog durable task and active resource lease proof, reads the main-branch source catalog/baseline, and writes only into isolated RUNNER_TEMP. It has contents:read, actions:read and contents:write only for external queue state; no repository file writes or publication. No source activation.",
       "health_check": "Successful workflow completion, exact run/head provenance and immutable artifact digest are required before Assessment enqueue.",
       "orchestration": {
         "enabled": true,
@@ -1824,6 +2000,81 @@
         ],
         "max_attempts": 1,
         "timeout_seconds": 1800
+      }
+    },
+    {
+      "id": "workflow_storage_incident_management",
+      "path": ".github/workflows/storage-incident-management.yml",
+      "kind": "github_actions_workflow",
+      "responsibility": "Storage Management dispatch endpoint for incident recording and independently verified recovery; sole workflow writer of storage/v2/incidents.json",
+      "capabilities": [
+        "incident_ledger_persistence",
+        "durable_state_management"
+      ],
+      "invocation": "workflow_dispatch from Production, Watchdog and self-healing workflows",
+      "inputs": [
+        "operation",
+        "workflow",
+        "event_id",
+        "automation_task_id",
+        "run_id",
+        "source_sha",
+        "classification",
+        "summary",
+        "run_url",
+        "before_run_id",
+        "classifications",
+        "verification_url",
+        "diagnosis_json"
+      ],
+      "outputs": [
+        "committed incident ledger revision",
+        "idempotent event result"
+      ],
+      "depends_on": [
+        "storage_incident_store"
+      ],
+      "dispatches": [],
+      "permission_boundary": "contents:write exists only in this Storage Management workflow; storage_queue_store restricts writes to storage/v2/incidents.json. No Issues API, ruleset writes, or modules/uu.conf access.",
+      "health_check": "Contents API SHA-CAS with revision validation, idempotent event IDs and read-after-write verification.",
+      "orchestration": {
+        "enabled": true,
+        "allowed_callers": [
+          "workflow_auto_sync",
+          "workflow_automation_watchdog",
+          "workflow_self_healing_agent"
+        ],
+        "max_attempts": 1,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "workflow_v2_storage_tests",
+      "path": ".github/workflows/v2-storage-tests.yml",
+      "kind": "github_actions_workflow",
+      "responsibility": "run isolated V2 Storage Management unit tests on changes to the V2 storage package",
+      "capabilities": [
+        "v2_storage_unit_tests"
+      ],
+      "invocation": "pull_request and main push path filters for storage/v2 and tests/v2",
+      "inputs": [
+        "V2 storage runtime source and unit tests"
+      ],
+      "outputs": [
+        "unittest result and GitHub Actions job conclusion"
+      ],
+      "depends_on": [
+        "script_validate_execution_adapters",
+        "script_validate_program_registry"
+      ],
+      "dispatches": [],
+      "permission_boundary": "contents:read only; no queue mutation, repository writes, workflow dispatch, ruleset publication, or access to modules/uu.conf beyond checkout.",
+      "health_check": "All V2 storage unit tests must pass; no production bootstrap or cutover is performed.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
       }
     },
     {
@@ -1878,122 +2129,6 @@
       "dispatches": [],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
       "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",
-      "orchestration": {
-        "enabled": false,
-        "allowed_callers": [],
-        "max_attempts": 0,
-        "timeout_seconds": 300
-      }
-    },
-    {
-      "id": "script_validate_source_registry_artifact",
-      "path": "scripts/validate_source_registry_artifact.py",
-      "kind": "python_component",
-      "responsibility": "Replay one pinned historical Source Discovery artifact through the exact candidate-registry migration, JSONL shard writer and SHA/count verifier in an isolated temporary directory without touching repository state.",
-      "capabilities": [
-        "source_candidate_registry_artifact_validation"
-      ],
-      "invocation": "read_only_validation_workflow_step",
-      "inputs": [
-        "Pinned source-discovery-output artifact ZIP, artifact SHA-256, inventory SHA-256, producer run ID and producer head SHA"
-      ],
-      "outputs": [
-        "Runner-local temporary sharded registry manifest and verified round-trip summary; no repository mutation"
-      ],
-      "depends_on": [
-        "script_json_document_store",
-        "script_register_discovered_sources"
-      ],
-      "dispatches": [],
-      "permission_boundary": "Read-only validation component. It verifies artifact provenance, calls the production registry builder/encoder and JSON document store only against a temporary directory outside the checkout, then verifies every shard and reconstructed logical registry. It cannot write repository paths, modify modules/uu.conf, activate sources, or change DIRECT/PROXY/REJECT rules.",
-      "health_check": "Pinned artifact and inventory SHA-256 match; producer run/head match; exact repository/source counts match; every shard remains below 40,000,000 bytes; manifest and shard SHA/count checks pass; reconstructed registry equals the logical registry.",
-      "orchestration": {
-        "enabled": false,
-        "allowed_callers": [],
-        "max_attempts": 0,
-        "timeout_seconds": 300
-      }
-    },
-    {
-      "id": "workflow_queue_snapshot_artifact",
-      "path": ".github/workflows/queue-snapshot-artifact.yml",
-      "kind": "github_actions_workflow",
-      "responsibility": "periodically export the canonical durable queue snapshot from Issue #423 and retain it as an immutable Actions artifact for disaster recovery",
-      "capabilities": [
-        "durable_queue_snapshot_export",
-        "queue_disaster_recovery"
-      ],
-      "invocation": "15-minute schedule and completion of Watchdog, config-validation or Source Discovery workflows; manual dispatch is available for recovery",
-      "inputs": [
-        "canonical append-only durable queue state in GitHub Issue #423",
-        "repository identity and triggering workflow run identity",
-        "optional automation_task_id for correlated manual backup runs"
-      ],
-      "outputs": [
-        "run-scoped durable-queue-snapshot-<run_id> Actions artifact containing the validated full queue snapshot, revision and task count"
-      ],
-      "depends_on": [
-        "script_remote_task_queue_runtime"
-      ],
-      "dispatches": [],
-      "permission_boundary": "contents:read and issues:read only to read and validate the canonical queue; actions:write only to upload a run-scoped immutable Actions artifact. No repository contents writes, commits, branch updates, queue mutations, task dispatch, source activation, ruleset publication, or writes to modules/uu.conf.",
-      "health_check": "The snapshot CLI must validate the canonical Issue #423 envelope and report revision/task count; the exact output file must be uploaded under a unique run ID. Missing or invalid snapshots fail the job; the upload step cannot turn a failed export into a successful run.",
-      "orchestration": {
-        "enabled": false,
-        "allowed_callers": [],
-        "max_attempts": 0,
-        "timeout_seconds": 600
-      }
-    },
-    {
-      "id": "workflow_v2_storage_tests",
-      "path": ".github/workflows/v2-storage-tests.yml",
-      "kind": "github_actions_workflow",
-      "responsibility": "run isolated V2 Storage Management unit tests on changes to the V2 storage package",
-      "capabilities": [
-        "v2_storage_unit_tests"
-      ],
-      "invocation": "pull_request and main push path filters for storage/v2 and tests/v2",
-      "inputs": [
-        "V2 storage runtime source and unit tests"
-      ],
-      "outputs": [
-        "unittest result and GitHub Actions job conclusion"
-      ],
-      "depends_on": [
-        "script_validate_execution_adapters",
-        "script_validate_program_registry"
-      ],
-      "dispatches": [],
-      "permission_boundary": "contents:read only; no queue mutation, repository writes, workflow dispatch, ruleset publication, or access to modules/uu.conf beyond checkout.",
-      "health_check": "All V2 storage unit tests must pass; no production bootstrap or cutover is performed.",
-      "orchestration": {
-        "enabled": false,
-        "allowed_callers": [],
-        "max_attempts": 0,
-        "timeout_seconds": 300
-      }
-    },
-    {
-      "id": "workflow_v2_watchdog_supervisor",
-      "path": ".github/workflows/v2-watchdog-supervisor.yml",
-      "kind": "github_actions_workflow",
-      "responsibility": "read the V2 Storage Management event projection and produce a sanitized lease-recovery plan without writes or worker dispatch",
-      "capabilities": [
-        "v2_read_only_watchdog_supervision",
-        "lease_expiry_recovery_planning"
-      ],
-      "invocation": "five-minute scheduled read-only supervision",
-      "inputs": [
-        "V2 Storage Management state.json through GitHub Contents API with contents:read"
-      ],
-      "outputs": [
-        "sanitized recovery plan and status summary in GitHub Actions job summary"
-      ],
-      "depends_on": [],
-      "dispatches": [],
-      "permission_boundary": "contents:read only. No actions:write, contents:write, task mutation, lease renewal/release, workflow dispatch, ruleset publication, or user-config writes. Opaque task lease tokens are never emitted.",
-      "health_check": "V2 Watchdog planner unit tests, successful read-only state projection, and job summary output; state mutation and dispatch must remain absent.",
       "orchestration": {
         "enabled": false,
         "allowed_callers": [],

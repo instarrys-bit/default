@@ -1,9 +1,0 @@
-{
-  "schema_version": 1,
-  "epoch_id": "v2-epoch-bootstrap-pending",
-  "revision": 0,
-  "tasks": [],
-  "resource_leases": {},
-  "manual_authorizations": {},
-  "note": "Empty V2 bootstrap template only. Not an active queue until an explicit bootstrap operation records the approved seed SHA and epoch."
-}

@@ -88,10 +88,10 @@
       ],
       "side_effects": [
         "HTTPS reads restricted to raw.githubusercontent.com with repository binding and same-host redirect validation.",
-        "Per-URL results are CAS-appended to GitHub Issue #423 task.assessment_checkpoint under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences.",
+        "Per-URL results are CAS-appended to automation/task_queue.json task.assessment_checkpoint under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences.",
         "All assessment documents are isolated beneath RUNNER_TEMP and uploaded as immutable Actions artifacts; no repository checkout file is modified."
       ],
-      "evidence": "Independent task mode resolves the discovery predecessor from AUTOMATION_PREDECESSOR_ARTIFACT_ROOT and writes runtime/history/report documents only beneath AUTOMATION_ARTIFACT_ROOT. write_document uses no repository resource lease because the workspace is per-run isolated. Shared progress is written only through the fenced Issue #423 queue CAS.",
+      "evidence": "Independent task mode resolves the discovery predecessor from AUTOMATION_PREDECESSOR_ARTIFACT_ROOT and writes runtime/history/report documents only beneath AUTOMATION_ARTIFACT_ROOT. write_document uses no repository resource lease because the workspace is per-run isolated. Shared progress is written only through the fenced automation/task_queue.json queue CAS.",
       "lease_keys": [
         "logical/production-pipeline",
         "sources/source_assessments.json",
@@ -99,7 +99,7 @@
         "reports/source-assessment.md",
         "logical/source-assessment-checkpoints"
       ],
-      "lease_enforcement": "The durable per-URL checkpoint is updated via append-only Issue #423 CAS under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences. The 3600-second resource lease exceeds four 15-minute Watchdog reconciliation intervals; pending verification renews it before expiry. All assessment JSON and reports remain per-run immutable artifacts.",
+      "lease_enforcement": "The durable per-URL checkpoint is updated via append-only automation/task_queue.json CAS under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences. The 3600-second resource lease exceeds four 15-minute Watchdog reconciliation intervals; pending verification renews it before expiry. All assessment JSON and reports remain per-run immutable artifacts.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [
         "sources/source_assessments.json (monolithic checkout workspace only)",
@@ -572,7 +572,7 @@
         "sources/domain_reviews.json",
         "sources/review_cursor.json"
       ],
-      "lease_enforcement": "The Watchdog production resource lease serializes the audit workflow and is verified before expensive audit work and before publication. write_document and atomic_json retain local path/symlink/hard-link checks but do not query GitHub Issues for each file mutation.",
+      "lease_enforcement": "The Watchdog production resource lease serializes the audit workflow and is verified before expensive audit work and before publication. write_document and atomic_json retain local path/symlink/hard-link checks but do not query GitHub Contents API for each file mutation.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [
         "sources/domain_reviews.json (JSON document or manifest/shard/staging children)",
@@ -634,13 +634,13 @@
         "data/domain_candidates.json.parts.tmp-*"
       ],
       "read_resources": [
-        "read-only repository seed plus GitHub Issue #317 comments",
+        "read-only repository seed plus sources/request_domain_observations.json comments",
         "data/domain_candidates.json"
       ],
       "side_effects": [
-        "Merges the seed and Issue #317 observation batches into the runner-local unclassified candidate buffer; assigns no DIRECT/PROXY/REJECT policy."
+        "Merges the seed and sources/request_domain_observations.json observation batches into the runner-local unclassified candidate buffer; assigns no DIRECT/PROXY/REJECT policy."
       ],
-      "evidence": "main() reads the read-only seed, loads append-only Issue #317 comments through production_intent.load_request_observation_ledger(), then writes only the local data/domain_candidates.json logical document.",
+      "evidence": "main() reads the read-only seed, loads append-only sources/request_domain_observations.json comments through production_intent.load_request_observation_ledger(), then writes only the local data/domain_candidates.json logical document.",
       "lease_keys": [
         "logical/production-pipeline",
         "data/domain_candidates.json"
@@ -788,12 +788,12 @@
       "program_id": "script_resource_lease_runtime",
       "source": "scripts/resource_lease_runtime.py",
       "writes": [
-        "GitHub Issue #423 comment snapshots (external durable queue state)"
+        "automation/task_queue.json Contents API SHA-CAS updates (repository durable queue state)"
       ],
       "document_store": [],
       "dynamic_children": [],
       "read_resources": [
-        "GitHub Issue #423 queue snapshots; automation/task_queue_rebuild_seed.json is read-only bootstrap",
+        "automation/task_queue.json queue snapshots; automation/task_queue_rebuild_seed.json is read-only bootstrap",
         "automation/program_registry.json",
         "automation/execution_adapters.json",
         "automation/production_control.json"
@@ -801,15 +801,15 @@
       "side_effects": [
         "Acquires, renews, asserts and releases durable resource leases by mutating the task queue through GitHubContentsQueueStore."
       ],
-      "evidence": "Queue mutations append compressed snapshots to GitHub Issue #423 comments with SHA-256 previous-revision chaining and deterministic canonical comment ordering.",
+      "evidence": "Queue mutations append compressed snapshots to automation/task_queue.json comments with SHA-256 previous-revision chaining and deterministic canonical comment ordering.",
       "lease_keys": [
-        "github-issue-comment-chain:423",
+        "github-contents-cas:automation/task_queue.json",
         "resource:<canonical logical resource path>"
       ],
       "lease_enforcement": "Durable queue changes use GitHubContentsQueueStore Blob-SHA compare-and-swap and queue validation; resource fencing tokens are checked against the exact active task and lease proof.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [],
-      "control_plane_consistency": "append_only_issue_snapshot_chain",
+      "control_plane_consistency": "repository_json_contents_sha_cas_revision_chain",
       "write_boundary_fencing": "No GitHub Contents API or repository-file write is used for durable queue state; candidate queues are validated before and after each append, with bounded re-read/reapply after conflicts."
     },
     {
@@ -1023,17 +1023,17 @@
       "document_store": [],
       "dynamic_children": [],
       "read_resources": [
-        "GitHub Issue #423 queue snapshots; automation/task_queue_rebuild_seed.json is read-only bootstrap",
+        "automation/task_queue.json queue snapshots; automation/task_queue_rebuild_seed.json is read-only bootstrap",
         "automation/program_registry.json",
         "automation/execution_adapters.json",
         "automation/production_control.json"
       ],
       "side_effects": [
-        "Durable queue mutations append Issue #423 snapshots; direct temporary files remain isolated to the current task execution directory."
+        "Durable queue mutations append automation/task_queue.json snapshots; direct temporary files remain isolated to the current task execution directory."
       ],
-      "evidence": "run_scheduler_once() writes task-input.json, task-queue-lease-snapshot.json and task-result.json under isolated task/verifier temporary directories; durable queue transitions append snapshots through the GitHub Issue store.",
+      "evidence": "run_scheduler_once() writes task-input.json, task-queue-lease-snapshot.json and task-result.json under isolated task/verifier temporary directories; durable queue transitions append snapshots through the Storage Management JSON store.",
       "lease_keys": [
-        "github-issue-comment-chain:423"
+        "github-contents-cas:automation/task_queue.json"
       ],
       "lease_enforcement": "Queue persistence uses the remote GitHub Contents SHA-CAS store; temporary files are runner-local. This inventory entry does not treat local task_queue_runtime flock as a cross-runner lock.",
       "publish_resources": [],
@@ -1042,7 +1042,7 @@
         "task-queue-lease-snapshot.json",
         "task-result.json"
       ],
-      "write_boundary_fencing": "Durable queue state is external Issue comment history, not a repository file; task and resource lease/fencing validation remains mandatory. Temporary paths are runner-local."
+      "write_boundary_fencing": "Task scheduling is a caller of the Storage Management queue store. Durable queue state is repository JSON in automation/task_queue.json and all mutations use storage_queue_store SHA-CAS with task/resource fencing. Temporary paths are runner-local."
     },
     {
       "program_id": "script_register_discovered_sources",
@@ -1102,14 +1102,11 @@
     },
     {
       "resource": "automation/unregistered_path_registry.json",
-      "writers": [
-        "script_production_intent",
-        "workflow_automation_watchdog"
-      ],
-      "lock_key": "git-blob-sha-cas:automation/unregistered_path_registry.json",
-      "mode": "compare_and_swap",
-      "enforcement": "Watchdog re-reads the current Contents Blob SHA on each of up to three attempts, merges the same run-scoped paths into the latest ledger, and performs a conditional Contents API PUT. Registration records observed_run_ids for retry idempotency. Exhausted conflicts fail closed.",
-      "note": "Bounded three-attempt CAS merge is implemented; distinct Watchdog runs are not serialized by their run-ID concurrency groups. Concurrent-run integration tests and no-lost-update proof remain outstanding."
+      "writers": [],
+      "lock_key": "read-only checked-in policy input: automation/unregistered_path_registry.json",
+      "mode": "read_only",
+      "enforcement": "Watchdog reads this checked-in classification seed only. Production Intent no longer exposes a file-writing registration mode; unknown path observations are recorded as Storage Management incident events.",
+      "note": "Existing path classifications are preserved as read-only policy data. No workflow or script writes this file."
     },
     {
       "resource": "data/domain_candidates.json logical document",
@@ -1128,20 +1125,22 @@
     {
       "resource": "durable task queue control-plane state",
       "paths": [
-        "GitHub Issue #423 comments (external state)"
+        "automation/task_queue.json"
       ],
       "writers": [
-        "script_github_queue_store",
+        "storage_queue_store"
+      ],
+      "lock_key": "contents-cas:automation/task_queue.json",
+      "mode": "compare_and_swap",
+      "enforcement": "Storage Management reads the current Contents Blob SHA and logical revision, validates task/resource fencing, conditionally writes the next revision, then verifies the persisted document and new blob SHA. Stale SHA/409 conflicts fail closed and are retried only within the bounded store retry policy.",
+      "note": "automation/task_queue_rebuild_seed.json is the read-only bootstrap. The live queue, assessment checkpoints and resource leases are a single repository JSON document owned by Storage Management; no Issue comments or Issue API are used.",
+      "clients": [
         "script_remote_task_queue_runtime",
         "script_resource_lease_runtime",
         "script_task_scheduler",
         "workflow_automation_watchdog",
         "script_assess_sources"
-      ],
-      "lock_key": "github-issue-comment-chain:423",
-      "mode": "append_only_revision_chain",
-      "enforcement": "Queue mutations append compressed SHA-256 verified snapshots to Issue #423 comments; each revision references the prior digest and canonical earliest comment ID wins duplicate revisions. Losing writers re-read and reapply within a bounded retry budget.",
-      "note": "automation/task_queue_rebuild_seed.json is the read-only bootstrap for the rebuilt Issue #423 queue; local task_queue_runtime remains runner-local. Source assessor checkpoints and resource leases share the external queue state."
+      ]
     },
     {
       "resource": "logical/production-pipeline",
@@ -1154,6 +1153,17 @@
       "mode": "exclusive",
       "enforcement": "durable task queue lease with monotonically increasing fencing token; publish gate re-reads live queue before git push",
       "note": "Shared coarse mutex serializes workflow_auto_sync with the independently scheduled source assessor; each JSON/report output also has its own logical resource lease. The allowlisted publish restore is invoked by workflow_auto_sync and is implemented by script_restore_automation_state under this same mutex."
+    },
+    {
+      "resource": "logical/source-dag-supervision",
+      "writers": [
+        "workflow_source_discovery",
+        "script_assess_sources"
+      ],
+      "lock_key": "logical/source-dag-supervision",
+      "mode": "exclusive",
+      "enforcement": "The durable queue acquires this common resource lease atomically with a task claim and keeps it active through asynchronous workflow verification; monotonically increasing fencing tokens prevent stale workers from proceeding.",
+      "note": "Discovery and Assessment share one task-scoped fence. Watchdog jobs may run concurrently without losing pending events; CAS plus this common lease prevents two different source-DAG stages from executing simultaneously."
     },
     {
       "id": "rulesets/config_conflict_archive.json",
@@ -1295,13 +1305,11 @@
     },
     {
       "resource": "sources/request_domain_observations.json",
-      "writers": [
-        "script_production_intent"
-      ],
-      "lock_key": "git-ref-cas:sources/request_domain_observations.json",
-      "mode": "optimistic_git_ref_compare_and_swap",
-      "enforcement": "The request-intake workflow did not write this repository file. script_production_intent maintains the local observation ledger from the append-only GitHub Issue #317 ledger; the candidate importer reads it. The manual Issue #317 writer has been retired.",
-      "note": "The manual request-intake workflow has been retired. Existing Issue #317 comments and the read-only importer remain available; no replacement writer or production dispatch path is introduced."
+      "writers": [],
+      "lock_key": "read-only checked-in observation seed",
+      "mode": "read_only",
+      "enforcement": "Production Intent and the candidate importer read this seed only. The old Issue ingestion and repository mutation CLI paths are removed.",
+      "note": "Existing observations are preserved as checked-in seed data; no active writer exists."
     },
     {
       "resource": "sources/review_cursor.json",
@@ -1333,15 +1341,18 @@
       "note": "Lease must cover base file, manifest, shard set, staging, atomic switch and cleanup."
     },
     {
-      "resource": "logical/source-dag-supervision",
-      "writers": [
-        "workflow_source_discovery",
-        "script_assess_sources"
+      "resource": "storage/v2/incidents.json",
+      "paths": [
+        "storage/v2/incidents.json"
       ],
-      "lock_key": "logical/source-dag-supervision",
-      "mode": "exclusive",
-      "enforcement": "The durable queue acquires this common resource lease atomically with a task claim and keeps it active through asynchronous workflow verification; monotonically increasing fencing tokens prevent stale workers from proceeding.",
-      "note": "Discovery and Assessment share one task-scoped fence. Watchdog jobs may run concurrently without losing pending events; CAS plus this common lease prevents two different source-DAG stages from executing simultaneously."
+      "writers": [
+        "storage_incident_store",
+        "workflow_storage_incident_management"
+      ],
+      "lock_key": "contents-cas:storage/v2/incidents.json",
+      "mode": "compare_and_swap",
+      "enforcement": "Storage Management applies idempotent event IDs, validates the incident schema/revision, performs Contents API SHA-CAS and verifies the persisted revision after write. Verified recovery is required before lifecycle state changes to RECOVERED.",
+      "note": "85 open legacy incident records were imported with original issue number, title, body, labels and available run/source metadata. GitHub Issues are archival provenance only; no runtime code reads or writes Issues."
     }
   ],
   "not_yet_proven": [
@@ -1353,16 +1364,16 @@
     "Atomic multi-resource lease acquisition and compatibility of per-resource locks across all independent/cross-workflow writers remain unproven.",
     "Static entrypoint inventory does not prove absence of unregistered dynamic writes, subprocess writes, external API mutations or filesystem writes hidden behind imported helpers.",
     "All remaining registered Python components must be checked for indirect writes through imported helpers, subprocesses and dynamically selected outputs; runner-local report writers and runner-local source-activation proposal outputs must remain distinct.",
-    "The 52 registered Python components are now classified into direct/helper writers, read-only/non-writer components, and three external control-plane side-effect components (two Issue #423 queue stores and one GitHub workflow-dispatch adapter). Static classification still does not prove absence of writes hidden in runtime imports, shell subprocesses or dynamic caller paths.",
+    "The 52 registered Python components are now classified into direct/helper writers, read-only/non-writer components, and three external control-plane side-effect components (two automation/task_queue.json queue stores and one GitHub workflow-dispatch adapter). Static classification still does not prove absence of writes hidden in runtime imports, shell subprocesses or dynamic caller paths.",
     "Static Python mutation-site and workflow-native scans do not prove transient write-and-revert activity, Git metadata changes, external side effects or unexecuted call paths. No global filesystem guard or Python audit hook is installed."
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
     "release_manifest_blob_sha": "75ea172c5ac973e3fed7f9c2329037ad824f44bd",
-    "program_registry_blob_sha": "97c4bc32325502c32ec7ccba40629dbc74086cf0",
-    "execution_adapters_blob_sha": "ac0d4a74d5cf1da6d1fe05ebe16a050b2e13fdbb",
+    "program_registry_blob_sha": "e32da1d883ad0c40d99c4e19e12a8e21683eb388",
+    "execution_adapters_blob_sha": "e252c588903f1807124e027b2cf237b09b73b2c7",
     "added_after_release_baseline": true,
-    "note": "Independent Source Discovery and non-activating Assessment are enabled through Watchdog-owned tasks. Discovery/Assessment outputs are isolated immutable RUNNER_TEMP artifacts; Assessment's only shared mutation is the fenced Issue #423 checkpoint. Repository mutations are governed per capability by explicit exclusive resource_contract.resource_keys; control-plane metadata is separately inventoried. The production auto_sync publisher stages only the three rule-set deliverables under rulesets/**. The global static/transitive inventory remains partial for unrelated capabilities.",
+    "note": "Production Intent is read-only; the only persistent task/lease/checkpoint state is stored by Storage Management in automation/task_queue.json. Incident events are stored only in storage/v2/incidents.json. Production's committed deliverables remain allowlisted rulesets/**.",
     "reviewed_at": "2026-11-07"
   },
   "scheduler_lock_contract": {
@@ -1413,10 +1424,16 @@
       "evidence": "Domain parsing/indexing helpers; static scan found no filesystem mutation or external write calls."
     },
     {
+      "program_id": "script_github_queue_store",
+      "source": "scripts/github_queue_store.py",
+      "classification": "storage_management_compatibility_import_shim_non_dispatchable",
+      "evidence": "Compatibility import shim only. It re-exports the Storage Management queue store and performs no filesystem writes, token handling, network calls or repository mutations."
+    },
+    {
       "program_id": "script_incident_state",
       "source": "scripts/incident_state.py",
-      "classification": "runner_local_ephemeral_output_non_dispatchable",
-      "evidence": "main() writes updated incident text to args.out; current self-healing-agent invocations pass /tmp paths.. Current callers write only per-run workflow workspace, RUNNER_TEMP, /tmp, or GITHUB_STEP_SUMMARY outputs. These are never committed to repository state; no shared cross-runner resource is mutated. Any future caller must constrain output to its run-local artifact root and upload it as an artifact."
+      "classification": "storage_state_transition_library_non_writer",
+      "evidence": "Pure transition helper imported by storage/v2/incident_store.py; it returns updated state/body values and performs no filesystem or network writes."
     },
     {
       "program_id": "script_persist_review_cursor",
@@ -1427,8 +1444,8 @@
     {
       "program_id": "script_production_intent",
       "source": "scripts/production_intent.py",
-      "classification": "runner_local_ephemeral_output_non_dispatchable",
-      "evidence": "--register-ledger mode writes the supplied Watchdog inbox path; automation-watchdog.yml re-reads the latest Blob SHA on each of up to three attempts and conditionally PUTs the merged ledger. --merge-observations mode reads a runner-temp submitted batch and the latest sources/request_domain_observations.json. The retired request-intake workflow is not an active repository writer. Current callers write only per-run workflow workspace, RUNNER_TEMP, /tmp, or GITHUB_STEP_SUMMARY outputs. These are never committed to repository state; no shared cross-runner resource is mutated. Any future caller must constrain output to its run-local artifact root and upload it as an artifact."
+      "classification": "read_only_production_intent_classifier",
+      "evidence": "Production Intent reads production_inputs.json and checked-in request observations, computes fingerprints and emits a JSON decision to stdout. All repository file-writing CLI modes were removed; no repository or external API writes."
     },
     {
       "program_id": "script_register_config_baseline",
@@ -1470,7 +1487,7 @@
       "program_id": "script_task_queue_runtime",
       "source": "scripts/task_queue_runtime.py",
       "classification": "legacy_local_ephemeral_queue_runtime_non_dispatchable",
-      "evidence": "This legacy local-only queue runtime has no workflow invocation and its adapter/orchestration remain disabled. Its default queue file is now under RUNNER_TEMP (or the OS temporary directory), and queue_lock rejects every repository-local path before directory creation or mutation. The local flock and atomic replace protect only the current runner's temporary queue. Production Watchdog scheduling uses the remote Issue #423 queue runtime instead."
+      "evidence": "This legacy local-only queue runtime has no workflow invocation and its adapter/orchestration remain disabled. Its default queue file is now under RUNNER_TEMP (or the OS temporary directory), and queue_lock rejects every repository-local path before directory creation or mutation. The local flock and atomic replace protect only the current runner's temporary queue. Production Watchdog scheduling uses the remote automation/task_queue.json queue runtime instead."
     },
     {
       "program_id": "script_task_result_verifier",
@@ -1503,6 +1520,12 @@
       "evidence": "Reads release pins and compatibility contracts and fails closed on mismatches; no repository file mutation sites."
     },
     {
+      "program_id": "script_validate_source_registry_artifact",
+      "source": "scripts/validate_source_registry_artifact.py",
+      "classification": "runner_local_ephemeral_output_non_dispatchable",
+      "evidence": "The validator writes only to tempfile.TemporaryDirectory() under the GitHub runner's temporary filesystem. It invokes the existing JSON document store against that isolated path, reads the resulting manifest and shards back to verify SHA-256 digests, record counts, per-file size limits and exact logical equality, then removes the temporary directory on exit. It has no repository output path, no dispatch capability, and no source activation or policy mutation."
+    },
+    {
       "program_id": "script_verify_assess_sources_artifacts",
       "source": "scripts/verify_assess_sources_artifacts.py",
       "classification": "read_only_artifact_verifier",
@@ -1533,23 +1556,19 @@
       "evidence": "Computes bounded recovery eligibility from supplied run metadata; no filesystem or external write calls."
     },
     {
-      "program_id": "script_validate_source_registry_artifact",
-      "source": "scripts/validate_source_registry_artifact.py",
-      "classification": "runner_local_ephemeral_output_non_dispatchable",
-      "evidence": "The validator writes only to tempfile.TemporaryDirectory() under the GitHub runner's temporary filesystem. It invokes the existing JSON document store against that isolated path, reads the resulting manifest and shards back to verify SHA-256 digests, record counts, per-file size limits and exact logical equality, then removes the temporary directory on exit. It has no repository output path, no dispatch capability, and no source activation or policy mutation."
+      "program_id": "storage_migration",
+      "source": "storage/v2/migration.py",
+      "classification": "pure_migration_manifest_validation_library_non_dispatchable",
+      "evidence": "Pure path and frozen archive manifest validation; no filesystem or network mutations."
+    },
+    {
+      "program_id": "storage_verify_archive_inventory",
+      "source": "storage/v2/verify_archive_inventory.py",
+      "classification": "read_only_archive_integrity_verifier_non_dispatchable",
+      "evidence": "Reads the frozen archive tree through GitHub GET requests only; no mutation HTTP methods or repository writes."
     }
   ],
   "control_plane_side_effects": [
-    {
-      "program_id": "script_github_queue_store",
-      "source": "scripts/github_queue_store.py",
-      "classification": "external_issue_423_append_only_queue_snapshot_store",
-      "side_effects": [
-        "GitHub Issue #423 comment snapshots (external durable queue state)"
-      ],
-      "file_writes": [],
-      "control_plane_boundary": "Mutates GitHub Issue #423 comments only; no repository filesystem or Contents API writes. Snapshot integrity is hash chained and queue state is re-read and validated before/after append. Concurrency/fencing proof for all concurrent queue writers remains an open Issue #193 acceptance item."
-    },
     {
       "program_id": "script_github_workflow_adapter",
       "source": "scripts/github_workflow_adapter.py",
@@ -1564,18 +1583,39 @@
     {
       "program_id": "script_remote_task_queue_runtime",
       "source": "scripts/remote_task_queue_runtime.py",
-      "classification": "external_issue_423_append_only_queue_snapshot_store",
+      "classification": "repository_json_contents_sha_cas_queue_store",
       "side_effects": [
-        "GitHub Issue #423 comment snapshots (external durable queue state)"
+        "automation/task_queue.json Contents API SHA-CAS updates (repository durable queue state)"
       ],
       "file_writes": [],
-      "control_plane_boundary": "Mutates GitHub Issue #423 comments only; no repository filesystem or Contents API writes. Snapshot integrity is hash chained and queue state is re-read and validated before/after append. Concurrency/fencing proof for all concurrent queue writers remains an open Issue #193 acceptance item."
+      "control_plane_boundary": "Queue orchestration client. All durable task/lease/checkpoint reads and mutations go through storage_queue_store; no direct GitHub Issues API or independent persistent writer."
+    },
+    {
+      "program_id": "storage_incident_store",
+      "source": "storage/v2/incident_store.py",
+      "classification": "storage_management_incident_ledger_mutation",
+      "side_effects": [
+        "storage/v2/incidents.json idempotent incident event and recovery transitions"
+      ],
+      "file_writes": [],
+      "control_plane_boundary": "Called only by workflow_storage_incident_management. It cannot write outside storage/v2/incidents.json and cannot query or mutate GitHub Issues."
+    },
+    {
+      "program_id": "storage_queue_store",
+      "source": "storage/v2/queue_store.py",
+      "classification": "allowlisted_repository_json_sha_cas_store",
+      "side_effects": [
+        "automation/task_queue.json Contents API SHA-CAS updates",
+        "storage/v2/incidents.json Contents API SHA-CAS updates"
+      ],
+      "file_writes": [],
+      "control_plane_boundary": "Only the two allowlisted JSON state paths can be written. All mutations require a current blob SHA and next logical revision, then verify the persisted content. No Issues API, rulesets/** or modules/** writes."
     }
   ],
   "direct_mutation_scan": {
     "status": "partial_python_direct_callsite_scan",
     "scanner": "tests/test_transitive_write_site_inventory.py",
-    "registered_component_count": 56,
+    "registered_component_count": 60,
     "mutation_api_families": [
       "Path/open write modes",
       "Path write_text/write_bytes/unlink/mkdir/replace/rename/touch",
@@ -1654,9 +1694,9 @@
         "git_reset"
       ],
       "resources": [
-        "GitHub Issue #423 durable queue comments (external state)"
+        "automation/task_queue.json durable queue comments (external state)"
       ],
-      "fence": "task_scheduler.py appends compressed SHA-256 chained queue snapshots to Issue #423 with bounded conflict retry.",
+      "fence": "task_scheduler.py appends compressed SHA-256 chained queue snapshots to automation/task_queue.json with bounded conflict retry.",
       "boundary": "External control-plane state only; no repository file is written by queue persistence."
     },
     {
@@ -1700,27 +1740,29 @@
     },
     {
       "workflow_path": ".github/workflows/self-healing-agent.yml",
-      "step_name": "Close recovered deterministic-audit incidents",
+      "step_name": "Dispatch verified deterministic-audit recovery to Storage Management",
       "mutation_kinds": [
-        "github_issue_patch"
+        "github_actions_workflow_dispatch"
       ],
       "resources": [
-        "GitHub deterministic-audit incident issue state"
+        "GitHub Actions workflow dispatch: storage-incident-management.yml",
+        "storage/v2/incidents.json"
       ],
-      "fence": "Closes only exact incident issues after full audit and publish success evidence.",
-      "boundary": "GitHub issue metadata only."
+      "fence": "Dispatches only after independent full-audit verification; Storage Management resolves exact prior incidents by workflow, run ID and classification using idempotent event IDs and Contents SHA-CAS.",
+      "boundary": "Self-healing has actions:write for dispatch only; it cannot write incident state directly and has no Issues API access."
     },
     {
       "workflow_path": ".github/workflows/self-healing-agent.yml",
-      "step_name": "Close recovered validator incidents",
+      "step_name": "Dispatch verified validator recovery to Storage Management",
       "mutation_kinds": [
-        "github_issue_patch"
+        "github_actions_workflow_dispatch"
       ],
       "resources": [
-        "GitHub validator incident issue state"
+        "GitHub Actions workflow dispatch: storage-incident-management.yml",
+        "storage/v2/incidents.json"
       ],
-      "fence": "Closes only exact incident issues after verified recovery run evidence.",
-      "boundary": "GitHub issue metadata only."
+      "fence": "Only a successful validator workflow_run dispatches a recovery event; Storage Management resolves exact older matching incidents with an idempotent event ID and Contents SHA-CAS.",
+      "boundary": "Self-healing has actions:write for dispatch only; it cannot write incident state directly and has no Issues API access."
     },
     {
       "workflow_path": ".github/workflows/source-discovery.yml",
@@ -1746,6 +1788,32 @@
       ],
       "fence": "The artifact name is bound to the exact unique GitHub Actions run ID; upload-artifact finalizes an immutable run-scoped artifact and cannot overwrite another run's snapshot.",
       "boundary": "External GitHub Actions artifact storage only. No repository contents, refs, queue comments, task state, rulesets or modules/uu.conf are modified."
+    },
+    {
+      "workflow_path": ".github/workflows/auto_sync.yml",
+      "step_name": "Dispatch Production failure and recovery events to Storage Management",
+      "mutation_kinds": [
+        "github_actions_workflow_dispatch"
+      ],
+      "resources": [
+        "GitHub Actions workflow dispatch: storage-incident-management.yml",
+        "storage/v2/incidents.json"
+      ],
+      "fence": "Failure and successful recovery events are correlated to exact auto_sync run IDs and source SHAs; Storage Management applies idempotent event IDs and verified recovery transitions.",
+      "boundary": "Production dispatches events with actions:write only; it does not write the incident ledger or use Issues."
+    },
+    {
+      "workflow_path": ".github/workflows/automation-watchdog.yml",
+      "step_name": "Dispatch Watchdog health and integrity events to Storage Management",
+      "mutation_kinds": [
+        "github_actions_workflow_dispatch"
+      ],
+      "resources": [
+        "GitHub Actions workflow dispatch: storage-incident-management.yml",
+        "storage/v2/incidents.json"
+      ],
+      "fence": "Each event is bound to the exact Watchdog run ID/source SHA; verified recovery operations carry a successful verification URL. Storage Management performs the only durable incident write.",
+      "boundary": "Watchdog has actions:write for dispatch and contents:write only for its separately allowlisted queue operations; no Issues API."
     }
   ],
   "workflow_native_scan": {
@@ -1755,9 +1823,9 @@
     "detected_mutation_families": [
       "GitHub Actions workflow_dispatch",
       "GitHub Actions workflow_dispatch REST API",
-      "GitHub Issue comments POST",
+      "GitHub Contents API PUT",
       "GitHub Pages deploy action",
-      "GitHub issue PATCH",
+      "GitHub Contents API SHA-CAS update",
       "git add/commit/push/reset/checkout",
       "GitHub Actions artifact upload action"
     ],

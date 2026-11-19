@@ -59,36 +59,19 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
         self.assertIn('select(.status != "completed" and .head_branch == "main" and .id != null)', watchdog)
         self.assertNotIn("gh run cancel", healing)
-        self.assertIn('select(.head_branch == "main" and .id > $failed)', healing)
-        self.assertIn("workflow=deterministic_audit;run_id=", healing)
-        self.assertIn("workflow=config_validator;run_id=", healing)
         self.assertIn('workflow_key="config_validator"', healing)
         self.assertIn('workflow_key="deterministic_audit"', healing)
-        self.assertIn('title="Self-healing incident: $classification ($workflow_key; ${FAILED_SHA:0:8})"', healing)
-        self.assertIn('title="Self-healing agent failure: $workflow_key (source run $SOURCE_RUN_ID)"', healing)
-        self.assertNotIn("gh issue close", healing)
-        self.assertEqual(healing.count('close_issue "$issue"'), 2)
-        self.assertEqual(healing.count('gh api --method PATCH "repos/$REPO/issues/$issue_number" -f state=closed >/dev/null'), 2)
-        in_incident_command = False
-        for line in healing.splitlines():
-            if "python3 scripts/incident_state.py" in line:
-                in_incident_command = True
-            if in_incident_command:
-                self.assertFalse(line.endswith("\\\\"), line)
-                if "--out " in line:
-                    in_incident_command = False
+        self.assertIn('event_id="failure-run-$RUN_ID"', healing)
+        self.assertIn('event_id="agent-failure-$SOURCE_RUN_ID"', healing)
+        self.assertIn("gh workflow run storage-incident-management.yml", healing)
+        self.assertNotIn("gh issue", healing)
 
     def test_automation_incidents_are_bound_to_exact_workflow_runs(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn("Shadowrocket automation incident (run $RUN_ID)", workflow)
-        self.assertIn("workflow=auto_sync;run_id=$RUN_ID", workflow)
-        self.assertIn("capture(\"shadowrocket-automation:workflow=auto_sync;run_id=", workflow)
-        resolver = workflow.split("  resolve-failure:", 1)[1]
-        self.assertIn("Shadowrocket automation failure (run ", resolver)
-        self.assertIn("Shadowrocket automation incident (run ", resolver)
-        watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
-        self.assertIn("Close recovered manifest integrity incidents", watchdog)
-        self.assertIn("steps.verify.outcome == 'success'", watchdog)
+        self.assertIn('event_id="auto-sync-failure-$RUN_ID"', workflow)
+        self.assertIn("classification=PIPELINE_FAILURE", workflow)
+        self.assertIn("gh workflow run storage-incident-management.yml", workflow)
+        self.assertNotIn("gh issue", workflow)
 
     def test_high_volume_state_is_restored_before_candidate_mutation(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
@@ -170,10 +153,10 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn("github.event.workflow_run.conclusion == 'success'", resolver)
         self.assertIn("UNCLASSIFIED_STEP_FAILURE", resolver)
         self.assertIn("TEST_FAILURE", resolver)
-        self.assertIn('close_issue "$issue"', resolver)
-        self.assertIn('gh api --method PATCH "repos/$REPO/issues/$issue_number" -f state=closed >/dev/null', resolver)
-        self.assertNotIn("gh issue close", resolver)
-
+        self.assertIn("python3 scripts/verify_recovery_run.py", resolver)
+        self.assertIn("gh workflow run storage-incident-management.yml", resolver)
+        self.assertLess(resolver.index("python3 scripts/verify_recovery_run.py"), resolver.index("gh workflow run storage-incident-management.yml"))
+        self.assertNotIn("gh issue", resolver)
 
     def test_config_reconciliation_does_not_evaluate_rule_precedence(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
@@ -398,8 +381,9 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         start = watchdog.index("            REVIEW_REQUIRED)")
         end = watchdog.index("            IN_PROGRESS|WAIT_FOR_ACTIVE|ALREADY_SATISFIED|OBSERVE_ONLY)", start)
         block = watchdog[start:end]
-        self.assertIn("gh issue create", block)
-        self.assertIn("gh issue comment", block)
+        self.assertIn("gh workflow run storage-incident-management.yml", block)
+        self.assertIn("classification=PRODUCTION_INPUT_REVIEW", block)
+        self.assertNotIn("gh issue", block)
         self.assertNotIn("gh api --method PUT", block)
         self.assertNotIn("register_ledger", block)
         self.assertNotIn("automation/unregistered_path_registry.json", block)
