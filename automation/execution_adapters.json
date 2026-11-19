@@ -67,11 +67,9 @@
       "target_program_id": "script_assess_sources",
       "target_kind": "python_component",
       "adapter_type": "python_cli",
-      "enabled": true,
-      "interface_status": "reviewed",
-      "allowed_callers": [
-        "workflow_automation_watchdog"
-      ],
+      "enabled": false,
+      "interface_status": "workflow_step_only",
+      "allowed_callers": [],
       "entrypoint": {
         "path": "scripts/assess_sources.py",
         "executable": "python3",
@@ -81,149 +79,12 @@
         ],
         "shell": false
       },
-      "input_contract": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "max_urls",
-          "max_file_bytes",
-          "max_total_bytes",
-          "predecessor"
-        ],
-        "properties": {
-          "max_urls": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 20
-          },
-          "max_file_bytes": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 1000000
-          },
-          "max_total_bytes": {
-            "type": "integer",
-            "minimum": 1,
-            "maximum": 10000000
-          },
-          "predecessor": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "program_id",
-              "workflow_name",
-              "workflow_run_id",
-              "workflow_head_sha",
-              "artifact_path",
-              "artifact_sha256"
-            ],
-            "properties": {
-              "program_id": {
-                "type": "string",
-                "const": "script_discover_sources"
-              },
-              "workflow_name": {
-                "type": "string",
-                "const": "Shadowrocket Source Discovery (Watchdog)"
-              },
-              "workflow_run_id": {
-                "type": "string"
-              },
-              "workflow_head_sha": {
-                "type": "string"
-              },
-              "artifact_path": {
-                "type": "string",
-                "const": "sources/discovered_sources.json"
-              },
-              "artifact_sha256": {
-                "type": "string"
-              }
-            }
-          }
-        }
-      },
-      "output_contract": {
-        "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "assessed",
-          "bytes_read",
-          "parser_candidates",
-          "policy_candidates",
-          "activated",
-          "artifact_verification"
-        ],
-        "properties": {
-          "assessed": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "bytes_read": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "parser_candidates": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "policy_candidates": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "activated": {
-            "type": "integer",
-            "const": 0
-          },
-          "artifact_verification": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": [
-              "valid",
-              "assessed",
-              "historical_assessments",
-              "report_bytes",
-              "activation_count",
-              "verified_artifacts"
-            ],
-            "properties": {
-              "valid": {
-                "type": "boolean",
-                "const": true
-              },
-              "assessed": {
-                "type": "integer",
-                "minimum": 0
-              },
-              "historical_assessments": {
-                "type": "integer",
-                "minimum": 0
-              },
-              "report_bytes": {
-                "type": "integer",
-                "minimum": 1
-              },
-              "activation_count": {
-                "type": "integer",
-                "const": 0
-              },
-              "verified_artifacts": {
-                "type": "array",
-                "minItems": 3,
-                "items": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      },
+      "input_contract": null,
+      "output_contract": null,
       "timeout_seconds": 300,
       "retry": {
-        "max_attempts": 1,
-        "policy": "one initial task; up to two sequential checkpoint-resuming recovery tasks (the second only after execution_timeout and with max_urls<=4); after any independently verified Assessment success, at most one idempotent artifact-recovery task may produce a bounded runner-local artifact batch when no valid immutable source-assessment-output artifact proves the same Discovery predecessor; artifact recovery reuses the exact predecessor proof and durable per-URL checkpoints and is never enqueued when a matching valid artifact already exists; no repository artifact publication"
+        "max_attempts": 0,
+        "policy": "same-run Production workflow step; independent task dispatch is disabled under monolithic_fallback"
       },
       "completion": {
         "success_condition": "exit_zero_schema_valid_and_independent_artifact_verifier_valid",
@@ -1700,51 +1561,6 @@
       }
     },
     {
-      "target_program_id": "workflow_assessment_completion_relay",
-      "target_kind": "github_actions_workflow",
-      "adapter_type": "github_actions_workflow",
-      "enabled": false,
-      "interface_status": "workflow_dispatch_reviewed",
-      "allowed_callers": [],
-      "workflow": {
-        "path": ".github/workflows/assessment-completion-relay.yml",
-        "dispatchable": true,
-        "inputs": [
-          {
-            "name": "automation_task_id",
-            "type": "string",
-            "required": false
-          },
-          {
-            "name": "producer_run_id",
-            "type": "string",
-            "required": true
-          }
-        ],
-        "allowed_refs": [
-          "main"
-        ],
-        "caller_permissions_required": [
-          "actions:write"
-        ]
-      },
-      "timeout_seconds": 480,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_dispatcher_and_run_verifier"
-      },
-      "completion": {
-        "success_condition": "exact_completed_assessment_producer_and_unique_artifact_verified_then_watchdog_dispatch_requested",
-        "required_result_fields": [
-          "producer_run_id",
-          "producer_head_sha",
-          "artifact_id",
-          "verified"
-        ],
-        "independent_verification_required": true
-      }
-    },
-    {
       "target_program_id": "workflow_auto_sync",
       "target_kind": "github_actions_workflow",
       "adapter_type": "github_actions_workflow",
@@ -1929,47 +1745,6 @@
       }
     },
     {
-      "target_program_id": "workflow_queue_snapshot_artifact",
-      "target_kind": "github_actions_workflow",
-      "adapter_type": "github_actions_workflow",
-      "enabled": false,
-      "interface_status": "workflow_dispatch_reviewed",
-      "allowed_callers": [],
-      "workflow": {
-        "path": ".github/workflows/queue-snapshot-artifact.yml",
-        "dispatchable": true,
-        "inputs": [
-          {
-            "name": "automation_task_id",
-            "type": "string",
-            "required": false
-          }
-        ],
-        "allowed_refs": [
-          "main"
-        ],
-        "caller_permissions_required": [
-          "actions:write"
-        ]
-      },
-      "timeout_seconds": 600,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "event-triggered backup only; no dispatch or retry adapter is enabled"
-      },
-      "completion": {
-        "success_condition": "canonical_queue_snapshot_validated_and_unique_immutable_actions_artifact_uploaded",
-        "required_result_fields": [
-          "run_id",
-          "head_sha",
-          "artifact_id",
-          "artifact_name",
-          "artifact_digest"
-        ],
-        "independent_verification_required": true
-      }
-    },
-    {
       "target_program_id": "workflow_read_only_dashboard_pages",
       "target_kind": "github_actions_workflow",
       "adapter_type": "github_actions_workflow",
@@ -2001,156 +1776,17 @@
       }
     },
     {
-      "target_program_id": "workflow_self_healing_agent",
-      "target_kind": "github_actions_workflow",
-      "adapter_type": "github_actions_workflow",
-      "enabled": false,
-      "interface_status": "event_only",
-      "allowed_callers": [],
-      "workflow": {
-        "path": ".github/workflows/self-healing-agent.yml",
-        "dispatchable": false,
-        "inputs": [],
-        "allowed_refs": [
-          "main"
-        ],
-        "caller_permissions_required": [
-          "actions:write"
-        ]
-      },
-      "timeout_seconds": 30,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "disabled_until_dispatcher_and_run_verifier"
-      },
-      "completion": {
-        "success_condition": "run_status_completed_and_conclusion_success",
-        "required_result_fields": [
-          "run_id",
-          "html_url",
-          "head_sha",
-          "status",
-          "conclusion"
-        ],
-        "independent_verification_required": true
-      }
-    },
-    {
-      "target_program_id": "workflow_self_healing_tests",
-      "target_kind": "github_actions_workflow",
-      "adapter_type": "github_actions_workflow",
-      "enabled": true,
-      "interface_status": "workflow_dispatch_reviewed",
-      "allowed_callers": [
-        "workflow_automation_watchdog"
-      ],
-      "workflow": {
-        "path": ".github/workflows/self-healing-tests.yml",
-        "dispatchable": true,
-        "inputs": [
-          {
-            "name": "automation_task_id",
-            "type": "string",
-            "required": false
-          }
-        ],
-        "allowed_refs": [
-          "main"
-        ],
-        "caller_permissions_required": [
-          "actions:write"
-        ]
-      },
-      "timeout_seconds": 30,
-      "retry": {
-        "max_attempts": 0,
-        "policy": "single_attempt_canary_no_automatic_retry"
-      },
-      "completion": {
-        "success_condition": "run_status_completed_and_conclusion_success",
-        "required_result_fields": [
-          "run_id",
-          "html_url",
-          "head_sha",
-          "status",
-          "conclusion"
-        ],
-        "independent_verification_required": true
-      }
-    },
-    {
-      "target_program_id": "workflow_source_discovery",
-      "target_kind": "github_actions_workflow",
-      "adapter_type": "github_actions_workflow",
-      "enabled": true,
-      "interface_status": "workflow_dispatch_reviewed",
-      "allowed_callers": [
-        "workflow_automation_watchdog"
-      ],
-      "workflow": {
-        "path": ".github/workflows/source-discovery.yml",
-        "dispatchable": true,
-        "inputs": [
-          {
-            "name": "automation_task_id",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "resource_lease_proof",
-            "type": "string",
-            "required": true
-          }
-        ],
-        "allowed_refs": [
-          "main"
-        ],
-        "caller_permissions_required": [
-          "actions:write"
-        ]
-      },
-      "timeout_seconds": 30,
-      "retry": {
-        "max_attempts": 1,
-        "policy": "one bounded retry only after the exact failed workflow run is independently verified; unresolved dispatch intent is reconciled without redispatch"
-      },
-      "completion": {
-        "success_condition": "completed_successful_workflow_with_exact_producer_identity_and_verified_immutable_artifact",
-        "required_result_fields": [
-          "run_id",
-          "html_url",
-          "head_sha",
-          "status",
-          "conclusion"
-        ],
-        "independent_verification_required": true
-      },
-      "resource_contract": {
-        "mode": "exclusive",
-        "resource_keys": [
-          "logical/source-dag-supervision",
-          "logical/source-discovery-run"
-        ],
-        "lease_seconds": 3600,
-        "fencing_required": true,
-        "enforcement_boundary": "Exact Watchdog dispatch identity and live logical/source-discovery-run plus logical/source-dag-supervision fencing proofs are asserted before writing to the isolated RUNNER_TEMP workspace; no repository publication is permitted.",
-        "coverage": "All discovery document, manifest, shard, staging and report writes are confined to the per-run RUNNER_TEMP workspace. The logical lease binds the task/worker and prevents duplicate discovery dispatch; immutable Actions artifact digest and producer identity are independently verified. Resource lease is 3600 seconds, at least four 15-minute Watchdog reconciliation intervals, so a missed workflow_run event cannot expire the fence before scheduled verification. The common logical/source-dag-supervision lease serializes Discovery and Assessment tasks across concurrent Watchdog runs and remains held through independent workflow verification."
-      },
-      "workflow_run_timeout_seconds": 1800
-    },
-    {
-      "target_program_id": "workflow_storage_incident_management",
+      "target_program_id": "workflow_storage_management",
       "target_kind": "github_actions_workflow",
       "adapter_type": "github_actions_workflow",
       "enabled": true,
       "interface_status": "workflow_dispatch_reviewed",
       "allowed_callers": [
         "workflow_auto_sync",
-        "workflow_automation_watchdog",
-        "workflow_self_healing_agent"
+        "workflow_automation_watchdog"
       ],
       "workflow": {
-        "path": ".github/workflows/storage-incident-management.yml",
+        "path": ".github/workflows/storage-management.yml",
         "dispatchable": true,
         "inputs": [
           {
@@ -2243,71 +1879,122 @@
       "workflow_run_timeout_seconds": 300
     },
     {
-      "target_program_id": "workflow_v2_storage_tests",
-      "target_kind": "github_actions_workflow",
-      "adapter_type": "github_actions_workflow",
+      "target_program_id": "storage_runtime",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
       "enabled": false,
-      "interface_status": "event_only",
+      "interface_status": "library_only",
       "allowed_callers": [],
-      "workflow": {
-        "path": ".github/workflows/v2-storage-tests.yml",
-        "dispatchable": false,
-        "inputs": [],
-        "allowed_refs": [
-          "main"
-        ],
-        "caller_permissions_required": [
-          "actions:write"
-        ]
+      "entrypoint": {
+        "path": "storage/v2/runtime.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
       },
+      "input_contract": null,
+      "output_contract": null,
       "timeout_seconds": 300,
       "retry": {
         "max_attempts": 0,
-        "policy": "disabled_until_explicit_interface_review"
+        "policy": "library-only; direct adapter dispatch disabled"
       },
       "completion": {
-        "success_condition": "manual_or_ci_workflow_result_only; no task dispatch or production side effects",
-        "required_result_fields": [
-          "run_id",
-          "status",
-          "conclusion"
-        ],
         "independent_verification_required": true
-      },
-      "review_note": "read-only V2 unit test workflow"
+      }
     },
     {
-      "target_program_id": "workflow_validate_config",
-      "target_kind": "github_actions_workflow",
-      "adapter_type": "github_actions_workflow",
+      "target_program_id": "storage_artifact_store",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
       "enabled": false,
-      "interface_status": "event_only",
+      "interface_status": "library_only",
       "allowed_callers": [],
-      "workflow": {
-        "path": ".github/workflows/validate-config.yml",
-        "dispatchable": false,
-        "inputs": [],
-        "allowed_refs": [
-          "main"
-        ],
-        "caller_permissions_required": [
-          "actions:write"
-        ]
+      "entrypoint": {
+        "path": "storage/v2/artifact_store.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
       },
-      "timeout_seconds": 30,
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
       "retry": {
         "max_attempts": 0,
-        "policy": "disabled_until_dispatcher_and_run_verifier"
+        "policy": "library-only; direct adapter dispatch disabled"
       },
       "completion": {
-        "success_condition": "run_status_completed_and_conclusion_success",
-        "required_result_fields": [
-          "run_id",
-          "html_url",
-          "head_sha",
-          "status",
-          "conclusion"
-        ],
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "storage_dashboard_snapshot",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "library_only",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "storage/v2/dashboard_snapshot.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "library-only; direct adapter dispatch disabled"
+      },
+      "completion": {
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "storage_source_handoff",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "library_only",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "storage/v2/source_handoff.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "library-only; direct adapter dispatch disabled"
+      },
+      "completion": {
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "storage_watchdog_supervisor",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "library_only",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "storage/v2/watchdog_supervisor.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "library-only; direct adapter dispatch disabled"
+      },
+      "completion": {
         "independent_verification_required": true
       }
     }
