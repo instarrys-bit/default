@@ -2,7 +2,7 @@
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
   "workflow_blob_sha": "3321e99e1ee62674945495d7573ee395a9103a38",
-  "registry_blob_sha": "e32da1d883ad0c40d99c4e19e12a8e21683eb388",
+  "registry_blob_sha": "968c1ae613aa7c83eb4392ddb9eff6f7c6622767",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 7,
@@ -360,13 +360,13 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "75ea172c5ac973e3fed7f9c2329037ad824f44bd",
-    "program_registry_blob_sha": "e32da1d883ad0c40d99c4e19e12a8e21683eb388",
-    "execution_adapters_blob_sha": "e252c588903f1807124e027b2cf237b09b73b2c7",
+    "release_manifest_blob_sha": "7f42003eaa869793e014e18a564fb4231b8e8ef6",
+    "program_registry_blob_sha": "968c1ae613aa7c83eb4392ddb9eff6f7c6622767",
+    "execution_adapters_blob_sha": "af0f8d196c70a07fcd30cdc7f97eaba7a025cb56",
     "added_after_release_baseline": true,
     "note": "The independent source DAG is enabled under the scoped release allowlist. The production deliverables are exactly DIRECT, PROXY and REJECT; queue/checkpoint state and immutable runner-local artifacts are separate control-plane/runtime resources. The global static/transitive inventory remains partial for unrelated capabilities.",
     "reviewed_at": "2026-11-07",
-    "registry_blob_sha": "e32da1d883ad0c40d99c4e19e12a8e21683eb388",
+    "registry_blob_sha": "968c1ae613aa7c83eb4392ddb9eff6f7c6622767",
     "source_dag_scope": "End-to-end Watchdog-owned Discovery → immutable artifact verification → non-activating Assessment → immutable Assessment artifact proof → production artifact re-verification → source matrix → deterministic admission → production collection. REJECT is automatically published after deterministic first-stage review, stricter secondary evidence gates and config-conflict checks; human review is exception-only; uu.conf is read-only."
   },
   "independent_dags": [
