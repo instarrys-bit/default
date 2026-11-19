@@ -109,7 +109,7 @@ jobs:
 
   dispatch-storage-queue-migration:
     name: Dispatch source queue migration through Storage Management
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && contains(github.event.head_commit.message, '[source-dag-migration]') }}
+    if: ${{ github.ref == 'refs/heads/main' && ((github.event_name == 'push' && contains(github.event.head_commit.message, '[source-dag-migration]')) || github.event_name == 'schedule') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 3
     permissions:
@@ -118,9 +118,17 @@ jobs:
     steps:
       - name: Dispatch the idempotent Storage Management migration
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
         run: |
           set -euo pipefail
+          if [ "${GITHUB_EVENT_NAME}" = "schedule" ]; then
+            queue_json="$(gh api "repos/${GITHUB_REPOSITORY}/contents/automation/task_queue.json?ref=main" --jq .content | base64 -d)"
+            pending="$(jq '[.tasks[]? | select((.target_program_id == "workflow_source_discovery" or .target_program_id == "script_assess_sources") and (.status == "QUEUED" or .status == "FAILED" or .status == "RETRY_WAIT"))] | length' <<< "$queue_json")"
+            if [ "$pending" -eq 0 ]; then
+              echo "No legacy source tasks remain; Storage Management migration dispatch is not needed."
+              exit 0
+            fi
+          fi
           gh workflow run storage-management.yml --ref main \
             -f operation=retire_legacy_source_tasks \
             -f workflow=automation-watchdog \
@@ -167,7 +175,7 @@ jobs:
 
       - name: Export durable queue snapshot from Issue state
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
@@ -176,7 +184,7 @@ jobs:
       - name: Recover failed or superseded production audit
         if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' }}
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
           SOURCE_EVENT: ${{ github.event.workflow_run.event }}
           SOURCE_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
@@ -354,7 +362,7 @@ jobs:
       - name: Record or resolve source discovery health in Storage Management
         if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.path == '.github/workflows/auto_sync.yml' && github.event.workflow_run.conclusion == 'success' }}
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.event.workflow_run.html_url }}
           SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
@@ -385,7 +393,7 @@ jobs:
         id: stale-recovery
         if: ${{ github.ref_name == 'main' && (github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[source-dag-migration]')) }}
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
           ORIGIN_EVENT: ${{ github.event_name }}
           ORIGIN_ACTOR: ${{ github.actor }}
@@ -737,7 +745,7 @@ jobs:
       - name: Enqueue one explicitly bounded assessment task with a temporary canary override
         id: prepare
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
           RUNNER_TEMP: ${{ runner.temp }}
         run: |
@@ -821,7 +829,7 @@ jobs:
           PY
       - name: Run only the canary task through the Watchdog scheduler
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
           TASK_ID: ${{ steps.prepare.outputs.task_id }}
           REGISTRY_PATH: ${{ steps.prepare.outputs.registry_path }}
@@ -834,7 +842,7 @@ jobs:
             --task-id "$TASK_ID" --max-tasks 1 --token-stdin run-once | tee "$RUNNER_TEMP/assessment-canary-result.json"
       - name: Verify durable success, persistent publication, and protected baselines
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
           TASK_ID: ${{ steps.prepare.outputs.task_id }}
         run: |
@@ -932,8 +940,8 @@ jobs:
 
       - name: Recover expired task and resource leases
         env:
-          GITHUB_TOKEN: ${{ github.token }}
-          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
@@ -962,7 +970,7 @@ jobs:
 
       - name: Export current durable queue snapshot for supervision
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
@@ -979,7 +987,7 @@ jobs:
       - name: Enqueue one artifact-recovery Assessment after verified success without supervisor upload
         if: ${{ steps.verify-latest-assessment-artifact.outputs.valid == 'false' && steps.verify-latest-assessment-artifact.outputs.assessment_task_id != '' && steps.verify-discovery-artifact.outputs.valid == 'true' && (steps.resolve-discovery-run.outputs.handoff_state == 'already_assessed' || steps.verify-latest-assessment-artifact.outputs.assessment_task_id != '') && steps.source-mode.outputs.mode == 'independent' }}
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           SOURCE_RUN_ID: ${{ steps.verify-latest-assessment-artifact.outputs.discovery_run_id }}
           ASSESSMENT_TASK_ID_TO_RECOVER: ${{ steps.verify-latest-assessment-artifact.outputs.assessment_task_id }}
@@ -1030,7 +1038,7 @@ jobs:
       - name: Recover leases, verify results, and dispatch one task before artifact upload
         id: run-queue
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REF_NAME: main
           AUTOMATION_ARTIFACT_ROOT: ${{ runner.temp }}/source-assessment-output
@@ -1197,7 +1205,7 @@ jobs:
       - name: Wake Watchdog after verified Assessment artifact upload
         if: ${{ steps.run-queue.outputs.assessment_output_expected == 'true' && steps.upload-source-assessment.outcome == 'success' }}
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
           PRODUCER_RUN_ID: ${{ github.run_id }}
         run: |
@@ -1227,7 +1235,7 @@ jobs:
       - name: Cancel superseded or stalled audits and recover current main
         id: stale-run-scan
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
           CURRENT_WATCHDOG_RUN_ID: ${{ github.run_id }}
           EXPECTED_COMPLETION_RUN_ID: ${{ inputs.production_producer_run_id || '' }}
@@ -1414,7 +1422,7 @@ jobs:
       - name: Dispatch verified manifest recovery to Storage Management
         if: ${{ steps.refresh.outcome == 'success' && steps.publish.outcome == 'success' && steps.verify.outcome == 'success' }}
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           RUN_ID: ${{ github.run_id }}
@@ -1429,7 +1437,7 @@ jobs:
       - name: Dispatch one bounded reconciliation audit on mismatch
         if: ${{ steps.refresh.outcome == 'success' && steps.verify.outcome == 'failure' && !(github.event_name == 'workflow_run' && github.event.workflow_run.event == 'workflow_dispatch') }}
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
@@ -1475,7 +1483,7 @@ jobs:
       - name: Record manifest metadata repair failure
         if: ${{ always() && (steps.refresh.outcome == 'failure' || steps.publish.outcome == 'failure') }}
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           RUN_ID: ${{ github.run_id }}
@@ -1491,7 +1499,7 @@ jobs:
       - name: Record published ruleset integrity failure
         if: ${{ steps.verify.outcome == 'failure' && (github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.event == 'workflow_dispatch')) }}
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           RUN_ID: ${{ github.run_id }}
