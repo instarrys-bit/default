@@ -1072,32 +1072,6 @@
       }
     },
     {
-      "id": "script_select_domain_rules",
-      "path": "scripts/select_domain_rules.py",
-      "kind": "python_component",
-      "responsibility": "select and validate domain rules for the configured scope",
-      "capabilities": [
-        "domain_rule_selection"
-      ],
-      "invocation": "python_module_or_workflow_step",
-      "inputs": [
-        "CLI arguments and/or imported Python inputs as defined by the implementation"
-      ],
-      "outputs": [
-        "Return values and/or repository artifacts as defined by the implementation"
-      ],
-      "depends_on": [],
-      "dispatches": [],
-      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
-      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
-      "orchestration": {
-        "enabled": false,
-        "allowed_callers": [],
-        "max_attempts": 0,
-        "timeout_seconds": 300
-      }
-    },
-    {
       "id": "script_source_handoff_policy",
       "path": "scripts/source_handoff_policy.py",
       "kind": "python_component",
