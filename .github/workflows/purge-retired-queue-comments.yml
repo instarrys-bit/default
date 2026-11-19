@@ -1,0 +1,50 @@
+name: Purge retired queue issue comments
+run-name: Purge retired queue issue comments
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/purge-retired-queue-comments.yml"
+permissions:
+  contents: read
+  issues: write
+jobs:
+  purge:
+    if: ${{ startsWith(github.event.head_commit.message, 'ops: purge retired queue comments') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    permissions:
+      issues: write
+    steps:
+      - name: Delete all comments from retired queue issues
+        env:
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          for issue in 423 571; do
+            ids_file="$RUNNER_TEMP/issue-$issue-comment-node-ids.txt"
+            gh api --paginate "repos/$REPO/issues/$issue/comments?per_page=100" --jq '.[].node_id' > "$ids_file"
+            mapfile -t ids < "$ids_file"
+            total="${#ids[@]}"
+            echo "Issue #$issue: deleting $total comments."
+            for ((start=0; start<total; start+=25)); do
+              batch=("${ids[@]:start:25}")
+              query="$(python3 - "${batch[@]}" <<'PY'
+          import sys
+          ids = sys.argv[1:]
+          fields = [
+              f'c{i}: deleteIssueComment(input: {{id: "{node_id}"}}) {{ clientMutationId }}'
+              for i, node_id in enumerate(ids)
+          ]
+          print("mutation {\n" + "\n".join(fields) + "\n}")
+          PY
+          )"
+              gh api graphql -f query="$query" > /dev/null
+              sleep 0.5
+            done
+            remaining="$(gh api "repos/$REPO/issues/$issue" --jq '.comments')"
+            echo "Issue #$issue remaining comments: $remaining"
+            test "$remaining" -eq 0
+          done
+          echo "Retired queue issue comment bodies have been deleted." >> "$GITHUB_STEP_SUMMARY"
