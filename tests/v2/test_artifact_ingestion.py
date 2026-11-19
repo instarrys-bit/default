@@ -55,6 +55,8 @@ class ArtifactIngestionPollingTests(unittest.TestCase):
                 return {"artifacts": artifacts if "page=1" in url else []}
             if url.endswith("/actions/runs/101"):
                 return {"status": "completed", "head_branch": "main", "path": ".github/workflows/auto_sync.yml"}
+            if url.endswith("/actions/runs/102"):
+                return {"status": "completed", "head_branch": "feature", "path": ".github/workflows/auto_sync.yml"}
             if url.endswith("/actions/runs/103"):
                 return {"status": "in_progress", "head_branch": "main", "path": ".github/workflows/auto_sync.yml"}
             if url.endswith("/actions/runs/104"):
@@ -71,21 +73,21 @@ class ArtifactIngestionPollingTests(unittest.TestCase):
         run.assert_called_once()
         self.assertEqual(run.call_args.kwargs["env"]["SOURCE_RUN_ID"], "101")
 
-    def test_polling_bounds_each_scan_and_reports_deferred_runs(self):
+    def test_polling_bounds_each_scan_after_filtering_unrelated_runs(self):
         now = datetime.datetime.now(datetime.timezone.utc).isoformat().replace("+00:00", "Z")
         artifacts = [
-            {"id": i, "created_at": now, "workflow_run": {"id": i + 300, "head_branch": "main"}}
-            for i in range(4)
+            {"id": 1, "created_at": now, "workflow_run": {"id": 301, "head_branch": "main"}},
+            {"id": 2, "created_at": now, "workflow_run": {"id": 302, "head_branch": "main"}},
+            {"id": 3, "created_at": now, "workflow_run": {"id": 303, "head_branch": "main"}},
+            {"id": 4, "created_at": now, "workflow_run": {"id": 304, "head_branch": "main"}},
         ]
 
         def fake_get_json(url, token):
             if "/actions/artifacts?" in url:
                 return {"artifacts": artifacts if "page=1" in url else []}
-            return {
-                "status": "completed",
-                "head_branch": "main",
-                "path": ".github/workflows/auto_sync.yml",
-            }
+            run_id = int(url.rsplit("/", 1)[-1])
+            path = ".github/workflows/dashboard-pages.yml" if run_id in (301, 302) else ".github/workflows/auto_sync.yml"
+            return {"status": "completed", "head_branch": "main", "path": path}
 
         output = io.StringIO()
         with patch("ingest_actions_artifacts.get_json", side_effect=fake_get_json), patch(
@@ -96,9 +98,12 @@ class ArtifactIngestionPollingTests(unittest.TestCase):
 
         self.assertEqual(result, 0)
         self.assertEqual(run.call_count, 2)
+        self.assertEqual([call.kwargs["env"]["SOURCE_RUN_ID"] for call in run.call_args_list], ["303", "304"])
         summary = json.loads(output.getvalue().strip().splitlines()[-1])
+        self.assertEqual(summary["candidate_run_count"], 4)
+        self.assertEqual(summary["eligible_run_count"], 2)
         self.assertEqual(summary["selected_run_count"], 2)
-        self.assertEqual(summary["deferred_run_count"], 2)
+        self.assertEqual(summary["deferred_run_count"], 0)
 
     def test_polling_reports_failed_ingestion_without_claiming_success(self):
         now = datetime.datetime.now(datetime.timezone.utc).isoformat().replace("+00:00", "Z")
