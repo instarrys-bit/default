@@ -12,6 +12,7 @@ import json
 import os
 import re
 import tempfile
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -21,6 +22,8 @@ from typing import Callable
 DEFAULT_CHUNK_BYTES = 4 * 1024 * 1024
 MAX_CHUNK_BYTES = 8 * 1024 * 1024
 MAX_ARTIFACT_BYTES = 50 * 1024 * 1024
+MAX_API_RETRIES = 3
+RETRY_BASE_SECONDS = 0.5
 GITHUB_OBJECT_ROOT = "storage/v2/artifacts/sha256"
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
@@ -246,19 +249,27 @@ class GitHubContentsObjectBackend:
         }
         body = json.dumps(payload, separators=(",", ":")).encode("utf-8") if payload is not None else None
         request = urllib.request.Request(url, data=body, headers=headers, method=method)
-        try:
-            with urllib.request.urlopen(request, timeout=self.timeout) as response:
-                raw = response.read()
-        except urllib.error.HTTPError as exc:
-            if exc.code == 404 and method == "GET":
-                return None
-            if exc.code in {409, 422}:
-                raise ArtifactConflict(f"GitHub immutable object create conflict ({exc.code})") from None
-            detail = exc.read(500).decode("utf-8", "replace")
-            raise ArtifactError(f"GitHub Contents API HTTP {exc.code}: {detail[:300]}") from None
-        except (urllib.error.URLError, TimeoutError, OSError) as exc:
-            raise ArtifactError(f"GitHub Contents API request failed: {exc}") from None
-        return json.loads(raw.decode("utf-8")) if raw else None
+        for attempt in range(MAX_API_RETRIES + 1):
+            try:
+                with urllib.request.urlopen(request, timeout=self.timeout) as response:
+                    raw = response.read()
+                return json.loads(raw.decode("utf-8")) if raw else None
+            except urllib.error.HTTPError as exc:
+                if exc.code == 404 and method == "GET":
+                    return None
+                if exc.code in {409, 422}:
+                    raise ArtifactConflict(f"GitHub immutable object create conflict ({exc.code})") from None
+                if exc.code in {429, 500, 502, 503, 504} and attempt < MAX_API_RETRIES:
+                    time.sleep(min(8.0, RETRY_BASE_SECONDS * (2 ** attempt)))
+                    continue
+                detail = exc.read(500).decode("utf-8", "replace")
+                raise ArtifactError(f"GitHub Contents API HTTP {exc.code}: {detail[:300]}") from None
+            except (urllib.error.URLError, TimeoutError, OSError) as exc:
+                if attempt < MAX_API_RETRIES:
+                    time.sleep(min(8.0, RETRY_BASE_SECONDS * (2 ** attempt)))
+                    continue
+                raise ArtifactError(f"GitHub Contents API request failed: {exc}") from None
+        raise ArtifactError("GitHub Contents API request exhausted bounded retries")
 
     def get_object(self, digest: str) -> bytes | None:
         if not isinstance(digest, str) or not SHA256_RE.fullmatch(digest):
@@ -294,14 +305,27 @@ class GitHubContentsObjectBackend:
             "content": base64.b64encode(content).decode("ascii"),
             "branch": self.branch,
         }
-        try:
-            self._request("PUT", url, payload)
-            return True
-        except ArtifactConflict:
-            existing = self.get_object(digest)
-            if existing == content:
-                return False
-            raise ArtifactConflict("immutable GitHub object key already contains different bytes") from None
+        for attempt in range(MAX_API_RETRIES + 1):
+            try:
+                self._request("PUT", url, payload)
+                return True
+            except ArtifactConflict:
+                existing = self.get_object(digest)
+                if existing == content:
+                    return False
+                if existing is not None:
+                    raise ArtifactConflict("immutable GitHub object key already contains different bytes") from None
+                # A concurrent Contents API commit can move the branch ref and
+                # return 409/422 before the new blob is visible to a read.
+                # Retry the create after a short bounded delay instead of
+                # misclassifying that branch race as an immutable-key collision.
+                if attempt < MAX_API_RETRIES:
+                    time.sleep(min(8.0, RETRY_BASE_SECONDS * (2 ** attempt)))
+                    continue
+                raise ArtifactError(
+                    "GitHub Contents create conflicted but the object remained absent after bounded retries"
+                ) from None
+        raise ArtifactError("GitHub immutable object creation exhausted bounded retries")
 
 
 class ContentAddressedArtifactStore:
