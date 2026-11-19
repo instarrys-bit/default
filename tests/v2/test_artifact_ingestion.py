@@ -126,5 +126,41 @@ class ArtifactIngestionPollingTests(unittest.TestCase):
         run.assert_called_once()
 
 
+    def test_polling_bounds_each_run_and_continues_after_a_timed_out_run(self):
+        now = datetime.datetime.now(datetime.timezone.utc).isoformat().replace("+00:00", "Z")
+        artifacts = [
+            {"id": 1, "created_at": now, "workflow_run": {"id": 401, "head_branch": "main"}},
+            {"id": 2, "created_at": now, "workflow_run": {"id": 402, "head_branch": "main"}},
+        ]
+
+        def fake_get_json(url, token):
+            if "/actions/artifacts?" in url:
+                return {"artifacts": artifacts if "page=1" in url else []}
+            run_id = int(url.rsplit("/", 1)[-1])
+            return {
+                "status": "completed",
+                "head_branch": "main",
+                "path": ".github/workflows/auto_sync.yml",
+            }
+
+        output = io.StringIO()
+        timeout = __import__("subprocess").TimeoutExpired(
+            cmd=["python", "ingest_actions_artifacts.py"], timeout=600
+        )
+        completed = __import__("subprocess").CompletedProcess(args=["python"], returncode=0)
+        with patch("ingest_actions_artifacts.get_json", side_effect=fake_get_json), patch(
+            "ingest_actions_artifacts.subprocess.run", side_effect=[timeout, completed]
+        ) as run, patch("ingest_actions_artifacts.MAX_RUNS_PER_SCAN", 2), redirect_stdout(output):
+            result = scan_recent_runs("owner/repo", "token")
+
+        self.assertEqual(result, 1)
+        self.assertEqual(run.call_count, 2)
+        self.assertEqual(run.call_args_list[0].kwargs["timeout"], 600)
+        self.assertEqual(run.call_args_list[1].kwargs["timeout"], 600)
+        summary = json.loads(output.getvalue().strip().splitlines()[-1])
+        self.assertEqual(summary["failed_run_ids"], [401])
+        self.assertEqual(summary["processed_run_count"], 1)
+
+
 if __name__ == "__main__":
     unittest.main()
