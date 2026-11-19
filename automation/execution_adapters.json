@@ -1538,12 +1538,7 @@
         "dispatchable": true,
         "inputs": [
           {
-            "name": "restore_ids",
-            "type": "string",
-            "required": false
-          },
-          {
-            "name": "restore_conflict_ids",
+            "name": "restore_requests_json",
             "type": "string",
             "required": false
           },
