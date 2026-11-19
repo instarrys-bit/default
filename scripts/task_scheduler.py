@@ -346,8 +346,6 @@ def build_execution_plan(queue: dict, registry: dict, adapters: dict,
         except (KeyError, TypeError, ValueError) as exc:
             blocked.append({"task_id": task_id, "reason": str(exc)})
 
-    eligible, retired_source_blocked = filter_consolidated_source_targets(eligible, queue["tasks"], root)
-    blocked.extend(retired_source_blocked)
     return {"eligible_task_ids": eligible, "blocked": blocked}
 
 
@@ -1302,35 +1300,6 @@ def filter_eligible_task_ids(eligible_task_ids: set[str], task_id: str | None = 
     if not isinstance(task_id,str) or not task_id.strip():
         raise ValueError("task_id filter must be a non-empty string")
     return eligible_task_ids.intersection({task_id})
-
-
-def filter_consolidated_source_targets(eligible_task_ids, tasks: list, root: Path = ROOT):
-    """Keep retired independent Discovery/Assessment queue work out of Production dispatch.
-
-    The historical queue remains valid until Storage Management performs its
-    explicit migration. In monolithic_fallback mode these tasks are preserved
-    for audit but cannot be claimed by Watchdog.
-    """
-    control = load_object(Path(root) / "automation" / "production_control.json", "production control")
-    if control.get("source_discovery_mode") != "monolithic_fallback":
-        return list(eligible_task_ids), []
-    retired_targets = {"workflow_source_discovery", "script_assess_sources"}
-    by_id = {
-        task.get("task_id"): task
-        for task in tasks
-        if isinstance(task, dict) and isinstance(task.get("task_id"), str)
-    }
-    suppressed = sorted(
-        task_id for task_id in eligible_task_ids
-        if by_id.get(task_id, {}).get("target_program_id") in retired_targets
-    )
-    suppressed_set = set(suppressed)
-    filtered = [task_id for task_id in eligible_task_ids if task_id not in suppressed_set]
-    blocked = [{
-        "task_id": task_id,
-        "reason": "independent Discovery/Assessment dispatch is retired; Production auto_sync runs both stages in one workflow",
-    } for task_id in suppressed]
-    return filtered, blocked
 
 
 def production_dispatch_mode(root: Path = ROOT) -> str:
