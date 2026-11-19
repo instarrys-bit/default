@@ -2,6 +2,7 @@ name: Storage Management
 run-name: Storage Management / ${{ inputs.automation_task_id || inputs.event_id }}
 on:
   pull_request:
+    types: [opened, synchronize, reopened, closed]
     branches: [main]
     paths:
       - ".github/workflows/storage-management.yml"
@@ -87,7 +88,7 @@ concurrency:
 jobs:
   validate-storage:
     name: Validate Storage Management runtime and recovery
-    if: ${{ github.event_name == 'pull_request' }}
+    if: ${{ github.event_name == 'pull_request' && github.event.action != 'closed' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -131,7 +132,7 @@ jobs:
 
   retire-legacy-source-tasks:
     name: Retire superseded independent source queue tasks
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
