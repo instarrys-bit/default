@@ -1343,9 +1343,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.20.1",
-    "release_manifest_blob_sha": "eca68264b4e48177f024defde0c44615ad7388a0",
-    "program_registry_blob_sha": "9999108b8731816162423ee3d0b94a8463d1c4fc",
-    "execution_adapters_blob_sha": "4a6f7da6c9f621dd88d48b703cde2981f4f76dfc",
+    "release_manifest_blob_sha": "26913e7fbfe57b0628cb89c67c27f3624b7db13e",
+    "program_registry_blob_sha": "65911334ca24e9af5780cb7da6956549d48279a8",
+    "execution_adapters_blob_sha": "0482e404bb16d64ac2cde29fd5f9bc7ec7d4092d",
     "added_after_release_baseline": true,
     "note": "Partial static resource-write inventory for the retained four-workflow monolithic design. It distinguishes production ruleset publication from queue/lease/incident control-plane state. modules/uu.conf remains protected and is never a production write or publish target.",
     "reviewed_at": "2026-11-07"
@@ -1596,7 +1596,7 @@
   "direct_mutation_scan": {
     "status": "partial_python_direct_callsite_scan",
     "scanner": "tests/test_transitive_write_site_inventory.py",
-    "registered_component_count": 67,
+    "registered_component_count": 66,
     "mutation_api_families": [
       "Path/open write modes",
       "Path write_text/write_bytes/unlink/mkdir/replace/rename/touch",
