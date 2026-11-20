@@ -95,7 +95,8 @@ jobs:
         id: stale-recovery
         if: ${{ github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
           ORIGIN_EVENT: ${{ github.event_name }}
           ORIGIN_ACTOR: ${{ github.actor }}
@@ -220,11 +221,12 @@ jobs:
           python-version: "3.11"
       - name: Recover leases and run scheduler once
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           REPO: ${{ github.repository }}
           PYTHONPATH: scripts
         run: |
           set -euo pipefail
-          printf '%s' "$GH_TOKEN" | python3 scripts/remote_task_queue_runtime.py --repository "$REPO" --branch main recover-expired || true
+          python3 scripts/remote_task_queue_runtime.py --repository "$REPO" --branch main recover-expired || true
           printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py \
             --repository "$REPO" --branch main --token-stdin --max-tasks 1 run-once
