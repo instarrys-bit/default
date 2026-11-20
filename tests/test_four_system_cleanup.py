@@ -48,12 +48,14 @@ class FourSystemCleanupTests(unittest.TestCase):
     def test_storage_management_owns_incident_and_queue_state_paths(self):
         store = (ROOT / "storage" / "v2" / "queue_store.py").read_text(encoding="utf-8")
         incident = (ROOT / "storage" / "v2" / "incident_store.py").read_text(encoding="utf-8")
-        workflow = (ROOT / ".github" / "workflows" / "storage-incident-management.yml").read_text(encoding="utf-8")
+        workflow = (ROOT / ".github" / "workflows" / "storage-management.yml").read_text(encoding="utf-8")
         self.assertIn('"automation/task_queue.json"', store)
         self.assertIn('"storage/v2/incidents.json"', store)
         self.assertIn("path not in ALLOWED_STATE_PATHS", store)
         self.assertIn("storage/v2/incidents.json", incident)
         self.assertIn("contents: write", workflow)
+        self.assertIn("automation_task_id:", workflow)
+        self.assertFalse((ROOT / ".github" / "workflows" / "storage-incident-management.yml").exists())
         self.assertNotIn("gh issue", workflow)
 
     def test_runtime_python_has_no_github_issues_transport(self):
