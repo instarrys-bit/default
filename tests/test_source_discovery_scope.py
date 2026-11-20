@@ -239,19 +239,22 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
         self.assertTrue(cached)
 
 
-    def test_discovery_and_assessment_share_one_fenced_supervision_lease(self):
+    def test_discovery_and_assessment_run_inside_one_fenced_production_task(self):
         document = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
         adapters = {item["target_program_id"]: item for item in document["adapters"]}
-        key = "logical/source-dag-supervision"
-        discovery = adapters["workflow_source_discovery"]["resource_contract"]
-        assessment = adapters["script_assess_sources"]["resource_contract"]
-        self.assertIn(key, discovery["resource_keys"])
-        self.assertIn(key, assessment["resource_keys"])
-        self.assertEqual(discovery["lease_seconds"], assessment["lease_seconds"])
-        self.assertEqual(discovery["lease_seconds"], 3600)
-        self.assertIs(discovery["fencing_required"], True)
-        self.assertIs(assessment["fencing_required"], True)
-        self.assertEqual(adapters["script_assess_sources"]["write_resources"], [])
+        control = json.loads((ROOT / "automation" / "production_control.json").read_text(encoding="utf-8"))
+        workflow = (ROOT / ".github" / "workflows" / "auto_sync.yml").read_text(encoding="utf-8")
+        production = adapters["workflow_auto_sync"]["resource_contract"]
+        assessment = adapters["script_assess_sources"]
+        self.assertEqual(control["source_discovery_mode"], "monolithic_fallback")
+        self.assertIn("Discover candidate source repositories", workflow)
+        self.assertIn("Assess discovered rule-list syntax and policy claims", workflow)
+        self.assertIn("logical/production-pipeline", production["resource_keys"])
+        self.assertEqual(production["lease_seconds"], 21600)
+        self.assertIs(production["fencing_required"], True)
+        self.assertFalse(assessment["enabled"])
+        self.assertEqual(assessment["write_resources"], [])
+        self.assertEqual(assessment["publish_resources"], [])
 
 if __name__ == "__main__":
     unittest.main()
