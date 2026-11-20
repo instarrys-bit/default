@@ -361,9 +361,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.20.1",
-    "release_manifest_blob_sha": "f99fb643bbfe26b6d838ee04a805fd866c4bd3cd",
-    "program_registry_blob_sha": "2f1461bb30e6ef1b3ab6e5b7b2c14b01c218de49",
-    "execution_adapters_blob_sha": "f51facdfbd414af263dc5ac7ea4e0fe15b787235",
+    "release_manifest_blob_sha": "3e668645f316d868247a08d906d9b03de3c3ac61",
+    "program_registry_blob_sha": "38f6b8b922c3e97bdca3501dad09bb76e9d0aa99",
+    "execution_adapters_blob_sha": "4a6f7da6c9f621dd88d48b703cde2981f4f76dfc",
     "added_after_release_baseline": true,
     "note": "Static mapping for the retained four-workflow monolithic production design. This map is descriptive only; activation is governed by the current program registry, execution adapters and release manifest.",
     "reviewed_at": "2026-11-07",
