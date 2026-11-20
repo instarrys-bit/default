@@ -51,12 +51,6 @@ on:
         description: Idempotent event identifier and run correlation ID
         required: true
         type: string
-      workflow_key:
-        description: Source workflow identity for incident correlation
-        required: false
-        default: automation_watchdog
-        type: choice
-        options: [auto_sync, automation_watchdog]
       run_id:
         description: Originating workflow run ID for record operations
         required: false
@@ -235,7 +229,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           OPERATION: ${{ inputs.operation }}
-          WORKFLOW_KEY: ${{ inputs.workflow_key || 'automation_watchdog' }}
+          WORKFLOW_KEY: ${{ startsWith(inputs.automation_task_id, 'auto-sync-') && 'auto_sync' || 'automation_watchdog' }}
           EVENT_ID: ${{ inputs.automation_task_id }}
           RUN_ID: ${{ inputs.run_id }}
           SOURCE_SHA: ${{ inputs.source_sha }}
