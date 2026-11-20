@@ -22,7 +22,7 @@ class AdapterActivationAuditTests(unittest.TestCase):
         self.assertEqual(report["adapter_count"], len(adapters["adapters"]))
         enabled_ids = [row["program_id"] for row in report["adapters"] if row["enabled"]]
         self.assertEqual(report["enabled_adapter_count"], len(enabled_ids))
-        self.assertEqual(set(enabled_ids), {"workflow_auto_sync", "workflow_storage_management"})
+        self.assertEqual(set(enabled_ids), {"workflow_auto_sync", "workflow_automation_watchdog", "workflow_storage_management"})
         self.assertTrue(report["watchdog_caller_permissions_ready"])
         self.assertNotIn("workflow_source_discovery", enabled_ids)
         self.assertNotIn("workflow_self_healing_tests", enabled_ids)
