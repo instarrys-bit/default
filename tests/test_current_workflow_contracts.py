@@ -23,10 +23,12 @@ class CurrentWorkflowContractTests(unittest.TestCase):
         recovery = auto.split("  resolve-failure:", 1)[1].split("  watchdog-reconciliation:", 1)[0]
         self.assertIn("-f operation=record", failure)
         self.assertIn("-f automation_task_id=", failure)
+        self.assertNotIn("-f workflow_key=", failure)
         self.assertNotIn("-f workflow=", failure)
         self.assertNotIn("-f event_id=", failure)
         self.assertIn("-f operation=resolve", recovery)
         self.assertIn("-f automation_task_id=", recovery)
+        self.assertNotIn("-f workflow_key=", recovery)
         self.assertNotIn("-f workflow=", recovery)
         self.assertNotIn("-f event_id=", recovery)
         self.assertIn("      automation_task_id:", storage)
@@ -57,7 +59,7 @@ class CurrentWorkflowContractTests(unittest.TestCase):
         auto = (WORKFLOWS / "auto_sync.yml").read_text(encoding="utf-8")
         wake = auto.split("  watchdog-reconciliation:", 1)[1]
         self.assertIn("inputs:{automation_task_id:$task_id}", wake)
-        self.assertIn("auto-sync-watchdog-$RUN_ID", wake)
+        self.assertIn("auto-sync-watchdog-$PRODUCTION_RUN_ID", wake)
         self.assertNotIn("production_producer_run_id", wake)
 
     def test_scheduler_owns_recovery_and_pending_result_verification(self):
