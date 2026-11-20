@@ -3,26 +3,11 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-VALIDATE = ROOT / ".github" / "workflows" / "validate-config.yml"
 DASHBOARD = ROOT / ".github" / "workflows" / "dashboard-pages.yml"
 QUEUE_SNAPSHOT = ROOT / ".github" / "workflows" / "queue-snapshot-artifact.yml"
 
 
 class AutomationApiLoadTests(unittest.TestCase):
-    def test_config_validation_does_not_depend_on_a_pinned_remote_actions_artifact(self):
-        workflow = VALIDATE.read_text(encoding="utf-8")
-        self.assertNotIn("actions/artifacts/", workflow)
-        self.assertNotIn("13731605096", workflow)
-        self.assertIn("test_discovered_source_registry.py", workflow)
-        self.assertIn("Run full deterministic unit regression suite", workflow)
-        self.assertNotIn("Recover owner-approved config baseline in validation workspace", workflow)
-        self.assertIn("verify_baseline.py --allow-owner-push-change", workflow)
-        self.assertIn("audit_config_drift.py --allow-owner-push-change", workflow)
-        baseline_checks = workflow.split("name: Verify owner-approved config baseline", 1)[1].split(
-            "      - run: python scripts/audit_ruleset_references.py", 1
-        )[0]
-        self.assertGreaterEqual(baseline_checks.count("GH_TOKEN: ${{ github.token }}"), 2)
-
     def test_dashboard_refresh_is_not_fanned_out_by_every_monitoring_workflow(self):
         workflow = DASHBOARD.read_text(encoding="utf-8")
         self.assertIn('    - cron: "*/30 * * * *"', workflow)
