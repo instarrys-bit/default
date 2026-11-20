@@ -1343,9 +1343,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.20.1",
-    "release_manifest_blob_sha": "2ebdacf0a2447bd52458b709fbc719feaabc930d",
+    "release_manifest_blob_sha": "f99fb643bbfe26b6d838ee04a805fd866c4bd3cd",
     "program_registry_blob_sha": "2f1461bb30e6ef1b3ab6e5b7b2c14b01c218de49",
-    "execution_adapters_blob_sha": "3488ed82a94b9adce0aac1bd3ac6bbc217e0ea07",
+    "execution_adapters_blob_sha": "f51facdfbd414af263dc5ac7ea4e0fe15b787235",
     "added_after_release_baseline": true,
     "note": "Partial static resource-write inventory for the retained four-workflow monolithic design. It distinguishes production ruleset publication from queue/lease/incident control-plane state. modules/uu.conf remains protected and is never a production write or publish target.",
     "reviewed_at": "2026-11-07"
