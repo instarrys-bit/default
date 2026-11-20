@@ -77,8 +77,7 @@
       ],
       "outputs": [
         "stdout JSON: assessed, bytes_read, parser_candidates, policy_candidates, activated=0",
-        "runner-local sources/source_assessments.json, data/source_assessments_runtime.json and reports/source-assessment.md uploaded as immutable Actions artifact",
-        "durable per-URL checkpoint in automation/task_queue.json using CAS under task and logical resource leases"
+        "runner-local sources/source_assessments.json, data/source_assessments_runtime.json and reports/source-assessment.md uploaded as immutable Actions artifact"
       ],
       "depends_on": [
         "script_discover_sources"
@@ -91,7 +90,8 @@
         "allowed_callers": [],
         "max_attempts": 0,
         "timeout_seconds": 1800
-      }
+      },
+      "description": "Runner-local source assessment stage invoked after discovery inside the same Auto Sync job in monolithic_fallback mode; standalone task dispatch and durable per-URL queue checkpointing remain disabled."
     },
     {
       "id": "script_audit_adapter_activation",
@@ -552,7 +552,8 @@
         "allowed_callers": [],
         "max_attempts": 0,
         "timeout_seconds": 300
-      }
+      },
+      "description": "Runner-local source discovery stage invoked inside Auto Sync when source_discovery_mode is monolithic_fallback; standalone queue dispatch remains disabled."
     },
     {
       "id": "script_domain_rule_engine",
