@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "baca07c477de0ea5af2192008da32cd8260e63ee",
+  "workflow_blob_sha": "e4ad9c2a9ba9b0059e5995d7105c3870823c0d28",
   "registry_blob_sha": "0c0ad14b1caf9d0622dde806439c6d278e4404ba",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
@@ -361,7 +361,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.21.1",
-    "release_manifest_blob_sha": "cb9b0bb906577e754abe0b2ef74249dc7782c916",
+    "release_manifest_blob_sha": "b5d5d43be8c839da39c23de2eaaed90c86a951fd",
     "program_registry_blob_sha": "0c0ad14b1caf9d0622dde806439c6d278e4404ba",
     "execution_adapters_blob_sha": "6d1bfb61f6e6f7609ab99d7be27790b36ef4ee62",
     "added_after_release_baseline": true,
