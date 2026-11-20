@@ -21,7 +21,7 @@
         ]
       }
     },
-    "dispatch": "Evidence is not an execution grant. The reviewed independent Source Discovery → Assessment DAG and production workflow are Watchdog-owned and release-allowlisted; all unrelated Python capabilities remain deny-by-default."
+    "dispatch": "Evidence is not an execution grant. In monolithic_fallback mode, Auto Sync owns source Discovery and Assessment in one bounded run; standalone script_discover_sources and script_assess_sources adapters remain disabled. Watchdog owns production queue scheduling and release-allowlisted workflow dispatch; all unrelated Python capabilities remain deny-by-default."
   },
   "document_store_semantics": {
     "implementation": "scripts/json_document_store.py",
@@ -50,16 +50,16 @@
       "side_effects": [
         "Only two hard-coded repair IDs are accepted; changes are staged on a run-specific self-heal branch and opened as a pull request. No direct push to main."
       ],
-      "evidence": "apply_repair() writes either the auto_sync workflow or the named regression test based on the exact diagnosis repair_id; self-healing-agent.yml stages only the corresponding allowlisted path, validates staged paths and publishes a PR.",
+      "evidence": "The implementation can apply only two hard-coded deterministic repairs, but both program_registry.json and execution_adapters.json mark script_apply_safe_repair disabled with no allowed callers. The retired self-healing-agent workflow is absent from the four active workflows. This is a dormant capability, not an authorized active writer.",
       "lease_keys": [
-        "self-healing-agent workflow concurrency group"
+        "none; no active workflow caller"
       ],
-      "lease_enforcement": "Changes are isolated to self-heal/run-<run_id> and submitted as a PR; main is not mutated directly. Concurrent runs use distinct run IDs, so same-target repair PR collision/branch coordination is not established.",
+      "lease_enforcement": "No active workflow or authorized adapter invokes this capability. If it is ever re-enabled, its run-specific PR branch and staged-path allowlist must be reviewed again; it is not a direct-main or production-ruleset writer.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [
         "self-heal/run-<run_id> working tree and PR branch until reviewed/merged"
       ],
-      "write_boundary_fencing": "Repair recipes and staged-path allowlist restrict targets; publication requires PR review/merge. Do not classify this as a production writer."
+      "write_boundary_fencing": "Disabled in both orchestration registry and execution adapter; no active caller. Do not treat the dormant PR-repair implementation as an active production write grant."
     },
     {
       "program_id": "script_assess_sources",
@@ -1706,11 +1706,10 @@
         "github_actions_workflow_dispatch"
       ],
       "resources": [
-        "GitHub Actions workflow dispatch: storage-management.yml",
-        "automation/task_queue.json"
+        "GitHub Actions workflow dispatch: storage-management.yml"
       ],
       "fence": "Decision is bound to the current main production fingerprint and idempotency key; queue task intent is passed to the serialized task-queue-supervision writer.",
-      "boundary": "Health-check computes a read-only intent. Only task-queue-supervision persists automation/task_queue.json through Contents API SHA-CAS; production publication remains rulesets/** only."
+      "boundary": "Health-check computes a read-only queue intent and dispatches incident metadata only. The durable queue mutation is performed later by the single task-queue-supervision writer."
     },
     {
       "workflow_path": ".github/workflows/automation-watchdog.yml",
@@ -1824,8 +1823,8 @@
       "resources": [
         "automation/task_queue.json"
       ],
-      "fence": "The assessment-canary job is explicitly disabled; if enabled, the scheduler still claims only its allowlisted canary task through queue-store SHA-CAS and requires the canary resource lease.",
-      "boundary": "Disabled non-production canary queue operation only. It cannot publish rulesets or write modules/uu.conf."
+      "fence": "The assessment-canary job is explicitly disabled and has contents:read only; its dormant run-once command cannot persist a queue transition. It is not part of the active scheduler path.",
+      "boundary": "No active write while disabled. Do not enable this canary as a queue writer; task-queue-supervision is the only authorized active Watchdog queue writer."
     },
     {
       "workflow_path": ".github/workflows/automation-watchdog.yml",
