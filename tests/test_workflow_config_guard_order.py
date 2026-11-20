@@ -155,7 +155,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
             workflow.index("Independently verify committed remote rulesets"),
             workflow.index("Dispatch verified incident recovery to Storage Management"),
         )
-        self.assertIn("event_id=auto-sync-recovered-$RUN_ID", dispatch)
+        self.assertIn("event_id=auto-sync-recovery-$RUN_ID", dispatch)
         self.assertIn("verification_url", dispatch)
         self.assertIn("source_sha", dispatch)
         self.assertNotIn("gh issue", workflow)
