@@ -1613,19 +1613,6 @@
   },
   "workflow_native_write_sites": [
     {
-      "workflow_path": ".github/workflows/assessment-completion-relay.yml",
-      "step_name": "Dispatch one idempotent Watchdog reconciliation",
-      "mutation_kinds": [
-        "workflow_dispatch_api"
-      ],
-      "resources": [
-        "GitHub Actions workflow dispatch: automation-watchdog.yml",
-        "logical/source-dag-supervision"
-      ],
-      "fence": "The relay re-verifies the exact completed producer and artifact metadata, then suppresses duplicates by the producer-specific Watchdog run title before dispatch.",
-      "boundary": "Dispatches only the existing Watchdog workflow; all production selection, durable queue CAS, leases/fencing, authorization, artifact-content verification and ruleset-only publication remain in the existing control plane."
-    },
-    {
       "workflow_path": ".github/workflows/auto_sync.yml",
       "step_name": "Dispatch Watchdog reconciliation for this exact production run",
       "mutation_kinds": [
@@ -1713,57 +1700,6 @@
       "boundary": "External Pages publication, not a repository file writer."
     },
     {
-      "workflow_path": ".github/workflows/self-healing-agent.yml",
-      "step_name": "Dispatch verified deterministic-audit recovery to Storage Management",
-      "mutation_kinds": [
-        "github_actions_workflow_dispatch"
-      ],
-      "resources": [
-        "GitHub Actions workflow dispatch: storage-incident-management.yml",
-        "storage/v2/incidents.json"
-      ],
-      "fence": "Dispatches only after independent full-audit verification; Storage Management resolves exact prior incidents by workflow, run ID and classification using idempotent event IDs and Contents SHA-CAS.",
-      "boundary": "Self-healing has actions:write for dispatch only; it cannot write incident state directly and has no Issues API access."
-    },
-    {
-      "workflow_path": ".github/workflows/self-healing-agent.yml",
-      "step_name": "Dispatch verified validator recovery to Storage Management",
-      "mutation_kinds": [
-        "github_actions_workflow_dispatch"
-      ],
-      "resources": [
-        "GitHub Actions workflow dispatch: storage-incident-management.yml",
-        "storage/v2/incidents.json"
-      ],
-      "fence": "Only a successful validator workflow_run dispatches a recovery event; Storage Management resolves exact older matching incidents with an idempotent event ID and Contents SHA-CAS.",
-      "boundary": "Self-healing has actions:write for dispatch only; it cannot write incident state directly and has no Issues API access."
-    },
-    {
-      "workflow_path": ".github/workflows/source-discovery.yml",
-      "step_name": "Dispatch Watchdog reconciliation for this exact Discovery run",
-      "mutation_kinds": [
-        "workflow_dispatch_api"
-      ],
-      "resources": [
-        "GitHub Actions workflow dispatch: automation-watchdog.yml",
-        "logical/source-dag-supervision"
-      ],
-      "fence": "The callback is emitted only after the exact Discovery artifact is uploaded. Watchdog validates the exact Discovery run ID, workflow path, main branch, completed successful conclusion and immutable artifact provenance before queue reconciliation.",
-      "boundary": "External workflow_dispatch wake-up only; no repository contents, source catalog, rulesets or modules/uu.conf are written by the callback."
-    },
-    {
-      "workflow_path": ".github/workflows/queue-snapshot-artifact.yml",
-      "step_name": "Upload durable queue snapshot artifact",
-      "mutation_kinds": [
-        "github_actions_artifact_upload"
-      ],
-      "resources": [
-        "GitHub Actions artifact durable-queue-snapshot-<run_id>"
-      ],
-      "fence": "The artifact name is bound to the exact unique GitHub Actions run ID; upload-artifact finalizes an immutable run-scoped artifact and cannot overwrite another run's snapshot.",
-      "boundary": "External GitHub Actions artifact storage only. No repository contents, refs, queue comments, task state, rulesets or modules/uu.conf are modified."
-    },
-    {
       "workflow_path": ".github/workflows/auto_sync.yml",
       "step_name": "Dispatch Production failure and recovery events to Storage Management",
       "mutation_kinds": [
@@ -1793,7 +1729,7 @@
   "workflow_native_scan": {
     "status": "partial_workflow_shell_pattern_scan",
     "scanner": "tests/test_workflow_native_write_inventory.py",
-    "workflow_count": 9,
+    "workflow_count": 4,
     "detected_mutation_families": [
       "GitHub Actions workflow_dispatch",
       "GitHub Actions workflow_dispatch REST API",
