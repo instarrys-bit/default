@@ -52,5 +52,44 @@ class StorageManagementWorkflowRegressionTests(unittest.TestCase):
         )
 
 
+class WatchdogQueueWriterPermissionRegressionTests(unittest.TestCase):
+    def test_health_check_hands_off_queue_intent_to_the_write_capable_supervisor(self):
+        workflow = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        health = workflow.split("  health-check:", 1)[1].split("  assessment-canary:", 1)[0]
+        queue = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
+
+        self.assertIn("      contents: read", health)
+        self.assertNotIn("      contents: write", health)
+        self.assertIn(
+            "queue_task_json: ${{ steps.failed-audit-recovery.outputs.queue_task_json || steps.stale-recovery.outputs.queue_task_json }}",
+            health,
+        )
+        self.assertNotIn("enqueue-auto-sync", health)
+        self.assertNotIn("task_scheduler.py", health)
+        self.assertEqual(health.count('echo "queue_task_json=$queue_task_json" >> "$GITHUB_OUTPUT"'), 4)
+
+        self.assertIn("      contents: write", queue)
+        self.assertIn("Enqueue Watchdog production intent through queue writer", queue)
+        self.assertIn("needs.health-check.outputs.queue_task_json", queue)
+        self.assertIn("GITHUB_TOKEN: ${{ github.token }}", queue)
+        self.assertNotIn("secrets.AUTOMATION_WRITE_TOKEN", queue)
+        self.assertIn("enqueue-auto-sync", queue)
+        self.assertLess(
+            queue.index("Enqueue Watchdog production intent through queue writer"),
+            queue.index("Recover expired task and resource leases"),
+        )
+
+    def test_queue_write_token_has_contents_write_and_actions_write_only_in_queue_job(self):
+        workflow = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        health = workflow.split("  health-check:", 1)[1].split("  assessment-canary:", 1)[0]
+        queue = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
+
+        self.assertIn("      actions: write", health)
+        self.assertIn("      contents: read", health)
+        self.assertIn("      actions: write", queue)
+        self.assertIn("      contents: write", queue)
+        self.assertIn("GITHUB_TOKEN: ${{ github.token }}", queue)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
