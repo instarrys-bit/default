@@ -360,12 +360,12 @@
     "Dashboard generation is observer-only and is not a production stage."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "c534b93635649b93a10243e3dd63dc6af489176f",
-    "program_registry_blob_sha": "968c1ae613aa7c83eb4392ddb9eff6f7c6622767",
-    "execution_adapters_blob_sha": "af0f8d196c70a07fcd30cdc7f97eaba7a025cb56",
+    "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.20.1",
+    "release_manifest_blob_sha": "2ebdacf0a2447bd52458b709fbc719feaabc930d",
+    "program_registry_blob_sha": "2f1461bb30e6ef1b3ab6e5b7b2c14b01c218de49",
+    "execution_adapters_blob_sha": "3488ed82a94b9adce0aac1bd3ac6bbc217e0ea07",
     "added_after_release_baseline": true,
-    "note": "The independent source DAG is enabled under the scoped release allowlist. The production deliverables are exactly DIRECT, PROXY and REJECT; queue/checkpoint state and immutable runner-local artifacts are separate control-plane/runtime resources. The global static/transitive inventory remains partial for unrelated capabilities.",
+    "note": "Static mapping for the retained four-workflow monolithic production design. This map is descriptive only; activation is governed by the current program registry, execution adapters and release manifest.",
     "reviewed_at": "2026-11-07",
     "registry_blob_sha": "968c1ae613aa7c83eb4392ddb9eff6f7c6622767",
     "source_dag_scope": "End-to-end Watchdog-owned Discovery → immutable artifact verification → non-activating Assessment → immutable Assessment artifact proof → production artifact re-verification → source matrix → deterministic admission → production collection. REJECT is automatically published after deterministic first-stage review, stricter secondary evidence gates and config-conflict checks; human review is exception-only; uu.conf is read-only."
