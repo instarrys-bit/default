@@ -1838,14 +1838,15 @@
         "idempotent event result"
       ],
       "depends_on": [
-        "storage_incident_store",
-        "storage_artifact_store",
-        "storage_ingest_actions_artifacts",
-        "script_remote_task_queue_runtime",
         "script_register_config_baseline",
-        "script_verify_baseline",
+        "script_remote_task_queue_runtime",
+        "script_run_preflight_tests",
+        "script_validate_execution_adapters",
         "script_validate_program_registry",
-        "script_validate_execution_adapters"
+        "script_verify_baseline",
+        "storage_artifact_store",
+        "storage_incident_store",
+        "storage_ingest_actions_artifacts"
       ],
       "dispatches": [],
       "permission_boundary": "Storage Management is the sole writer of automation/task_queue.json through script_remote_task_queue_runtime and of storage/v2/incidents.json through storage_incident_store. Queue writes use SHA-CAS and remain isolated from incident-ledger writes. No ruleset writes or modules/uu.conf access.",
