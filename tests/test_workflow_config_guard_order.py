@@ -189,7 +189,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
 
     def test_baseline_verifier_checks_owner_authorized_registration(self):
         verifier = (ROOT / "scripts" / "verify_baseline.py").read_text(encoding="utf-8")
-        self.assertIn('run_git("diff", " --quiet", base, head, "--", "modules/uu.conf")'.replace(" --quiet","--quiet"), verifier)
+        self.assertIn('run_git("diff", "--quiet", base, head, "--", "modules/uu.conf")', verifier)
         self.assertIn('run_git("log", "--format=%H"', verifier)
         self.assertIn('repos/{repository}/commits/{commit}', verifier)
         self.assertIn("config_change_commits", verifier)
