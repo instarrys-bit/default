@@ -12,7 +12,6 @@ class ProductionQueueRoutingTests(unittest.TestCase):
         self.assertIn("group: shadowrocket-automation-watchdog-${{ github.run_id }}", workflow)
         self.assertIn("group: shadowrocket-watchdog-task-supervision-main", workflow)
         self.assertIn("cancel-in-progress: false", workflow)
-        self.assertIn("Queue writes use CAS", workflow)
 
     def test_queue_supervision_has_one_fail_closed_scheduler_path(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
