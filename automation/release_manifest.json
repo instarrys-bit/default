@@ -8,12 +8,12 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "9999108b8731816162423ee3d0b94a8463d1c4fc"
+      "git_blob_sha": "65911334ca24e9af5780cb7da6956549d48279a8"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "4a6f7da6c9f621dd88d48b703cde2981f4f76dfc"
+      "git_blob_sha": "0482e404bb16d64ac2cde29fd5f9bc7ec7d4092d"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
