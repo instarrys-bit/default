@@ -1005,7 +1005,7 @@ jobs:
           PRODUCTION_RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
-          payload="$(jq -n --arg ref \"main\" --arg task_id \"auto-sync-watchdog-$PRODUCTION_RUN_ID\" '{ref:$ref,inputs:{automation_task_id:$task_id}}')"
+          printf -v payload '{"ref":"main","inputs":{"automation_task_id":"auto-sync-watchdog-%s"}}' "$PRODUCTION_RUN_ID"
           curl --fail-with-body --silent --show-error \
             --request POST \
             --header "Accept: application/vnd.github+json" \
