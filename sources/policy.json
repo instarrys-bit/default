@@ -100,17 +100,21 @@
   },
   "managed_config_guard": {
     "path": "modules/uu.conf",
-    "approved_git_blob_sha": "bd83e378b344c395c686d18e3817e84e60339a70",
+    "approved_git_blob_sha": "11c55414c9a78849fe45ed0fb52ff1de4c163357",
     "description": "Authoritative owner-managed Shadowrocket config. Automation may read, identify, hash, diff, and register baseline metadata only after owner verification; it must never rewrite file contents, user-authored rules, or existing functionality. Watchdog performs near-real-time (push-driven) metadata reconciliation when the owner changes this file so automation is never permanently blocked by a legitimate user update. Sub-second polling is not used; reaction latency is bounded by GitHub Actions start-up after the push event, with a 15-minute schedule as safety net.",
     "last_user_approved_baseline_update": {
-      "previous_blob_sha": "d44de092c540ffaafb7ba6d54239938c8789d174",
-      "new_blob_sha": "bd83e378b344c395c686d18e3817e84e60339a70",
-      "reason": "Owner-verified registration of current main-branch modules/uu.conf Git blob after legitimate owner edits. Only baseline metadata updated; uu.conf bytes unchanged by automation.",
+      "previous_blob_sha": "bd83e378b344c395c686d18e3817e84e60339a70",
+      "new_blob_sha": "11c55414c9a78849fe45ed0fb52ff1de4c163357",
+      "reason": "Storage Management synchronized the exact main-branch uu.conf Git blob after verifying every intervening config-changing commit is associated with the repository owner. Only baseline metadata and derived release pins are updated; uu.conf bytes are immutable to automation.",
       "approval_mode": "recovered_owner_authored_config_history",
-      "config_change_commits": [],
+      "config_change_commits": [
+        "6c93a604213fa51357cbd5793c1cd7a0c04c4d52",
+        "ff7620b307bd770148ddd724e4e5a17ca240f23d",
+        "718c67e168ef207296e97343dd619ba6425e1344"
+      ],
       "actor": "instarrys-bit",
-      "commit_sha": "60b02d7c5e35a442cc782e0210c81e04498dedde",
-      "registered_at": "2026-11-20T09:54:02.122733+00:00"
+      "commit_sha": "6c93a604213fa51357cbd5793c1cd7a0c04c4d52",
+      "registered_at": "2026-11-20T16:24:54.902862+00:00"
     },
     "content_immutable_to_automation": true,
     "content_protection": {

@@ -37,7 +37,7 @@
     },
     "config_baseline": {
       "path": "modules/uu.conf",
-      "git_blob_sha": "d44de092c540ffaafb7ba6d54239938c8789d174",
+      "git_blob_sha": "11c55414c9a78849fe45ed0fb52ff1de4c163357",
       "access": "read_only"
     },
     "source_assessor": {
@@ -207,9 +207,9 @@
     "reject_rule_publication_requires_explicit_approval": false,
     "python_adapter_default_deny": true,
     "watchdog_baseline_metadata_sync": {
-      "writer": "automation-watchdog.yml baseline-sync job",
+      "writer": "storage-management.yml reconcile-config-baseline job",
       "trigger": [
-        "main push",
+        "main push (modules/uu.conf, sources/policy.json, control-plane paths)",
         "15-minute schedule"
       ],
       "authorization": "Every uu.conf-changing commit since the last registered owner baseline anchor must be associated with the repository owner on GitHub.",
