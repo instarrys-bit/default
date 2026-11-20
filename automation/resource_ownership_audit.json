@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "audit_id": "resource-ownership-audit-2026.11.10.source-registry-artifact-replay",
-  "status": "partial_static_audit",
+  "status": "retired_archival_snapshot",
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
     "registry_blob_sha": "38f6b8b922c3e97bdca3501dad09bb76e9d0aa99",
@@ -88,7 +88,7 @@
       "storage/v2/incident_store.py",
       ".github/workflows/storage-incident-management.yml"
     ],
-    "limitation": "The active Source Discovery → Assessment DAG remains scoped to runner-local immutable artifacts and a fenced automation/task_queue.json checkpoint. A separate durable non-activating source-candidate registry is committed only as rulesets/source_candidate_registry.json by the existing single auto_sync publisher under the Watchdog logical/production-pipeline fence. Protected modules/** and JavaScript remain unwritable. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
+    "limitation": "Historical audit scope from the independent source-DAG design. Current automation uses the consolidated four-workflow monolithic production path; do not infer active writers from the historical workflow names in inspected_sources.",
     "reviewed_at": "2026-11-07",
     "isolated_ephemeral_outputs": [
       {
@@ -615,5 +615,6 @@
     ]
   },
   "limitation": "The active source DAG uses runner-local immutable artifacts and a Storage Management-owned automation/task_queue.json checkpoint. Incident state is held in storage/v2/incidents.json. No runtime workflow or script calls GitHub Issues. Production deliverables are limited to rulesets/**; modules/** remain read-only.",
-  "reviewed_at": "2026-11-18"
+  "reviewed_at": "2026-11-20",
+  "note": "Historical resource-ownership audit for the retired independent source-DAG workflow topology. Retained for traceability only; it is not an activation authority or current write-site inventory. Current workflow and adapter authority is automation/program_registry.json, automation/execution_adapters.json, automation/release_manifest.json and automation/resource_write_sets.json."
 }
