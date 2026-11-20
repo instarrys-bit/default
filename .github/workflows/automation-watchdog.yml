@@ -937,11 +937,11 @@ jobs:
           python-version: "3.11"
 
       - name: Enqueue Watchdog production intent through queue writer
-        if: ${{ needs.health-check.outputs.queue_task_json != '' }}
+        if: ${{ needs.health-check.outputs.queue_task_json != '' || needs.manifest-integrity.outputs.queue_task_json != '' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          QUEUE_TASK_JSON: ${{ needs.health-check.outputs.queue_task_json }}
+          QUEUE_TASK_JSON: ${{ needs.health-check.outputs.queue_task_json || needs.manifest-integrity.outputs.queue_task_json }}
         run: |
           set -euo pipefail
           if ! jq -e 'type == "object" and (.idempotency_key | type == "string" and length > 0) and (.input | type == "object")' <<< "$QUEUE_TASK_JSON" >/dev/null; then
@@ -1326,6 +1326,8 @@ jobs:
 
   manifest-integrity:
     needs: [health-check]
+    outputs:
+      queue_task_json: ${{ steps.integrity-recovery.outputs.queue_task_json }}
     concurrency:
       group: shadowrocket-main-writer
       cancel-in-progress: false
@@ -1383,7 +1385,7 @@ jobs:
       - name: Dispatch verified manifest recovery to Storage Management
         if: ${{ steps.refresh.outcome == 'success' && steps.publish.outcome == 'success' && steps.verify.outcome == 'success' }}
         env:
-          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           RUN_ID: ${{ github.run_id }}
@@ -1396,9 +1398,10 @@ jobs:
             -f verification_url="$RUN_URL"
 
       - name: Dispatch one bounded reconciliation audit on mismatch
+        id: integrity-recovery
         if: ${{ steps.refresh.outcome == 'success' && steps.verify.outcome == 'failure' && !(github.event_name == 'workflow_run' && github.event.workflow_run.event == 'workflow_dispatch') }}
         env:
-          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
@@ -1439,12 +1442,15 @@ jobs:
             echo "HOLD: manifest-integrity reconciliation enqueue suppressed; no queue mutation." >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
-          printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "production:integrity:$current_fingerprint" --priority 100 --input-json "$integrity_input" enqueue-auto-sync
+          integrity_key="production:integrity:$current_fingerprint"
+          queue_task_json="$(jq -cn --arg idempotency_key "$integrity_key" --argjson input "$integrity_input" '{idempotency_key:$idempotency_key,input:$input}')"
+          echo "queue_task_json=$queue_task_json" >> "$GITHUB_OUTPUT"
+          echo "Bounded integrity reconciliation intent handed to the durable queue writer." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Record manifest metadata repair failure
         if: ${{ always() && (steps.refresh.outcome == 'failure' || steps.publish.outcome == 'failure') }}
         env:
-          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           RUN_ID: ${{ github.run_id }}
@@ -1460,7 +1466,7 @@ jobs:
       - name: Record published ruleset integrity failure
         if: ${{ steps.verify.outcome == 'failure' && (github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.event == 'workflow_dispatch')) }}
         env:
-          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           RUN_ID: ${{ github.run_id }}
