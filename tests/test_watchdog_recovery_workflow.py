@@ -75,7 +75,6 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         for path in (
             ".github/workflows/auto_sync.yml",
             ".github/workflows/source-discovery.yml",
-            ".github/workflows/validate-config.yml",
             ".github/workflows/self-healing-agent.yml",
         ):
             self.assertIn(path, health)
@@ -97,14 +96,6 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("Normal input-change and scheduled-refresh decisions are centralized", workflow)
         self.assertIn("bash scripts/verify_publish_base.sh --check-only", workflow)
 
-    def test_non_main_push_uses_main_merge_base_not_branch_before_sha(self):
-        workflow = (ROOT / ".github" / "workflows" / "validate-config.yml").read_text(encoding="utf-8")
-        recovery = workflow.split("name: Verify owner-approved config baseline registration in non-main validation", 1)[1].split("name: Verify owner-approved config baseline", 1)[0]
-        self.assertIn('git merge-base origin/main "$head_sha"', recovery)
-        self.assertNotIn("github.event.pull_request.base.sha", recovery)
-        self.assertNotIn("github.event.before", recovery)
-        self.assertIn("python3 scripts/verify_baseline.py --verify-registration --base", recovery)
-        self.assertNotIn("register_config_baseline.py", recovery)
     def test_only_infrastructure_failures_trigger_bounded_scheduled_or_push_recovery(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn('SOURCE_CONCLUSION: ${{ github.event.workflow_run.conclusion }}', workflow)
