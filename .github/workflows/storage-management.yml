@@ -129,6 +129,15 @@ jobs:
     steps:
       - name: Checkout proposed Storage Management changes
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          filter: blob:none
+          sparse-checkout: |
+            .github/workflows
+            automation
+            scripts
+            storage/v2
+            tests/v2
+          sparse-checkout-cone-mode: true
       - name: Validate all retained workflow YAML files and reject duplicate keys
         run: |
           ruby <<'RUBY'
