@@ -17,6 +17,7 @@ class WatchdogV2ControlPlaneTests(unittest.TestCase):
         text = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("Detect production intent and enqueue durable auto-sync task", text)
         self.assertIn("Recover leases and run scheduler once", text)
-        self.assertIn("group: shadowrocket-watchdog-control-plane-main", text)
+        self.assertIn("group: shadowrocket-automation-watchdog-${{ github.run_id }}", text)
+        self.assertIn("group: shadowrocket-watchdog-task-supervision-main", text)
         self.assertNotIn("stale-run-watch", text)
         self.assertNotIn("manifest-integrity:", text)
