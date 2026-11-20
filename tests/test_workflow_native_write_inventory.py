@@ -8,13 +8,8 @@ ROOT = Path(__file__).resolve().parents[1]
 WORKFLOWS = [
     ".github/workflows/auto_sync.yml",
     ".github/workflows/automation-watchdog.yml",
-    ".github/workflows/assessment-completion-relay.yml",
     ".github/workflows/dashboard-pages.yml",
-    ".github/workflows/self-healing-agent.yml",
-    ".github/workflows/self-healing-tests.yml",
-    ".github/workflows/validate-config.yml",
-    ".github/workflows/source-discovery.yml",
-    ".github/workflows/queue-snapshot-artifact.yml",
+    ".github/workflows/storage-management.yml",
 ]
 PATTERNS = {
     "git_add": re.compile(r"\bgit\s+add\b"),
