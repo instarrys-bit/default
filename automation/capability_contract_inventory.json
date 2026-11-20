@@ -1993,8 +1993,8 @@
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.20.1",
     "execution_adapters_blob_sha": "4a6f7da6c9f621dd88d48b703cde2981f4f76dfc",
-    "release_manifest_blob_sha": "3e668645f316d868247a08d906d9b03de3c3ac61",
-    "program_registry_blob_sha": "38f6b8b922c3e97bdca3501dad09bb76e9d0aa99"
+    "release_manifest_blob_sha": "eca68264b4e48177f024defde0c44615ad7388a0",
+    "program_registry_blob_sha": "9999108b8731816162423ee3d0b94a8463d1c4fc"
   },
   "deprecation_note": "Historical source-DAG capability snapshot only. It is not an activation authority and must not be used to infer current enabled workflows or Python adapters. Current authority is program_registry.json, execution_adapters.json, production_control.json and release_manifest.json."
 }
