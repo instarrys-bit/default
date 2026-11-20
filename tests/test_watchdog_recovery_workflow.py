@@ -556,6 +556,10 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
             "Recover leases, verify results, and dispatch one task before artifact upload", 1
         )[1].split("Upload verified source assessment outputs as immutable artifact", 1)[0]
         self.assertIn("select_production_worker_task(tasks, current_fingerprint, source_discovery_mode=source_mode)", worker)
+        self.assertLess(
+            worker.index('source_mode = os.environ.get("SOURCE_DISCOVERY_MODE", "independent")'),
+            worker.index("production_task_id = select_production_worker_task"),
+        )
         self.assertIn("Deferring the next source worker", worker)
         self.assertLess(
             worker.index("production_task_id = select_production_worker_task"),
