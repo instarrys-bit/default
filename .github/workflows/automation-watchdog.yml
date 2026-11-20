@@ -76,7 +76,6 @@ jobs:
             automation
             sources
             modules
-            storage
           sparse-checkout-cone-mode: true
           persist-credentials: false
       - name: Set up Python
@@ -87,7 +86,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          PYTHONPATH: scripts:.
+          PYTHONPATH: scripts
         run: |
           set -euo pipefail
           python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue.json"
@@ -102,7 +101,7 @@ jobs:
           ORIGIN_ACTOR: ${{ github.actor }}
           ORIGIN_BEFORE: ${{ github.event.before }}
           ORIGIN_SHA: ${{ github.sha }}
-          PYTHONPATH: scripts:.
+          PYTHONPATH: scripts
         run: |
           set -euo pipefail
           production_dispatch_mode="$(jq -r '.dispatch_mode // "hold"' automation/production_control.json)"
@@ -213,7 +212,6 @@ jobs:
             automation
             sources
             modules
-            storage
           sparse-checkout-cone-mode: true
           persist-credentials: false
       - name: Set up Python
@@ -224,7 +222,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-          PYTHONPATH: scripts:.
+          PYTHONPATH: scripts
         run: |
           set -euo pipefail
           printf '%s' "$GH_TOKEN" | python3 scripts/remote_task_queue_runtime.py --repository "$REPO" --branch main recover-expired || true
