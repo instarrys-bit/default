@@ -76,7 +76,6 @@ jobs:
             automation
             sources
             modules
-            storage
           sparse-checkout-cone-mode: true
           persist-credentials: false
       - name: Set up Python
@@ -213,7 +212,6 @@ jobs:
             automation
             sources
             modules
-            storage
           sparse-checkout-cone-mode: true
           persist-credentials: false
       - name: Set up Python
