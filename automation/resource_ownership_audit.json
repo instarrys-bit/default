@@ -618,7 +618,7 @@
   "reviewed_at": "2026-11-18",
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.21.1",
-    "release_manifest_blob_sha": "4cb6aa1d0bf51db13db2adb74eda4e08b7d9b323",
+    "release_manifest_blob_sha": "cb9b0bb906577e754abe0b2ef74249dc7782c916",
     "program_registry_blob_sha": "0c0ad14b1caf9d0622dde806439c6d278e4404ba",
     "execution_adapters_blob_sha": "6d1bfb61f6e6f7609ab99d7be27790b36ef4ee62",
     "note": "Historical V1 source-DAG / capability-write audit. Retained for traceability only; not an activation authority or current writer inventory. Current runtime topology is monolithic fallback across exactly four workflows. Do not infer active dispatch rights from this archival snapshot."
