@@ -1342,12 +1342,12 @@
     "Static Python mutation-site and workflow-native scans do not prove transient write-and-revert activity, Git metadata changes, external side effects or unexecuted call paths. No global filesystem guard or Python audit hook is installed."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "c534b93635649b93a10243e3dd63dc6af489176f",
-    "program_registry_blob_sha": "968c1ae613aa7c83eb4392ddb9eff6f7c6622767",
-    "execution_adapters_blob_sha": "af0f8d196c70a07fcd30cdc7f97eaba7a025cb56",
+    "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.20.1",
+    "release_manifest_blob_sha": "2ebdacf0a2447bd52458b709fbc719feaabc930d",
+    "program_registry_blob_sha": "2f1461bb30e6ef1b3ab6e5b7b2c14b01c218de49",
+    "execution_adapters_blob_sha": "3488ed82a94b9adce0aac1bd3ac6bbc217e0ea07",
     "added_after_release_baseline": true,
-    "note": "Production Intent is read-only; the only persistent task/lease/checkpoint state is stored by Storage Management in automation/task_queue.json. Incident events are stored only in storage/v2/incidents.json. Production's committed deliverables remain allowlisted rulesets/**.",
+    "note": "Partial static resource-write inventory for the retained four-workflow monolithic design. It distinguishes production ruleset publication from queue/lease/incident control-plane state. modules/uu.conf remains protected and is never a production write or publish target.",
     "reviewed_at": "2026-11-07"
   },
   "scheduler_lock_contract": {
@@ -1540,6 +1540,13 @@
       "source": "storage/v2/verify_archive_inventory.py",
       "classification": "read_only_archive_integrity_verifier_non_dispatchable",
       "evidence": "Reads the frozen archive tree through GitHub GET requests only; no mutation HTTP methods or repository writes."
+    },
+    {
+      "program_id": "script_run_preflight_tests",
+      "classification": "runner_local_test_execution_no_repository_mutation",
+      "writes": [],
+      "publish_resources": [],
+      "evidence": "Runs unittest discovery and returns a process exit code; it does not write repository files."
     }
   ],
   "control_plane_side_effects": [
