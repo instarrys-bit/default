@@ -954,20 +954,20 @@ jobs:
           COMMIT_SHA: ${{ github.sha }}
           RUN_ID: ${{ github.run_id }}
           AUDIT_RESULT: ${{ needs.audit.result }}
+          PREFLIGHT_RESULT: ${{ needs.preflight.result }}
           PUBLISH_RESULT: ${{ needs.publish.result }}
         run: |
           set -euo pipefail
-          summary="The deterministic pipeline ended with audit=$AUDIT_RESULT and publish=$PUBLISH_RESULT."
+          summary="The deterministic pipeline ended with preflight=$PREFLIGHT_RESULT, audit=$AUDIT_RESULT and publish=$PUBLISH_RESULT."
           gh workflow run storage-management.yml --repo "$REPO" --ref main \
-            -f operation=record -f workflow=auto_sync \
-            -f event_id="auto-sync-failure-$RUN_ID" -f run_id="$RUN_ID" \
-            -f source_sha="$COMMIT_SHA" -f classification=PIPELINE_FAILURE \
-            -f summary="$summary" -f run_url="$RUN_URL"
+            -f operation=record -f automation_task_id="auto-sync-failure-$RUN_ID" \
+            -f run_id="$RUN_ID" -f source_sha="$COMMIT_SHA" \
+            -f classification=PIPELINE_FAILURE -f summary="$summary" -f run_url="$RUN_URL"
 
 
   resolve-failure:
-    needs: [audit, publish]
-    if: ${{ needs.audit.result == 'success' && needs.publish.result == 'success' }}
+    needs: [audit, preflight, publish]
+    if: ${{ needs.audit.result == 'success' && needs.preflight.result == 'success' && needs.publish.result == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 3
     permissions:
@@ -982,9 +982,9 @@ jobs:
         run: |
           set -euo pipefail
           gh workflow run storage-management.yml --repo "$REPO" --ref main \
-            -f operation=resolve -f workflow=auto_sync \
-            -f event_id="auto-sync-recovery-$RUN_ID" -f before_run_id="$RUN_ID" \
-            -f classifications=PIPELINE_FAILURE -f verification_url="$RUN_URL"
+            -f operation=resolve -f automation_task_id="auto-sync-recovery-$RUN_ID" \
+            -f before_run_id="$RUN_ID" -f classifications=PIPELINE_FAILURE \
+            -f verification_url="$RUN_URL"
 
 
   watchdog-reconciliation:
@@ -1004,7 +1004,10 @@ jobs:
           PRODUCTION_RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
-          payload="$(jq -n --arg ref "main" --arg run_id "$PRODUCTION_RUN_ID" '{ref:$ref,inputs:{production_producer_run_id:$run_id}}')"
+          # The Watchdog run-name is its own correlation ID. Its dispatch input
+          # contract has no producer-run field; pending production runs are
+          # reconciled from the durable queue and exact workflow correlation.
+          payload="$(jq -n --arg ref "main" '{ref:$ref}')"
           curl --fail-with-body --silent --show-error \
             --request POST \
             --header "Accept: application/vnd.github+json" \
@@ -1012,4 +1015,4 @@ jobs:
             --header "X-GitHub-Api-Version: 2022-11-28" \
             "$GITHUB_API_URL/repos/$GITHUB_REPOSITORY/actions/workflows/automation-watchdog.yml/dispatches" \
             --data "$payload"
-          echo "Requested exact-run Watchdog reconciliation for production run $PRODUCTION_RUN_ID."
+          echo "Woke Watchdog to reconcile durable production task after run $PRODUCTION_RUN_ID."
