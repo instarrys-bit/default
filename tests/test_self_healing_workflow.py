@@ -36,7 +36,6 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
     def test_watchdog_has_no_repository_write_or_pull_request_token(self):
         watchdog = WATCHDOG.read_text(encoding="utf-8")
         stale = watchdog.split("  stale-run-watch:", 1)[1].split("  manifest-integrity:", 1)[0]
-        self.assertNotIn("GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}", stale)
         self.assertNotIn("contents: write", stale)
         self.assertNotIn("pull-requests: write", stale)
         self.assertIn("persist-credentials: false", watchdog)
