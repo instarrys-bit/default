@@ -27,6 +27,8 @@ class ReleaseManifestSmokeTests(unittest.TestCase):
         manifest = json.loads((ROOT / "automation/release_manifest.json").read_text(encoding="utf-8"))
         self.assertEqual(manifest["release_status"], "baseline_snapshot")
         self.assertEqual(manifest["python_adapter_policy"]["allowed_adapters"], [])
+        self.assertFalse(manifest["execution_policy"]["existing_adapter_enablement_unchanged"])
+        self.assertEqual(manifest["execution_policy"]["enabled_workflow_adapters"], ["workflow_auto_sync", "workflow_automation_watchdog", "workflow_storage_management"])
         self.assertEqual(
             manifest["next_migration_gate"]["completion_status"],
             "blocked_pending_contract_and_runtime_enforcement",
