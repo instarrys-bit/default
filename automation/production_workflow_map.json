@@ -1,14 +1,15 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "3320b1e568963d18840499cfd864b58359975b9d",
-  "registry_blob_sha": "968c1ae613aa7c83eb4392ddb9eff6f7c6622767",
+  "workflow_blob_sha": "48f8c6f511cdc3f0ddf1d08e904df4843693f20f",
+  "registry_blob_sha": "65911334ca24e9af5780cb7da6956549d48279a8",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 7,
     "step_count": 61,
-    "independent_python_dispatch_enabled": true,
-    "independent_workflow_count": 1
+    "independent_python_dispatch_enabled": false,
+    "independent_workflow_count": 0,
+    "workflow_count": 4
   },
   "job_graph": [
     {
@@ -359,87 +360,17 @@
     "Dashboard generation is observer-only and is not a production stage."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "074f68ad1af56610650b6dcdb58b197a37c19487",
-    "program_registry_blob_sha": "968c1ae613aa7c83eb4392ddb9eff6f7c6622767",
-    "execution_adapters_blob_sha": "af0f8d196c70a07fcd30cdc7f97eaba7a025cb56",
+    "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.21.1",
+    "release_manifest_blob_sha": "096a62e10b0e219ea88102eeb0d58355a2043348",
+    "program_registry_blob_sha": "65911334ca24e9af5780cb7da6956549d48279a8",
+    "execution_adapters_blob_sha": "0482e404bb16d64ac2cde29fd5f9bc7ec7d4092d",
     "added_after_release_baseline": true,
-    "note": "The independent source DAG is enabled under the scoped release allowlist. The production deliverables are exactly DIRECT, PROXY and REJECT; queue/checkpoint state and immutable runner-local artifacts are separate control-plane/runtime resources. The global static/transitive inventory remains partial for unrelated capabilities.",
+    "note": "Current execution is the consolidated four-workflow monolithic design. Discovery and non-activating assessment run within auto_sync; independent Python dispatch is disabled. The static map is descriptive, not an execution grant. uu.conf remains read-only.",
     "reviewed_at": "2026-11-07",
     "registry_blob_sha": "968c1ae613aa7c83eb4392ddb9eff6f7c6622767",
-    "source_dag_scope": "End-to-end Watchdog-owned Discovery → immutable artifact verification → non-activating Assessment → immutable Assessment artifact proof → production artifact re-verification → source matrix → deterministic admission → production collection. REJECT is automatically published after deterministic first-stage review, stricter secondary evidence gates and config-conflict checks; human review is exception-only; uu.conf is read-only."
+    "source_dag_scope": "Monolithic fallback: Watchdog owns durable queue supervision; auto_sync performs bounded discovery, non-activating assessment, deterministic admission and ruleset publication; Storage Management owns incident and queue-state operations; dashboard is read-only. No separate source-discovery or assessment workflow exists."
   },
-  "independent_dags": [
-    {
-      "id": "source_discovery_to_assessment",
-      "status": "enabled_pending_live_end_to_end_verification",
-      "producer": {
-        "program_id": "workflow_source_discovery",
-        "workflow_path": ".github/workflows/source-discovery.yml",
-        "workflow_name": "Shadowrocket Source Discovery (Watchdog)",
-        "branch": "main",
-        "writes": [
-          "RUNNER_TEMP/source-discovery-workspace/sources/discovered_sources.json",
-          "RUNNER_TEMP/source-discovery-workspace/reports/source-discovery.md"
-        ],
-        "resource_keys": [
-          "logical/source-discovery-run"
-        ]
-      },
-      "handoff": {
-        "event": "workflow_run.completed",
-        "required_conclusion": "success",
-        "required_head_branch": "main",
-        "artifact_name": "source-discovery-output",
-        "artifact_path": "sources/discovered_sources.json",
-        "proof_fields": [
-          "workflow_name",
-          "workflow_run_id",
-          "workflow_head_sha",
-          "artifact_path",
-          "artifact_sha256"
-        ],
-        "verification": [
-          "exact producer workflow run identity, branch and head SHA",
-          "downloaded immutable artifact logical-document digest equals producer proof",
-          "producer metadata inside document matches exact run ID and head SHA",
-          "the verified external artifact root is used for enqueue, plan, claim, child execution and post-execution read-only digest checks"
-        ],
-        "deduplication_helper": "scripts/source_handoff_policy.py",
-        "deduplication_states": [
-          "ready",
-          "already_assessed",
-          "assessment_pending",
-          "assessment_evidence_invalid",
-          "assessment_retry_required",
-          "awaiting_discovery_run",
-          "awaiting_assessment_predecessor"
-        ]
-      },
-      "consumer": {
-        "program_id": "script_assess_sources",
-        "enqueue_command": "task_scheduler.py enqueue-source-assessment",
-        "idempotency_key": "source-assessment:<workflow_run_id>",
-        "required_predecessor_digest": true
-      },
-      "duplicate_protection": {
-        "rule": "The Watchdog classifies existing Assessment tasks by exact predecessor.workflow_run_id, with legacy idempotency-key compatibility. A verified successful Assessment suppresses re-enqueue; a queued/claimed/verifying or retry-required Assessment suppresses replacement Discovery. Only a predecessor with no matching Assessment may enqueue once under the canonical source-assessment:<workflow_run_id> key. When SOURCE_DISCOVERY_MODE=independent, auto_sync monolithic discovery/assessment remain disabled."
-      },
-      "activation": {
-        "producer_adapter_enabled": true,
-        "producer_program_orchestration_enabled": true,
-        "assessment_adapter_enabled": true,
-        "production_dispatch_performed": false,
-        "repository_write_authority": "rulesets/** repository publication path fence; control-plane and runner-local resources are inventoried separately",
-        "assessment_repository_write_resources": [],
-        "production_deliverables": [
-          "rulesets/direct.list",
-          "rulesets/proxy.list",
-          "rulesets/reject.list"
-        ]
-      }
-    }
-  ],
+  "independent_dags": [],
   "production_deliverables": [
     "rulesets/direct.list",
     "rulesets/proxy.list",
