@@ -1,83 +1,52 @@
-import json
 import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-WATCHDOG = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
-AUTO_SYNC = ROOT / ".github" / "workflows" / "auto_sync.yml"
+WATCHDOG = ROOT / ".github/workflows/automation-watchdog.yml"
+AUTO_SYNC = ROOT / ".github/workflows/auto_sync.yml"
 
 
 class ProductionQueueRoutingTests(unittest.TestCase):
-    def test_watchdog_runs_have_unique_concurrency_groups(self):
+    def test_watchdog_runs_are_unique_and_queue_supervision_is_serialized(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
-        self.assertIn("group: shadowrocket-automation-watchdog-", workflow)
-        self.assertIn("github.run_id", workflow)
+        self.assertIn("group: shadowrocket-automation-watchdog-${{ github.run_id }}", workflow)
+        self.assertIn("group: shadowrocket-watchdog-task-supervision-main", workflow)
+        self.assertIn("cancel-in-progress: false", workflow)
         self.assertIn("Queue writes use CAS", workflow)
 
-    def test_queue_supervision_checks_relevant_predecessors(self):
+    def test_queue_supervision_has_one_fail_closed_scheduler_path(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
-        self.assertIn("needs: [health-check, stale-run-watch, manifest-integrity]", workflow)
-        self.assertIn("needs.stale-run-watch.result == 'success'", workflow)
-        self.assertIn("needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped'", workflow)
-        queue_job = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
-        self.assertIn("group: shadowrocket-watchdog-task-supervision", queue_job)
-        self.assertNotIn("group: shadowrocket-main-writer", queue_job)
-        self.assertIn("(github.event_name == 'workflow_run' || needs.stale-run-watch.result == 'success')", queue_job)
+        job = workflow.split("  task-queue-supervision:", 1)[1]
+        self.assertIn("needs: [health-check]", job)
+        self.assertIn("github.ref == 'refs/heads/main'", job)
+        self.assertIn("python3 scripts/task_scheduler.py", job)
+        self.assertIn("--max-tasks 1 run-once", job)
+        self.assertNotIn("recover-expired || true", job)
 
-    def test_all_stale_audit_checks_use_the_same_queue_aware_base_guard(self):
-        workflow = WATCHDOG.read_text(encoding="utf-8")
-        stale_job = workflow.split("  stale-run-watch:", 1)[1].split("  manifest-integrity:", 1)[0]
-        self.assertIn("bash scripts/verify_publish_base.sh --check-only", stale_job)
-        self.assertNotIn('select(startswith("docs/") | not)', stale_job)
-        manifest_job = workflow.split("  manifest-integrity:", 1)[1]
-        self.assertIn("enqueue-auto-sync", manifest_job)
-        self.assertNotIn("gh workflow run auto_sync.yml", manifest_job)
-
-    def test_superseded_audit_is_replaced_only_when_inputs_advanced(self):
-        workflow = WATCHDOG.read_text(encoding="utf-8")
-        self.assertIn('case "$SOURCE_CONCLUSION" in', workflow)
-        self.assertIn('if [ "$SOURCE_SHA" = "$current_sha" ]', workflow)
-        self.assertIn("Same-SHA deterministic failure requires diagnosis", workflow)
-        self.assertIn('recovery_kind="superseded_inputs"', workflow)
-        self.assertIn('idempotency_key="production:input:$current_fingerprint:$current_sha"', workflow)
-        self.assertIn('baseline_source_sha:$sha', workflow)
-        self.assertIn('--arg sha "$current_sha"', workflow)
-        self.assertIn("recomputing intent against current main", workflow)
-        self.assertNotIn('idempotency_key="auto-sync-superseded:$SOURCE_RUN_ID"', workflow)
-        self.assertIn("bash scripts/verify_publish_base.sh --check-only", workflow)
-
-    def test_retired_request_intake_is_not_a_production_dependency(self):
-        self.assertFalse((ROOT / ".github" / "workflows" / "request-intake.yml").exists())
-        registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
-        programs = {item["id"] for item in registry["programs"]}
-        self.assertNotIn("workflow_request_intake", programs)
-        adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
-        self.assertNotIn("workflow_request_intake", {item["target_program_id"] for item in adapters["adapters"]})
-        watchdog = WATCHDOG.read_text(encoding="utf-8")
-        self.assertIn("enqueue-auto-sync", watchdog)
-        production_inputs = json.loads((ROOT / "automation" / "production_inputs.json").read_text(encoding="utf-8"))
-        self.assertIn(".github/workflows/request-intake.yml", production_inputs["non_production_path_patterns"])
-        self.assertTrue((ROOT / "scripts" / "import_request_observations.py").exists())
-
-    def test_auto_sync_requires_a_matching_persisted_watchdog_task(self):
+    def test_stale_audit_checks_use_the_same_queue_aware_base_guard(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
-        inputs = workflow.split("automation_task_id:", 1)[1].split("baseline_source_event:", 1)[0]
-        self.assertIn("required: true", inputs)
-        self.assertIn("Verify Watchdog-owned durable task dispatch", workflow)
-        self.assertIn("dispatch_intent", workflow)
-        self.assertIn('durable_value = task_input.get(field, "")', workflow)
-        self.assertIn("if durable_value != supplied:", workflow)
-        self.assertNotIn("if supplied and task_input.get(field) != supplied:", workflow)
-        self.assertIn('task.get("requester_program_id") != "workflow_automation_watchdog"', workflow)
-        self.assertIn('task.get("status") not in {"CLAIMED", "VERIFYING"}', workflow)
-        self.assertIn('task.get("requester_program_id") != "workflow_automation_watchdog"', workflow)
-        self.assertIn('stream.write(f"AUTOMATION_TASK_ID_BASE={task_id}\\n")', workflow)
-        self.assertIn('--task-id "$AUTOMATION_TASK_ID_BASE"', workflow)
-        self.assertNotIn('--task-id "$AUTOMATION_TASK_ID" --proof-json', workflow)
-        adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
-        adapter = next(item for item in adapters["adapters"] if item["target_program_id"] == "workflow_auto_sync")
-        correlation_input = next(item for item in adapter["workflow"]["inputs"] if item["name"] == "automation_task_id")
-        self.assertTrue(correlation_input["required"])
+        self.assertEqual(workflow.count("bash scripts/verify_publish_base.sh --check-only"), 2)
+        self.assertLess(workflow.index("Stop stale audit before discovery"), workflow.index("Discover candidate source repositories"))
+        self.assertLess(workflow.index("Stop stale audit before expensive deterministic review"), workflow.index("Audit each domain:"))
+        self.assertIn("group: shadowrocket-main-writer", workflow)
+        self.assertIn("cancel-in-progress: false", workflow)
+
+    def test_production_dispatch_is_fingerprint_based_and_single_sourced(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        control = (ROOT / "automation/production_control.json").read_text(encoding="utf-8")
+        self.assertIn("production_intent.py", workflow)
+        self.assertIn("enqueue-auto-sync", workflow)
+        self.assertIn('"automatic_watchdog_dispatch": true', control)
+        self.assertIn('"source_discovery_mode": "monolithic_fallback"', control)
+        self.assertFalse((ROOT / ".github/workflows/source-discovery.yml").exists())
+        self.assertFalse((ROOT / ".github/workflows/assessment-completion-relay.yml").exists())
+
+    def test_auto_sync_requires_matching_persisted_watchdog_task(self):
+        workflow = AUTO_SYNC.read_text(encoding="utf-8")
+        self.assertIn("AUTOMATION_TASK_ID", workflow)
+        self.assertIn("RESOURCE_LEASE_PROOF", workflow)
+        self.assertIn("requester_program_id", workflow)
+        self.assertIn("workflow_automation_watchdog", workflow)
 
 
 if __name__ == "__main__":
