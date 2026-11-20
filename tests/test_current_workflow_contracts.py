@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 import unittest
 
@@ -34,6 +35,11 @@ class CurrentWorkflowContractTests(unittest.TestCase):
         self.assertIn('automation_task_id="auto-sync-failure-$RUN_ID"', failure)
         self.assertIn('automation_task_id="auto-sync-recovery-$RUN_ID"', recovery)
         self.assertIn("      operation:", storage)
+        registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
+        adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
+        storage_program = next(item for item in registry["programs"] if item["id"] == "workflow_storage_management")
+        storage_adapter = next(item for item in adapters["adapters"] if item["target_program_id"] == "workflow_storage_management")
+        self.assertEqual(storage_program["inputs"], [item["name"] for item in storage_adapter["workflow"]["inputs"]])
 
     def test_incident_recovery_requires_preflight_audit_and_publish_success(self):
         auto = (WORKFLOWS / "auto_sync.yml").read_text(encoding="utf-8")
