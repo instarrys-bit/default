@@ -1724,7 +1724,8 @@
         "script_verify_published_rulesets"
       ],
       "dispatches": [
-        "workflow_storage_management"
+        "workflow_storage_management",
+        "workflow_automation_watchdog"
       ],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
       "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",
@@ -1758,15 +1759,11 @@
       ],
       "depends_on": [
         "script_production_intent",
-        "script_refresh_ruleset_manifest",
         "script_remote_task_queue_runtime",
-        "script_task_scheduler",
-        "script_verify_published_rulesets",
-        "script_watchdog_recovery_policy"
+        "script_task_scheduler"
       ],
       "dispatches": [
-        "workflow_auto_sync",
-        "workflow_storage_management"
+        "workflow_auto_sync"
       ],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
       "health_check": "GitHub Actions job and step conclusions; independent publication verification and queue state validation are required where configured.",
@@ -1845,6 +1842,8 @@
         "storage_artifact_store",
         "storage_ingest_actions_artifacts",
         "script_remote_task_queue_runtime",
+        "script_register_config_baseline",
+        "script_verify_baseline",
         "script_validate_program_registry",
         "script_validate_execution_adapters"
       ],
@@ -2047,6 +2046,33 @@
         "allowed_callers": [],
         "max_attempts": 0,
         "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_run_preflight_tests",
+      "path": "scripts/run_preflight_tests.py",
+      "kind": "python_component",
+      "responsibility": "Run the deterministic repository preflight test suite with explicitly documented legacy-contract exclusions.",
+      "capabilities": [
+        "workflow_testing",
+        "preflight_validation"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "Repository tests directory and unittest discovery defaults."
+      ],
+      "outputs": [
+        "Process exit status and unittest test report."
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 1800
       }
     }
   ]
