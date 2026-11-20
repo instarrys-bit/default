@@ -21,6 +21,17 @@
       "source_sha": "b42c0652081d5a2eda4a57608017d0e5181cb790",
       "summary": "These paths are not registered as ruleset production inputs and remain excluded from automatic production. No registry was modified. Paths: [\".github/workflows/patch-health-check-write.yml\"]",
       "workflow": "automation_watchdog"
+    },
+    {
+      "classification": "PRODUCTION_INPUT_REVIEW",
+      "event_id": "input-review-44704675138",
+      "incident_id": "82d2cf3354b4df9ac1e9-44704675138",
+      "operation": "record",
+      "run_id": "44704675138",
+      "run_url": "https://github.com/instarrys-bit/default/actions/runs/44704675138",
+      "source_sha": "0e87b59681dac93a022306083e244c90918126ee",
+      "summary": "These paths are not registered as ruleset production inputs and remain excluded from automatic production. No registry was modified. Paths: [\".github/workflows/patch-health-check-write.yml\"]",
+      "workflow": "automation_watchdog"
     }
   ],
   "incidents": [
@@ -2511,6 +2522,43 @@
       "summary": "These paths are not registered as ruleset production inputs and remain excluded from automatic production. No registry was modified. Paths: [\".github/workflows/patch-health-check-write.yml\"]",
       "updated_at": "input-review-44702444140",
       "workflow": "automation_watchdog"
+    },
+    {
+      "body": "These paths are not registered as ruleset production inputs and remain excluded from automatic production. No registry was modified. Paths: [\".github/workflows/patch-health-check-write.yml\"]\n\n<!-- shadowrocket-incident-state:v1\n{\"classification\": \"PRODUCTION_INPUT_REVIEW\", \"history\": [\"DETECTED\", \"DIAGNOSING\", \"MANUAL_INTERVENTION\"], \"incident_id\": \"82d2cf3354b4df9ac1e9\", \"processed_events\": [\"input-review-44704675138\"], \"revision\": 2, \"schema_version\": 1, \"source_sha\": \"0e87b59681dac93a022306083e244c90918126ee\", \"state\": \"MANUAL_INTERVENTION\", \"verification\": null, \"workflow\": \"automation_watchdog\"}\n-->\n",
+      "classification": "PRODUCTION_INPUT_REVIEW",
+      "created_at": "input-review-44704675138",
+      "diagnosis": null,
+      "events": [
+        "input-review-44704675138"
+      ],
+      "identity_key": "82d2cf3354b4df9ac1e9",
+      "incident_id": "82d2cf3354b4df9ac1e9-44704675138",
+      "incident_state": {
+        "classification": "PRODUCTION_INPUT_REVIEW",
+        "history": [
+          "DETECTED",
+          "DIAGNOSING",
+          "MANUAL_INTERVENTION"
+        ],
+        "incident_id": "82d2cf3354b4df9ac1e9",
+        "processed_events": [
+          "input-review-44704675138"
+        ],
+        "revision": 2,
+        "schema_version": 1,
+        "source_sha": "0e87b59681dac93a022306083e244c90918126ee",
+        "state": "MANUAL_INTERVENTION",
+        "verification": null,
+        "workflow": "automation_watchdog"
+      },
+      "legacy_sources": [],
+      "lifecycle_status": "MANUAL_INTERVENTION",
+      "run_id": "44704675138",
+      "run_url": "https://github.com/instarrys-bit/default/actions/runs/44704675138",
+      "source_sha": "0e87b59681dac93a022306083e244c90918126ee",
+      "summary": "These paths are not registered as ruleset production inputs and remain excluded from automatic production. No registry was modified. Paths: [\".github/workflows/patch-health-check-write.yml\"]",
+      "updated_at": "input-review-44704675138",
+      "workflow": "automation_watchdog"
     }
   ],
   "migration": {
@@ -2519,6 +2567,6 @@
     "records_imported": 85,
     "source": "GitHub Issues"
   },
-  "revision": 3,
+  "revision": 4,
   "schema_version": 1
 }
