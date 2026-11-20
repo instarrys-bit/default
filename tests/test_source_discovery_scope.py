@@ -62,7 +62,7 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
         policy = (ROOT / "scripts" / "source_handoff_policy.py").read_text(encoding="utf-8")
         self.assertIn("def discovery_pipeline_revision", policy)
         self.assertIn('"scripts/discover_sources.py"', policy)
-        self.assertIn('".github/workflows/source-discovery.yml"', policy)
+        self.assertIn('".github/workflows/auto_sync.yml"', policy)
         self.assertIn("from source_handoff_policy import discovery_pipeline_revision", watchdog)
         self.assertIn("print(discovery_pipeline_revision(Path.cwd()))", watchdog)
         self.assertIn('base_key="source-discovery:$discovery_day:$discovery_revision"', watchdog)
@@ -239,19 +239,22 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
         self.assertTrue(cached)
 
 
-    def test_discovery_and_assessment_share_one_fenced_supervision_lease(self):
+    def test_discovery_and_assessment_share_the_monolithic_production_lease(self):
         document = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
         adapters = {item["target_program_id"]: item for item in document["adapters"]}
-        key = "logical/source-dag-supervision"
-        discovery = adapters["workflow_source_discovery"]["resource_contract"]
-        assessment = adapters["script_assess_sources"]["resource_contract"]
-        self.assertIn(key, discovery["resource_keys"])
-        self.assertIn(key, assessment["resource_keys"])
-        self.assertEqual(discovery["lease_seconds"], assessment["lease_seconds"])
-        self.assertEqual(discovery["lease_seconds"], 3600)
-        self.assertIs(discovery["fencing_required"], True)
-        self.assertIs(assessment["fencing_required"], True)
-        self.assertEqual(adapters["script_assess_sources"]["write_resources"], [])
+        control = json.loads((ROOT / "automation" / "production_control.json").read_text(encoding="utf-8"))
+        auto_sync = adapters["workflow_auto_sync"]["resource_contract"]
+        self.assertEqual(control["source_discovery_mode"], "monolithic_fallback")
+        self.assertIn("logical/production-pipeline", auto_sync["resource_keys"])
+        self.assertEqual(auto_sync["lease_seconds"], 21600)
+        self.assertIs(auto_sync["fencing_required"], True)
+        self.assertFalse(adapters["script_discover_sources"]["enabled"])
+        self.assertFalse(adapters["script_assess_sources"]["enabled"])
+        self.assertNotIn("workflow_source_discovery", adapters)
+        workflow = (ROOT / ".github" / "workflows" / "auto_sync.yml").read_text(encoding="utf-8")
+        self.assertIn("Discover candidate source repositories (non-activating)", workflow)
+        self.assertIn("Assess discovered rule-list syntax and policy claims", workflow)
+        self.assertIn("steps.source-mode.outputs.mode != 'independent'", workflow)
 
 if __name__ == "__main__":
     unittest.main()
