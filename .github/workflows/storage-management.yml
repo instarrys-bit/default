@@ -181,6 +181,10 @@ jobs:
         run: python3 scripts/validate_program_registry.py
       - name: Validate execution adapter contracts
         run: python3 scripts/validate_execution_adapters.py
+      - name: Run maintained production preflight suite
+        env:
+          PYTHONPATH: scripts
+        run: python3 scripts/run_preflight_tests.py
       - name: Run Storage Management regression suite
         env:
           PYTHONPATH: storage/v2
