@@ -322,12 +322,19 @@ def latest_verified_assessed_discovery(tasks: list) -> dict | None:
     )
 
 
-def select_production_worker_task(tasks: list, current_fingerprint: str, now: datetime | None = None) -> str:
-    """Select one queued production audit using the newest independently verified source snapshot.
+def select_production_worker_task(
+    tasks: list,
+    current_fingerprint: str,
+    now: datetime | None = None,
+    source_discovery_mode: str = "independent",
+) -> str:
+    """Select one queued production audit under the configured source handoff mode.
 
-    This is deliberately separate from select_source_worker_task: the source worker
-    stops at the Assessment boundary, while this selector is the sole handoff into
-    the already-reviewed production workflow adapter.
+    Independent mode requires the newest usable Discovery to have a verified,
+    non-activating Assessment. In monolithic_fallback mode, Auto Sync performs
+    Discovery and Assessment itself, so a separate queue predecessor is neither
+    available nor required. All production fingerprint, backoff and duplicate
+    dispatch guards remain in force in both modes.
     """
     if not isinstance(tasks, list):
         raise ValueError("tasks must be a list")
@@ -337,9 +344,12 @@ def select_production_worker_task(tasks: list, current_fingerprint: str, now: da
     now = now.astimezone(timezone.utc)
     if not isinstance(current_fingerprint, str) or len(current_fingerprint) != 64:
         raise ValueError("current production fingerprint must be a SHA-256 hex digest")
-    latest = latest_verified_assessed_discovery(tasks)
-    if not isinstance(latest, dict):
-        return ""
+    if source_discovery_mode == "independent":
+        latest = latest_verified_assessed_discovery(tasks)
+        if not isinstance(latest, dict):
+            return ""
+    elif source_discovery_mode != "monolithic_fallback":
+        raise ValueError("source_discovery_mode must be independent or monolithic_fallback")
 
     # An already-dispatched production task owns the pipeline until Watchdog
     # reconciles its exact workflow run; never start a second writer.
