@@ -494,20 +494,22 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn('$file.status != "removed"', workflow)
         self.assertIn('$manifest[0].production_input_paths | index($file.filename)', workflow)
 
-    def test_independent_source_resource_leases_outlive_watchdog_reconciliation_window(self):
+    def test_monolithic_source_stages_share_a_long_lived_watchdog_lease(self):
         import re
-        workflow = WATCHDOG.read_text(encoding="utf-8")
-        match = re.search(r'cron:\s*"\*/([0-9]+) \* \* \* \*"', workflow)
+        watchdog = WATCHDOG.read_text(encoding="utf-8")
+        match = re.search(r'cron:\s*"\*/([0-9]+) \* \* \* \*"', watchdog)
         self.assertIsNotNone(match, "Watchdog reconciliation cron must be explicit")
         reconciliation_seconds = int(match.group(1)) * 60
         adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
         by_id = {item["target_program_id"]: item for item in adapters["adapters"]}
-        for program_id in ("workflow_source_discovery", "script_assess_sources"):
-            with self.subTest(program_id=program_id):
-                lease_seconds = by_id[program_id]["resource_contract"]["lease_seconds"]
-                self.assertGreaterEqual(lease_seconds, reconciliation_seconds * 4)
-        contract = json.loads((ROOT / "automation" / "capability_contracts" / "assess_sources.json").read_text(encoding="utf-8"))
-        self.assertEqual(contract["resource_contract"]["lease_seconds"], by_id["script_assess_sources"]["resource_contract"]["lease_seconds"])
+        production = by_id["workflow_auto_sync"]["resource_contract"]
+        self.assertIn("logical/production-pipeline", production["resource_keys"])
+        self.assertTrue(production["fencing_required"])
+        self.assertGreaterEqual(production["lease_seconds"], reconciliation_seconds * 4)
+        self.assertFalse(by_id["script_discover_sources"]["enabled"])
+        self.assertFalse(by_id["script_assess_sources"]["enabled"])
+        control = json.loads((ROOT / "automation" / "production_control.json").read_text(encoding="utf-8"))
+        self.assertEqual(control["source_discovery_mode"], "monolithic_fallback")
 
     def test_discovery_handoff_reuses_verified_run_evidence_and_accepts_queue_intent_commit_sha(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
