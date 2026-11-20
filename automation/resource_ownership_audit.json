@@ -4,8 +4,8 @@
   "status": "retired_archival_snapshot",
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
-    "registry_blob_sha": "968c1ae613aa7c83eb4392ddb9eff6f7c6622767",
-    "adapters_blob_sha": "af0f8d196c70a07fcd30cdc7f97eaba7a025cb56",
+    "registry_blob_sha": "8ac8d953a210e3e26a49788eca440ba2f31111df",
+    "adapters_blob_sha": "b9d702b483f5d9b6725e0053084c487d6be5da42",
     "inspected_sources": [
       ".github/workflow_helpers/check_source_assessment_artifact.py",
       ".github/workflows/assessment-completion-relay.yml",
@@ -618,9 +618,9 @@
   "reviewed_at": "2026-11-18",
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.21.1",
-    "release_manifest_blob_sha": "8f2001a0b4d5097a5d750a0c3f3803ef21a4298a",
-    "program_registry_blob_sha": "65911334ca24e9af5780cb7da6956549d48279a8",
-    "execution_adapters_blob_sha": "0482e404bb16d64ac2cde29fd5f9bc7ec7d4092d",
+    "release_manifest_blob_sha": "d7449cf63ffd901393f17bf00dae9088380b17cc",
+    "program_registry_blob_sha": "8ac8d953a210e3e26a49788eca440ba2f31111df",
+    "execution_adapters_blob_sha": "b9d702b483f5d9b6725e0053084c487d6be5da42",
     "note": "Historical V1 source-DAG / capability-write audit. Retained for traceability only; not an activation authority or current writer inventory. Current runtime topology is monolithic fallback across exactly four workflows. Do not infer active dispatch rights from this archival snapshot."
   }
 }
