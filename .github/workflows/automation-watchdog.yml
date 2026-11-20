@@ -133,9 +133,11 @@ jobs:
 
   health-check:
     if: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main') }}
-    # Queue mutations are Git-blob-SHA CAS; production outputs are protected by
-    # live resource leases and fencing tokens. Keep supervision independent of
-    # the publisher mutex so it can renew and verify long-running tasks.
+    # This job makes read-only queue and production decisions. Durable queue
+    # mutations are delegated to task-queue-supervision, whose job token has
+    # contents:write; production outputs remain protected by live resource
+    # leases and fencing tokens. Keep supervision independent of the publisher
+    # mutex so it can renew and verify long-running tasks.
     concurrency:
       group: shadowrocket-watchdog-control-plane-main
       cancel-in-progress: false
@@ -144,6 +146,7 @@ jobs:
       GITHUB_MANUAL_AUDIT_REQUEST: ${{ github.event.inputs.request_deterministic_audit }}
     outputs:
       block_manifest: ${{ steps.stale-recovery.outputs.block_manifest }}
+      queue_task_json: ${{ steps.failed-audit-recovery.outputs.queue_task_json || steps.stale-recovery.outputs.queue_task_json }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
@@ -162,16 +165,17 @@ jobs:
 
       - name: Export durable repository JSON queue snapshot
         env:
-          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
           python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue.json"
           echo "AUTOMATION_QUEUE_SNAPSHOT=$RUNNER_TEMP/task_queue.json" >> "$GITHUB_ENV"
       - name: Recover failed or superseded production audit
+        id: failed-audit-recovery
         if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' }}
         env:
-          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           SOURCE_EVENT: ${{ github.event.workflow_run.event }}
           SOURCE_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
@@ -343,12 +347,14 @@ jobs:
             echo "HOLD: stale-run recovery enqueue suppressed; inspection remains read-only." >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
-          printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "$idempotency_key" --priority 100 --input-json "$audit_input_json" enqueue-auto-sync
+          queue_task_json="$(jq -cn --arg idempotency_key "$idempotency_key" --argjson input "$audit_input_json" '{idempotency_key:$idempotency_key,input:$input}')"
+          echo "queue_task_json=$queue_task_json" >> "$GITHUB_OUTPUT"
+          echo "Failed-audit recovery intent handed to the durable queue writer." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Record or resolve source discovery health in Storage Management
         if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.path == '.github/workflows/auto_sync.yml' && github.event.workflow_run.conclusion == 'success' }}
         env:
-          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           RUN_URL: ${{ github.event.workflow_run.html_url }}
           SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
@@ -379,7 +385,7 @@ jobs:
         id: stale-recovery
         if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[source-dag-migration]')) }}
         env:
-          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           ORIGIN_EVENT: ${{ github.event_name }}
           ORIGIN_ACTOR: ${{ github.actor }}
@@ -449,7 +455,9 @@ jobs:
             manual_key="production:manual-authorized:$manual_fingerprint:$GITHUB_RUN_ID"
             manual_input="$(jq -cn --arg fingerprint "$manual_fingerprint" --arg sha "$current_sha" --arg run "$GITHUB_RUN_ID" --arg attempt "$GITHUB_RUN_ATTEMPT" --arg actor "$GITHUB_ACTOR" --arg actor_id "$GITHUB_ACTOR_ID" --arg repo "$GITHUB_REPOSITORY" --arg workflow_ref "$GITHUB_WORKFLOW_REF" --arg ref "$GITHUB_REF" --arg manual_request "$GITHUB_MANUAL_AUDIT_REQUEST" --arg target "workflow_auto_sync" --arg idem "$manual_key" '{production_fingerprint:$fingerprint,production_decision:"USER_AUTHORIZED_MANUAL_AUDIT",production_reason:"Explicit one-shot user authorization submitted through the Watchdog manual control.",baseline_source_event:"workflow_dispatch",baseline_source_sha:$sha,authorization_run_id:$run,authorization_run_attempt:$attempt,authorization_actor:$actor,authorization_actor_id:$actor_id,authorization_repository:$repo,authorization_workflow_ref:$workflow_ref,authorization_event:"workflow_dispatch",authorization_ref:$ref,authorization_head_sha:$sha,authorization_requested:($manual_request=="true"),authorization_target_program_id:$target,authorization_idempotency_key:$idem}')"
             echo "Enqueueing one explicitly authorized deterministic audit for current main $current_sha ($manual_fingerprint)."
-            printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "$manual_key" --priority 100 --input-json "$manual_input" enqueue-auto-sync
+            queue_task_json="$(jq -cn --arg idempotency_key "$manual_key" --argjson input "$manual_input" '{idempotency_key:$idempotency_key,input:$input}')"
+            echo "queue_task_json=$queue_task_json" >> "$GITHUB_OUTPUT"
+            echo "One explicitly authorized audit intent handed to the durable queue writer." >> "$GITHUB_STEP_SUMMARY"
             echo "One authorized deterministic audit was persisted to the durable queue." >> "$GITHUB_STEP_SUMMARY"
             echo "block_manifest=true" >> "$GITHUB_OUTPUT"
             exit 0
@@ -573,7 +581,9 @@ jobs:
                 '{production_fingerprint:$fingerprint,production_decision:"RECOVERY_REQUIRED",production_reason:$reason,baseline_source_event:$event,baseline_source_actor:$actor,baseline_source_before:$before,baseline_source_sha:$sha}')"
               recovery_key="production:guard-reconciliation:$current_fingerprint:$failed_run_id"
               echo "Enqueueing a new, idempotent audit task for stale-guard failure $failed_run_id; historical task $failed_task_id remains unchanged."
-              printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "$recovery_key" --priority 100 --input-json "$recovery_input" enqueue-auto-sync
+              queue_task_json="$(jq -cn --arg idempotency_key "$recovery_key" --argjson input "$recovery_input" '{idempotency_key:$idempotency_key,input:$input}')"
+              echo "queue_task_json=$queue_task_json" >> "$GITHUB_OUTPUT"
+              echo "Stale-guard recovery intent handed to the durable queue writer." >> "$GITHUB_STEP_SUMMARY"
               echo "block_manifest=true" >> "$GITHUB_OUTPUT"
               exit 0
             done < <(jq -r --arg fingerprint "$current_fingerprint" '
@@ -680,7 +690,9 @@ jobs:
               echo "Production is required: $decision ($fingerprint)."
               audit_input_json="$(jq -cn --arg fingerprint "$fingerprint" --arg decision "$decision" --arg reason "$(jq -r '.reason' <<< "$intent_json")" --arg event "$ORIGIN_EVENT" --arg actor "$ORIGIN_ACTOR" --arg before "$ORIGIN_BEFORE" --arg sha "$ORIGIN_SHA" '{production_fingerprint:$fingerprint,production_decision:$decision,production_reason:$reason,baseline_source_event:$event,baseline_source_actor:$actor,baseline_source_before:$before,baseline_source_sha:$sha}')"
               production_key="$(jq -r '.idempotency_key' <<< "$intent_json")"
-              printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "$production_key" --priority 100 --input-json "$audit_input_json" enqueue-auto-sync
+              queue_task_json="$(jq -cn --arg idempotency_key "$production_key" --argjson input "$audit_input_json" '{idempotency_key:$idempotency_key,input:$input}')"
+              echo "queue_task_json=$queue_task_json" >> "$GITHUB_OUTPUT"
+              echo "Production audit intent handed to the durable queue writer." >> "$GITHUB_STEP_SUMMARY"
               echo "block_manifest=true" >> "$GITHUB_OUTPUT"
               ;;
             REVIEW_REQUIRED)
@@ -924,10 +936,29 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Enqueue Watchdog production intent through queue writer
+        if: ${{ needs.health-check.outputs.queue_task_json != '' }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          QUEUE_TASK_JSON: ${{ needs.health-check.outputs.queue_task_json }}
+        run: |
+          set -euo pipefail
+          if ! jq -e 'type == "object" and (.idempotency_key | type == "string" and length > 0) and (.input | type == "object")' <<< "$QUEUE_TASK_JSON" >/dev/null; then
+            echo "Watchdog production queue intent is malformed; refusing to enqueue." >&2
+            exit 1
+          fi
+          idempotency_key="$(jq -er '.idempotency_key' <<< "$QUEUE_TASK_JSON")"
+          input_json="$(jq -c '.input' <<< "$QUEUE_TASK_JSON")"
+          printf '%s' "$GITHUB_TOKEN" | python3 scripts/task_scheduler.py \
+            --repository "$GITHUB_REPOSITORY" --branch main --token-stdin \
+            --idempotency-key "$idempotency_key" --priority 100 \
+            --input-json "$input_json" enqueue-auto-sync
+
       - name: Recover expired task and resource leases
         env:
-          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
-          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
@@ -955,7 +986,7 @@ jobs:
 
       - name: Export current durable queue snapshot for supervision
         env:
-          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           set -euo pipefail
@@ -972,7 +1003,7 @@ jobs:
       - name: Recover leases, verify results, and dispatch one task before artifact upload
         id: run-queue
         env:
-          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REF_NAME: main
           AUTOMATION_ARTIFACT_ROOT: ${{ runner.temp }}/source-assessment-output
@@ -1138,7 +1169,7 @@ jobs:
       - name: Wake Watchdog after verified Assessment artifact upload
         if: ${{ steps.run-queue.outputs.assessment_output_expected == 'true' && steps.upload-source-assessment.outcome == 'success' }}
         env:
-          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           PRODUCER_RUN_ID: ${{ github.run_id }}
         run: |
