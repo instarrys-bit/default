@@ -31,7 +31,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("group: shadowrocket-watchdog-task-supervision-main", queue)
         self.assertIn("github.event_name != 'workflow_run'", queue)
         self.assertIn("github.event.workflow_run.path == '.github/workflows/auto_sync.yml'", queue)
-        self.assertIn("github.event.workflow_run.path == '.github/workflows/source-discovery.yml'", queue)
+        self.assertIn("github.event.workflow_run.path == '.github/workflows/auto_sync.yml'", queue)
+        self.assertNotIn("source-discovery.yml", queue)
         self.assertNotIn("group: shadowrocket-watchdog-control-plane", queue)
         self.assertIn("cancel-in-progress: false", queue)
         self.assertIn("logical/source-dag-supervision", (ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
@@ -70,26 +71,19 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         trigger = workflow.split("  workflow_run:", 1)[1].split("  push:", 1)[0]
         self.assertIn("types: [completed]", trigger)
         self.assertIn('      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"', workflow)
-        self.assertIn('      - "Shadowrocket Source Discovery (Watchdog)"', workflow)
+        self.assertIn('      - "Storage Management"', workflow)
+        self.assertNotIn("Shadowrocket Source Discovery (Watchdog)", workflow)
         health = workflow.split("  health-check:", 1)[1].split("  assessment-canary:", 1)[0]
-        for path in (
-            ".github/workflows/auto_sync.yml",
-            ".github/workflows/source-discovery.yml",
-            ".github/workflows/validate-config.yml",
-            ".github/workflows/self-healing-agent.yml",
-        ):
-            self.assertIn(path, health)
-        assessment_step = workflow.split("Enqueue source assessment after successful discovery workflow", 1)[1].split("Recover leases, verify results, and dispatch one task before artifact upload", 1)[0]
-        self.assertIn("steps.resolve-discovery-run.outputs.run_id", assessment_step)
-        self.assertIn("steps.resolve-discovery-run.outputs.head_sha", assessment_step)
+        self.assertIn(".github/workflows/auto_sync.yml", health)
+        self.assertNotIn("source-discovery.yml", health)
+        self.assertNotIn("validate-config.yml", health)
+        self.assertNotIn("self-healing-agent.yml", health)
         resolver = workflow.split("Resolve completed Discovery run from durable task correlation", 1)[1].split("Download artifact from the exact discovery workflow run", 1)[0]
-        self.assertIn("source-discovery.yml", resolver)
         self.assertIn("workflow_dispatch", resolver)
-        self.assertIn("source-discovery-output", resolver)
         self.assertIn("head_sha", resolver)
         self.assertIn("artifact", resolver)
-        self.assertIn('      - "Validate Shadowrocket config against user baseline"', workflow)
-        self.assertIn('      - "Validate self-healing agent"', workflow)
+        self.assertNotIn('      - "Validate Shadowrocket config against user baseline"', workflow)
+        self.assertNotIn('      - "Validate self-healing agent"', workflow)
         self.assertIn("types: [completed]", workflow)
         self.assertIn("github.event.workflow_run.head_branch == 'main'", workflow)
         self.assertIn('last_success_sha="$(jq -r', workflow)
@@ -97,14 +91,16 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("Normal input-change and scheduled-refresh decisions are centralized", workflow)
         self.assertIn("bash scripts/verify_publish_base.sh --check-only", workflow)
 
-    def test_non_main_push_uses_main_merge_base_not_branch_before_sha(self):
-        workflow = (ROOT / ".github" / "workflows" / "validate-config.yml").read_text(encoding="utf-8")
-        recovery = workflow.split("name: Verify owner-approved config baseline registration in non-main validation", 1)[1].split("name: Verify owner-approved config baseline", 1)[0]
-        self.assertIn('git merge-base origin/main "$head_sha"', recovery)
-        self.assertNotIn("github.event.pull_request.base.sha", recovery)
-        self.assertNotIn("github.event.before", recovery)
-        self.assertIn("python3 scripts/verify_baseline.py --verify-registration --base", recovery)
-        self.assertNotIn("register_config_baseline.py", recovery)
+    def test_non_main_push_is_a_read_only_noop(self):
+        workflow = WATCHDOG.read_text(encoding="utf-8")
+        non_main = workflow.split("  non-main-noop:", 1)[1].split("  health-check:", 1)[0]
+        health = workflow.split("  health-check:", 1)[1].split("  assessment-canary:", 1)[0]
+        self.assertIn("github.ref != 'refs/heads/main'", workflow)
+        self.assertIn("Skip production control plane outside main", non_main)
+        self.assertIn("no queue or production actions were run", non_main)
+        self.assertIn("github.ref == 'refs/heads/main'", health)
+        self.assertNotIn("contents: write", non_main)
+        self.assertNotIn("validate-config.yml", workflow)
     def test_only_infrastructure_failures_trigger_bounded_scheduled_or_push_recovery(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn('SOURCE_CONCLUSION: ${{ github.event.workflow_run.conclusion }}', workflow)
@@ -336,7 +332,8 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn(".source_discovery.search_error_count", workflow)
         self.assertIn(".coverage.stalled", workflow)
         self.assertIn("Source discovery health is $health", workflow)
-        self.assertIn("gh workflow run storage-incident-management.yml", workflow)
+        self.assertIn("gh workflow run storage-management.yml", workflow)
+        self.assertNotIn("storage-incident-management.yml", workflow)
         self.assertIn("classification=SOURCE_DISCOVERY_DEGRADED", workflow)
         self.assertNotIn("gh issue", workflow)
         self.assertNotIn("issues: write", workflow)
@@ -352,12 +349,13 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
 
     def test_existing_heartbeat_and_stale_run_monitor_cover_distinct_health_signals(self):
         audit = AUTO_SYNC.read_text(encoding="utf-8")
-        healing = (ROOT / ".github" / "workflows" / "self-healing-agent.yml").read_text(encoding="utf-8")
+        storage = (ROOT / ".github" / "workflows" / "storage-management.yml").read_text(encoding="utf-8")
         watchdog = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn("reports/automation/heartbeat.json", audit)
         self.assertIn("Write successful audit heartbeat", audit)
         self.assertIn("stale-run-watch:", watchdog)
-        self.assertNotIn("stale-run-watch:", healing)
+        self.assertNotIn("stale-run-watch:", audit)
+        self.assertNotIn("stale-run-watch:", storage)
         self.assertIn("run_started_at", watchdog)
         self.assertIn("21600", watchdog)
         self.assertIn('select(.status != "completed" and .head_branch == "main" and .id != null)', watchdog)
@@ -431,7 +429,9 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         health = workflow[health_start:queue_start]
         self.assertIn("scripts/production_intent.py", health)
         self.assertIn("production_key=", health)
-        self.assertIn('--idempotency-key "$production_key"', health)
+        self.assertIn('--arg idempotency_key "$production_key"', health)
+        self.assertIn('echo "queue_task_json=$queue_task_json" >> "$GITHUB_OUTPUT"', health)
+        self.assertNotIn("enqueue-auto-sync", health)
         self.assertIn("REVIEW_REQUIRED", health)
         stale_start = workflow.index("  stale-run-watch:")
         manifest_start = workflow.index("  manifest-integrity:", stale_start)
