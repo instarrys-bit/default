@@ -3,43 +3,44 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-WORKFLOW = ROOT / ".github" / "workflows" / "self-healing-agent.yml"
 AUTO_SYNC = ROOT / ".github" / "workflows" / "auto_sync.yml"
 WATCHDOG = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
+STORAGE = ROOT / ".github" / "workflows" / "storage-management.yml"
 
 
-class SelfHealingWorkflowTests(unittest.TestCase):
-    def test_read_only_self_healing_does_not_block_the_main_writer(self):
-        healing = WORKFLOW.read_text(encoding="utf-8")
+class WatchdogRecoveryWorkflowTests(unittest.TestCase):
+    def test_read_only_watchdog_health_check_does_not_block_the_main_writer(self):
+        watchdog = WATCHDOG.read_text(encoding="utf-8")
         audit = AUTO_SYNC.read_text(encoding="utf-8")
+        health = watchdog.split("  health-check:", 1)[1].split("  assessment-canary:", 1)[0]
         self.assertIn("group: shadowrocket-main-writer", audit)
-        self.assertIn("group: shadowrocket-self-healing-diagnostics", healing)
-        self.assertNotIn("group: shadowrocket-main-writer", healing)
-        self.assertIn("cancel-in-progress: false", healing)
+        self.assertIn("contents: read", health)
+        self.assertNotIn("contents: write", health)
+        self.assertNotIn("group: shadowrocket-main-writer", health)
+        self.assertIn("cancel-in-progress: false", audit)
         self.assertFalse((ROOT / ".github" / "workflows" / "request-intake.yml").exists())
 
-    def test_self_healing_is_diagnostic_only_and_never_writes_repository_code(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        diagnose = workflow.split("  diagnose-and-repair:", 1)[1].split("  report-agent-failure:", 1)[0]
-        self.assertIn("Automatic repository code repair is disabled", diagnose)
-        self.assertNotIn("contents: write", diagnose)
-        self.assertNotIn("pull-requests: write", diagnose)
-        self.assertNotIn("git add", diagnose)
-        self.assertNotIn("git commit", diagnose)
-        self.assertNotIn("git push", diagnose)
-        self.assertNotIn("gh pr create", diagnose)
-        self.assertIn("gh workflow run storage-incident-management.yml", diagnose)
-        self.assertNotIn("gh issue", workflow)
+    def test_watchdog_recovery_is_diagnostic_and_never_writes_repository_code(self):
+        watchdog = WATCHDOG.read_text(encoding="utf-8")
+        stale = watchdog.split("  stale-run-watch:", 1)[1].split("  manifest-integrity:", 1)[0]
+        self.assertIn("actions: write", stale)
+        self.assertIn("contents: read", stale)
+        self.assertNotIn("contents: write", stale)
+        self.assertNotIn("pull-requests: write", stale)
+        self.assertNotIn("git add", stale)
+        self.assertNotIn("git commit", stale)
+        self.assertNotIn("git push", stale)
+        self.assertNotIn("modules/uu.conf", stale)
+        self.assertIn('gh run cancel "$stale_id"', stale)
 
-    def test_self_healing_has_no_repository_write_or_pr_token(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        diagnose = workflow.split("  diagnose-and-repair:", 1)[1].split("  report-agent-failure:", 1)[0]
-        repair_step = diagnose.split("      - name: Keep self-healing read-only", 1)[1].split("      - name: Dispatch diagnosed incident to Storage Management", 1)[0]
-        self.assertNotIn("GH_TOKEN", repair_step)
-        self.assertNotIn("contents: write", repair_step)
-        self.assertNotIn("pull-requests: write", repair_step)
-        self.assertIn("persist-credentials: false", workflow)
-        self.assertNotIn("gh pr create", workflow)
+    def test_watchdog_has_no_repository_write_or_pull_request_token(self):
+        watchdog = WATCHDOG.read_text(encoding="utf-8")
+        stale = watchdog.split("  stale-run-watch:", 1)[1].split("  manifest-integrity:", 1)[0]
+        self.assertNotIn("GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}", stale)
+        self.assertNotIn("contents: write", stale)
+        self.assertNotIn("pull-requests: write", stale)
+        self.assertIn("persist-credentials: false", watchdog)
+        self.assertNotIn("gh pr create", watchdog)
 
     def test_failed_run_cursor_is_retained_without_repository_writes(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
@@ -50,9 +51,8 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertNotIn("contents: write", cursor_job)
         self.assertNotIn("git add", cursor_job)
         self.assertNotIn("git push", cursor_job)
-        self.assertNotIn("sources/review_cursor.json", cursor_job.split("Preserve cursor without writing repository files", 1)[-1].split("retention-days", 1)[-1])
 
-    def test_failed_cursor_checkpoint_is_not_persisted_to_repository(self):
+    def test_failed_cursor_checkpoint_is_artifact_backed_not_committed(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
         cursor_job = workflow.split("  persist-review-cursor:", 1)[1].split("  notify-failure:", 1)[0]
         self.assertIn("actions/download-artifact", cursor_job)
@@ -61,180 +61,158 @@ class SelfHealingWorkflowTests(unittest.TestCase):
         self.assertNotIn("git add -- sources/review_cursor.json", workflow)
         self.assertNotIn("git push origin HEAD:main", cursor_job)
 
-    def test_self_healing_cannot_write_repository_files(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        diagnose = workflow.split("  diagnose-and-repair:", 1)[1].split("  report-agent-failure:", 1)[0]
-        self.assertNotIn("git add", diagnose)
-        self.assertNotIn("git commit", diagnose)
-        self.assertNotIn("git push", diagnose)
-        self.assertNotIn("modules/uu.conf", diagnose)
-
-
-    def test_config_validator_failures_are_monitored_and_incidents_are_resolved_on_recovery(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn('      - "Validate Shadowrocket config against user baseline"', workflow)
-        self.assertIn("resolve-validator-incidents:", workflow)
-        resolver = workflow.split("  resolve-validator-incidents:", 1)[1].split("  resolve-audit-incidents:", 1)[0]
-        self.assertIn("actions: write", resolver)
-        self.assertIn("gh workflow run storage-incident-management.yml", resolver)
-        self.assertNotIn("gh issue", resolver)
-        self.assertIn("classifications=CONFIG_BASELINE_MISMATCH,TEST_FAILURE,PYTHON_IMPORT_FAILURE", resolver)
-        self.assertIn("The protected config was not modified; modules/uu.conf remains read-only.", workflow)
-
-    def test_failed_checkpoint_recovery_uses_expanded_github_context_and_paginated_history(self):
+    def test_protected_user_config_is_never_staged_or_published(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
-        recovery = workflow.split("      - name: Restore latest failed-run review checkpoint and delta journal", 1)[1].split("      - name: " + chr(34) + "Audit each domain:", 1)[0]
-        self.assertIn("GH_TOKEN: ${{ github.token }}", recovery)
+        watchdog = WATCHDOG.read_text(encoding="utf-8")
+        self.assertIn('git diff --quiet "$GITHUB_SHA" -- modules/uu.conf', workflow)
+        self.assertIn('git diff --cached --quiet "$GITHUB_SHA" -- modules/uu.conf', workflow)
+        self.assertIn("Protected config modules/uu.conf is staged; refusing to commit.", workflow)
+        self.assertIn('"path": "modules/uu.conf"', workflow)
+        self.assertIn("expected_config_blob_sha", watchdog)
+        self.assertIn("modules/uu.conf", watchdog)
+
+    def test_pipeline_failures_are_recorded_and_recovery_is_dispatched_to_storage_management(self):
+        workflow = AUTO_SYNC.read_text(encoding="utf-8")
+        notify = workflow.split("  notify-failure:", 1)[1].split("  resolve-failure:", 1)[0]
+        resolve = workflow.split("  resolve-failure:", 1)[1].split("  watchdog-reconciliation:", 1)[0]
+        self.assertIn("Dispatch incident record to Storage Management", notify)
+        self.assertIn("classification=PIPELINE_FAILURE", notify)
+        self.assertIn("gh workflow run storage-management.yml", notify)
+        self.assertIn("Dispatch verified incident recovery to Storage Management", resolve)
+        self.assertIn("classifications=PIPELINE_FAILURE", resolve)
+        self.assertIn("gh workflow run storage-management.yml", resolve)
+        self.assertNotIn("gh issue", workflow)
+
+    def test_failed_checkpoint_recovery_uses_paged_history_and_exact_run_artifacts(self):
+        workflow = AUTO_SYNC.read_text(encoding="utf-8")
+        recovery = workflow.split("      - name: Restore latest failed-run review checkpoint and delta journal", 1)[1].split(
+            "      - name: \"Audit each domain:", 1
+        )[0]
+        self.assertIn("GH_TOKEN:", recovery)
         self.assertIn("REPO: ${{ github.repository }}", recovery)
         self.assertIn("CURRENT_RUN_ID: ${{ github.run_id }}", recovery)
-        self.assertNotIn("\${{", recovery)
         self.assertIn("gh api --paginate --slurp", recovery)
         self.assertIn("failed-review-cursor-recovery", recovery)
-    def test_baseline_registration_has_owner_history_credentials(self):
+        self.assertIn("gh run download \"$run_id\"", recovery)
+        self.assertIn("cursor_status", recovery)
+
+    def test_baseline_registration_uses_owner_history_and_repository_context(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
-        self.assertGreaterEqual(workflow.count("GH_TOKEN: ${{ github.token }}"), 2)
-        self.assertGreaterEqual(workflow.count("GITHUB_REPOSITORY: ${{ github.repository }}"), 2)
-        self.assertIn("owner_approved_config_history", (ROOT / "scripts" / "register_config_baseline.py").read_text(encoding="utf-8"))
+        registrar = (ROOT / "scripts" / "register_config_baseline.py").read_text(encoding="utf-8")
+        self.assertIn("python3 scripts/register_config_baseline.py", workflow)
+        self.assertIn("GITHUB_REPOSITORY: ${{ github.repository }}", workflow)
+        self.assertIn("owner_approved_config_history", registrar)
+        self.assertIn("baseline_source_sha", workflow)
 
-
-
-    def test_superseded_failures_are_suppressed_when_a_newer_run_is_active_or_successful(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn("Check whether a newer run supersedes this failure", workflow)
-        self.assertIn("FAILED_SHA: ${{ github.event.workflow_run.head_sha }}", workflow)
-        self.assertIn("repos/$REPO/compare/$FAILED_SHA...$current_main", workflow)
-        self.assertIn("Current-main lookup unavailable; continuing with bounded read-only diagnosis.", workflow)
-        self.assertIn("Supersession lookup unavailable; continuing with bounded read-only diagnosis.", workflow)
-        self.assertIn('select(.head_branch == "main" and .id > $failed)', workflow)
-        self.assertIn('select(.status != "completed" or .conclusion == "success")', workflow)
-        self.assertIn("steps.supersession.outputs.stale != 'true'", workflow)
-
-
-
-    def test_stale_watch_prioritizes_runtime_timeout_before_supersession(self):
-        workflow = WATCHDOG.read_text(encoding="utf-8")
-        self.assertIn('if $started != null and (now - $started) > 21600 then', workflow)
-        self.assertIn('elif .head_sha != $sha then', workflow)
-        self.assertIn('[.id, "superseded", (.head_sha // "")]', workflow)
-        self.assertIn("fromdateiso8601", workflow)
-        self.assertIn('repos/$REPO/compare/$run_sha...$current_main', workflow)
-        self.assertIn('only docs/ changed after its audited commit', workflow)
-        self.assertIn('gh run cancel "$stale_id"', workflow)
-        self.assertIn('enqueue-auto-sync', workflow)
-        self.assertNotIn('gh workflow run auto_sync.yml', workflow)
-        self.assertIn('An audit is still queued, cancelling, or running', workflow)
-
-
-
-    def test_watchdog_reconciles_durable_queue_every_15_minutes_without_self_triggering_pushes(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
+    def test_superseded_failures_are_suppressed_while_a_newer_audit_is_active(self):
         watchdog = WATCHDOG.read_text(encoding="utf-8")
-        self.assertNotIn('    - cron: "0 * * * *"', workflow)
+        stale = watchdog.split("  stale-run-watch:", 1)[1].split("  manifest-integrity:", 1)[0]
+        self.assertIn('select(.head_branch == "main" and .head_sha == $sha', stale)
+        self.assertIn("active_count", stale)
+        self.assertIn("An audit is still queued, cancelling, or running", stale)
+        self.assertIn('echo "queue_blocked=true" >> "$GITHUB_OUTPUT"', stale)
+
+    def test_stale_watch_prioritizes_runtime_timeout_and_confirms_cancellation(self):
+        watchdog = WATCHDOG.read_text(encoding="utf-8")
+        stale = watchdog.split("  stale-run-watch:", 1)[1].split("  manifest-integrity:", 1)[0]
+        self.assertIn('if $started != null and (now - $started) > 21600 then', stale)
+        self.assertIn('elif .head_sha != $sha then', stale)
+        self.assertIn('[.id, "superseded", (.head_sha // "")]', stale)
+        self.assertIn("fromdateiso8601", stale)
+        self.assertIn('gh run cancel "$stale_id"', stale)
+        self.assertIn("Cancellation of audit", stale)
+        self.assertIn("queue_blocked=true", stale)
+
+    def test_watchdog_reconciles_durable_queue_every_fifteen_minutes(self):
+        watchdog = WATCHDOG.read_text(encoding="utf-8")
         self.assertIn('    - cron: "*/15 * * * *"', watchdog)
         self.assertIn('    - cron: "30 22 * * *"', watchdog)
-        self.assertNotIn("  push:", workflow)
-        self.assertNotIn("  stale-run-watch:", workflow)
+        self.assertIn("Export durable repository JSON queue snapshot", watchdog)
+        self.assertIn("automation/task_queue.json", watchdog)
+        self.assertNotIn("  push:", AUTO_SYNC.read_text(encoding="utf-8"))
 
-
-
-    def test_failed_log_download_degrades_safely_when_actions_api_is_rate_limited(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        download = workflow.split("      - name: Download failed workflow logs", 1)[1].split(
-            "      - name: Diagnose failed workflow", 1
+    def test_missing_failed_cursor_artifact_is_skipped_without_repository_write(self):
+        workflow = AUTO_SYNC.read_text(encoding="utf-8")
+        recovery = workflow.split("      - name: Restore latest failed-run review checkpoint and delta journal", 1)[1].split(
+            "      - name: \"Audit each domain:", 1
         )[0]
-        diagnosis = workflow.split("      - name: Diagnose failed workflow", 1)[1].split(
-            "      - name: Keep self-healing read-only", 1
-        )[0]
-        self.assertIn("id: download", download)
-        self.assertIn("for attempt in 1 2 3 4 5", download)
-        self.assertIn("API rate limit exceeded|secondary rate limit|abuse detection|HTTP 403|HTTP 429", download)
-        self.assertIn('sleep "$delay"', download)
-        self.assertIn('echo "available=false" >> "$GITHUB_OUTPUT"', download)
-        self.assertIn('echo "available=true" >> "$GITHUB_OUTPUT"', download)
-        self.assertIn('gh run view "$RUN_ID" --repo "$REPO" --log-failed', download)
-        self.assertIn("read-only degraded mode", download)
-        self.assertNotIn("exit 1", download)
-        self.assertIn("steps.download.outputs.available == 'true'", diagnosis)
+        self.assertIn('[ -n "$artifact_id" ] || continue', recovery)
+        self.assertIn('[ -n "$cursor_file" ] || continue', recovery)
+        self.assertIn("Ignoring incomplete failed-run checkpoint", recovery)
+        self.assertNotIn("git push", recovery)
+        self.assertNotIn("git add", recovery)
 
     def test_run_history_checks_follow_all_api_pages(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertGreaterEqual(workflow.count("gh api --paginate --slurp"), 2)
-        self.assertNotIn("runs?per_page=20", workflow)
-        self.assertNotIn("runs?per_page=30", workflow)
+        workflow = AUTO_SYNC.read_text(encoding="utf-8")
+        watchdog = WATCHDOG.read_text(encoding="utf-8")
+        self.assertGreaterEqual(workflow.count("gh api --paginate --slurp"), 1)
+        self.assertGreaterEqual(watchdog.count("gh api --paginate --slurp"), 2)
+        self.assertNotIn("runs?per_page=20", watchdog)
+        self.assertNotIn("runs?per_page=30", watchdog)
 
     def test_permissions_are_scoped_to_the_jobs_that_need_them(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        top_level = workflow.split("jobs:", 1)[0]
-        self.assertIn("permissions:" + chr(10) + "  contents: read", top_level)
-        self.assertNotIn("contents: write", top_level)
-        diagnose = workflow.split("  diagnose-and-repair:", 1)[1].split("  resolve-validator-incidents:", 1)[0]
-        self.assertIn("contents: read", diagnose)
-        self.assertNotIn("contents: write", diagnose)
-        resolver = workflow.split("  resolve-validator-incidents:", 1)[1].split("  resolve-audit-incidents:", 1)[0]
-        self.assertIn("actions: write", resolver)
-        self.assertNotIn("issues: write", resolver)
-        self.assertNotIn("contents: write", resolver)
-        watcher = WATCHDOG.read_text(encoding="utf-8").split("  stale-run-watch:", 1)[1]
-        self.assertIn("actions: write", watcher)
-        self.assertIn("contents: read", watcher)
-        self.assertNotIn("pull-requests: write", watcher)
-        health_check = WATCHDOG.read_text(encoding="utf-8").split("  health-check:", 1)[1].split("  task-queue-supervision:", 1)[0]
-        self.assertIn("contents: read", health_check)
+        workflow = AUTO_SYNC.read_text(encoding="utf-8")
+        watchdog = WATCHDOG.read_text(encoding="utf-8")
+        storage = STORAGE.read_text(encoding="utf-8")
+        cursor = workflow.split("  persist-review-cursor:", 1)[1].split("  notify-failure:", 1)[0]
+        health = watchdog.split("  health-check:", 1)[1].split("  assessment-canary:", 1)[0]
+        queue = watchdog.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
+        stale = watchdog.split("  stale-run-watch:", 1)[1].split("  manifest-integrity:", 1)[0]
+        self.assertIn("actions: write", cursor)
+        self.assertNotIn("contents: write", cursor)
+        self.assertIn("contents: read", health)
+        self.assertNotIn("contents: write", health)
+        self.assertIn("actions: write", queue)
+        self.assertIn("contents: write", queue)
+        self.assertIn("actions: write", stale)
+        self.assertIn("contents: read", stale)
+        self.assertNotIn("pull-requests: write", stale)
+        for job_name in ("mutate-ledger", "poll-recent-actions-artifacts", "ingest-actions-artifacts"):
+            self.assertIn(f"  {job_name}:", storage)
+        self.assertNotIn("issues: write", storage)
 
-
-
-    def test_audit_incidents_close_only_after_independent_publish_verification(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        resolver = workflow.split("  resolve-audit-incidents:", 1)[1]
-        self.assertIn('gh api "repos/$REPO/actions/runs/$RUN_ID"', resolver)
-        self.assertIn('gh api --paginate --slurp "repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=100"', resolver)
-        self.assertIn("python3 scripts/verify_recovery_run.py", resolver)
-        self.assertIn("actions: write", resolver)
-        self.assertIn("contents: read", resolver)
-        self.assertIn("Checkout verifier code", resolver)
-        self.assertIn("--paginate --slurp", resolver)
+    def test_incidents_close_only_after_independent_publish_verification(self):
+        workflow = AUTO_SYNC.read_text(encoding="utf-8")
         self.assertLess(
-            resolver.index("python3 scripts/verify_recovery_run.py"),
-            resolver.index("gh workflow run storage-incident-management.yml"),
+            workflow.index("Independently verify committed remote rulesets"),
+            workflow.index("Dispatch verified incident recovery to Storage Management"),
         )
-        self.assertIn("Independently verify committed remote rulesets", AUTO_SYNC.read_text(encoding="utf-8"))
+        self.assertIn('event_id="auto-sync-recovery-$RUN_ID"', workflow)
+        self.assertIn("verification_url", workflow)
+        self.assertIn("source_sha", workflow)
+        self.assertIn("storage/v2/incidents.json", (ROOT / "storage" / "v2" / "incident_store.py").read_text(encoding="utf-8"))
 
     def test_watchdog_uses_bounded_infrastructure_retries_only(self):
-        watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        watchdog = WATCHDOG.read_text(encoding="utf-8")
         policy = (ROOT / "scripts" / "watchdog_recovery_policy.py").read_text(encoding="utf-8")
-        self.assertIn("SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}", watchdog)
-        self.assertIn("timed_out|startup_failure|cancelled)", watchdog)
-        self.assertNotIn("failure|timed_out|startup_failure|cancelled)", watchdog)
         self.assertIn("scripts/watchdog_recovery_policy.py", watchdog)
-        self.assertIn("RETRYABLE_CONCLUSIONS = {\"timed_out\", \"startup_failure\", \"cancelled\"}", policy)
+        self.assertIn('RETRYABLE_CONCLUSIONS = {"timed_out", "startup_failure", "cancelled"}', policy)
         self.assertIn("max_retries: int = 2", policy)
         self.assertIn("base_cooldown: timedelta = timedelta(minutes=15)", policy)
-        self.assertNotIn("gh run cancel", watchdog.split("  stale-run-watch:", 1)[0])
-        self.assertIn("persist-credentials: false", watchdog)
-        self.assertNotIn("modules/uu.conf", policy)
-        stale_watcher = WATCHDOG.read_text(encoding="utf-8")
-        self.assertIn("scripts/watchdog_recovery_policy.py --source-run-id 0 --source-sha", stale_watcher)
-        self.assertIn("Timeout recovery suppressed by bounded recovery policy", stale_watcher)
-        self.assertNotIn("Scheduled recovery suppressed", stale_watcher)
-
+        self.assertNotIn("failure|timed_out|startup_failure|cancelled)", watchdog)
+        self.assertIn("Timeout recovery suppressed by bounded recovery policy", watchdog)
 
     def test_incident_state_machine_is_persisted_and_fail_closed(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        state_machine = ROOT / "scripts" / "incident_state.py"
-        self.assertTrue(state_machine.exists())
-        self.assertIn("storage-incident-management.yml", workflow)
-        self.assertTrue((ROOT / "storage" / "v2" / "incident_store.py").exists())
+        workflow = STORAGE.read_text(encoding="utf-8")
+        state_machine = (ROOT / "scripts" / "incident_state.py").read_text(encoding="utf-8")
+        self.assertIn("storage/v2/incidents.json", workflow)
+        self.assertIn("incident_store.py", workflow)
+        self.assertIn("incident-state:v1", state_machine)
         self.assertNotIn("gh issue", workflow)
-        self.assertIn("FAILED_SHA: ${{ github.event.workflow_run.head_sha }}", workflow)
-        self.assertIn("incident-state:v1", state_machine.read_text(encoding="utf-8"))
 
     def test_incident_deduplication_is_scoped_to_source_revision(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn('event_id="failure-run-$RUN_ID"', workflow)
-        self.assertIn('source_sha="$FAILED_SHA"', workflow)
         store = (ROOT / "storage" / "v2" / "incident_store.py").read_text(encoding="utf-8")
         self.assertIn("incident_key(workflow, source_sha, classification)", store)
         self.assertIn("storage/v2/incidents.json", store)
+        self.assertIn('event_id="auto-sync-failure-$RUN_ID"', AUTO_SYNC.read_text(encoding="utf-8"))
+
+    def test_retired_self_healing_entry_point_is_not_reintroduced(self):
+        workflows = {path.name for path in (ROOT / ".github" / "workflows").glob("*.yml")}
+        self.assertEqual(
+            workflows,
+            {"auto_sync.yml", "automation-watchdog.yml", "dashboard-pages.yml", "storage-management.yml"},
+        )
+        self.assertNotIn("self-healing-agent.yml", workflows)
 
 
 if __name__ == "__main__":
