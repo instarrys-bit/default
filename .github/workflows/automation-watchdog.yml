@@ -227,6 +227,5 @@ jobs:
           PYTHONPATH: scripts
         run: |
           set -euo pipefail
-          python3 scripts/remote_task_queue_runtime.py --repository "$REPO" --branch main recover-expired || true
           printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py \
             --repository "$REPO" --branch main --token-stdin --max-tasks 1 run-once
