@@ -54,23 +54,24 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertFalse((ROOT / ".github" / "workflows" / "request-intake.yml").exists())
 
 
-    def test_self_healing_never_cancels_non_main_runs_or_cross_closes_incidents(self):
-        healing = (ROOT / ".github" / "workflows" / "self-healing-agent.yml").read_text(encoding="utf-8")
-        watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
-        self.assertIn('select(.status != "completed" and .head_branch == "main" and .id != null)', watchdog)
-        self.assertNotIn("gh run cancel", healing)
-        self.assertIn('workflow_key="config_validator"', healing)
-        self.assertIn('workflow_key="deterministic_audit"', healing)
-        self.assertIn('event_id="failure-run-$RUN_ID"', healing)
-        self.assertIn('event_id="agent-failure-$SOURCE_RUN_ID"', healing)
-        self.assertIn("gh workflow run storage-incident-management.yml", healing)
-        self.assertNotIn("gh issue", healing)
+    def test_watchdog_cancels_only_main_runs_and_delegates_incident_writes(self):
+        watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
+        health = watchdog.split("  health-check:", 1)[1].split("  assessment-canary:", 1)[0]
+        stale = watchdog.split("  stale-run-watch:", 1)[1].split("  manifest-integrity:", 1)[0]
+        self.assertIn('select(.status != "completed" and .head_branch == "main" and .id != null)', stale)
+        self.assertIn('select(.head_branch == "main" and .head_sha == $sha', stale)
+        self.assertIn('gh run cancel "$stale_id"', stale)
+        self.assertNotIn("gh run cancel", health)
+        self.assertIn("gh workflow run storage-management.yml", health)
+        self.assertNotIn("gh issue", watchdog)
+        self.assertNotIn("self-healing-agent.yml", watchdog)
+
 
     def test_automation_incidents_are_bound_to_exact_workflow_runs(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn('event_id="auto-sync-failure-$RUN_ID"', workflow)
         self.assertIn("classification=PIPELINE_FAILURE", workflow)
-        self.assertIn("gh workflow run storage-incident-management.yml", workflow)
+        self.assertIn("gh workflow run storage-management.yml", workflow)
         self.assertNotIn("gh issue", workflow)
 
     def test_high_volume_state_is_restored_before_candidate_mutation(self):
@@ -145,18 +146,21 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertIn('git diff --cached --quiet "$GITHUB_SHA" -- modules/uu.conf', workflow)
 
 
-    def test_audit_incidents_close_only_after_full_audit_and_publish_success(self):
-        workflow = (ROOT / ".github" / "workflows" / "self-healing-agent.yml").read_text(encoding="utf-8")
-        self.assertIn('"Shadowrocket Deterministic Domain Audit (User Config Baseline)"', workflow)
-        self.assertIn("  resolve-audit-incidents:", workflow)
-        resolver = workflow.split("  resolve-audit-incidents:", 1)[1]
-        self.assertIn("github.event.workflow_run.conclusion == 'success'", resolver)
-        self.assertIn("UNCLASSIFIED_STEP_FAILURE", resolver)
-        self.assertIn("TEST_FAILURE", resolver)
-        self.assertIn("python3 scripts/verify_recovery_run.py", resolver)
-        self.assertIn("gh workflow run storage-incident-management.yml", resolver)
-        self.assertLess(resolver.index("python3 scripts/verify_recovery_run.py"), resolver.index("gh workflow run storage-incident-management.yml"))
-        self.assertNotIn("gh issue", resolver)
+    def test_audit_incidents_close_only_after_independent_publish_verification(self):
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+        dispatch = workflow.split("      - name: Dispatch verified incident recovery to Storage Management", 1)[1].split(
+            "      - name:", 1
+        )[0]
+        self.assertLess(
+            workflow.index("Independently verify committed remote rulesets"),
+            workflow.index("Dispatch verified incident recovery to Storage Management"),
+        )
+        self.assertIn("event_id=auto-sync-recovered-$RUN_ID", dispatch)
+        self.assertIn("verification_url", dispatch)
+        self.assertIn("source_sha", dispatch)
+        self.assertNotIn("gh issue", workflow)
+        self.assertIn("storage/v2/incidents.json", (ROOT / "storage" / "v2" / "incident_store.py").read_text(encoding="utf-8"))
+
 
     def test_config_reconciliation_does_not_evaluate_rule_precedence(self):
         workflow = WORKFLOW.read_text(encoding="utf-8")
@@ -187,24 +191,25 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         self.assertNotIn("precedence_resolved_overlaps", references)
 
 
-    def test_non_main_config_validation_verifies_owner_authorized_baseline_registration(self):
-        validation = (ROOT / ".github" / "workflows" / "validate-config.yml").read_text(encoding="utf-8")
-        self.assertIn("Verify owner-approved config baseline registration in non-main validation", validation)
-        self.assertIn('git merge-base origin/main "$head_sha"', validation)
-        self.assertIn("python3 scripts/verify_baseline.py --verify-registration --base", validation)
+    def test_config_baseline_registration_and_validation_run_inside_auto_sync(self):
+        validation = WORKFLOW.read_text(encoding="utf-8")
+        watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
+        self.assertIn("Verify registered user config baseline", validation)
+        self.assertIn("python3 scripts/verify_baseline.py --baseline-only", validation)
+        self.assertIn("python3 scripts/register_config_baseline.py", validation)
+        self.assertIn("python3 scripts/validate_config.py", validation)
+        self.assertIn("python3 scripts/audit_config_drift.py", validation)
+        self.assertIn("modules/uu.conf", validation)
         verifier = (ROOT / "scripts" / "verify_baseline.py").read_text(encoding="utf-8")
         self.assertIn('run_git("diff", "--quiet", base, head, "--", "modules/uu.conf")', verifier)
         self.assertIn('run_git("log", "--format=%H"', verifier)
-        self.assertIn('repos/{repository}/commits/{commit}', verifier)
         self.assertIn("config_change_commits", verifier)
         self.assertIn("release_manifest_blob_sha", verifier)
         self.assertIn("automation/resource_write_sets.json", verifier)
-        self.assertIn("github.event_name == 'pull_request'", validation)
-        self.assertNotIn("Recover owner-approved config baseline in validation workspace", validation)
-        self.assertNotIn("run: python scripts/register_config_baseline.py", validation)
-        self.assertIn("python scripts/verify_baseline.py --allow-owner-push-change", validation)
-        self.assertIn("python scripts/audit_config_drift.py --allow-owner-push-change", validation)
-        self.assertIn("Audit config drift against the approved baseline", validation)
+        non_main = watchdog.split("  non-main-noop:", 1)[1].split("  health-check:", 1)[0]
+        self.assertIn("github.ref != 'refs/heads/main'", non_main)
+        self.assertIn("no queue or production actions were run", non_main)
+        self.assertNotIn("validate-config.yml", watchdog)
 
 
     def test_production_workflow_requires_live_fenced_resource_lease_before_publish(self):
@@ -381,7 +386,7 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         start = watchdog.index("            REVIEW_REQUIRED)")
         end = watchdog.index("            IN_PROGRESS|WAIT_FOR_ACTIVE|ALREADY_SATISFIED|OBSERVE_ONLY)", start)
         block = watchdog[start:end]
-        self.assertIn("gh workflow run storage-incident-management.yml", block)
+        self.assertIn("gh workflow run storage-management.yml", block)
         self.assertIn("classification=PRODUCTION_INPUT_REVIEW", block)
         self.assertNotIn("gh issue", block)
         self.assertNotIn("gh api --method PUT", block)
