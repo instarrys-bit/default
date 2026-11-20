@@ -51,7 +51,8 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
 
     def test_watchdog_control_plane_is_serialized_and_main_only(self):
         watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn("group: shadowrocket-watchdog-control-plane-main", watchdog)
+        self.assertIn("group: shadowrocket-automation-watchdog-${{ github.run_id }}", watchdog)
+        self.assertIn("group: shadowrocket-watchdog-task-supervision-main", watchdog)
         self.assertIn("cancel-in-progress: false", watchdog)
         self.assertIn("github.ref == 'refs/heads/main'", watchdog)
         self.assertIn("production_intent.py", watchdog)
