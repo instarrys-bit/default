@@ -30,8 +30,13 @@ class ProductionQueueRoutingTests(unittest.TestCase):
         self.assertIn("bash scripts/verify_publish_base.sh --check-only", stale_job)
         self.assertNotIn('select(startswith("docs/") | not)', stale_job)
         manifest_job = workflow.split("  manifest-integrity:", 1)[1]
-        self.assertIn("enqueue-auto-sync", manifest_job)
-        self.assertNotIn("gh workflow run auto_sync.yml", manifest_job)
+        self.assertIn("queue_task_json: ${{ steps.integrity-recovery.outputs.queue_task_json }}", manifest_job)
+        self.assertNotIn("enqueue-auto-sync", manifest_job)
+        self.assertNotIn("task_scheduler.py", manifest_job)
+        queue_job = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
+        self.assertIn("Enqueue Watchdog production intent through queue writer", queue_job)
+        self.assertIn("enqueue-auto-sync", queue_job)
+        self.assertNotIn("gh workflow run auto_sync.yml", workflow)
 
     def test_superseded_audit_is_replaced_only_when_inputs_advanced(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
