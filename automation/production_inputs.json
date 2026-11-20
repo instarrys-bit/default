@@ -55,7 +55,6 @@
     ".github/workflows/restore-inventory.yml",
     ".github/workflows/self-healing-agent.yml",
     ".github/workflows/self-healing-tests.yml",
-    ".github/workflows/validate-config.yml",
     "automation/.restore/meta.json",
     "automation/capability_contract_inventory.json",
     "automation/execution_adapters.json",
