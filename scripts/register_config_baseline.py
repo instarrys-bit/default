@@ -35,6 +35,13 @@ def build_release_pin_updates(root: Path, config_path: str, config_sha: str) -> 
             or config_pin.get("access") != "read_only"):
         raise ValueError("release manifest must pin the same read-only owner config path")
     config_pin["git_blob_sha"] = config_sha
+    # Document the active writer for baseline metadata (Storage Management).
+    policy = release.get("execution_policy")
+    if isinstance(policy, dict):
+        sync = policy.get("watchdog_baseline_metadata_sync")
+        if isinstance(sync, dict):
+            sync["writer"] = "storage-management.yml reconcile-config-baseline job"
+            sync["trigger"] = ["main push (modules/uu.conf, sources/policy.json, control-plane paths)", "15-minute schedule"]
     release_text = json.dumps(release, ensure_ascii=False, indent=2) + "\n"
     release_sha = git_blob_sha(release_text.encode("utf-8"))
 
@@ -157,7 +164,7 @@ def apply_baseline_updates(root: Path, config_path: str, config_sha: str, policy
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--apply", action="store_true",
-                        help="Apply owner-verified metadata-only sync; reserved for Watchdog baseline-sync.")
+                        help="Apply owner-verified metadata-only sync; reserved for Storage Management baseline reconciliation (and equivalent control-plane writers).")
     args = parser.parse_args()
     policy = json.loads(POLICY.read_text(encoding="utf-8"))
     guard = policy["managed_config_guard"]
@@ -184,7 +191,7 @@ def main() -> int:
     guard["last_user_approved_baseline_update"] = {
         "previous_blob_sha": previous,
         "new_blob_sha": actual,
-        "reason": "Watchdog synchronized the exact main-branch uu.conf Git blob after verifying every intervening config-changing commit is associated with the repository owner. Only baseline metadata and derived release pins are updated; uu.conf bytes are immutable to automation.",
+        "reason": "Storage Management synchronized the exact main-branch uu.conf Git blob after verifying every intervening config-changing commit is associated with the repository owner. Only baseline metadata and derived release pins are updated; uu.conf bytes are immutable to automation.",
         "approval_mode": approval_mode,
         "config_change_commits": commits,
         "actor": owner,
