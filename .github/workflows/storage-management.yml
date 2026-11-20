@@ -135,6 +135,24 @@ jobs:
     steps:
       - name: Checkout proposed Storage Management changes
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          filter: blob:none
+          persist-credentials: false
+          sparse-checkout: |
+            .github/workflows
+            automation
+            data
+            docs/v2
+            modules
+            reports
+            rulesets
+            scripts
+            sources
+            storage/v2
+            tests
+          sparse-checkout-cone-mode: true
       - name: Validate all retained workflow YAML files and reject duplicate keys
         run: |
           ruby <<'RUBY'
