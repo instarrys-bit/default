@@ -12,15 +12,10 @@ on:
         required: false
         default: false
         type: boolean
-  workflow_run:
-    workflows:
-      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
-      - "Storage Management"
-    types: [completed]
   push:
     branches: [main]
     paths:
-      - ".github/workflows/**"
+      - ".github/workflows/automation-watchdog.yml"
       - "sources/policy.json"
       - "sources/domain_sources.json"
       - "sources/protected_domains.json"
@@ -59,10 +54,10 @@ jobs:
           printf 'event=%s\nref=%s\n' "$EVENT_NAME" "$REF" >> "$GITHUB_STEP_SUMMARY"
 
   health-check:
-    if: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main') }}
+    if: ${{ github.ref == 'refs/heads/main' }}
     concurrency:
       group: shadowrocket-watchdog-control-plane-main
-      cancel-in-progress: true
+      cancel-in-progress: false
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
@@ -92,9 +87,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          PYTHONPATH: scripts
         run: |
           set -euo pipefail
-          PYTHONPATH=scripts python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue.json"
+          python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue.json"
           echo "AUTOMATION_QUEUE_SNAPSHOT=$RUNNER_TEMP/task_queue.json" >> "$GITHUB_ENV"
       - name: Detect production intent and enqueue durable auto-sync task
         id: stale-recovery
