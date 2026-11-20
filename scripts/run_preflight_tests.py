@@ -15,7 +15,7 @@ def main() -> int:
                 walk(t)
                 continue
             name = f"{t.__class__.__module__}.{t.__class__.__name__}"
-            if "WatchdogStaleRunRecovery" in name or "WorkflowConfigGuardOrder" in name:
+            if "WatchdogStaleRunRecovery" in name:
                 continue
             filtered.addTest(t)
 
