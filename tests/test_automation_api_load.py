@@ -1,3 +1,4 @@
+import json
 import unittest
 from pathlib import Path
 
@@ -19,8 +20,14 @@ class AutomationApiLoadTests(unittest.TestCase):
         self.assertIn("Validate Shadowrocket config structure", workflow)
         self.assertIn("python3 scripts/validate_config.py", workflow)
         self.assertIn("python3 scripts/audit_config_drift.py", workflow)
-        self.assertIn('"path": "modules/uu.conf"', workflow)
-        self.assertIn('"modified_by_automation": False', workflow)
+        inputs = json.loads((ROOT / "automation" / "production_inputs.json").read_text(encoding="utf-8"))
+        write_policy = json.loads((ROOT / "automation" / "resource_write_sets.json").read_text(encoding="utf-8"))["policy"]["protected_config"]
+        self.assertIn("modules/uu.conf", inputs["production_input_paths"])
+        self.assertEqual(write_policy["path"], "modules/uu.conf")
+        self.assertEqual(write_policy["access"], "read_only")
+        self.assertEqual(write_policy["writers_allowed"], [])
+        self.assertEqual(write_policy["metadata_only_sync"]["allowed_paths"], [])
+        self.assertIn("modules/uu.conf", write_policy["metadata_only_sync"]["never_write"])
         self.assertLess(
             workflow.index("Verify registered user config baseline"),
             workflow.index("Validate Shadowrocket config structure"),
