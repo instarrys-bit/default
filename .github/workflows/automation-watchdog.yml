@@ -197,6 +197,9 @@ jobs:
   task-queue-supervision:
     if: ${{ always() && needs.health-check.result == 'success' && github.ref == 'refs/heads/main' }}
     needs: [health-check]
+    concurrency:
+      group: shadowrocket-watchdog-task-supervision-main
+      cancel-in-progress: false
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
@@ -227,6 +230,7 @@ jobs:
           PYTHONPATH: scripts
         run: |
           set -euo pipefail
-          python3 scripts/remote_task_queue_runtime.py --repository "$REPO" --branch main recover-expired || true
+          # run-once owns recovery, pending-result verification, claim and dispatch
+          # in one scheduler transaction; do not swallow recovery errors or run it twice.
           printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py \
             --repository "$REPO" --branch main --token-stdin --max-tasks 1 run-once
