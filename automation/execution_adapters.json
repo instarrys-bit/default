@@ -1617,26 +1617,6 @@
             "name": "request_deterministic_audit",
             "type": "boolean",
             "required": false
-          },
-          {
-            "name": "automation_task_id",
-            "type": "string",
-            "required": false
-          },
-          {
-            "name": "source_discovery_run_id",
-            "type": "string",
-            "required": false
-          },
-          {
-            "name": "assessment_producer_run_id",
-            "type": "string",
-            "required": false
-          },
-          {
-            "name": "production_producer_run_id",
-            "type": "string",
-            "required": false
           }
         ],
         "allowed_refs": [
