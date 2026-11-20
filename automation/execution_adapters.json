@@ -1703,11 +1703,6 @@
             "required": true
           },
           {
-            "name": "workflow_key",
-            "type": "choice",
-            "required": false
-          },
-          {
             "name": "run_id",
             "type": "string",
             "required": false
