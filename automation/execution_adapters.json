@@ -1618,6 +1618,11 @@
         "dispatchable": true,
         "inputs": [
           {
+            "name": "automation_task_id",
+            "type": "string",
+            "required": false
+          },
+          {
             "name": "request_deterministic_audit",
             "type": "boolean",
             "required": false
