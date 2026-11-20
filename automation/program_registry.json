@@ -1823,7 +1823,6 @@
       "inputs": [
         "operation",
         "workflow",
-        "optional workflow_key: auto_sync or automation_watchdog",
         "event_id",
         "automation_task_id",
         "run_id",
