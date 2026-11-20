@@ -50,6 +50,7 @@
   "non_production_path_patterns": [
     ".github/workflow_helpers/check_source_assessment_artifact.py",
     ".github/workflows/automation-watchdog.yml",
+    ".github/workflows/storage-management.yml",
     ".github/workflows/request-intake.yml",
     ".github/workflows/restore-inventory.yml",
     ".github/workflows/self-healing-agent.yml",
@@ -76,6 +77,7 @@
     "modules/temp-test/Sr_Youtube_Clean.js",
     "reports/**",
     "rulesets/**",
+    "storage/**",
     "scripts/audit_adapter_activation.py",
     "scripts/audit_ruleset_config_overlap.py",
     "scripts/github_queue_store.py",
