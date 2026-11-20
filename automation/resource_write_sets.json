@@ -1343,7 +1343,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.21.1",
-    "release_manifest_blob_sha": "096a62e10b0e219ea88102eeb0d58355a2043348",
+    "release_manifest_blob_sha": "8f2001a0b4d5097a5d750a0c3f3803ef21a4298a",
     "program_registry_blob_sha": "65911334ca24e9af5780cb7da6956549d48279a8",
     "execution_adapters_blob_sha": "0482e404bb16d64ac2cde29fd5f9bc7ec7d4092d",
     "added_after_release_baseline": true,
