@@ -1,4 +1,4 @@
-"""Deterministic de-duplication policy for Discovery -> Assessment handoffs."""
+"""Deterministic de-duplication policy for source Discovery -> Assessment handoffs."""
 from __future__ import annotations
 
 import hashlib
@@ -8,7 +8,7 @@ from pathlib import Path
 
 DISCOVERY_PIPELINE_REVISION_PATHS = (
     ".github/workflows/automation-watchdog.yml",
-    ".github/workflows/source-discovery.yml",
+    ".github/workflows/auto_sync.yml",
     "automation/capability_contracts/assess_sources.json",
     "automation/execution_adapters.json",
     "automation/program_registry.json",
@@ -29,9 +29,9 @@ DISCOVERY_PIPELINE_REVISION_PATHS = (
 
 
 def discovery_pipeline_revision(root: Path | None = None) -> str:
-    """Fingerprint every implementation and contract in the independent source DAG.
+    """Fingerprint every implementation and contract in the source Discovery/Assessment pipeline.
 
-    The daily Discovery idempotency key must change when queue, scheduler,
+    The Discovery idempotency key must change when queue, scheduler,
     handoff, fencing, Assessment, or verification code changes—not only when
     the producer script changes. This permits one fresh same-day run after a
     DAG implementation change while preserving deduplication for an unchanged
