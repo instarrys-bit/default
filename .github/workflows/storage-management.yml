@@ -134,6 +134,7 @@ jobs:
           sparse-checkout: |
             .github/workflows
             automation
+            docs/v2
             scripts
             storage/v2
             tests/v2
