@@ -1718,6 +1718,7 @@
         "script_resolve_source_artifacts",
         "script_resource_lease_runtime",
         "script_restore_automation_state",
+        "script_run_preflight_tests",
         "script_sync_ruleset_config_conflicts",
         "script_validate_config",
         "script_verify_baseline",
