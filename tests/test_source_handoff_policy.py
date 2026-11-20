@@ -504,7 +504,7 @@ class WatchdogAssessmentResumeContractTests(unittest.TestCase):
         self.assertIn("SOURCE_DISCOVERY_RUN_ID: ${{ inputs.source_discovery_run_id || '' }}", workflow)
         self.assertIn("ASSESSMENT_PRODUCER_RUN_ID: ${{ inputs.assessment_producer_run_id || '' }}", workflow)
         self.assertIn("PRODUCTION_PRODUCER_RUN_ID: ${{ inputs.production_producer_run_id || '' }}", workflow)
-        self.assertIn('".github/workflows/source-discovery.yml"', workflow)
+        self.assertIn('".github/workflows/auto_sync.yml"', workflow)
         self.assertIn('".github/workflows/automation-watchdog.yml"', workflow)
         self.assertIn('".github/workflows/auto_sync.yml"', workflow)
         self.assertIn('producer.get("status") == "completed"', workflow)
