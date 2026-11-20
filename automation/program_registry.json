@@ -1725,8 +1725,8 @@
         "script_verify_published_rulesets"
       ],
       "dispatches": [
-        "workflow_storage_management",
-        "workflow_automation_watchdog"
+        "workflow_automation_watchdog",
+        "workflow_storage_management"
       ],
       "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
       "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",
