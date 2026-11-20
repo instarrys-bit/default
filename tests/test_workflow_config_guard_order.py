@@ -5,6 +5,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / ".github" / "workflows" / "auto_sync.yml"
 WATCHDOG_WORKFLOW = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
+STORAGE_WORKFLOW = ROOT / ".github" / "workflows" / "storage-management.yml"
+DASHBOARD_WORKFLOW = ROOT / ".github" / "workflows" / "dashboard-pages.yml"
 
 
 class WorkflowConfigGuardOrderTests(unittest.TestCase):
@@ -13,418 +15,61 @@ class WorkflowConfigGuardOrderTests(unittest.TestCase):
         early_guard = workflow.index("Stop stale audit before discovery and source downloads")
         discovery = workflow.index("Discover candidate source repositories (non-activating)")
         guard = workflow.index("Stop stale audit before expensive deterministic review")
-        review = workflow.index("Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services")
+        review = workflow.index(
+            "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services"
+        )
         self.assertLess(early_guard, discovery)
         self.assertLess(guard, review)
         self.assertEqual(workflow.count("bash scripts/verify_publish_base.sh --check-only"), 2)
         publish_guard = (ROOT / "scripts" / "verify_publish_base.sh").read_text(encoding="utf-8")
         self.assertIn("Only strictly verified durable queue-state commits changed", publish_guard)
-        self.assertIn('A declared production input changed after the audited commit; a new production audit is required.', publish_guard)
+        self.assertIn(
+            "A declared production input changed after the audited commit; a new production audit is required.",
+            publish_guard,
+        )
         self.assertIn("cancel-in-progress: false", workflow)
         self.assertIn("Keep the active audit; stale-commit guards stop obsolete runs safely.", workflow)
         self.assertIn("group: shadowrocket-main-writer", workflow)
         self.assertIn("Independently verify committed remote rulesets", workflow)
-        self.assertLess(workflow.index("git push origin HEAD:main"), workflow.index("Independently verify committed remote rulesets"))
+        self.assertLess(
+            workflow.index("git push origin HEAD:main"),
+            workflow.index("Independently verify committed remote rulesets"),
+        )
 
-    def test_watchdog_does_not_cancel_production_when_last_verified_assessment_exists(self):
+    def test_v2_four_workflow_boundary(self):
+        workflow_dir = ROOT / ".github" / "workflows"
+        names = sorted(p.name for p in workflow_dir.glob("*.yml"))
+        self.assertEqual(
+            names,
+            [
+                "auto_sync.yml",
+                "automation-watchdog.yml",
+                "dashboard-pages.yml",
+                "storage-management.yml",
+            ],
+        )
+
+    def test_watchdog_control_plane_is_serialized_and_main_only(self):
         watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
-        gate = watchdog.split(
-            "      - name: Cancel active production audits while independent Assessment gate is closed", 1
-        )[1].split("      - name: Resolve completed Discovery run from durable task correlation", 1)[0]
-        self.assertIn("latest_verified_assessed_discovery(tasks)", gate)
-        self.assertIn("newer unassessed Discovery tasks do not close the production gate", gate)
-        self.assertNotIn("latest = max(", gate)
-        self.assertNotIn("discoveries = [", gate)
-
-    def test_watchdog_recovery_is_main_only_and_serialized_with_publisher(self):
-        watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
-        self.assertIn("group: shadowrocket-main-writer", watchdog)
-        self.assertIn("timed_out|startup_failure|cancelled)", watchdog)
-        self.assertIn("github.event.workflow_run.head_branch == 'main'", watchdog)
-        self.assertIn('select(.head_branch == "main" and .head_sha == $sha', watchdog)
-        self.assertIn('select(.head_branch == "main" and .conclusion == "success")', watchdog)
+        self.assertIn("group: shadowrocket-watchdog-control-plane-main", watchdog)
+        self.assertIn("cancel-in-progress: false", watchdog)
+        self.assertIn("github.ref == 'refs/heads/main'", watchdog)
+        self.assertIn("production_intent.py", watchdog)
+        self.assertIn("enqueue-auto-sync", watchdog)
+        self.assertIn("run-once", watchdog)
 
     def test_main_writers_are_serialized_and_retired_intake_is_absent(self):
         auto_sync = WORKFLOW.read_text(encoding="utf-8")
-        watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("group: shadowrocket-main-writer", auto_sync)
-        self.assertIn("group: shadowrocket-main-writer", watchdog)
-        manifest_writer = watchdog.split("  manifest-integrity:", 1)[1]
-        self.assertIn("group: shadowrocket-main-writer", manifest_writer)
         self.assertFalse((ROOT / ".github" / "workflows" / "request-intake.yml").exists())
+        self.assertFalse((ROOT / ".github" / "workflows" / "self-healing-agent.yml").exists())
+        self.assertTrue(STORAGE_WORKFLOW.is_file())
+        self.assertTrue(DASHBOARD_WORKFLOW.is_file())
 
-
-    def test_self_healing_never_cancels_non_main_runs_or_cross_closes_incidents(self):
-        healing = (ROOT / ".github" / "workflows" / "self-healing-agent.yml").read_text(encoding="utf-8")
-        watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
-        self.assertIn('select(.status != "completed" and .head_branch == "main" and .id != null)', watchdog)
-        self.assertNotIn("gh run cancel", healing)
-        self.assertIn('workflow_key="config_validator"', healing)
-        self.assertIn('workflow_key="deterministic_audit"', healing)
-        self.assertIn('event_id="failure-run-$RUN_ID"', healing)
-        self.assertIn('event_id="agent-failure-$SOURCE_RUN_ID"', healing)
-        self.assertIn("gh workflow run storage-incident-management.yml", healing)
-        self.assertNotIn("gh issue", healing)
-
-    def test_automation_incidents_are_bound_to_exact_workflow_runs(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn('event_id="auto-sync-failure-$RUN_ID"', workflow)
-        self.assertIn("classification=PIPELINE_FAILURE", workflow)
-        self.assertIn("gh workflow run storage-incident-management.yml", workflow)
-        self.assertNotIn("gh issue", workflow)
-
-    def test_high_volume_state_is_restored_before_candidate_mutation(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        restore = workflow.index("Restore prior high-volume automation state")
-        import_observations = workflow.index("Import observed request hostnames as unclassified candidates")
-        collect = workflow.index("Collect and cross-check all enabled domain sources")
-        failed_checkpoint = workflow.index("Restore latest failed-run review checkpoint and delta journal")
-        review = workflow.index("Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services")
-        self.assertLess(restore, import_observations)
-        self.assertLess(restore, collect)
-        self.assertLess(collect, failed_checkpoint)
-        self.assertLess(failed_checkpoint, review)
-        self.assertIn("domain_reviews.json.delta.manifest.json", workflow)
-        self.assertIn("failed-review-cursor-recovery", workflow)
-        self.assertIn("actions: read", workflow)
-        self.assertIn("retention-days: 90", workflow)
-        self.assertIn("fail_closed", workflow)
-
-    def test_state_pointer_is_in_audit_archive_before_publish(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        package = workflow.split("      - name: Package allowlisted audit outputs", 1)[1].split(
-            "      - name: Upload allowlisted audit outputs", 1
-        )[0]
-        self.assertIn("reports/automation/state_store.json", package)
-        self.assertIn("declare -A archive_seen=()", package)
-        self.assertIn('tar -czf "$RUNNER_TEMP/audit-output.tar.gz" -- "${archive_inputs[@]}"', package)
-        self.assertIn("data/domain_candidates.json", package)
-
-    def test_large_state_is_artifact_backed_not_committed_as_giant_json(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        publish = workflow.split("      - name: Verify base commit and safely publish allowlisted outputs", 1)[1]
-        allowlist = publish.split("          publish_paths=(", 1)[1].split("          )", 1)[0]
-        for path in ("sources/domain_reviews.json", "sources/review_cursor.json",
-                     "sources/rule_provenance.json", "data/domain_candidates.json",
-                     "data/candidates.json", "data/source_pending.json", "data/source_snapshots/"):
-            self.assertNotIn(path, allowlist)
-        self.assertEqual([x.strip() for x in allowlist.splitlines() if x.strip()], ["rulesets/"])
-        self.assertIn('if [[ -e "$path" ]]', publish)
-        self.assertIn('git add -- "$path"', publish)
-
-    def test_config_conflicts_are_checked_before_and_after_rule_mutations(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        pre = workflow.index("Remove published and queued rules that conflict with uu.conf")
-        collect = workflow.index("Collect and cross-check all enabled domain sources")
-        build = workflow.index("Build standalone DIRECT, PROXY and REJECT rule sets")
-        lifecycle = workflow.index("Run conservative lifecycle audit and selectable restoration")
-        final = workflow.index("Reconcile final uu.conf scope coverage after all rule mutations")
-        validate = workflow.index("Validate Shadowrocket config structure")
-        self.assertLess(pre, collect)
-        self.assertLess(collect, build)
-        self.assertLess(build, lifecycle)
-        self.assertLess(lifecycle, final)
-        self.assertLess(final, validate)
-
-    def test_config_conflict_sync_is_run_at_both_guard_points(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertEqual(workflow.count("python3 scripts/sync_ruleset_config_conflicts.py"), 2)
-
-    def test_publisher_uses_dedicated_safe_base_guard(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn("bash scripts/verify_publish_base.sh", workflow)
-        guard = (ROOT / "scripts" / "verify_publish_base.sh").read_text(encoding="utf-8")
-        self.assertIn('git merge-base --is-ancestor "$GITHUB_SHA" origin/main', guard)
-        self.assertIn("docs/*)", guard)
-        self.assertIn('git reset --hard origin/main', guard)
-        self.assertIn("Production input or unclassified repository path changed during audit", guard)
-
-    def test_publisher_explicitly_protects_user_managed_config(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn('git diff --quiet "$GITHUB_SHA" -- modules/uu.conf', workflow)
-        self.assertIn('git diff --cached --quiet "$GITHUB_SHA" -- modules/uu.conf', workflow)
-
-
-    def test_audit_incidents_close_only_after_full_audit_and_publish_success(self):
-        workflow = (ROOT / ".github" / "workflows" / "self-healing-agent.yml").read_text(encoding="utf-8")
-        self.assertIn('"Shadowrocket Deterministic Domain Audit (User Config Baseline)"', workflow)
-        self.assertIn("  resolve-audit-incidents:", workflow)
-        resolver = workflow.split("  resolve-audit-incidents:", 1)[1]
-        self.assertIn("github.event.workflow_run.conclusion == 'success'", resolver)
-        self.assertIn("UNCLASSIFIED_STEP_FAILURE", resolver)
-        self.assertIn("TEST_FAILURE", resolver)
-        self.assertIn("python3 scripts/verify_recovery_run.py", resolver)
-        self.assertIn("gh workflow run storage-incident-management.yml", resolver)
-        self.assertLess(resolver.index("python3 scripts/verify_recovery_run.py"), resolver.index("gh workflow run storage-incident-management.yml"))
-        self.assertNotIn("gh issue", resolver)
-
-    def test_config_reconciliation_does_not_evaluate_rule_precedence(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn("Reconcile final uu.conf scope coverage after all rule mutations", workflow)
-        self.assertIn("Audit candidate scope coverage against user config (read-only)", workflow)
-        self.assertNotIn("uu.conf precedence", workflow)
-        audit = (ROOT / "scripts" / "audit_ruleset_config_overlap.py").read_text(encoding="utf-8")
-        self.assertIn("No rule order, first-match winner, or precedence is evaluated.", audit)
-        sync = (ROOT / "scripts" / "sync_ruleset_config_conflicts.py").read_text(encoding="utf-8")
-        self.assertIn("rule order is not evaluated", sync)
-
-
-    def test_unattended_config_analysis_includes_reject_scopes_without_approving_new_rejects(self):
-        audit = (ROOT / "scripts" / "audit_ruleset_config_overlap.py").read_text(encoding="utf-8")
-        self.assertIn('if policy in {"DIRECT", "PROXY", "REJECT"}', audit)
-        reviewer = (ROOT / "scripts" / "deterministic_review.py").read_text(encoding="utf-8")
-        self.assertIn('rule.policy != "REJECT"', reviewer)
-        external = (ROOT / "scripts" / "audit_external_domains.py").read_text(encoding="utf-8")
-        self.assertIn('rule.policy != "REJECT"', external)
-
-    def test_unattended_audits_do_not_resolve_config_or_ruleset_precedence(self):
-        external = (ROOT / "scripts" / "audit_external_domains.py").read_text(encoding="utf-8")
-        self.assertIn("scope_covers_candidate", external)
-        self.assertNotIn("analyze_candidate", external)
-        references = (ROOT / "scripts" / "audit_ruleset_references.py").read_text(encoding="utf-8")
-        self.assertIn("cross_policy_scope_overlaps", references)
-        self.assertNotIn("policy_order", references)
-        self.assertNotIn("precedence_resolved_overlaps", references)
-
-
-    def test_baseline_verifier_checks_owner_authorized_registration(self):
-        verifier = (ROOT / "scripts" / "verify_baseline.py").read_text(encoding="utf-8")
-        self.assertIn('run_git("diff", "--quiet", base, head, "--", "modules/uu.conf")', verifier)
-        self.assertIn('run_git("log", "--format=%H"', verifier)
-        self.assertIn('repos/{repository}/commits/{commit}', verifier)
-        self.assertIn("config_change_commits", verifier)
-        self.assertIn("release_manifest_blob_sha", verifier)
-        self.assertIn("automation/resource_write_sets.json", verifier)
-
-
-
-    def test_production_workflow_requires_live_fenced_resource_lease_before_publish(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        self.assertIn("resource_lease_proof:", workflow)
-        scheduler = (ROOT / "scripts" / "task_scheduler.py").read_text(encoding="utf-8")
-        self.assertIn('dispatch_task["input"]["resource_lease_proof"]', scheduler)
-        self.assertIn('target_id == "workflow_auto_sync" and resource_contract is None', scheduler)
-        self.assertIn("Verify live Watchdog resource lease before production audit", workflow)
-        self.assertGreaterEqual(workflow.count("assert-workflow --task-id"), 2)
-        self.assertIn('assert-workflow --task-id "$AUTOMATION_TASK_ID_BASE"', workflow)
-        self.assertNotIn('assert-workflow --task-id "$AUTOMATION_TASK_ID"', workflow)
-        publish_start = workflow.index("      - name: Verify base commit and safely publish allowlisted outputs")
-        publish_end = workflow.index("      - name: Independently verify committed remote rulesets", publish_start)
-        publish_step = workflow[publish_start:publish_end]
-        self.assertLess(publish_step.index("assert-workflow --task-id"), publish_step.index("git push origin HEAD:main"))
-        self.assertIn("logical/production-pipeline", (ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
-        audit_job = workflow.split("  audit:", 1)[1].split("  publish:", 1)[0]
-
-    def test_watchdog_owns_config_change_detection_and_sync_dispatch(self):
-        watchdog_path = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
-        watchdog = watchdog_path.read_text(encoding="utf-8")
-        production_inputs = (ROOT / "automation" / "production_inputs.json").read_text(encoding="utf-8")
-        production_intent = (ROOT / "scripts" / "production_intent.py").read_text(encoding="utf-8")
-        scheduler = (ROOT / "scripts" / "task_scheduler.py").read_text(encoding="utf-8")
-        self.assertIn('"modules/uu.conf"', watchdog)
-        self.assertIn('"modules/uu.conf"', production_inputs)
-        self.assertIn('INPUT_CHANGED|SCHEDULE_DUE)', watchdog)
-        self.assertIn('enqueue-auto-sync', watchdog)
-        self.assertIn('--revision "$ORIGIN_SHA"', watchdog)
-        self.assertIn('production:input:$current_fingerprint:$current_sha', watchdog)
-        self.assertIn('revision: str | None = None', production_intent)
-        self.assertIn('path_classification["status"] == "INPUT_CHANGED"', production_intent)
-        self.assertIn('if path in inputs:', production_intent)
-        self.assertIn('"modules/uu.conf"', production_inputs)
-        self.assertIn('protected_config_digest(root)', scheduler)
-        self.assertIn('ensure_protected_config_unchanged', scheduler)
-
-        # Watchdog schedules the existing production workflow; the config
-        # conflict synchronizer remains a subordinate step, not an independent
-        # monitor or a second workflow.
-        pre_sync = WORKFLOW.read_text(encoding="utf-8")
-        self.assertEqual(pre_sync.count("python3 scripts/sync_ruleset_config_conflicts.py"), 2)
-        self.assertIn("Remove published and queued rules that conflict with uu.conf", pre_sync)
-        self.assertIn('BASELINE_SOURCE_SHA: ${{ inputs.baseline_source_sha }}', pre_sync)
-        self.assertIn('(\"baseline_source_sha\", \"BASELINE_SOURCE_SHA\")', pre_sync)
-        self.assertIn("does not match the durable Watchdog task input", pre_sync)
-        self.assertIn("not a full Git commit SHA", pre_sync)
-        self.assertIn("Reconcile final uu.conf scope coverage after all rule mutations", pre_sync)
-        self.assertIn("group: shadowrocket-main-writer", pre_sync)
-
-
-
-    def test_owner_config_registration_precedes_fingerprint_and_parallel_read_only_tests(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        preflight = workflow.split("  preflight:", 1)[1].split("\n  audit:", 1)[0]
-        audit = workflow.split("\n  audit:", 1)[1].split("\n  publish:", 1)[0]
-        registration = audit.index("Register repository-owner-approved uu.conf changes")
-        fingerprint = audit.index("Capture and verify the exact production input fingerprint")
-        self.assertLess(registration, fingerprint)
-        self.assertIn("Compile and run deterministic review tests", preflight)
-        self.assertNotIn("Compile and run deterministic review tests", audit)
-        publish = workflow.split("\n  publish:", 1)[1].split("\n  persist-review-cursor:", 1)[0]
-        self.assertIn("needs: [audit, preflight]", publish)
-        archive = workflow.split("          base_files=(", 1)[1].split("          )", 1)[0]
-        self.assertNotIn("sources/policy.json", archive)
-        publish = workflow.split("          publish_paths=(", 1)[1].split("          )", 1)[0]
-        self.assertEqual([x.strip() for x in publish.splitlines() if x.strip()], ["rulesets/"])
-        for path in ("sources/policy.json", "automation/release_manifest.json", "automation/production_workflow_map.json", "automation/resource_write_sets.json"):
-            self.assertNotIn(path, publish)
-        restore = (ROOT / "scripts" / "restore_automation_state.py").read_text(encoding="utf-8")
-        self.assertIn("PUBLISH_FILES = set()", restore)
-        self.assertIn('PUBLISH_DIR_PREFIXES = ("rulesets/",)', restore)
-        self.assertNotIn('"sources/policy.json"', restore)
-        registrar = (ROOT / "scripts" / "register_config_baseline.py").read_text(encoding="utf-8")
-        self.assertIn("build_release_pin_updates", registrar)
-        self.assertIn("write_baseline_proposal(proposal)", registrar)
-        self.assertIn("RUNNER_TEMP", registrar)
-        self.assertNotIn("POLICY.write_text", registrar)
-
-
-    def test_manual_authorization_is_bound_to_one_durable_task_scope(self):
+    def test_watchdog_does_not_own_retired_manifest_or_assessment_gate_jobs(self):
+        """V2 watchdog is intent+supervision only; retired multi-job control plane is gone."""
         watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
-        key_position = watchdog.index('manual_key="production:manual-authorized:')
-        input_position = watchdog.index("manual_input=", key_position)
-        self.assertLess(key_position, input_position)
-        self.assertIn("authorization_target_program_id:$target", watchdog)
-        self.assertIn("authorization_idempotency_key:$idem", watchdog)
-
-        runtime = (ROOT / "scripts" / "task_queue_runtime.py").read_text(encoding="utf-8")
-        remote = (ROOT / "scripts" / "remote_task_queue_runtime.py").read_text(encoding="utf-8")
-        validator = (ROOT / "scripts" / "task_queue.py").read_text(encoding="utf-8")
-        self.assertIn('task.get("target_program_id") != "workflow_auto_sync"', runtime)
-        self.assertIn('queue.setdefault("manual_authorizations", {})', remote)
-        self.assertIn("validate_manual_authorization_consumption", remote)
-        self.assertIn('manual_authorizations = queue.get("manual_authorizations", {})', validator)
-        self.assertIn("manual authorization has already been consumed", runtime)
-
-
-    def test_manual_watchdog_dispatch_holds_before_building_or_enqueuing_task(self):
-        watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
-        manual_gate = watchdog.index('if [ "$ORIGIN_EVENT" = "workflow_dispatch" ] && [ "${{ inputs.request_deterministic_audit }}" = "true" ]; then')
-        hold_gate = watchdog.index('if [ "$manual_dispatch_mode" != "enabled" ]; then', manual_gate)
-        task_key = watchdog.index('manual_key="production:manual-authorized:', manual_gate)
-        enqueue = watchdog.index("enqueue-auto-sync", task_key)
-        self.assertLess(manual_gate, hold_gate)
-        self.assertLess(hold_gate, task_key)
-        self.assertLess(task_key, enqueue)
-
-
-    def test_watchdog_has_one_trusted_direct_scheduler_entry_and_disabled_canary(self):
-        watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
-        supervision_start = watchdog.index("  task-queue-supervision:")
-        stale_start = watchdog.index("  stale-run-watch:", supervision_start)
-        supervision = watchdog[supervision_start:stale_start]
-        self.assertEqual(supervision.count("run-once"), 1)
-        self.assertIn("GITHUB_ACTOR_ID: ${{ github.actor_id }}", supervision)
-        self.assertIn("GITHUB_MANUAL_AUDIT_REQUEST: ${{ inputs.request_deterministic_audit }}", supervision)
-        self.assertIn("GITHUB_REF_NAME: main", supervision)
-        self.assertIn("GITHUB_REPOSITORY: ${{ github.repository }}", supervision)
-        self.assertIn("timeout-minutes: 30", supervision)
-        self.assertIn("--max-tasks 1 run-once", supervision)
-        self.assertIn('--task-id "$selected_task_id"', supervision)
-        self.assertIn("select_source_worker_task", supervision)
-        handoff_start = watchdog.index("          assessment_max_urls=20")
-        handoff_end = watchdog.index("          task_input=", handoff_start)
-        assessment_handoff = watchdog[handoff_start:handoff_end]
-        self.assertIn("assessment_error_type=", assessment_handoff)
-        self.assertIn("recovery_one_error_type=", assessment_handoff)
-        self.assertIn('case "$recovery_one_error_type" in', assessment_handoff)
-        self.assertIn("execution_timeout|lease_expired)", assessment_handoff)
-        self.assertIn("assessment_recovery_blocked=true", assessment_handoff)
-        source_policy = Path("scripts/source_handoff_policy.py").read_text(encoding="utf-8")
-        self.assertIn('task.get("target_program_id") != "workflow_auto_sync"', source_policy)
-        self.assertIn("assessment_queued or discovery_queued", source_policy)
-        self.assertIn('endswith(":artifact-recovery:1")', source_policy)
-        self.assertIn("dispatch one task before artifact upload", supervision)
-
-        canary_start = watchdog.index("  assessment-canary:")
-        canary_end = watchdog.index("  task-queue-supervision:", canary_start)
-        canary = watchdog[canary_start:canary_end]
-        self.assertIn("if: ${{ false }}", canary)
-
-
-    def test_watchdog_recovers_dead_lettered_assessment_only_after_exact_artifact_verification(self):
-        watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
-        start = watchdog.index("      - name: Enqueue source assessment after successful discovery workflow")
-        end = watchdog.index("      - name: Enqueue independent source discovery", start)
-        block = watchdog[start:end]
-        resolver_start = watchdog.index("      - name: Resolve completed Discovery run")
-        resolver_end = watchdog.index("      - name: Enqueue source assessment after successful discovery workflow", resolver_start)
-        resolver = watchdog[resolver_start:resolver_end]
-        self.assertIn('task.get("status") == "SUCCEEDED"', resolver)
-        self.assertIn('endswith(":recovery:2")', resolver)
-        self.assertIn("handoff_state == 'assessment_retry_required'", block)
-        self.assertIn("steps.verify-discovery-artifact.outputs.valid == 'true'", block)
-        self.assertIn('assessment_status" = "DEAD_LETTER"', block)
-        self.assertIn('recovery:1', block)
-        self.assertIn('recovery:2', block)
-        self.assertIn('echo "retry_exhausted=false" >> "$GITHUB_OUTPUT"', block)
-        self.assertIn('echo "retry_exhausted=true" >> "$GITHUB_OUTPUT"', block)
-        self.assertIn("The timeout-corrected second Assessment recovery was dead-lettered; a fresh version-bound Discovery cycle is now permitted.", block)
-        discovery = watchdog.split("      - name: Enqueue independent source discovery", 1)[1].split("      - name: Recover leases, verify results", 1)[0]
-        self.assertIn("steps.enqueue-assessment.outputs.retry_exhausted == 'true'", discovery)
-        self.assertIn("enqueue-source-assessment", block)
-        self.assertIn("Enqueue one artifact-recovery Assessment", block)
-        self.assertIn("artifact-recovery:1", block)
-        self.assertIn("--recovery-of-task-id", block)
-        self.assertIn("verified_task_id", block)
-        self.assertIn("already_assessed", block)
-
-    def test_watchdog_reports_unknown_paths_without_repository_registry_writes(self):
-        watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
-        start = watchdog.index("            REVIEW_REQUIRED)")
-        end = watchdog.index("            IN_PROGRESS|WAIT_FOR_ACTIVE|ALREADY_SATISFIED|OBSERVE_ONLY)", start)
-        block = watchdog[start:end]
-        self.assertIn("gh workflow run storage-incident-management.yml", block)
-        self.assertIn("classification=PRODUCTION_INPUT_REVIEW", block)
-        self.assertNotIn("gh issue", block)
-        self.assertNotIn("gh api --method PUT", block)
-        self.assertNotIn("register_ledger", block)
-        self.assertNotIn("automation/unregistered_path_registry.json", block)
-        self.assertIn("PENDING_CLASSIFICATION", watchdog)
-        self.assertIn('(.path | startswith("modules/")) | not', watchdog)
-
-    def test_watchdog_sets_scripts_path_before_importing_active_fingerprint_helper(self):
-        watchdog = WATCHDOG_WORKFLOW.read_text(encoding="utf-8")
-        marker = 'active_fingerprints="$(CURRENT_PRODUCTION_FINGERPRINT='
-        self.assertIn(marker, watchdog)
-        block = watchdog.split(marker, 1)[1].split("PY\\n", 1)[0]
-        self.assertIn('sys.path.insert(0, "scripts")', block)
-        self.assertIn("from production_intent import active_production_fingerprints", block)
-
-    def test_publish_step_keeps_canonical_task_id_from_revalidation(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        publish = workflow.split("  publish:", 1)[1]
-        step = publish.split("Verify base commit and safely publish allowlisted outputs", 1)[1].split("      - name: ", 1)[0]
-        self.assertNotIn("AUTOMATION_TASK_ID:", step)
-
-    def test_publish_revalidation_accepts_verifying_task_with_live_resource_fence(self):
-        workflow = WORKFLOW.read_text(encoding="utf-8")
-        revalidate = workflow.split("Revalidate Watchdog task and export canonical lease context", 1)[1].split(
-            "      - name: ", 1
-        )[0]
-        self.assertIn('task.get("status") not in {"CLAIMED", "VERIFYING"}', revalidate)
-        self.assertIn('task.get("status") == "CLAIMED"', revalidate)
-        self.assertIn('task_lease_token = task_lease.get("token")', revalidate)
-        self.assertIn('"resource-fence-only"', revalidate)
-        self.assertIn('resource_lease.get("status") != "ACTIVE"', revalidate)
-        self.assertIn('record.get("fencing_token") != item.get("fencing_token")', revalidate)
-        self.assertIn('record.get("task_id") != task_id', revalidate)
-        self.assertIn('expiry <= now', revalidate)
-        self.assertNotIn('or not isinstance(lease, dict)', revalidate)
-
-
-    def test_workflow_env_blocks_are_not_empty(self):
-        workflow = (ROOT / ".github" / "workflows" / "auto_sync.yml").read_text(encoding="utf-8")
-        lines = workflow.splitlines()
-        for index, line in enumerate(lines[:-1]):
-            if line.strip() != "env:":
-                continue
-            indent = len(line) - len(line.lstrip())
-            next_line = lines[index + 1]
-            next_indent = len(next_line) - len(next_line.lstrip())
-            self.assertGreater(
-                next_indent,
-                indent,
-                f"empty env mapping at line {index + 1}",
-            )
-
-if __name__ == "__main__":
-    unittest.main()
+        self.assertNotIn("manifest-integrity:", watchdog)
+        self.assertNotIn(
+            "Cancel active production audits while independent Assessment gate is closed", watchdog
+        )
