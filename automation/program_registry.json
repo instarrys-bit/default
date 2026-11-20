@@ -1750,8 +1750,8 @@
       ],
       "invocation": "hourly and daily schedule, workflow completion, relevant push, manual dispatch",
       "inputs": [
-        "GitHub event payload",
-        "repository state and declared workflow inputs"
+        "automation_task_id (optional correlation id from Auto Sync)",
+        "request_deterministic_audit (optional boolean)"
       ],
       "outputs": [
         "workflow run result",
