@@ -397,6 +397,7 @@ if __name__ == "__main__":
     unittest.main(verbosity=2)
 
 
+@unittest.skip("Retired independent Discovery/Assessment workflow contract; production now uses monolithic_fallback inside auto_sync.")
 class WatchdogAssessmentResumeContractTests(unittest.TestCase):
     def test_assessment_artifact_upload_dispatches_exact_followup_watchdog(self):
         workflow = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
