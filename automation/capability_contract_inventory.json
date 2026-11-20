@@ -2,7 +2,7 @@
   "schema_version": 1,
   "audit_id": "capability-contract-inventory-source-dag-active-2026-11-07",
   "status": "retired_archival_snapshot",
-  "source_registry_blob_sha": "96dcf52a01bd1013ff6087b1a0a61d3199d44679",
+  "source_registry_blob_sha": "0e2bffbcc3f88e84cbb99a15b599b4fdf9f2ae4c",
   "summary": {
     "registered_programs": 70,
     "python_components": 59,
@@ -1993,8 +1993,8 @@
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.21.1",
     "execution_adapters_blob_sha": "0482e404bb16d64ac2cde29fd5f9bc7ec7d4092d",
-    "release_manifest_blob_sha": "babfeb716cc43ba5f779e77dfd6544580ce43391",
-    "program_registry_blob_sha": "96dcf52a01bd1013ff6087b1a0a61d3199d44679",
+    "release_manifest_blob_sha": "db199c16758d04226d742c45705c30f543733698",
+    "program_registry_blob_sha": "0e2bffbcc3f88e84cbb99a15b599b4fdf9f2ae4c",
     "note": "Historical V1 source-DAG / capability-write audit. Retained for traceability only; not an activation authority or current writer inventory. Current runtime topology is monolithic fallback across exactly four workflows. Do not infer active dispatch rights from this archival snapshot."
   }
 }
