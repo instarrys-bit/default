@@ -86,7 +86,9 @@
       "completion": {
         "success_condition": "internal_production_stage_only; no standalone task dispatch",
         "independent_verification_required": true
-      }
+      },
+      "write_resources": [],
+      "publish_resources": []
     },
     {
       "target_program_id": "script_audit_adapter_activation",
