@@ -29,6 +29,9 @@ class CurrentWorkflowContractTests(unittest.TestCase):
         self.assertNotIn("-f workflow=", recovery)
         self.assertNotIn("-f event_id=", recovery)
         self.assertIn("      automation_task_id:", storage)
+        self.assertIn("      workflow_key:", storage)
+        self.assertIn("-f workflow_key=auto_sync", failure)
+        self.assertIn("-f workflow_key=auto_sync", recovery)
         self.assertIn("      operation:", storage)
 
     def test_incident_recovery_requires_preflight_audit_and_publish_success(self):
