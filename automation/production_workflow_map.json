@@ -2,7 +2,7 @@
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
   "workflow_blob_sha": "01ebff1fb63da4ff5d49b869e81c351fe49134e2",
-  "registry_blob_sha": "0e2bffbcc3f88e84cbb99a15b599b4fdf9f2ae4c",
+  "registry_blob_sha": "71ee0366d91fc46b4e3a612174c4cf8be75941fa",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 7,
@@ -361,8 +361,8 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.21.1",
-    "release_manifest_blob_sha": "8a1fbbb61c464297411fa475af87ec09cc1ec16e",
-    "program_registry_blob_sha": "0e2bffbcc3f88e84cbb99a15b599b4fdf9f2ae4c",
+    "release_manifest_blob_sha": "fe78b53c6a82fcce1e240fc9971053baf540de01",
+    "program_registry_blob_sha": "71ee0366d91fc46b4e3a612174c4cf8be75941fa",
     "execution_adapters_blob_sha": "0482e404bb16d64ac2cde29fd5f9bc7ec7d4092d",
     "added_after_release_baseline": true,
     "note": "Current execution is the consolidated four-workflow monolithic design. Discovery and non-activating assessment run within auto_sync; independent Python dispatch is disabled. The static map is descriptive, not an execution grant. uu.conf remains read-only.",
