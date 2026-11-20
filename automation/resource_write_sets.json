@@ -1623,14 +1623,13 @@
       "workflow_path": ".github/workflows/auto_sync.yml",
       "step_name": "Dispatch Watchdog reconciliation for this exact production run",
       "mutation_kinds": [
-        "github_actions_workflow_dispatch",
         "workflow_dispatch_api"
       ],
       "resources": [
-        "GitHub Actions Watchdog workflow reconciliation run"
+        "GitHub Actions workflow dispatch: automation-watchdog.yml"
       ],
-      "fence": "The callback carries the exact completed auto_sync run ID. Watchdog verifies the run ID, auto_sync workflow path, main branch and completed successful conclusion before queue reconciliation; callback has no repository contents write permission.",
-      "boundary": "External workflow_dispatch wake-up only; no repository files or rulesets are written by this callback."
+      "fence": "The call sends only the documented ref; Watchdog has a unique run-ID title and independently reconciles durable task/run evidence. No repository contents permission is granted to this callback.",
+      "boundary": "Wake-up only. No task, queue or ruleset state is written by the callback."
     },
     {
       "workflow_path": ".github/workflows/auto_sync.yml",
@@ -1652,85 +1651,86 @@
         "rulesets/lifecycle_observations.json",
         "rulesets/deletion_archive.json"
       ],
-      "fence": "Watchdog task lease plus logical/production-pipeline lease and exact per-file resource leases for all rulesets/** outputs; restore_publish_outputs reasserts each exact file lease; rulesets-only staging and final staged-path fence.",
-      "boundary": "Main-branch publication is restricted to rulesets/**; sources/**, data/**, reports/**, modules/** and JS scripts are never staged or published."
+      "fence": "Watchdog task lease plus logical/production-pipeline lease and exact per-file resource leases; publisher reasserts exact file leases and applies a rulesets-only staging fence.",
+      "boundary": "Production publication is restricted to rulesets/**. modules/uu.conf and all user-owned config/code remain read-only."
+    },
+    {
+      "workflow_path": ".github/workflows/auto_sync.yml",
+      "step_name": "Dispatch incident record to Storage Management",
+      "mutation_kinds": [
+        "github_actions_workflow_dispatch"
+      ],
+      "resources": [
+        "GitHub Actions workflow dispatch: storage-management.yml",
+        "storage/v2/incidents.json"
+      ],
+      "fence": "The event is bound to the exact production run ID and source SHA; Storage Management validates the typed input and applies an idempotent incident event.",
+      "boundary": "Auto Sync dispatches only; Storage Management owns the durable incident write."
+    },
+    {
+      "workflow_path": ".github/workflows/auto_sync.yml",
+      "step_name": "Dispatch verified incident recovery to Storage Management",
+      "mutation_kinds": [
+        "github_actions_workflow_dispatch"
+      ],
+      "resources": [
+        "GitHub Actions workflow dispatch: storage-management.yml",
+        "storage/v2/incidents.json"
+      ],
+      "fence": "Recovery is dispatched only when preflight, audit and publication all succeeded; the event is correlated to the exact source run and verified publication URL.",
+      "boundary": "No incident is closed on a preflight failure, cancelled audit or skipped/failed publication."
     },
     {
       "workflow_path": ".github/workflows/automation-watchdog.yml",
-      "step_name": "Enqueue source assessment after successful discovery workflow",
+      "step_name": "Recover leases and run scheduler once",
       "mutation_kinds": [
-        "git_reset"
+        "github_contents_sha_cas",
+        "github_actions_workflow_dispatch"
       ],
       "resources": [
-        "automation/task_queue.json repository JSON queue state"
+        "automation/task_queue.json repository JSON control-plane state",
+        "GitHub Actions workflow dispatch: auto_sync.yml"
       ],
-      "fence": "task_scheduler.py mutates the repository JSON queue through Storage Management Contents API SHA-CAS with bounded conflict retry and read-after-write verification.",
-      "boundary": "External control-plane state only; no repository file is written by queue persistence."
+      "fence": "One serialized Watchdog supervision job invokes the scheduler's own recovery, pending-result verification, claim and dispatch path. Queue updates use Contents API SHA-CAS; task and resource leases are checked before dispatch.",
+      "boundary": "Queue/lease state is control-plane metadata, not ruleset publication. Production writer remains the single auto_sync publisher."
     },
     {
-      "workflow_path": ".github/workflows/automation-watchdog.yml",
-      "step_name": "Publish manifest-only metadata repair",
+      "workflow_path": ".github/workflows/storage-management.yml",
+      "step_name": "Apply allowlisted incident ledger operation",
       "mutation_kinds": [
-        "git_add",
-        "git_commit",
-        "git_push"
+        "github_contents_sha_cas"
       ],
       "resources": [
-        "rulesets/manifest.json"
+        "storage/v2/incidents.json"
       ],
-      "fence": "The manifest-integrity job has job-level concurrency group shadowrocket-main-writer with cancel-in-progress:false, shared with auto_sync; refresh_ruleset_manifest.py permits the no-task-lease path only for this exact serialized Watchdog job.",
-      "boundary": "Manifest-only rulesets/manifest.json repair; git add allowlist is exact, no rule list, source, report, module or config file is published."
+      "fence": "Storage Management validates operation-specific fields, event IDs, source run evidence and expected SHA before committing and performing read-after-write verification.",
+      "boundary": "Incident ledger is written only by Storage Management; no Issues API or config write."
     },
     {
-      "workflow_path": ".github/workflows/automation-watchdog.yml",
-      "step_name": "Wake Watchdog after verified Assessment artifact upload",
+      "workflow_path": ".github/workflows/storage-management.yml",
+      "step_name": "Ingest, catalog, and verify source artifacts before cleanup",
       "mutation_kinds": [
-        "workflow_dispatch_api"
+        "github_contents_sha_cas",
+        "artifact_ingestion"
       ],
       "resources": [
-        "GitHub Actions workflow dispatch: assessment-completion-relay.yml",
-        "logical/source-dag-supervision"
+        "storage/v2/artifacts/**",
+        "automation/task_queue.json"
       ],
-      "fence": "The callback is emitted only after the exact Assessment artifact upload step succeeds; the relay validates the exact producer run, completed success conclusion, main branch, head SHA and unique non-expired artifact before it can request Watchdog reconciliation.",
-      "boundary": "Dispatches only the isolated completion relay. It does not write repository contents, task queue state, rulesets or modules/uu.conf."
+      "fence": "Artifact ingestion verifies producer identity, workflow status, artifact integrity and task correlation before durable catalog/queue updates.",
+      "boundary": "External artifact/control-plane state only; never writes modules/uu.conf or publishes rule lists."
     },
     {
       "workflow_path": ".github/workflows/dashboard-pages.yml",
-      "step_name": "Deploy to GitHub Pages",
+      "step_name": "Deploy read-only dashboard",
       "mutation_kinds": [
         "github_pages_deployment"
       ],
       "resources": [
         "GitHub Pages published dashboard"
       ],
-      "fence": "GitHub Pages deployment action consumes the workflow's generated Pages artifact; no repository ref mutation.",
-      "boundary": "External Pages publication, not a repository file writer."
-    },
-    {
-      "workflow_path": ".github/workflows/auto_sync.yml",
-      "step_name": "Dispatch Production failure and recovery events to Storage Management",
-      "mutation_kinds": [
-        "github_actions_workflow_dispatch"
-      ],
-      "resources": [
-        "GitHub Actions workflow dispatch: storage-incident-management.yml",
-        "storage/v2/incidents.json"
-      ],
-      "fence": "Failure and successful recovery events are correlated to exact auto_sync run IDs and source SHAs; Storage Management applies idempotent event IDs and verified recovery transitions.",
-      "boundary": "Production dispatches events with actions:write only; it does not write the incident ledger or use Issues."
-    },
-    {
-      "workflow_path": ".github/workflows/automation-watchdog.yml",
-      "step_name": "Dispatch Watchdog health and integrity events to Storage Management",
-      "mutation_kinds": [
-        "github_actions_workflow_dispatch"
-      ],
-      "resources": [
-        "GitHub Actions workflow dispatch: storage-incident-management.yml",
-        "storage/v2/incidents.json"
-      ],
-      "fence": "Each event is bound to the exact Watchdog run ID/source SHA; verified recovery operations carry a successful verification URL. Storage Management performs the only durable incident write.",
-      "boundary": "Watchdog has actions:write for dispatch and contents:write only for its separately allowlisted queue operations; no Issues API."
+      "fence": "GitHub Pages deployment consumes the workflow-generated artifact and has no repository write permission.",
+      "boundary": "Read-only observation surface; no repository file mutation."
     }
   ],
   "workflow_native_scan": {
