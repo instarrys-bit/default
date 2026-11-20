@@ -1031,7 +1031,7 @@ jobs:
           queue = json.loads(queue_path.read_text(encoding="utf-8"))
           tasks = queue.get("tasks", [])
           current_fingerprint = compute_fingerprint(Path("."), load_manifest(Path("automation/production_inputs.json")))
-          production_task_id = select_production_worker_task(tasks, current_fingerprint)
+          production_task_id = select_production_worker_task(tasks, current_fingerprint, source_discovery_mode=source_mode)
           source_mode = os.environ.get("SOURCE_DISCOVERY_MODE", "independent")
           artifact_verified = os.environ.get("ASSESSMENT_ARTIFACT_VERIFIED") == "true"
           if source_mode == "independent" and not artifact_verified:
