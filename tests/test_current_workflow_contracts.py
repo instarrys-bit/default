@@ -40,6 +40,10 @@ class CurrentWorkflowContractTests(unittest.TestCase):
         storage_program = next(item for item in registry["programs"] if item["id"] == "workflow_storage_management")
         storage_adapter = next(item for item in adapters["adapters"] if item["target_program_id"] == "workflow_storage_management")
         self.assertEqual(storage_program["inputs"], [item["name"] for item in storage_adapter["workflow"]["inputs"]])
+        watchdog_program = next(item for item in registry["programs"] if item["id"] == "workflow_automation_watchdog")
+        watchdog_adapter = next(item for item in adapters["adapters"] if item["target_program_id"] == "workflow_automation_watchdog")
+        self.assertEqual(watchdog_program["inputs"], ["automation_task_id (optional correlation id from Auto Sync)", "request_deterministic_audit (optional boolean)"])
+        self.assertEqual([item["name"] for item in watchdog_adapter["workflow"]["inputs"]], ["automation_task_id", "request_deterministic_audit"])
 
     def test_incident_recovery_requires_preflight_audit_and_publish_success(self):
         auto = (WORKFLOWS / "auto_sync.yml").read_text(encoding="utf-8")
@@ -49,10 +53,11 @@ class CurrentWorkflowContractTests(unittest.TestCase):
         self.assertIn("needs.audit.result == 'success'", recovery)
         self.assertIn("needs.publish.result == 'success'", recovery)
 
-    def test_watchdog_wake_is_a_valid_no_input_dispatch(self):
+    def test_watchdog_wake_has_correlated_task_id(self):
         auto = (WORKFLOWS / "auto_sync.yml").read_text(encoding="utf-8")
         wake = auto.split("  watchdog-reconciliation:", 1)[1]
-        self.assertIn("payload='{\\"ref\\":\\"main\\"}'", wake)
+        self.assertIn("inputs:{automation_task_id:$task_id}", wake)
+        self.assertIn("auto-sync-watchdog-$RUN_ID", wake)
         self.assertNotIn("production_producer_run_id", wake)
 
     def test_scheduler_owns_recovery_and_pending_result_verification(self):
