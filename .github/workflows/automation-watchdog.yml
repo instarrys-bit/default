@@ -1,1 +1,208 @@
-PLACEHOLDER
+name: Shadowrocket automation watchdog
+run-name: "Automation watchdog / ${{ github.run_id }}"
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/automation-watchdog.yml"
+  schedule:
+    - cron: "*/15 * * * *"
+    - cron: "30 22 * * *"
+  workflow_dispatch:
+    inputs:
+      request_deterministic_audit:
+        description: 'Explicitly authorize one deterministic production audit through the durable Watchdog queue'
+        required: false
+        default: false
+        type: boolean
+      automation_task_id:
+        description: 'Internal task correlation ID; leave blank for manual runs'
+        required: false
+        type: string
+      source_discovery_run_id:
+        description: 'Exact completed Source Discovery producer run ID'
+        required: false
+        type: string
+      assessment_producer_run_id:
+        description: 'Exact completed Watchdog Assessment artifact producer run ID'
+        required: false
+        type: string
+      production_producer_run_id:
+        description: 'Exact completed production audit producer run ID'
+        required: false
+        type: string
+  workflow_run:
+    workflows:
+      - "Shadowrocket Deterministic Domain Audit (User Config Baseline)"
+      - "Storage Management"
+    types: [completed]
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/**"
+      - "sources/policy.json"
+      - "sources/domain_sources.json"
+      - "sources/protected_domains.json"
+      - "sources/request_domain_observations.json"
+      - "scripts/**"
+      - "tests/**"
+      - "modules/uu.conf"
+      - "automation/program_registry.json"
+      - "automation/execution_adapters.json"
+      - "automation/unregistered_path_registry.json"
+      - "automation/production_inputs.json"
+      - "automation/production_control.json"
+
+permissions:
+  actions: write
+  contents: read
+
+env:
+  AUTO_SYNC_WORKFLOW_ID: "402712272"
+  WATCHDOG_WORKFLOW_ID: "403552201"
+
+concurrency:
+  group: shadowrocket-automation-watchdog-${{ github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  entrypoint-probe:
+    name: Watchdog entrypoint context
+    if: ${{ always() }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 1
+    permissions:
+      contents: read
+    steps:
+      - name: Record trigger context
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          printf 'event=%s\nref=%s\nref_name=%s\n' "$EVENT_NAME" "$REF" "$REF_NAME" >> "$GITHUB_STEP_SUMMARY"
+
+  non-main-noop:
+    if: ${{ github.ref != 'refs/heads/main' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    permissions:
+      contents: read
+    steps:
+      - name: Skip production control plane outside main
+        run: echo "Watchdog control plane is main-only; no queue or production actions were run."
+
+  health-check:
+    if: ${{ github.ref == 'refs/heads/main' && (github.event_name != 'workflow_run' || github.event.workflow_run.head_branch == 'main') }}
+    concurrency:
+      group: shadowrocket-watchdog-control-plane-main
+      cancel-in-progress: false
+    env:
+      GITHUB_ACTOR_ID: ${{ github.actor_id }}
+      GITHUB_MANUAL_AUDIT_REQUEST: ${{ github.event.inputs.request_deterministic_audit }}
+    outputs:
+      block_manifest: ${{ steps.stale-recovery.outputs.block_manifest }}
+      queue_intent_b64: ${{ steps.stale-recovery.outputs.queue_intent_b64 }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      actions: write
+      contents: write
+    steps:
+      - name: Checkout watchdog policy code
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Set up Python for deterministic recovery policy
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.11"
+      - name: Export durable repository JSON queue snapshot
+        env:
+          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue.json"
+          echo "AUTOMATION_QUEUE_SNAPSHOT=$RUNNER_TEMP/task_queue.json" >> "$GITHUB_ENV"
+      - name: Detect production intent and enqueue durable auto-sync task
+        id: stale-recovery
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ORIGIN_EVENT: ${{ github.event_name }}
+          ORIGIN_ACTOR: ${{ github.actor }}
+          ORIGIN_BEFORE: ${{ github.event.before }}
+          ORIGIN_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          production_dispatch_mode="$(jq -r '.dispatch_mode // "hold"' automation/production_control.json)"
+          if [ "$production_dispatch_mode" != "enabled" ]; then
+            production_dispatch_mode="hold"
+          fi
+          intent_json="$(python3 scripts/production_intent.py --repository-root . --queue-snapshot "$AUTOMATION_QUEUE_SNAPSHOT" --event "$ORIGIN_EVENT" --actor "$ORIGIN_ACTOR" --before "${ORIGIN_BEFORE:-}" --sha "$ORIGIN_SHA" || true)"
+          if [ -z "$intent_json" ]; then
+            echo "No production intent produced."
+            echo "block_manifest=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          decision="$(jq -r '.decision // empty' <<< "$intent_json")"
+          fingerprint="$(jq -r '.fingerprint // empty' <<< "$intent_json")"
+          echo "decision=$decision fingerprint=$fingerprint mode=$production_dispatch_mode"
+          case "$decision" in
+            INPUT_CHANGED|SCHEDULE_DUE)
+              if [ "$production_dispatch_mode" != "enabled" ]; then
+                echo "Production demand held by production_control.json"
+                echo "block_manifest=true" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+              audit_input_json="$(jq -cn --arg fingerprint "$fingerprint" --arg decision "$decision" --arg reason "$(jq -r '.reason // empty' <<< "$intent_json")" --arg event "$ORIGIN_EVENT" --arg actor "$ORIGIN_ACTOR" --arg before "${ORIGIN_BEFORE:-}" --arg sha "$ORIGIN_SHA" '{production_fingerprint:$fingerprint,production_decision:$decision,production_reason:$reason,baseline_source_event:$event,baseline_source_actor:$actor,baseline_source_before:$before,baseline_source_sha:$sha}')"
+              production_key="$(jq -r '.idempotency_key // empty' <<< "$intent_json")"
+              if [ -z "$production_key" ]; then
+                production_key="production:$fingerprint"
+              fi
+              printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --idempotency-key "$production_key" --priority 100 --input-json "$audit_input_json" enqueue-auto-sync
+              echo "block_manifest=true" >> "$GITHUB_OUTPUT"
+              ;;
+            REVIEW_REQUIRED)
+              echo "block_manifest=true" >> "$GITHUB_OUTPUT"
+              ;;
+            IN_PROGRESS|WAIT_FOR_ACTIVE|ALREADY_SATISFIED|OBSERVE_ONLY|"")
+              echo "No production task required: $decision"
+              echo "block_manifest=false" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "Unexpected production intent decision: $decision" >&2
+              exit 1
+              ;;
+          esac
+
+  task-queue-supervision:
+    if: ${{ always() && needs.health-check.result == 'success' && github.ref == 'refs/heads/main' }}
+    needs: [health-check]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      actions: write
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.11"
+      - name: Snapshot queue and schedule next durable tasks
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          python3 scripts/remote_task_queue_runtime.py --repository "$REPO" --branch main snapshot --output "$RUNNER_TEMP/task_queue.json"
+          printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py --repository "$REPO" --branch main --token-stdin --queue-snapshot "$RUNNER_TEMP/task_queue.json" schedule || true
+          python3 scripts/remote_task_queue_runtime.py --repository "$REPO" --branch main recover-expired || true
