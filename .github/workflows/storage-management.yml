@@ -204,7 +204,7 @@ jobs:
           python-version: "3.11"
       - name: Apply allowlisted incident ledger operation
         env:
-          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           OPERATION: ${{ inputs.operation }}
           WORKFLOW_KEY: automation_watchdog
@@ -246,7 +246,7 @@ jobs:
           python-version: "3.11"
       - name: Poll recent Auto Sync and Watchdog artifacts and ingest them
         env:
-          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REF_NAME: main
         run: |
@@ -273,7 +273,7 @@ jobs:
           python-version: "3.11"
       - name: Ingest, catalog, and verify source artifacts before cleanup
         env:
-          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_REF_NAME: main
           SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
