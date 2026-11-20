@@ -12,7 +12,6 @@ WORKFLOWS = [
     ".github/workflows/dashboard-pages.yml",
     ".github/workflows/self-healing-agent.yml",
     ".github/workflows/self-healing-tests.yml",
-    ".github/workflows/validate-config.yml",
     ".github/workflows/source-discovery.yml",
     ".github/workflows/queue-snapshot-artifact.yml",
 ]
