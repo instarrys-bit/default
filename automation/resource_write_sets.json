@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "inventory_id": "resource-write-sets-2026.11.07-source-dag-active1",
-  "status": "partial_static_entrypoint_review",
+  "status": "retired_archival_snapshot",
   "policy": {
     "lock_identity": "canonical logical resource path, not program ID",
     "dynamic_document_store_children": "must be covered by the logical document lease",
@@ -1342,12 +1342,12 @@
     "Static Python mutation-site and workflow-native scans do not prove transient write-and-revert activity, Git metadata changes, external side effects or unexecuted call paths. No global filesystem guard or Python audit hook is installed."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "release_manifest_blob_sha": "074f68ad1af56610650b6dcdb58b197a37c19487",
-    "program_registry_blob_sha": "968c1ae613aa7c83eb4392ddb9eff6f7c6622767",
-    "execution_adapters_blob_sha": "af0f8d196c70a07fcd30cdc7f97eaba7a025cb56",
+    "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.21.1",
+    "release_manifest_blob_sha": "096a62e10b0e219ea88102eeb0d58355a2043348",
+    "program_registry_blob_sha": "65911334ca24e9af5780cb7da6956549d48279a8",
+    "execution_adapters_blob_sha": "0482e404bb16d64ac2cde29fd5f9bc7ec7d4092d",
     "added_after_release_baseline": true,
-    "note": "Production Intent is read-only; the only persistent task/lease/checkpoint state is stored by Storage Management in automation/task_queue.json. Incident events are stored only in storage/v2/incidents.json. Production's committed deliverables remain allowlisted rulesets/**.",
+    "note": "Historical V1 source-DAG / capability-write audit. Retained for traceability only; not an activation authority or current writer inventory. Current runtime topology is monolithic fallback across exactly four workflows. Do not infer active dispatch rights from this archival snapshot.",
     "reviewed_at": "2026-11-07"
   },
   "scheduler_lock_contract": {
@@ -1589,7 +1589,7 @@
   "direct_mutation_scan": {
     "status": "partial_python_direct_callsite_scan",
     "scanner": "tests/test_transitive_write_site_inventory.py",
-    "registered_component_count": 60,
+    "registered_component_count": 66,
     "mutation_api_families": [
       "Path/open write modes",
       "Path write_text/write_bytes/unlink/mkdir/replace/rename/touch",
