@@ -2,7 +2,7 @@
   "schema_version": 1,
   "audit_id": "capability-contract-inventory-retired-source-dag-2026-11-20",
   "status": "retired_archival_snapshot",
-  "source_registry_blob_sha": "9999108b8731816162423ee3d0b94a8463d1c4fc",
+  "source_registry_blob_sha": "65911334ca24e9af5780cb7da6956549d48279a8",
   "summary": {
     "registered_programs": 70,
     "python_components": 59,
@@ -1992,9 +1992,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.20.1",
-    "execution_adapters_blob_sha": "4a6f7da6c9f621dd88d48b703cde2981f4f76dfc",
-    "release_manifest_blob_sha": "eca68264b4e48177f024defde0c44615ad7388a0",
-    "program_registry_blob_sha": "9999108b8731816162423ee3d0b94a8463d1c4fc"
+    "execution_adapters_blob_sha": "0482e404bb16d64ac2cde29fd5f9bc7ec7d4092d",
+    "release_manifest_blob_sha": "26913e7fbfe57b0628cb89c67c27f3624b7db13e",
+    "program_registry_blob_sha": "65911334ca24e9af5780cb7da6956549d48279a8"
   },
   "deprecation_note": "Historical source-DAG capability snapshot only. It is not an activation authority and must not be used to infer current enabled workflows or Python adapters. Current authority is program_registry.json, execution_adapters.json, production_control.json and release_manifest.json."
 }
