@@ -1608,9 +1608,11 @@
       "target_program_id": "workflow_automation_watchdog",
       "target_kind": "github_actions_workflow",
       "adapter_type": "github_actions_workflow",
-      "enabled": false,
+      "enabled": true,
       "interface_status": "workflow_dispatch_reviewed",
-      "allowed_callers": [],
+      "allowed_callers": [
+        "workflow_auto_sync"
+      ],
       "workflow": {
         "path": ".github/workflows/automation-watchdog.yml",
         "dispatchable": true,
@@ -1631,10 +1633,10 @@
       "timeout_seconds": 30,
       "retry": {
         "max_attempts": 0,
-        "policy": "disabled_until_dispatcher_and_run_verifier"
+        "policy": "no automatic redispatch; scheduled Watchdog supervision provides bounded recovery"
       },
       "completion": {
-        "success_condition": "run_status_completed_and_conclusion_success",
+        "success_condition": "workflow_run_completed_and_conclusion_success",
         "required_result_fields": [
           "run_id",
           "html_url",
@@ -1643,7 +1645,8 @@
           "conclusion"
         ],
         "independent_verification_required": true
-      }
+      },
+      "workflow_run_timeout_seconds": 1800
     },
     {
       "target_program_id": "workflow_read_only_dashboard_pages",
@@ -1683,8 +1686,7 @@
       "enabled": true,
       "interface_status": "workflow_dispatch_reviewed",
       "allowed_callers": [
-        "workflow_auto_sync",
-        "workflow_automation_watchdog"
+        "workflow_auto_sync"
       ],
       "workflow": {
         "path": ".github/workflows/storage-management.yml",
