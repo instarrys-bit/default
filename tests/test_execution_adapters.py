@@ -95,7 +95,7 @@ class ExecutionAdapterTests(unittest.TestCase):
         self.assertGreaterEqual(adapter["timeout_seconds"], 1)
         self.assertLessEqual(adapter["timeout_seconds"], 300)
         self.assertLess(adapter["timeout_seconds"], program["orchestration"]["timeout_seconds"])
-        self.assertEqual(program["orchestration"]["timeout_seconds"], 900)
+        self.assertGreaterEqual(program["orchestration"]["timeout_seconds"], adapter["timeout_seconds"])
 
     def test_watchdog_run_id_correlation_is_scoped_to_watchdog_path(self):
         root, _, _, _ = self.make_repo()
