@@ -212,95 +212,72 @@ class WatchdogRecoveryWorkflowTests(unittest.TestCase):
         self.assertIn("persisted_head_sha is not None", resolver)
         self.assertIn("persisted_relationship is not None", resolver)
 
-        source = (ROOT / ".github" / "workflows" / "source-discovery.yml").read_text(encoding="utf-8")
-        proof = source.split("Verify producer identity and prepare immutable artifact proof", 1)[1].split("Confirm discovery outputs remain runner-local", 1)[0]
-        self.assertLess(proof.index("shutil.copy2(item"), proof.index("read_only_resource_digests(artifact_root"))
-        self.assertIn('read_document(artifact_root / "sources/discovered_sources.json"', proof)
-        self.assertIn('"artifact_sha256": digest', proof)
+        audit = AUTO_SYNC.read_text(encoding="utf-8")
+        discovery = audit.split("      - name: Discover candidate source repositories (non-activating)", 1)[1].split(
+            "      - name: Assess discovered rule-list syntax and policy claims", 1
+        )[0]
+        assessment = audit.split("      - name: Assess discovered rule-list syntax and policy claims", 1)[1].split(
+            "      - name: Preserve complete source assessment report", 1
+        )[0]
+        self.assertIn("python3 scripts/discover_sources.py", discovery)
+        self.assertIn("python3 scripts/assess_sources.py", assessment)
+        self.assertIn("sources/discovered_sources.json", audit)
+        self.assertIn("sources/source_assessments.json", audit)
+        self.assertIn("source-assessment-report", audit)
+        self.assertLess(
+            audit.index("Discover candidate source repositories (non-activating)"),
+            audit.index("Assess discovered rule-list syntax and policy claims"),
+        )
         self.assertIn("steps.verify-discovery-artifact.outputs.valid == 'false'", watchdog)
         self.assertIn("steps.verify-discovery-artifact.outputs.valid == 'true'", watchdog)
         self.assertIn("from source_handoff_policy import discovery_pipeline_revision", watchdog)
         self.assertIn("print(discovery_pipeline_revision(Path.cwd()))", watchdog)
         policy = (ROOT / "scripts" / "source_handoff_policy.py").read_text(encoding="utf-8")
-        self.assertIn('".github/workflows/source-discovery.yml"', policy)
+        self.assertIn('".github/workflows/auto_sync.yml"', policy)
 
-    def test_independent_source_discovery_and_assessment_are_enabled_with_runner_local_handoff(self):
-        source = (ROOT / ".github" / "workflows" / "source-discovery.yml").read_text(encoding="utf-8")
-        watchdog = WATCHDOG.read_text(encoding="utf-8")
+
+    def test_monolithic_source_discovery_and_assessment_run_inside_auto_sync(self):
         audit = AUTO_SYNC.read_text(encoding="utf-8")
         adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
         registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
         control = json.loads((ROOT / "automation" / "production_control.json").read_text(encoding="utf-8"))
-        discovery_adapter = next(x for x in adapters["adapters"] if x["target_program_id"] == "workflow_source_discovery")
-        discovery_program = next(x for x in registry["programs"] if x["id"] == "workflow_source_discovery")
-        assessor = next(x for x in adapters["adapters"] if x["target_program_id"] == "script_assess_sources")
-        assessor_program = next(x for x in registry["programs"] if x["id"] == "script_assess_sources")
+        adapter_by_id = {item["target_program_id"]: item for item in adapters["adapters"]}
+        program_by_id = {item["id"]: item for item in registry["programs"]}
 
-        self.assertEqual(control["source_discovery_mode"], "independent")
-        self.assertTrue(discovery_adapter["enabled"])
-        self.assertEqual(discovery_adapter["allowed_callers"], ["workflow_automation_watchdog"])
-        self.assertTrue(discovery_program["orchestration"]["enabled"])
-        self.assertEqual(discovery_program["orchestration"]["allowed_callers"], ["workflow_automation_watchdog"])
-        self.assertTrue(assessor["enabled"])
-        self.assertEqual(assessor["allowed_callers"], ["workflow_automation_watchdog"])
-        self.assertTrue(assessor_program["orchestration"]["enabled"])
-        self.assertEqual(assessor_program["orchestration"]["allowed_callers"], ["workflow_automation_watchdog"])
+        self.assertEqual(control["source_discovery_mode"], "monolithic_fallback")
+        for program_id in ("script_discover_sources", "script_assess_sources"):
+            self.assertFalse(adapter_by_id[program_id]["enabled"])
+            self.assertFalse(program_by_id[program_id]["orchestration"]["enabled"])
+        self.assertNotIn("workflow_source_discovery", adapter_by_id)
+        self.assertNotIn("workflow_source_discovery", program_by_id)
 
-        self.assertEqual(discovery_adapter["workflow"]["path"], ".github/workflows/source-discovery.yml")
-        self.assertIn("Verify exact Watchdog dispatch and install live resource fence", source)
-        self.assertIn("resource_lease_runtime.py", source)
-        self.assertNotIn("Publish discovery inventory under its exact resource leases", source)
-        self.assertIn("Seed isolated discovery workspace from read-only main baseline", source)
-        self.assertIn('AUTOMATION_TASK_PROCESS: "1"', source)
-        self.assertIn("AUTOMATION_ARTIFACT_ROOT", source)
-        self.assertIn("Confirm discovery outputs remain runner-local", source)
-        self.assertNotIn("git push", source)
-        self.assertIn("Upload immutable discovery artifact and provenance proof", source)
-        self.assertIn("source-discovery-output", source)
-
-        self.assertIn("Download artifact from the exact discovery workflow run", watchdog)
-        self.assertIn("Resolve completed Discovery run from durable task correlation", watchdog)
-        self.assertIn("dispatch_intent", watchdog)
-        self.assertIn("AUTOMATION_QUEUE_SNAPSHOT", watchdog)
-        self.assertIn("RUNNER_TEMP", watchdog)
-        self.assertIn('"SUCCEEDED"', watchdog)
-        self.assertIn("queue_path.read_text", watchdog)
-        self.assertIn("requested_head_sha", watchdog)
-        self.assertIn("correlation_id", watchdog)
-        self.assertIn("workflow_dispatch", watchdog)
-        self.assertIn("classify_assessment_handoff(tasks, run_id)", watchdog)
-        self.assertIn('base_key="source-assessment:$SOURCE_RUN_ID:parser-v2"', watchdog)
-        self.assertIn('--idempotency-key "$assessment_key"', watchdog)
-        self.assertIn('task.get("target_program_id") == "script_assess_sources"', watchdog)
-        self.assertIn('task.get("status") == "QUEUED"', watchdog)
-        self.assertIn('workflow_client.list_runs(workflow_id, "main", page)', watchdog)
-        self.assertIn("if page > 20:", watchdog)
-        self.assertIn('"$base_key:recovery:1"', watchdog)
-        self.assertIn('"$base_key:recovery:2"', watchdog)
-        self.assertIn('proof.get("workflow_run_id", "")', watchdog)
-        self.assertIn('actions/runs/{run_id}', watchdog)
-        self.assertIn("Queued Assessment predecessor does not resolve to its exact successful Discovery run.", watchdog)
-        self.assertIn("steps.resolve-discovery-run.outputs.run_id", watchdog)
-        self.assertIn("steps.resolve-discovery-run.outputs.head_sha", watchdog)
-        self.assertIn("exact successful Discovery run must have exactly one unexpired source-discovery-output artifact", watchdog)
-        self.assertIn("run-id: ${{ steps.resolve-discovery-run.outputs.run_id }}", watchdog)
-        self.assertIn("Downloaded discovery artifact digest does not match its immutable proof; Assessment is blocked", watchdog)
-        self.assertNotIn("The committed main discovery document no longer matches this producer artifact.", watchdog)
-        self.assertIn("no sources/ commit is required", watchdog)
-        self.assertIn("enqueue-source-discovery", watchdog)
-        self.assertIn("steps.source-mode.outputs.mode", watchdog)
-        self.assertIn("Resolve source execution mode from production control", watchdog)
-        self.assertIn("Independent source discovery remains dormant", watchdog)
-
-        # The monolithic implementation remains only as an explicit rollback path.
-        self.assertIn("if: ${{ steps.source-mode.outputs.mode != 'independent' }}", audit)
-        self.assertIn("Discover candidate source repositories (non-activating)", audit)
-        self.assertIn("Assess discovered rule-list syntax and policy claims", audit)
-        self.assertIn("Resolve source execution mode from production control", audit)
-        self.assertIn("Upload verified source assessment outputs as immutable artifact", watchdog)
+        discovery = audit.split("      - name: Discover candidate source repositories (non-activating)", 1)[1].split(
+            "      - name: Assess discovered rule-list syntax and policy claims", 1
+        )[0]
+        assessment = audit.split("      - name: Assess discovered rule-list syntax and policy claims", 1)[1].split(
+            "      - name: Preserve complete source assessment report", 1
+        )[0]
+        activation = audit.split("      - name: Merge qualified discovered sources into the run-local production registry", 1)[1].split(
+            "      - name: Collect and cross-check all enabled domain sources", 1
+        )[0]
+        self.assertIn("steps.source-mode.outputs.mode != 'independent'", discovery)
+        self.assertIn("python3 scripts/discover_sources.py", discovery)
+        self.assertIn("steps.source-mode.outputs.mode != 'independent'", assessment)
+        self.assertIn("python3 scripts/assess_sources.py", assessment)
+        self.assertIn("python3 scripts/auto_activate_sources.py", activation)
+        self.assertLess(
+            audit.index("Discover candidate source repositories (non-activating)"),
+            audit.index("Assess discovered rule-list syntax and policy claims"),
+        )
+        self.assertLess(
+            audit.index("Assess discovered rule-list syntax and policy claims"),
+            audit.index("Merge qualified discovered sources into the run-local production registry"),
+        )
         auto_sync = next(x for x in adapters["adapters"] if x["target_program_id"] == "workflow_auto_sync")
         self.assertIn("sources/discovered_sources.json", auto_sync["resource_contract"]["resource_keys"])
         self.assertIn("reports/source-discovery.md", auto_sync["resource_contract"]["resource_keys"])
+        self.assertFalse((ROOT / ".github" / "workflows" / "source-discovery.yml").exists())
+
 
     def test_source_reconciliation_scans_all_pages_and_recovers_queued_assessment_predecessors(self):
         watchdog = WATCHDOG.read_text(encoding="utf-8")
