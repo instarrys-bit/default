@@ -28,7 +28,7 @@
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "48f8c6f511cdc3f0ddf1d08e904df4843693f20f"
+      "git_blob_sha": "2e63d1b92a858309545661edd093c55f024e3166"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -183,6 +183,11 @@
     "config_drift_audit": {
       "path": "scripts/audit_config_drift.py",
       "git_blob_sha": "78a687ef9ef750eba8f8f20b9bb5fef9dcf30fa9"
+    },
+    "preflight_runner": {
+      "path": "scripts/run_preflight_tests.py",
+      "git_blob_sha": "4d22f126660bda3bdb690e7465ffaa79666d2844",
+      "status": "maintained_production_preflight"
     }
   },
   "compatibility": {
