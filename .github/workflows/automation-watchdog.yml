@@ -1,5 +1,5 @@
 name: Shadowrocket automation watchdog
-run-name: "Automation watchdog / ${{ github.run_id }}"
+run-name: "Automation watchdog / ${{ inputs.automation_task_id || github.run_id }}"
 
 on:
   schedule:
@@ -7,6 +7,10 @@ on:
     - cron: "30 22 * * *"
   workflow_dispatch:
     inputs:
+      automation_task_id:
+        description: Durable correlation ID for a Watchdog wake dispatched by Auto Sync
+        required: false
+        type: string
       request_deterministic_audit:
         description: 'Explicitly authorize one deterministic production audit through the durable Watchdog queue'
         required: false
