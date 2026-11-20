@@ -68,9 +68,14 @@ class WatchdogQueueWriterPermissionRegressionTests(unittest.TestCase):
         self.assertNotIn("task_scheduler.py", health)
         self.assertEqual(health.count('echo "queue_task_json=$queue_task_json" >> "$GITHUB_OUTPUT"'), 4)
 
+        manifest = workflow.split("  manifest-integrity:", 1)[1]
+        self.assertIn("queue_task_json: ${{ steps.integrity-recovery.outputs.queue_task_json }}", manifest)
+        self.assertNotIn("enqueue-auto-sync", manifest)
+        self.assertNotIn("task_scheduler.py", manifest)
+
         self.assertIn("      contents: write", queue)
         self.assertIn("Enqueue Watchdog production intent through queue writer", queue)
-        self.assertIn("needs.health-check.outputs.queue_task_json", queue)
+        self.assertIn("needs.health-check.outputs.queue_task_json || needs.manifest-integrity.outputs.queue_task_json", queue)
         self.assertIn("GITHUB_TOKEN: ${{ github.token }}", queue)
         self.assertNotIn("secrets.AUTOMATION_WRITE_TOKEN", queue)
         self.assertIn("enqueue-auto-sync", queue)
