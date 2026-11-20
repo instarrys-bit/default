@@ -8,12 +8,12 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "94a1c9fdbf8585dfca4b61af55276dce0114d2d8"
+      "git_blob_sha": "96dcf52a01bd1013ff6087b1a0a61d3199d44679"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "b9d702b483f5d9b6725e0053084c487d6be5da42"
+      "git_blob_sha": "0482e404bb16d64ac2cde29fd5f9bc7ec7d4092d"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -28,7 +28,7 @@
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "5bc9e35867473879b273473713f36782dde55ad4"
+      "git_blob_sha": "01ebff1fb63da4ff5d49b869e81c351fe49134e2"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -74,11 +74,11 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "94a1c9fdbf8585dfca4b61af55276dce0114d2d8"
+      "git_blob_sha": "96dcf52a01bd1013ff6087b1a0a61d3199d44679"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "b9d702b483f5d9b6725e0053084c487d6be5da42"
+      "git_blob_sha": "0482e404bb16d64ac2cde29fd5f9bc7ec7d4092d"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
