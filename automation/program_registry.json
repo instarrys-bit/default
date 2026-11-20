@@ -1822,8 +1822,6 @@
       "invocation": "push-triggered one-time migration of superseded source tasks; workflow_dispatch from Production and Watchdog for incident operations; read-only pull-request validation",
       "inputs": [
         "operation",
-        "workflow",
-        "event_id",
         "automation_task_id",
         "run_id",
         "source_sha",
@@ -1832,8 +1830,7 @@
         "run_url",
         "before_run_id",
         "classifications",
-        "verification_url",
-        "diagnosis_json"
+        "verification_url"
       ],
       "outputs": [
         "verified queue retirement report and revision when consolidating the old independent source DAG",
