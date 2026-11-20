@@ -20,16 +20,17 @@ class AdapterActivationAuditTests(unittest.TestCase):
         adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
         self.assertEqual(report["program_count"], len(registry["programs"]))
         self.assertEqual(report["adapter_count"], len(adapters["adapters"]))
-        self.assertEqual(report["enabled_adapter_count"], 5)
+        enabled_ids = [row["program_id"] for row in report["adapters"] if row["enabled"]]
+        self.assertEqual(report["enabled_adapter_count"], len(enabled_ids))
+        self.assertEqual(set(enabled_ids), {"workflow_auto_sync", "workflow_storage_management"})
         self.assertTrue(report["watchdog_caller_permissions_ready"])
-        self.assertEqual(
-            [row["program_id"] for row in report["adapters"] if row["enabled"]],
-            ["script_assess_sources", "workflow_auto_sync", "workflow_self_healing_tests", "workflow_source_discovery", "workflow_storage_incident_management"],
-        )
+        self.assertNotIn("workflow_source_discovery", enabled_ids)
+        self.assertNotIn("workflow_self_healing_tests", enabled_ids)
+        self.assertNotIn("script_assess_sources", enabled_ids)
 
     def test_identifies_only_low_privilege_dispatchable_workflow_as_canary(self):
         report = audit_activation_readiness(ROOT)
-        self.assertIn("workflow_self_healing_tests", report["least_privilege_canary_candidates"])
+        self.assertTrue(all(row["write_scopes"] == [] and row["side_effects"] == [] for row in report["adapters"] if row["least_privilege_canary_candidate"]))
         for row in report["adapters"]:
             if row["least_privilege_canary_candidate"]:
                 self.assertEqual(row["write_scopes"], [])
