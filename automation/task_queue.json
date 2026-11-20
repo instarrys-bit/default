@@ -242,7 +242,7 @@
       "worker_id": "44775920248"
     }
   },
-  "revision": 45,
+  "revision": 46,
   "schema_version": 1,
   "tasks": [
     {
@@ -715,17 +715,10 @@
         "production_reason": "a registered production input changed; prior success for the same fingerprint does not prove current state is reconciled"
       },
       "last_error": {
-        "evidence": {
-          "conclusion": "failure",
-          "head_sha": "57e8c77e5a9dda36e5f332e32456d2dad8402a48",
-          "head_sha_relationship": "queue_intent_commit_only",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/44776051442",
-          "requested_head_sha": "32e9929bad9ce386f43d68e8af64f3f6cef17699",
-          "run_id": 44776051442,
-          "status": "completed"
-        },
-        "message": "workflow completed with conclusion 'failure'",
-        "type": "workflow_run_failed"
+        "message": "Queued production task was superseded before claim because current main has a different production input fingerprint.",
+        "superseded_by_fingerprint": "daaa10bf44a2a4b9d3a5e69068be545b35ba404fdb745b574a4a1fe95dc763cd",
+        "superseded_by_idempotency_key": "production:input:daaa10bf44a2a4b9d3a5e69068be545b35ba404fdb745b574a4a1fe95dc763cd:77cbcd6bae97d62ebb9bbc40d21f4b76fdc64ea3",
+        "type": "stale_production_input_superseded"
       },
       "lease": null,
       "max_attempts": 2,
@@ -848,9 +841,10 @@
         "CLAIMED",
         "VERIFYING",
         "FAILED",
-        "QUEUED"
+        "QUEUED",
+        "CANCELLED"
       ],
-      "status": "QUEUED",
+      "status": "CANCELLED",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_3260d86a9a8b4d659e6b2798",
       "trace_id": "b643981eea3a454ca4db9d0d103cb426",
@@ -860,6 +854,36 @@
         "verified_at": "2026-11-20T17:53:14Z",
         "verifier_program_id": "script_task_result_verifier"
       }
+    },
+    {
+      "attempts": 0,
+      "capability": "deterministic_audit",
+      "created_at": "2026-11-20T18:24:57Z",
+      "execution_backend": "github_contents",
+      "idempotency_key": "production:input:daaa10bf44a2a4b9d3a5e69068be545b35ba404fdb745b574a4a1fe95dc763cd:77cbcd6bae97d62ebb9bbc40d21f4b76fdc64ea3",
+      "input": {
+        "baseline_source_actor": "instarrys-bit",
+        "baseline_source_before": "6fd53ff738d68205bead7881c74fa446c46e7d34",
+        "baseline_source_event": "push",
+        "baseline_source_sha": "77cbcd6bae97d62ebb9bbc40d21f4b76fdc64ea3",
+        "production_decision": "INPUT_CHANGED",
+        "production_fingerprint": "daaa10bf44a2a4b9d3a5e69068be545b35ba404fdb745b574a4a1fe95dc763cd",
+        "production_reason": "a registered production input changed; prior success for the same fingerprint does not prove current state is reconciled"
+      },
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 2,
+      "not_before": "2026-11-20T18:24:57Z",
+      "priority": 100,
+      "requester_program_id": "workflow_automation_watchdog",
+      "result": null,
+      "state_history": [
+        "QUEUED"
+      ],
+      "status": "QUEUED",
+      "target_program_id": "workflow_auto_sync",
+      "task_id": "task_6a49b30f39294e8289fba24e",
+      "trace_id": "9838a814a9cc40a79c7aac144753700b"
     }
   ]
 }
