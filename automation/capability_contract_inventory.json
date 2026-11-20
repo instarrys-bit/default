@@ -2,7 +2,7 @@
   "schema_version": 1,
   "audit_id": "capability-contract-inventory-retired-source-dag-2026-11-20",
   "status": "retired_archival_snapshot",
-  "source_registry_blob_sha": "2f1461bb30e6ef1b3ab6e5b7b2c14b01c218de49",
+  "source_registry_blob_sha": "38f6b8b922c3e97bdca3501dad09bb76e9d0aa99",
   "summary": {
     "registered_programs": 70,
     "python_components": 59,
