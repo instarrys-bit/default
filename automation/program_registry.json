@@ -2074,6 +2074,33 @@
         "max_attempts": 0,
         "timeout_seconds": 1800
       }
+    },
+    {
+      "id": "script_run_preflight_tests",
+      "path": "scripts/run_preflight_tests.py",
+      "kind": "python_component",
+      "responsibility": "Run deterministic repository preflight tests with explicitly documented legacy-contract exclusions.",
+      "capabilities": [
+        "workflow_testing",
+        "preflight_validation"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "Repository tests directory and unittest discovery defaults."
+      ],
+      "outputs": [
+        "Process exit status and unittest test report."
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 1800
+      }
     }
   ]
 }
