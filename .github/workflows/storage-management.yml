@@ -221,7 +221,7 @@ jobs:
           else
             args+=(--before-run-id "$BEFORE_RUN_ID" --classifications "$CLASSIFICATIONS" --verification-url "$VERIFICATION_URL")
           fi
-          python3 storage/v2/incident_store.py "\${args[@]}" | tee "$GITHUB_STEP_SUMMARY"
+          python3 storage/v2/incident_store.py "${args[@]}" | tee "$GITHUB_STEP_SUMMARY"
   poll-recent-actions-artifacts:
     name: Poll and ingest recent completed workflow artifacts
     if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'push') }}
