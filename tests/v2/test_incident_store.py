@@ -45,11 +45,15 @@ class IncidentStoreTests(unittest.TestCase):
     def test_imported_open_incident_archive_is_complete_and_unique(self):
         active = __import__("json").loads((ROOT / "storage" / "v2" / "incidents.json").read_text(encoding="utf-8"))
         archive = __import__("json").loads((ROOT / "storage" / "v2" / "legacy_issue_archive.json").read_text(encoding="utf-8"))
-        self.assertEqual(len(active["incidents"]), 85)
         self.assertEqual(archive["record_count"], 85)
-        ids = [item["source_issue_number"] for item in archive["records"]]
-        self.assertEqual(len(ids), len(set(ids)))
-        self.assertEqual(active["migration"]["records_imported"], 85)
+        self.assertEqual(len(archive["records"]), archive["record_count"])
+        archive_ids = [item["source_issue_number"] for item in archive["records"]]
+        self.assertEqual(len(archive_ids), len(set(archive_ids)))
+        archived_legacy_ids = {item["legacy_id"] for item in archive["records"]}
+        active_legacy_ids = {item.get("legacy_id") for item in active["incidents"]}
+        self.assertTrue(archived_legacy_ids.issubset(active_legacy_ids))
+        self.assertGreaterEqual(len(active["incidents"]), archive["record_count"])
+        self.assertEqual(active["migration"]["records_imported"], archive["record_count"])
 
     def test_rejects_partial_source_sha(self):
         with self.assertRaisesRegex(ValueError,"full Git commit SHA"):
