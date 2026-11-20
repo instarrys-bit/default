@@ -111,8 +111,40 @@ def owner_approved_config_history(guard: dict) -> list[str]:
     )
     commits = [line.strip() for line in history.stdout.splitlines() if line.strip()]
     if not commits:
-        print(f"Baseline history recovery blocked: no {guard['path']} commits were found between {baseline_commit} and {after}.", file=sys.stderr)
-        return []
+        # Anchor may be a non-config commit after a prior metadata-only registration.
+        # Fall back: walk path history until the previously approved blob is observed.
+        previous_blob = str(guard.get("approved_git_blob_sha", ""))
+        if len(previous_blob) == 40:
+            path = str(guard["path"])
+            full = subprocess.run(
+                ["git", "log", "--format=%H", after, "--", path],
+                cwd=ROOT, check=True, capture_output=True, text=True,
+            )
+            recovered: list[str] = []
+            for commit_sha in [line.strip() for line in full.stdout.splitlines() if line.strip()]:
+                blob = subprocess.run(
+                    ["git", "rev-parse", f"{commit_sha}:{path}"],
+                    cwd=ROOT, check=False, capture_output=True, text=True,
+                ).stdout.strip()
+                if blob == previous_blob:
+                    break
+                recovered.append(commit_sha)
+            else:
+                recovered = []
+            if recovered:
+                print(
+                    f"Baseline history recovery used blob-walk fallback "
+                    f"({len(recovered)} {path} commits after approved blob {previous_blob}).",
+                    file=sys.stderr,
+                )
+                commits = recovered
+        if not commits:
+            print(
+                f"Baseline history recovery blocked: no {guard['path']} commits were found "
+                f"between {baseline_commit} and {after}.",
+                file=sys.stderr,
+            )
+            return []
     for commit_sha in commits:
         author = subprocess.run(
             ["gh", "api", f"repos/{repo}/commits/{commit_sha}", "--jq", ".author.login // empty"],
@@ -213,7 +245,7 @@ def main() -> int:
                           "repository_files_modified": True, "config_file_modified": False,
                           "config_bytes_unchanged": True}, ensure_ascii=False, sort_keys=True))
         return 0
-    proposal = {"schema_version": 1, "status": "requires_watchdog_baseline_sync", "path": guard["path"],
+    proposal = {"schema_version": 1, "status": "requires_storage_baseline_sync", "path": guard["path"],
                 "previous_blob_sha": previous, "new_blob_sha": actual, "actor": owner,
                 "approval_mode": approval_mode, "config_change_commits": commits,
                 "proposed_updates": proposed, "repository_files_modified": False, "config_file_modified": False}
