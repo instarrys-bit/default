@@ -17,14 +17,14 @@ PATTERNS = {
     "git_push": re.compile(r"\bgit\s+push\b"),
     "git_reset": re.compile(r"\bgit\s+reset\b"),
     "git_checkout": re.compile(r"\bgit\s+checkout\b"),
-    "github_contents_put": re.compile(r"\\bgh\\s+api\\b.*?/contents/.*--method\\s+PUT", re.I),
-    "github_contents_delete": re.compile(r"\\bgh\\s+api\\b.*?/contents/.*--method\\s+DELETE", re.I),
-    "github_issue_patch": re.compile(r"\\bgh\\s+api\\b.*?/issues/.*--method\\s+PATCH", re.I),
-    "github_issue_comment_post": re.compile(r"\\bgh\\s+api\\b.*?/issues/.*/comments.*--method\\s+POST", re.I),
+    "github_contents_put": re.compile(r"\bgh\s+api\b.*?/contents/.*--method\s+PUT", re.I),
+    "github_contents_delete": re.compile(r"\bgh\s+api\b.*?/contents/.*--method\s+DELETE", re.I),
+    "github_issue_patch": re.compile(r"\bgh\s+api\b.*?/issues/.*--method\s+PATCH", re.I),
+    "github_issue_comment_post": re.compile(r"\bgh\s+api\b.*?/issues/.*/comments.*--method\s+POST", re.I),
     "github_actions_workflow_dispatch": re.compile(r"\\bgh\\s+workflow\\s+run\\b"),
     "workflow_dispatch_api": re.compile(r"actions/workflows/[A-Za-z0-9_.-]+/dispatches"),
-    "github_workflow_enable": re.compile(r"\\bgh\\s+api\\b.*--method\\s+PUT.*actions/workflows/.*/enable", re.I),
-    "python_queue_store_sha_cas": re.compile(r"\\b(?:enqueue-auto-sync|run-once|recover-expired)\\b"),
+    "github_workflow_enable": re.compile(r"\bgh\s+api\b.*--method\s+PUT.*actions/workflows/.*/enable", re.I),
+    "python_queue_store_sha_cas": re.compile(r"\b(?:enqueue-auto-sync|run-once|recover-expired)\b"),
 }
 
 
