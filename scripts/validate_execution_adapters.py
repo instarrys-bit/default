@@ -119,8 +119,11 @@ def validate_execution_adapters(root=ROOT,adapters_path=None,registry_path=None)
             if a.get("adapter_type")!="github_actions_workflow" or not isinstance(w,dict) or w.get("path")!=p.get("path"): raise ValueError(f"{tid} workflow adapter/path invalid")
             actual,inputs=dispatch_contract(root/p["path"])
             if w.get("dispatchable") is not actual or w.get("inputs")!=inputs: raise ValueError(f"{tid} workflow_dispatch contract drift")
-            if actual and ("automation_task_id" not in {item["name"] for item in inputs} or not has_task_correlation_run_name(root/p["path"], allow_run_id=p["path"] == ".github/workflows/automation-watchdog.yml")):
-                raise ValueError(f"{tid} requires automation_task_id input and a correlated run-name")
+            watchdog_run_id_correlation = p["path"] == ".github/workflows/automation-watchdog.yml"
+            has_correlation_input = "automation_task_id" in {item["name"] for item in inputs}
+            if actual and ((not watchdog_run_id_correlation and not has_correlation_input)
+                           or not has_task_correlation_run_name(root/p["path"], allow_run_id=watchdog_run_id_correlation)):
+                raise ValueError(f"{tid} requires its reviewed task/run correlation input and a correlated run-name")
             if a.get("interface_status")!=("workflow_dispatch_reviewed" if actual else "event_only"): raise ValueError(f"{tid} workflow interface_status invalid")
             if not isinstance(w.get("allowed_refs"),list) or not w["allowed_refs"]: raise ValueError(f"{tid} allowed_refs must be explicit")
             if not isinstance(w.get("caller_permissions_required"),list) or not {"actions:write"}.issubset(set(w["caller_permissions_required"])): raise ValueError(f"{tid} caller requires actions:write")
