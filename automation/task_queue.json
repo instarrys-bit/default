@@ -1,7 +1,7 @@
 {
   "manual_authorizations": {},
   "resource_leases": {},
-  "revision": 8,
+  "revision": 9,
   "schema_version": 1,
   "tasks": [
     {
@@ -32,10 +32,10 @@
         "production_reason": "current production input fingerprint differs from the last successful audit"
       },
       "last_error": {
-        "type": "production_run_failed_before_verification",
+        "forced_at": "2026-11-20T10:02:00Z",
         "message": "auto_sync run 44710870353 failed; fail-closed after baseline registration",
-        "workflow_run_id": "44710870353",
-        "forced_at": "2026-11-20T10:02:00Z"
+        "type": "production_run_failed_before_verification",
+        "workflow_run_id": "44710870353"
       },
       "lease": null,
       "max_attempts": 2,
@@ -62,6 +62,36 @@
       "task_id": "task_7e54db304f154fd98de74397",
       "trace_id": "45e2fc712241423886385cebffd69ad5",
       "verification": null
+    },
+    {
+      "attempts": 0,
+      "capability": "deterministic_audit",
+      "created_at": "2026-11-20T10:20:14Z",
+      "execution_backend": "github_contents",
+      "idempotency_key": "production:input:e16405a8f5e1983379fcc705b158ee5bd861f83c8ba1bbfbfe905d058b45df8d:bd29ef70e640e3a952bfe63b981dae1253ce3332",
+      "input": {
+        "baseline_source_actor": "instarrys-bit",
+        "baseline_source_before": "",
+        "baseline_source_event": "workflow_dispatch",
+        "baseline_source_sha": "bd29ef70e640e3a952bfe63b981dae1253ce3332",
+        "production_decision": "INPUT_CHANGED",
+        "production_fingerprint": "e16405a8f5e1983379fcc705b158ee5bd861f83c8ba1bbfbfe905d058b45df8d",
+        "production_reason": "current production input fingerprint differs from the last successful audit"
+      },
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 2,
+      "not_before": "2026-11-20T10:20:14Z",
+      "priority": 100,
+      "requester_program_id": "workflow_automation_watchdog",
+      "result": null,
+      "state_history": [
+        "QUEUED"
+      ],
+      "status": "QUEUED",
+      "target_program_id": "workflow_auto_sync",
+      "task_id": "task_1e6be7d7a3b5461fb0ceaa4f",
+      "trace_id": "823417ede7c1417ca6f2334b2d0a9bb9"
     }
   ]
 }
