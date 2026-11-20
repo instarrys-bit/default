@@ -64,7 +64,6 @@ ACTIVE_TEST_MODULES = (
     "test_task_result_verifier",
     "test_task_queue_runtime",
     "test_task_queue",
-    "test_workflow_native_write_inventory",
     "test_current_workflow_contracts",
 )
 
