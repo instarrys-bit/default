@@ -393,6 +393,92 @@ class SourceHandoffPolicyTests(unittest.TestCase):
         }
         self.assertEqual(select_production_worker_task([discovery, assessment, production], "a" * 64), "")
 
+    def test_monolithic_fallback_selects_current_production_task_without_independent_handoff(self):
+        production = {
+            "task_id": "task_monolithic_production",
+            "target_program_id": "workflow_auto_sync",
+            "status": "QUEUED",
+            "lease": None,
+            "dispatch_intent": None,
+            "priority": 100,
+            "input": {
+                "production_decision": "INPUT_CHANGED",
+                "production_fingerprint": "a" * 64,
+            },
+        }
+        self.assertEqual(
+            select_production_worker_task(
+                [production],
+                "a" * 64,
+                source_discovery_mode="monolithic_fallback",
+            ),
+            "task_monolithic_production",
+        )
+
+    def test_monolithic_fallback_keeps_fingerprint_and_duplicate_dispatch_guards(self):
+        stale = {
+            "task_id": "task_stale_production",
+            "target_program_id": "workflow_auto_sync",
+            "status": "QUEUED",
+            "lease": None,
+            "dispatch_intent": None,
+            "priority": 100,
+            "input": {
+                "production_decision": "INPUT_CHANGED",
+                "production_fingerprint": "b" * 64,
+            },
+        }
+        self.assertEqual(
+            select_production_worker_task(
+                [stale], "a" * 64, source_discovery_mode="monolithic_fallback"
+            ),
+            "",
+        )
+        active = {
+            "task_id": "task_active_production",
+            "target_program_id": "workflow_auto_sync",
+            "status": "VERIFYING",
+            "dispatch_intent": {"correlation_id": "already-dispatched"},
+        }
+        queued = {
+            "task_id": "task_queued_production",
+            "target_program_id": "workflow_auto_sync",
+            "status": "QUEUED",
+            "lease": None,
+            "dispatch_intent": None,
+            "priority": 100,
+            "input": {
+                "production_decision": "SCHEDULE_DUE",
+                "production_fingerprint": "a" * 64,
+            },
+        }
+        self.assertEqual(
+            select_production_worker_task(
+                [active, queued], "a" * 64, source_discovery_mode="monolithic_fallback"
+            ),
+            "",
+        )
+
+    def test_production_selector_rejects_unknown_source_mode(self):
+        production = {
+            "task_id": "task_production",
+            "target_program_id": "workflow_auto_sync",
+            "status": "QUEUED",
+            "lease": None,
+            "dispatch_intent": None,
+            "priority": 80,
+            "input": {
+                "production_decision": "SCHEDULE_DUE",
+                "production_fingerprint": "a" * 64,
+            },
+        }
+        with self.assertRaisesRegex(ValueError, "source_discovery_mode"):
+            select_production_worker_task(
+                [production], "a" * 64, source_discovery_mode="unknown"
+            )
+
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
 
