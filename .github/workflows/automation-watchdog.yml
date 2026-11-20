@@ -1031,9 +1031,9 @@ jobs:
           queue = json.loads(queue_path.read_text(encoding="utf-8"))
           tasks = queue.get("tasks", [])
           current_fingerprint = compute_fingerprint(Path("."), load_manifest(Path("automation/production_inputs.json")))
-          production_task_id = select_production_worker_task(tasks, current_fingerprint, source_discovery_mode=source_mode)
           source_mode = os.environ.get("SOURCE_DISCOVERY_MODE", "independent")
           artifact_verified = os.environ.get("ASSESSMENT_ARTIFACT_VERIFIED") == "true"
+          production_task_id = select_production_worker_task(tasks, current_fingerprint, source_discovery_mode=source_mode)
           if source_mode == "independent" and not artifact_verified:
               production_task_id = ""
           active_production = any(
@@ -1061,7 +1061,7 @@ jobs:
           if [ -n "$selected_task_id" ]; then
             printf '%s' "$queue_token" | python3 scripts/task_scheduler.py --token-stdin --repository "$GITHUB_REPOSITORY" --branch main --task-id "$selected_task_id" --max-tasks 1 run-once | tee /tmp/task-scheduler-report.json
           else
-            printf '%s\n' '{"processed":[],"scheduler_skipped":"no safe non-production task while the independent Assessment gate is closed"}' | tee /tmp/task-scheduler-report.json
+            printf '%s\n' '{"processed":[],"scheduler_skipped":"no eligible task after source-mode, fingerprint, and lease checks"}' | tee /tmp/task-scheduler-report.json
           fi
           GITHUB_TOKEN="$queue_token" python3 scripts/remote_task_queue_runtime.py --repository "$GITHUB_REPOSITORY" --branch main snapshot --output "$RUNNER_TEMP/task_queue_after.json"
           if [ -n "$selected_task_id" ]; then
