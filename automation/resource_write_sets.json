@@ -1814,6 +1814,55 @@
       ],
       "fence": "Only the exact Watchdog workflow ID is enabled when its reported state is not active; the state is read back and asserted active.",
       "boundary": "Enables the existing Watchdog workflow only. No repository content, ruleset, queue or modules/uu.conf write."
+    },
+    {
+      "workflow_path": ".github/workflows/automation-watchdog.yml",
+      "step_name": "Run only the canary task through the Watchdog scheduler",
+      "mutation_kinds": [
+        "python_queue_store_sha_cas"
+      ],
+      "resources": [
+        "automation/task_queue.json"
+      ],
+      "fence": "The assessment-canary job is explicitly disabled; if enabled, the scheduler still claims only its allowlisted canary task through queue-store SHA-CAS and requires the canary resource lease.",
+      "boundary": "Disabled non-production canary queue operation only. It cannot publish rulesets or write modules/uu.conf."
+    },
+    {
+      "workflow_path": ".github/workflows/automation-watchdog.yml",
+      "step_name": "Enqueue Watchdog production intent through queue writer",
+      "mutation_kinds": [
+        "python_queue_store_sha_cas"
+      ],
+      "resources": [
+        "automation/task_queue.json"
+      ],
+      "fence": "Idempotency key and validated production input are persisted by the sole task-queue-supervision writer using GitHub Contents SHA-CAS with the job-scoped token; queue_store.py enforces ALLOWED_STATE_PATHS.",
+      "boundary": "Control-plane queue state only. The writer may update automation/task_queue.json; it cannot stage or publish rulesets/** or modules/uu.conf."
+    },
+    {
+      "workflow_path": ".github/workflows/automation-watchdog.yml",
+      "step_name": "Recover expired task and resource leases",
+      "mutation_kinds": [
+        "python_queue_store_sha_cas"
+      ],
+      "resources": [
+        "automation/task_queue.json"
+      ],
+      "fence": "Only expired task/resource leases are reconciled using owner, expiry and fencing-token checks; persistence is SHA-CAS through the same serialized queue writer.",
+      "boundary": "Control-plane queue state only; no production ruleset or user configuration write."
+    },
+    {
+      "workflow_path": ".github/workflows/automation-watchdog.yml",
+      "step_name": "Recover leases, verify results, and dispatch one task before artifact upload",
+      "mutation_kinds": [
+        "python_queue_store_sha_cas"
+      ],
+      "resources": [
+        "automation/task_queue.json",
+        "Watchdog resource lease records"
+      ],
+      "fence": "task_scheduler.py run-once claims at most one eligible task, verifies exact task/lease correlation and persists transitions with queue-store SHA-CAS before workflow dispatch.",
+      "boundary": "Control-plane queue and lease state only. The production publisher remains the only writer to rulesets/**; modules/uu.conf is protected."
     }
   ],
   "workflow_native_scan": {
@@ -1827,7 +1876,8 @@
       "GitHub Pages deploy action",
       "git add/commit/push/reset/checkout",
       "GitHub Contents API SHA-CAS update",
-      "GitHub Actions artifact upload action"
+      "GitHub Actions artifact upload action",
+      "Python task scheduler and expired-lease queue-state SHA-CAS writes"
     ],
     "limitations": [
       "dynamic command construction",
