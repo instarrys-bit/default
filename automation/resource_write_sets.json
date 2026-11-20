@@ -86,20 +86,12 @@
         "verified external $AUTOMATION_PREDECESSOR_ARTIFACT_ROOT/sources/discovered_sources.json",
         "sources/source_assessments.json (read-only main baseline)"
       ],
-      "side_effects": [
-        "HTTPS reads restricted to raw.githubusercontent.com with repository binding and same-host redirect validation.",
-        "Per-URL results are CAS-appended to automation/task_queue.json task.assessment_checkpoint under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences.",
-        "All assessment documents are isolated beneath RUNNER_TEMP and uploaded as immutable Actions artifacts; no repository checkout file is modified."
-      ],
-      "evidence": "Independent task mode resolves the discovery predecessor from AUTOMATION_PREDECESSOR_ARTIFACT_ROOT and writes runtime/history/report documents only beneath AUTOMATION_ARTIFACT_ROOT. write_document uses no repository resource lease because the workspace is per-run isolated. Shared progress is written only through the fenced automation/task_queue.json queue CAS.",
+      "side_effects": "Runner-local assessment reports and runtime checkpoint files are written in Auto Sync's isolated workspace. The legacy independent task mode could persist per-URL progress in automation/task_queue.json, but that mode is disabled and is not used by monolithic_fallback.",
+      "evidence": "The active Auto Sync step calls scripts/assess_sources.py after the internal discovery step without --task-input; production_control.json selects monolithic_fallback; both standalone script adapters and orchestration entries are disabled.",
       "lease_keys": [
-        "logical/production-pipeline",
-        "sources/source_assessments.json",
-        "data/source_assessments_runtime.json",
-        "reports/source-assessment.md",
-        "logical/source-assessment-checkpoints"
+        "logical/production-pipeline"
       ],
-      "lease_enforcement": "The durable per-URL checkpoint is updated via append-only automation/task_queue.json CAS under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences. The 3600-second resource lease exceeds four 15-minute Watchdog reconciliation intervals; pending verification renews it before expiry. All assessment JSON and reports remain per-run immutable artifacts.",
+      "lease_enforcement": "The same-run assessment stage inherits workflow_auto_sync's six-hour logical/production-pipeline lease. Auto Sync does not pass --task-input or set AUTOMATION_TASK_PROCESS for this stage, so the standalone queue-checkpoint writer is not entered.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [
         "sources/source_assessments.json (monolithic checkout workspace only)",
@@ -111,7 +103,7 @@
       ],
       "lease_seconds": 3600,
       "publication": "No repository publication for assessment artifacts; monolithic report is retained only as a run artifact, independent mode uploads immutable runner-local outputs. Production Git commits remain restricted to rulesets/**.",
-      "write_boundary_fencing": "All shared checkpoint mutations are live-fenced; checkout workspace writes are exact-path lease checked in the monolithic pipeline; independent artifacts are isolated per run. Neither mode publishes source assessment documents to the repository. The production publisher stages rulesets/** only.",
+      "write_boundary_fencing": "Runner-local artifacts only in monolithic_fallback. No independent source task, predecessor workflow artifact, queue checkpoint, ruleset publication, or modules/uu.conf write is authorized by this capability.",
       "additional_serialized_writers": [],
       "additional_writer_boundary": "Restore/publish paths do not publish source assessment history or reports to the repository; only the ruleset publisher may commit rulesets/**."
     },
