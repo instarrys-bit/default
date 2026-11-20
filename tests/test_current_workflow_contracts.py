@@ -58,8 +58,8 @@ class CurrentWorkflowContractTests(unittest.TestCase):
     def test_watchdog_wake_has_correlated_task_id(self):
         auto = (WORKFLOWS / "auto_sync.yml").read_text(encoding="utf-8")
         wake = auto.split("  watchdog-reconciliation:", 1)[1]
-        self.assertIn("inputs:{automation_task_id:$task_id}", wake)
-        self.assertIn("auto-sync-watchdog-$PRODUCTION_RUN_ID", wake)
+        self.assertIn('automation_task_id":"auto-sync-watchdog-%s', wake)
+        self.assertIn('"$PRODUCTION_RUN_ID"', wake)
         self.assertNotIn("production_producer_run_id", wake)
 
     def test_scheduler_owns_recovery_and_pending_result_verification(self):
