@@ -96,5 +96,21 @@ class WatchdogQueueWriterPermissionRegressionTests(unittest.TestCase):
         self.assertIn("GITHUB_TOKEN: ${{ github.token }}", queue)
 
 
+    def test_storage_management_state_writers_use_their_job_scoped_write_token(self):
+        workflow = (ROOT / ".github" / "workflows" / "storage-management.yml").read_text(encoding="utf-8")
+        for job_name, next_job in (
+            ("mutate-ledger", "poll-recent-actions-artifacts"),
+            ("poll-recent-actions-artifacts", "ingest-actions-artifacts"),
+            ("ingest-actions-artifacts", None),
+        ):
+            with self.subTest(job=job_name):
+                block = workflow.split(f"  {job_name}:", 1)[1]
+                if next_job:
+                    block = block.split(f"  {next_job}:", 1)[0]
+                self.assertIn("      contents: write", block)
+                self.assertIn("GITHUB_TOKEN: ${{ github.token }}", block)
+                self.assertNotIn("secrets.AUTOMATION_WRITE_TOKEN", block)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)
