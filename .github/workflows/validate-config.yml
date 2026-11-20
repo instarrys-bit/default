@@ -1,8 +1,0 @@
-name: Validate Shadowrocket config against user baseline
-on:
-  workflow_dispatch:
-jobs:
-  noop:
-    runs-on: ubuntu-24.04
-    steps:
-      - run: echo retired
