@@ -258,7 +258,7 @@ jobs:
             --repository "$REPO" --branch main --token-stdin \
             --idempotency-key "$idempotency_key" --priority 100 \
             --input-json "$input_json" enqueue-auto-sync
-      - name: Recover leases and run scheduler once
+      - name: Recover leases and run scheduler with bounded retry wake
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_TOKEN: ${{ github.token }}
@@ -266,5 +266,41 @@ jobs:
           PYTHONPATH: scripts:.
         run: |
           set -euo pipefail
-          printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py \
-            --repository "$REPO" --branch main --token-stdin --max-tasks 1 run-once
+          for cycle in 1 2 3; do
+            printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py \
+              --repository "$REPO" --branch main --token-stdin --max-tasks 1 run-once
+
+            python3 scripts/remote_task_queue_runtime.py \
+              --repository "$REPO" --branch main snapshot \
+              --output "$RUNNER_TEMP/task_queue_after_scheduler.json"
+
+            retry_delay="$(python3 - "$RUNNER_TEMP/task_queue_after_scheduler.json" <<'PY'
+          import json
+          import math
+          import sys
+          from datetime import datetime, timezone
+
+          queue = json.load(open(sys.argv[1], encoding="utf-8"))
+          now = datetime.now(timezone.utc)
+          delays = []
+          for task in queue.get("tasks", []):
+              if (not isinstance(task, dict) or task.get("status") != "QUEUED"
+                      or task.get("lease") is not None or task.get("dispatch_intent") is not None):
+                  continue
+              try:
+                  due = datetime.fromisoformat(task["not_before"].replace("Z", "+00:00"))
+              except (KeyError, TypeError, ValueError):
+                  continue
+              seconds = math.ceil((due - now).total_seconds())
+              if 0 < seconds <= 120:
+                  delays.append(seconds)
+          print(min(delays) if delays else 0)
+          PY
+          )"
+
+            if [ "$retry_delay" -le 0 ] || [ "$retry_delay" -gt 120 ]; then
+              break
+            fi
+            echo "A durable task retry becomes eligible in ${retry_delay}s; waiting inside the bounded Watchdog wake."
+            sleep "$retry_delay"
+          done
