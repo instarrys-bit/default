@@ -397,6 +397,7 @@ jobs:
             if [ -n "$artifact_id" ]; then
               if ! gh run download "$run_id" --name deterministic-audit-output --dir /tmp/prior-audit-state; then
                 echo "Actions artifact download failed; trying the immutable Storage V2 CAS copy."
+                rm -f "$archive"
                 artifact_id=""
               fi
             fi
@@ -424,7 +425,11 @@ jobs:
             fi
             test -s "$archive"
             python3 scripts/restore_automation_state.py --archive "$archive" --root .
-            echo "Restored high-volume state from audit run $run_id (Actions artifact ${artifact_id:-expired; CAS fallback})."
+            if [ -n "$artifact_id" ]; then
+              echo "Restored high-volume state from audit run $run_id using Actions artifact $artifact_id."
+            else
+              echo "Restored high-volume state from audit run $run_id using verified Storage V2 CAS."
+            fi
             restored=1
             break
           done
