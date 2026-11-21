@@ -191,7 +191,7 @@
     },
     "automation_write_boundary_validator": {
       "path": "scripts/validate_automation_write_boundary.py",
-      "git_blob_sha": "8bd0debc192faeb69b76b7fef584525922b7c59d"
+      "git_blob_sha": "0b8c390c0532f5a4d86b8fa7dae368e0940ec9cb"
     },
     "baseline_proposal_tool": {
       "path": "scripts/register_config_baseline.py",
