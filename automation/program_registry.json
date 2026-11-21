@@ -1839,7 +1839,6 @@
       ],
       "depends_on": [
         "script_register_config_baseline",
-        "script_remote_task_queue_runtime",
         "script_run_preflight_tests",
         "script_validate_automation_write_boundary",
         "script_validate_execution_adapters",
