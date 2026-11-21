@@ -394,8 +394,6 @@ class SourceHandoffPolicyTests(unittest.TestCase):
         }
         self.assertEqual(select_production_worker_task([discovery, assessment, production], "a" * 64), "")
 
-if __name__ == "__main__":
-    unittest.main(verbosity=2)
 
 
 class WatchdogAssessmentResumeContractTests(unittest.TestCase):
@@ -438,6 +436,9 @@ class WatchdogAssessmentResumeContractTests(unittest.TestCase):
         self.assertIn("verify_only", scheduler)
         self.assertIn("verify_pending", scheduler)
 
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
