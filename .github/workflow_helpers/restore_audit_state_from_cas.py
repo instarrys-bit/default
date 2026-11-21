@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import os
 import re
 import tempfile
+import zipfile
 from pathlib import Path
 
 from storage.v2.artifact_store import GitHubContentsArtifactStore
@@ -81,6 +83,32 @@ def reconstruct_archive(catalog: object, store, *, expected_run_id: str) -> byte
     return archive
 
 
+
+def unwrap_artifact_payload(container: bytes) -> bytes:
+    """Extract the single tar.gz file from GitHub's ZIP-wrapped artifact envelope."""
+    if not container.startswith(b"PK\\x03\\x04"):
+        if not container.startswith(b"\\x1f\\x8b"):
+            raise ValueError("verified CAS artifact is neither a GitHub ZIP envelope nor a gzip tar archive")
+        return container
+
+    try:
+        with zipfile.ZipFile(io.BytesIO(container)) as bundle:
+            files = [item for item in bundle.infolist() if not item.is_dir()]
+            matches = [item for item in files if item.filename == "audit-output.tar.gz"]
+            if len(files) != 1 or len(matches) != 1:
+                raise ValueError("GitHub artifact ZIP must contain exactly one audit-output.tar.gz file")
+            item = matches[0]
+            if item.file_size <= 0 or item.file_size > MAX_ARCHIVE_BYTES:
+                raise ValueError("nested audit archive is empty or exceeds the safe size limit")
+            payload = bundle.read(item)
+    except zipfile.BadZipFile as exc:
+        raise ValueError("CAS artifact has a ZIP signature but is not a valid ZIP archive") from exc
+
+    if not payload.startswith(b"\\x1f\\x8b"):
+        raise ValueError("GitHub artifact ZIP payload is not a gzip tar archive")
+    return payload
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repository", required=True)
@@ -96,7 +124,8 @@ def main() -> int:
 
     catalog = json.loads(args.catalog.read_text(encoding="utf-8"))
     store = GitHubContentsArtifactStore(args.repository, args.branch, token)
-    archive = reconstruct_archive(catalog, store, expected_run_id=args.run_id)
+    container = reconstruct_archive(catalog, store, expected_run_id=args.run_id)
+    archive = unwrap_artifact_payload(container)
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.NamedTemporaryFile(dir=args.output.parent, prefix=args.output.name + ".", delete=False) as handle:
@@ -108,6 +137,8 @@ def main() -> int:
     print(json.dumps({
         "status": "verified",
         "run_id": args.run_id,
+        "container_sha256": sha256(container),
+        "container_size_in_bytes": len(container),
         "archive_sha256": sha256(archive),
         "size_in_bytes": len(archive),
     }, sort_keys=True))
