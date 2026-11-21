@@ -58,14 +58,14 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
             ],
         )
         self.assertFalse(any("apple" in query.lower() for query in discovery.QUERIES))
-        watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
-        policy = (ROOT / "scripts" / "source_handoff_policy.py").read_text(encoding="utf-8")
-        self.assertIn("def discovery_pipeline_revision", policy)
-        self.assertIn('"scripts/discover_sources.py"', policy)
-        self.assertIn('".github/workflows/source-discovery.yml"', policy)
-        self.assertIn("from source_handoff_policy import discovery_pipeline_revision", watchdog)
-        self.assertIn("print(discovery_pipeline_revision(Path.cwd()))", watchdog)
-        self.assertIn('base_key="source-discovery:$discovery_day:$discovery_revision"', watchdog)
+        production = (ROOT / ".github" / "workflows" / "auto_sync.yml").read_text(encoding="utf-8")
+        self.assertIn("Discover candidate source repositories", production)
+        self.assertIn("Assess discovered rule-list syntax", production)
+        self.assertLess(
+            production.index("Discover candidate source repositories"),
+            production.index("Assess discovered rule-list syntax"),
+        )
+        self.assertFalse((ROOT / ".github" / "workflows" / "source-discovery.yml").exists())
 
 
     def test_fortune_rankings_produce_exactly_100_provenanced_enterprise_targets(self):
@@ -240,18 +240,21 @@ class SourceDiscoveryScopeTests(unittest.TestCase):
 
 
     def test_discovery_and_assessment_share_one_fenced_supervision_lease(self):
-        document = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
-        adapters = {item["target_program_id"]: item for item in document["adapters"]}
-        key = "logical/source-dag-supervision"
-        discovery = adapters["workflow_source_discovery"]["resource_contract"]
-        assessment = adapters["script_assess_sources"]["resource_contract"]
-        self.assertIn(key, discovery["resource_keys"])
-        self.assertIn(key, assessment["resource_keys"])
-        self.assertEqual(discovery["lease_seconds"], assessment["lease_seconds"])
-        self.assertEqual(discovery["lease_seconds"], 3600)
-        self.assertIs(discovery["fencing_required"], True)
-        self.assertIs(assessment["fencing_required"], True)
-        self.assertEqual(adapters["script_assess_sources"]["write_resources"], [])
+        registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
+        programs = {item["id"]: item for item in registry["programs"]}
+        self.assertNotIn("workflow_source_discovery", programs)
+        assessor = programs["script_assess_sources"]
+        self.assertIn("script_discover_sources", assessor["depends_on"])
+        adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
+        adapter = next(item for item in adapters["adapters"]
+                       if item["target_program_id"] == "script_assess_sources")
+        self.assertFalse(adapter["enabled"])
+        self.assertEqual(adapter["allowed_callers"], [])
+        workflow = (ROOT / ".github" / "workflows" / "auto_sync.yml").read_text(encoding="utf-8")
+        self.assertLess(workflow.index("Discover candidate source repositories"),
+                        workflow.index("Assess discovered rule-list syntax"))
+        self.assertEqual(workflow.count("python3 scripts/assess_sources.py"), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

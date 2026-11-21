@@ -11,6 +11,16 @@ from pathlib import Path
 from json_document_store import manifest_path, read_document, write_document
 from register_discovered_sources import build_registry, decode_registry_storage, encode_registry_storage
 
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def load_existing_registry(path: Path) -> dict:
+    """Read the complete historical inline or sharded registry without mutating it."""
+    if not path.is_file() and not manifest_path(path).is_file():
+        return {}
+    stored = read_document(path, "records", {"records": []})
+    return decode_registry_storage(stored)
+
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -20,6 +30,7 @@ def main() -> int:
     parser.add_argument("--expected-inventory-sha256", required=True)
     parser.add_argument("--expected-run-id", required=True)
     parser.add_argument("--expected-head-sha", required=True)
+    parser.add_argument("--existing-registry", type=Path, default=ROOT / "rulesets/source_candidate_registry.json")
     args = parser.parse_args()
 
     artifact_bytes = args.artifact_zip.read_bytes()
@@ -51,16 +62,16 @@ def main() -> int:
         "artifact_sha256": artifact_sha,
         "mode": "independent",
     }
-    logical = build_registry({}, discovery, provenance, "2026-11-10T05:00:00+00:00")
-    expected_repositories = len(discovery["candidates"])
-    expected_sources = sum(
-        len(set(map(str, candidate.get("rule_list_urls", []))))
-        for candidate in discovery["candidates"]
-    )
-    if logical["repository_count"] != expected_repositories:
-        raise SystemExit("repository count mismatch after registry build")
-    if logical["source_file_count"] != expected_sources:
-        raise SystemExit("source file count mismatch after registry build")
+    existing = load_existing_registry(args.existing_registry)
+    logical = build_registry(existing, discovery, provenance, "2026-11-10T05:00:00+00:00")
+    new_repositories = len({str(item.get("repository", "")).lower() for item in discovery["candidates"]})
+    new_sources = len({str(url).strip() for candidate in discovery["candidates"] for url in candidate.get("rule_list_urls", []) if str(url).strip()})
+    if logical["repository_count"] < new_repositories:
+        raise SystemExit("historical merge lost one or more discovered repositories")
+    if logical["source_file_count"] < new_sources:
+        raise SystemExit("historical merge lost one or more discovered source files")
+    expected_repositories = logical["repository_count"]
+    expected_sources = logical["source_file_count"]
 
     typed = encode_registry_storage(logical)
     with tempfile.TemporaryDirectory(prefix="source-registry-artifact-dryrun-") as temp:
@@ -98,6 +109,10 @@ def main() -> int:
             "discovery_head_sha": provenance["workflow_head_sha"],
             "artifact_sha256": artifact_sha,
             "inventory_sha256": inventory_sha,
+            "historical_repository_count": len(existing.get("repositories", [])),
+            "historical_source_file_count": len(existing.get("source_files", [])),
+            "new_repository_count": new_repositories,
+            "new_source_file_count": new_sources,
             "repository_count": logical["repository_count"],
             "source_file_count": logical["source_file_count"],
             "typed_record_count": manifest["record_count"],

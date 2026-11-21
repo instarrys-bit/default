@@ -188,7 +188,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertFalse(writer_ids & control_ids)
         self.assertFalse(nonwriter_ids & control_ids)
         self.assertEqual(writer_ids | nonwriter_ids | control_ids, python_ids)
-        self.assertEqual(len(python_ids), 67)
+        self.assertEqual(len(python_ids), 68)
         self.assertEqual(writes["direct_mutation_scan"]["registered_component_count"], len(python_ids))
 
 

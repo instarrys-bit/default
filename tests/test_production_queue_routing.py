@@ -1,4 +1,5 @@
 import json
+import re
 import unittest
 from pathlib import Path
 
@@ -10,41 +11,47 @@ AUTO_SYNC = ROOT / ".github" / "workflows" / "auto_sync.yml"
 class ProductionQueueRoutingTests(unittest.TestCase):
     def test_watchdog_runs_have_unique_concurrency_groups(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
-        self.assertIn("group: shadowrocket-automation-watchdog-", workflow)
+        groups = re.findall(r"(?m)^\s+group:\s*(.+)$", workflow)
+        self.assertGreaterEqual(len(groups), 3)
+        self.assertEqual(len(groups), len(set(groups)))
         self.assertIn("github.run_id", workflow)
-        self.assertIn("Queue writes use CAS", workflow)
+        self.assertIn("task-queue-supervision", workflow)
+        queue_store = (ROOT / "storage" / "v2" / "queue_store.py").read_text(encoding="utf-8")
+        self.assertIn("GitHubContentsJsonStore", queue_store)
+        self.assertIn("sha", queue_store.lower())
 
     def test_queue_supervision_checks_relevant_predecessors(self):
         workflow = WATCHDOG.read_text(encoding="utf-8")
-        self.assertIn("needs: [health-check, stale-run-watch, manifest-integrity]", workflow)
-        self.assertIn("needs.stale-run-watch.result == 'success'", workflow)
-        self.assertIn("needs.manifest-integrity.result == 'success' || needs.manifest-integrity.result == 'skipped'", workflow)
-        queue_job = workflow.split("  task-queue-supervision:", 1)[1].split("  stale-run-watch:", 1)[0]
-        self.assertIn("group: shadowrocket-watchdog-task-supervision", queue_job)
+        queue_job = workflow.split("  task-queue-supervision:", 1)[1]
+        self.assertIn("needs: [health-check]", queue_job)
+        self.assertIn("needs.health-check.result == 'success'", queue_job)
+        self.assertIn("group: shadowrocket-watchdog-queue-writer-main", queue_job)
+        self.assertIn("actions: write", queue_job)
+        self.assertIn("contents: write", queue_job)
         self.assertNotIn("group: shadowrocket-main-writer", queue_job)
-        self.assertIn("(github.event_name == 'workflow_run' || needs.stale-run-watch.result == 'success')", queue_job)
+        self.assertIn("task_scheduler.py", queue_job)
+        self.assertIn("--max-tasks 1 run-once", queue_job)
 
     def test_all_stale_audit_checks_use_the_same_queue_aware_base_guard(self):
-        workflow = WATCHDOG.read_text(encoding="utf-8")
-        stale_job = workflow.split("  stale-run-watch:", 1)[1].split("  manifest-integrity:", 1)[0]
-        self.assertIn("bash scripts/verify_publish_base.sh --check-only", stale_job)
-        self.assertNotIn('select(startswith("docs/") | not)', stale_job)
-        manifest_job = workflow.split("  manifest-integrity:", 1)[1]
-        self.assertIn("enqueue-auto-sync", manifest_job)
-        self.assertNotIn("gh workflow run auto_sync.yml", manifest_job)
+        watchdog = WATCHDOG.read_text(encoding="utf-8")
+        production = AUTO_SYNC.read_text(encoding="utf-8")
+        self.assertNotIn("  stale-run-watch:", watchdog)
+        self.assertNotIn("  manifest-integrity:", watchdog)
+        self.assertIn("Stop stale audit before discovery and source downloads", production)
+        self.assertIn("Stop stale audit before expensive deterministic review", production)
+        self.assertIn("verify_publish_base.sh", production)
+        self.assertIn("Independently verify committed remote rulesets", production)
 
     def test_superseded_audit_is_replaced_only_when_inputs_advanced(self):
-        workflow = WATCHDOG.read_text(encoding="utf-8")
-        self.assertIn('case "$SOURCE_CONCLUSION" in', workflow)
-        self.assertIn('if [ "$SOURCE_SHA" = "$current_sha" ]', workflow)
-        self.assertIn("Same-SHA deterministic failure requires diagnosis", workflow)
-        self.assertIn('recovery_kind="superseded_inputs"', workflow)
-        self.assertIn('idempotency_key="production:input:$current_fingerprint:$current_sha"', workflow)
-        self.assertIn('baseline_source_sha:$sha', workflow)
-        self.assertIn('--arg sha "$current_sha"', workflow)
-        self.assertIn("recomputing intent against current main", workflow)
-        self.assertNotIn('idempotency_key="auto-sync-superseded:$SOURCE_RUN_ID"', workflow)
-        self.assertIn("bash scripts/verify_publish_base.sh --check-only", workflow)
+        intent = (ROOT / "scripts" / "production_intent.py").read_text(encoding="utf-8")
+        scheduler = (ROOT / "scripts" / "task_scheduler.py").read_text(encoding="utf-8")
+        self.assertIn("def active_production_fingerprints", intent)
+        self.assertIn('resource_lease.get("status") == "RELEASED"', intent)
+        self.assertIn("expires_at <= now", intent)
+        self.assertIn("supersede_stale_queued_production_tasks", scheduler)
+        self.assertIn("cancel_stale_predecessor_tasks", scheduler)
+        self.assertIn("Stop stale audit before discovery and source downloads",
+                      AUTO_SYNC.read_text(encoding="utf-8"))
 
     def test_retired_request_intake_is_not_a_production_dependency(self):
         self.assertFalse((ROOT / ".github" / "workflows" / "request-intake.yml").exists())

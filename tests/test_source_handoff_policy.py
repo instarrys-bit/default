@@ -1,3 +1,4 @@
+import json
 import sys
 import tempfile
 import unittest
@@ -398,61 +399,45 @@ if __name__ == "__main__":
 
 
 class WatchdogAssessmentResumeContractTests(unittest.TestCase):
-    def test_assessment_artifact_upload_dispatches_exact_followup_watchdog(self):
-        workflow = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
-        self.assertIn("assessment_producer_run_id:", workflow)
-        self.assertIn("Wake Watchdog after verified Assessment artifact upload", workflow)
-        self.assertIn("steps.run-queue.outputs.assessment_output_expected == 'true'", workflow)
-        self.assertIn("assessment-completion-relay.yml/dispatches", workflow)
-        self.assertIn("inputs:{producer_run_id:$run_id}", workflow)
-        self.assertNotIn("automation-watchdog.yml/dispatches", workflow)
-        relay = (ROOT / ".github" / "workflows" / "assessment-completion-relay.yml").read_text(encoding="utf-8")
-        self.assertIn("producer.get('status') != 'completed'", relay)
-        self.assertIn("producer.get('conclusion') != 'success'", relay)
-        self.assertIn("source-assessment-output", relay)
-        self.assertIn("automation-watchdog.yml/dispatches", relay)
+    def test_discovery_and_assessment_are_ordered_inside_one_production_run(self):
+        workflow = (ROOT / ".github" / "workflows" / "auto_sync.yml").read_text(encoding="utf-8")
+        self.assertIn("Discover candidate source repositories", workflow)
+        self.assertIn("Assess discovered rule-list syntax", workflow)
+        self.assertLess(workflow.index("Discover candidate source repositories"),
+                        workflow.index("Assess discovered rule-list syntax"))
+        self.assertFalse((ROOT / ".github" / "workflows" / "source-discovery.yml").exists())
+        self.assertFalse((ROOT / ".github" / "workflows" / "assessment-completion-relay.yml").exists())
 
-    def test_production_dispatch_waits_for_exact_successful_assessment_producer(self):
-        workflow = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
-        self.assertIn("Wait for exact callback producer completion before queue reconciliation", workflow)
-        self.assertIn("SOURCE_DISCOVERY_RUN_ID: ${{ inputs.source_discovery_run_id || '' }}", workflow)
-        self.assertIn("ASSESSMENT_PRODUCER_RUN_ID: ${{ inputs.assessment_producer_run_id || '' }}", workflow)
-        self.assertIn("PRODUCTION_PRODUCER_RUN_ID: ${{ inputs.production_producer_run_id || '' }}", workflow)
-        self.assertIn('".github/workflows/source-discovery.yml"', workflow)
-        self.assertIn('".github/workflows/automation-watchdog.yml"', workflow)
-        self.assertIn('".github/workflows/auto_sync.yml"', workflow)
-        self.assertIn('producer.get("status") == "completed"', workflow)
-        self.assertIn('producer.get("conclusion") != "success"', workflow)
-        self.assertIn('expected_path == ".github/workflows/auto_sync.yml" and not producer.get("conclusion")', workflow)
-        self.assertIn("queue reconciliation is held", workflow)
-        self.assertLess(
-            workflow.index("Wait for exact callback producer completion before queue reconciliation"),
-            workflow.index("Resolve completed Discovery run from durable task correlation"),
-        )
-
+    def test_assessment_is_a_same_run_stage_not_an_independent_queue_target(self):
+        registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
+        programs = {item["id"]: item for item in registry["programs"]}
+        self.assertNotIn("workflow_source_discovery", programs)
+        self.assertIn("script_discover_sources", programs)
+        self.assertIn("script_discover_sources", programs["script_assess_sources"]["depends_on"])
+        adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
+        adapter = next(item for item in adapters["adapters"]
+                       if item["target_program_id"] == "script_assess_sources")
+        self.assertFalse(adapter["enabled"])
+        self.assertEqual(adapter["allowed_callers"], [])
+        workflow = (ROOT / ".github" / "workflows" / "auto_sync.yml").read_text(encoding="utf-8")
+        self.assertEqual(workflow.count("python3 scripts/assess_sources.py"), 1)
 
     def test_production_completion_dispatches_exact_run_to_watchdog(self):
         watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
         production = (ROOT / ".github" / "workflows" / "auto_sync.yml").read_text(encoding="utf-8")
-        self.assertIn("production_producer_run_id:", watchdog)
         self.assertIn("Wake Watchdog after production workflow completion", production)
         self.assertIn("PRODUCTION_RUN_ID: ${{ github.run_id }}", production)
-        self.assertIn("inputs:{production_producer_run_id:$run_id}", production)
-        self.assertIn("workflow_dispatch", production)
+        self.assertIn("automation-watchdog.yml/dispatches", production)
+        self.assertIn("automation_task_id", watchdog)
+        self.assertIn("workflow_dispatch", watchdog)
 
-    def test_discovery_resolver_initializes_repository_context_before_run_lookup(self):
-        workflow = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
-        resolver = workflow.split("Resolve completed Discovery run from durable task correlation", 1)[1].split(
-            "Download artifact from the exact discovery workflow run", 1
-        )[0]
-        self.assertIn('repo, token = os.environ["GITHUB_REPOSITORY"], os.environ["GITHUB_TOKEN"]', resolver)
-        self.assertLess(resolver.index("repo, token ="), resolver.index("run_url ="))
+    def test_watchdog_reconciles_one_durable_task_per_supervision_cycle(self):
+        watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        scheduler = (ROOT / "scripts" / "task_scheduler.py").read_text(encoding="utf-8")
+        self.assertIn("--max-tasks 1 run-once", watchdog)
+        self.assertIn("verify_only", scheduler)
+        self.assertIn("verify_pending", scheduler)
 
-    def test_watchdog_verifies_all_pending_results_before_selecting_any_new_task(self):
-        workflow = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
-        run_queue = workflow.split("Recover leases, verify results, and dispatch one task before artifact upload", 1)[1].split(
-            "Upload verified source assessment outputs as immutable artifact", 1
-        )[0]
-        self.assertIn('SCHEDULER_ACTION="run""-once"', run_queue)
-        self.assertIn('--verify-only "$SCHEDULER_ACTION"', run_queue)
-        self.assertLess(run_queue.index('--verify-only "$SCHEDULER_ACTION"'), run_queue.index("selected_task_id="))
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)
