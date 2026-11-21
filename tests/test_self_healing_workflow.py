@@ -48,7 +48,7 @@ class UnifiedAutomationArchitectureTests(unittest.TestCase):
         queue_store = (ROOT / "storage" / "v2" / "queue_store.py").read_text(encoding="utf-8")
         incident_store = (ROOT / "storage" / "v2" / "incident_store.py").read_text(encoding="utf-8")
         self.assertIn("  mutate-ledger:", workflow)
-        self.assertIn("choices: [record, resolve]", workflow)
+        self.assertIn("options: [record, resolve]", workflow)
         self.assertIn("automation/task_queue.json", queue_store)
         self.assertIn("storage/v2/incidents.json", incident_store)
         self.assertIn("contents: write", workflow)
