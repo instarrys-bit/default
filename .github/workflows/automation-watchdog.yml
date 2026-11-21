@@ -234,7 +234,7 @@ jobs:
             automation
             sources
             modules
-          .github/workflow_helpers
+            .github/workflow_helpers
           sparse-checkout-cone-mode: true
           persist-credentials: false
       - name: Set up Python
