@@ -131,6 +131,8 @@ class ProductionIntentTests(unittest.TestCase):
         manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
         path = ".github/workflow_helpers/restore_audit_state_from_cas.py"
         self.assertIn(path, manifest["production_input_paths"])
+        watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        self.assertIn('      - "' + path + '"\n', watchdog)
         result = classify_paths([path], manifest)
         self.assertEqual(result["status"], "INPUT_CHANGED")
         self.assertEqual(result["production_input_changes"], [path])
