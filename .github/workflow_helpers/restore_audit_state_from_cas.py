@@ -87,7 +87,7 @@ def reconstruct_archive(catalog: object, store, *, expected_run_id: str) -> byte
 def unwrap_artifact_payload(container: bytes) -> bytes:
     """Extract the single tar.gz file from GitHub's ZIP-wrapped artifact envelope."""
     if not zipfile.is_zipfile(io.BytesIO(container)):
-    if not zipfile.is_zipfile(io.BytesIO(container)):
+        if container[:2] != bytes.fromhex("1f8b"):
             raise ValueError("verified CAS artifact is neither a GitHub ZIP envelope nor a gzip tar archive")
         return container
 
