@@ -37,6 +37,7 @@ class PublishBaseIntegrationTests(unittest.TestCase):
             "production_input_paths": ["modules/uu.conf", "scripts/build_rulesets.py"],
             "non_production_path_patterns": [
                 "docs/**", "automation/**", "reports/**", "rulesets/**",
+                "storage/**",
                 ".github/workflows/automation-watchdog.yml",
                 "sources/source_activation_log.json", "scripts/resource_lease_runtime.py"
             ],
@@ -153,7 +154,7 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         self.assertEqual((self.work / "shadowrocket" / "uu.conf").read_text(encoding="utf-8"), "protected\n")
 
     def test_verified_queue_only_commit_rebases_to_current_main(self):
-        self.add_queue_commit()
+        self.add_queue_commit(message="chore(storage): update automation/task_queue.json revision 1")
         result = self.run_guard()
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("strictly verified durable queue-state commits", result.stdout)
@@ -161,7 +162,7 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         self.assertEqual((self.work / "shadowrocket" / "uu.conf").read_text(encoding="utf-8").strip(), "protected")
 
     def test_publish_accepts_verified_queue_commit_mixed_with_monitoring_change(self):
-        self.add_queue_commit()
+        self.add_queue_commit(message="chore(storage): update automation/task_queue.json revision 1")
         git(self.work, "fetch", "origin")
         git(self.work, "checkout", "-B", "main", "origin/main")
         dashboard = self.work / "dashboard" / "index.html"
@@ -199,39 +200,53 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("strictly verified durable queue-state commits", result.stdout)
 
+    def test_api_check_accepts_storage_queue_commit_message(self):
+        result = self.run_check_only(self.queue_compare(
+            message="chore(storage): update automation/task_queue.json revision 1"
+        ))
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn("strictly verified durable queue-state commits", result.stdout)
+
+    def test_api_check_rejects_malformed_storage_queue_revision(self):
+        result = self.run_check_only(self.queue_compare(
+            message="chore(storage): update automation/task_queue.json revision zero"
+        ))
+        self.assertNotEqual(result.returncode, 0, result.stdout)
+        self.assertIn("A declared production input changed", result.stdout)
+
     def test_api_check_rejects_untrusted_queue_commit(self):
         result = self.run_check_only(self.queue_compare(author_email="test@example.invalid"))
         self.assertNotEqual(result.returncode, 0, result.stdout)
         self.assertIn("A declared production input changed", result.stdout)
 
-    def test_api_check_accepts_verified_queue_commit_mixed_with_monitoring_changes(self):
+    def test_api_check_accepts_verified_queue_commit_mixed_with_storage_artifacts(self):
         queue_sha = "a" * 40
-        monitor_sha = "b" * 40
+        storage_sha = "b" * 40
+        storage_path = "storage/v2/artifacts/sha256/" + "c" * 64
         compare = {
             "status": "ahead", "ahead_by": 2, "behind_by": 0,
             "files": [
                 {"filename": "automation/task_queue.json", "status": "modified"},
-                {"filename": "dashboard/index.html", "status": "modified"},
-                {"filename": "scripts/build_dashboard_snapshot.py", "status": "modified"},
+                {"filename": storage_path, "status": "added"},
             ],
-            "commits": [{"sha": queue_sha}, {"sha": monitor_sha}],
+            "commits": [{"sha": queue_sha}, {"sha": storage_sha}],
         }
         details = {
             queue_sha: {
                 "commit": {
-                    "message": "Update durable automation task queue",
+                    "message": "chore(storage): update automation/task_queue.json revision 1",
                     "author": {"email": "41898282+github-actions[bot]@users.noreply.github.com"},
                 },
                 "parents": [{"sha": self.base}],
                 "files": [{"filename": "automation/task_queue.json", "status": "modified"}],
             },
-            monitor_sha: {
-                "commit": {"message": "Refresh dashboard", "author": {"email": "test@example.invalid"}},
+            storage_sha: {
+                "commit": {
+                    "message": "storage(v2): stage immutable object cccccccc",
+                    "author": {"email": "41898282+github-actions[bot]@users.noreply.github.com"},
+                },
                 "parents": [{"sha": queue_sha}],
-                "files": [
-                    {"filename": "dashboard/index.html", "status": "modified"},
-                    {"filename": "scripts/build_dashboard_snapshot.py", "status": "modified"},
-                ],
+                "files": [{"filename": storage_path, "status": "added"}],
             },
         }
         result = self.run_check_only_with_commit_details(compare, details)
@@ -251,7 +266,7 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         details = {
             queue_sha: {
                 "commit": {
-                    "message": "Update durable automation task queue",
+                    "message": "chore(storage): update automation/task_queue.json revision 1",
                     "author": {"email": "41898282+github-actions[bot]@users.noreply.github.com"},
                 },
                 "parents": [{"sha": self.base}],

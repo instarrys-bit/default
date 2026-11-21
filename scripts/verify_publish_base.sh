@@ -6,6 +6,14 @@ set -euo pipefail
 mode="${1:-publish}"
 : "${GITHUB_SHA:?GITHUB_SHA must identify the exact audited commit}"
 
+is_trusted_queue_commit_message() {
+  local message="$1"
+  if [ "$message" = "Update durable automation task queue" ]; then
+    return 0
+  fi
+  [[ "$message" =~ ^chore\(storage\):\ update\ automation/task_queue\.json\ revision\ [1-9][0-9]*$ ]]
+}
+
 is_docs_only_compare() {
   jq -e '
     .status == "ahead"
@@ -58,7 +66,7 @@ is_queue_only_compare() {
     and .files[0].filename == "automation/task_queue.json"
     and .files[0].status == "modified"
     and all(.commits[];
-      .commit.message == "Update durable automation task queue"
+      (.commit.message == "Update durable automation task queue" or (.commit.message | test("^chore\\(storage\\): update automation/task_queue\\.json revision [1-9][0-9]*$")))
       and .commit.author.email == "41898282+github-actions[bot]@users.noreply.github.com"
       and (.parents | length) == 1
     )
@@ -89,7 +97,7 @@ is_verified_mixed_queue_and_non_input_compare() {
     if jq -e '[.files[]?.filename] | index("automation/task_queue.json") != null' <<< "$detail" >/dev/null 2>&1; then
       queue_commit_seen=true
       jq -e '
-        .commit.message == "Update durable automation task queue"
+        (.commit.message == "Update durable automation task queue" or (.commit.message | test("^chore\\(storage\\): update automation/task_queue\\.json revision [1-9][0-9]*$")))
         and .commit.author.email == "41898282+github-actions[bot]@users.noreply.github.com"
         and (.parents | length) == 1
         and (.files | length) == 1
@@ -162,7 +170,7 @@ is_verified_mixed_queue_and_non_input_history() {
       author_email="$(git show -s --format=%ae "$commit")"
       subject="$(git show -s --format=%s "$commit")"
       [ "$author_email" = "41898282+github-actions[bot]@users.noreply.github.com" ] || return 1
-      [ "$subject" = "Update durable automation task queue" ] || return 1
+      is_trusted_queue_commit_message "$subject" || return 1
       [ "$changed_status" = "$expected_status" ] || return 1
     fi
   done <<< "$commits"
@@ -220,7 +228,7 @@ if [ -n "$changed_paths" ]; then
       if [ "$commit_sha" != "$commit" ] || [ -n "${extra:-}" ] ||
          [ "$parent_sha" != "$expected_parent" ] ||
          [ "$author_email" != "41898282+github-actions[bot]@users.noreply.github.com" ] ||
-         [ "$subject" != "Update durable automation task queue" ] ||
+         ! is_trusted_queue_commit_message "$subject" ||
          [ "$changed_status" != "$expected_status" ]; then
         echo "Queue state advanced with an untrusted, mixed, or non-linear commit; refusing to publish stale audit output." >&2
         exit 1

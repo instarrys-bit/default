@@ -45,7 +45,8 @@
     "scripts/persist_review_cursor.py",
     "scripts/json_document_store.py",
     "scripts/verify_published_rulesets.py",
-    "scripts/resolve_source_artifacts.py"
+    "scripts/resolve_source_artifacts.py",
+    "scripts/verify_publish_base.sh"
   ],
   "non_production_path_patterns": [
     ".github/workflow_helpers/check_source_assessment_artifact.py",
@@ -93,7 +94,6 @@
     "scripts/task_scheduler.py",
     "scripts/validate_execution_adapters.py",
     "scripts/validate_program_registry.py",
-    "scripts/verify_publish_base.sh",
     "scripts/watchdog_recovery_policy.py",
     "sources/discovered_sources.json*",
     "sources/domain_reviews.json*",
