@@ -2,6 +2,7 @@ import hashlib
 import io
 import zipfile
 import sys
+import tarfile
 import unittest
 from pathlib import Path
 
@@ -28,6 +29,16 @@ class FakeStore:
 
 def digest(data):
     return hashlib.sha256(data).hexdigest()
+
+
+def make_gzip_tar():
+    body = b"verified automation state"
+    buffer = io.BytesIO()
+    with tarfile.open(fileobj=buffer, mode="w:gz") as archive:
+        item = tarfile.TarInfo("state.json")
+        item.size = len(body)
+        archive.addfile(item, io.BytesIO(body))
+    return buffer.getvalue(), body
 
 
 class RestoreAuditStateFromCASTests(unittest.TestCase):
@@ -89,15 +100,19 @@ class RestoreAuditStateFromCASTests(unittest.TestCase):
             reconstruct_archive(catalog, store, expected_run_id="42243792540")
 
     def test_unwraps_github_artifact_zip_envelope(self):
-        payload = bytes.fromhex("1f8b") + b"compressed-tar-payload"
+        payload, expected_state = make_gzip_tar()
         buffer = io.BytesIO()
         with zipfile.ZipFile(buffer, "w", compression=zipfile.ZIP_STORED) as bundle:
             bundle.writestr("audit-output.tar.gz", payload)
-        self.assertEqual(unwrap_artifact_payload(buffer.getvalue()), payload)
+        restored = unwrap_artifact_payload(buffer.getvalue())
+        with tarfile.open(fileobj=io.BytesIO(restored), mode="r:gz") as archive:
+            self.assertEqual(archive.extractfile("state.json").read(), expected_state)
 
     def test_accepts_direct_gzip_archive(self):
-        payload = bytes.fromhex("1f8b") + b"direct-tar-payload"
-        self.assertEqual(unwrap_artifact_payload(payload), payload)
+        payload, expected_state = make_gzip_tar()
+        restored = unwrap_artifact_payload(payload)
+        with tarfile.open(fileobj=io.BytesIO(restored), mode="r:gz") as archive:
+            self.assertEqual(archive.extractfile("state.json").read(), expected_state)
 
     def test_rejects_unexpected_zip_contents(self):
         buffer = io.BytesIO()
