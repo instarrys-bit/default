@@ -1,16 +1,16 @@
 {
   "latest_snapshot": {
-    "artifact_content_sha256": "60c241aedc7ceac234c78daf8ff0960c58c89fc302ab664768ec52e098396942",
-    "artifact_record_id": "0e09de4d06cd4cf59c4cc57c331e512fa6495b65f15ac3196c6e6af0e0d59ff9",
-    "captured_at": "2026-11-21T17:23:33Z",
+    "artifact_content_sha256": "0d6551e86a6f5acfb3771730e7d056426510982c9a999d6499aac9955421fb55",
+    "artifact_record_id": "a8e0a9983b2bd38c40a4002d9f44c2bd35ab753b4f80618c5dd8e146e9945cab",
+    "captured_at": "2026-11-21T17:34:58Z",
     "file_count": 266,
-    "inventory_digest": "5db1642ea771a7415289f67810bc51b68f0bdae2f2d71142fdd10351e67ef499",
+    "inventory_digest": "ad8b4b77876a6c1ce82cba4632cd61be7e3529048455fe9e00b4bf411f774472",
     "pull_request_count": 2,
-    "source_main_sha": "6fa8fe38725215f10042ac1df64f1861abd83610",
-    "source_tree_digest": "2d32e9da702f94e77586b12807855298d2d522277e4819f72348afa87b4b6804",
+    "source_main_sha": "3696dc6ef50eace71bcafb9cb7fb3a865963fb95",
+    "source_tree_digest": "1f1fd5c899394adef4520de45d1218be19097a0bc3605ba033fffe834b9427b7",
     "uu_conf_git_blob_sha": "86b87a33b07e881ff3bb1a32e852001b52708e97",
     "uu_conf_sha256": "f2765481c4331bdc7b572eb557a84c2d341c960488d55a31846bf8c843398427"
   },
-  "revision": 5,
+  "revision": 6,
   "schema_version": 1
 }
