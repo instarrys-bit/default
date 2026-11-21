@@ -22,9 +22,10 @@ class ManagedConfigGuardPolicyTests(unittest.TestCase):
         self.assertTrue(metadata["automation_may_identify_file"])
         self.assertTrue(metadata["automation_may_hash_file"])
         self.assertTrue(metadata["automation_may_diff_file"])
-        self.assertTrue(metadata["automation_may_update_registered_blob_sha"])
+        self.assertFalse(metadata["automation_may_update_registered_blob_sha"])
         self.assertTrue(metadata["registration_must_not_write_config_content"])
-        self.assertIn("Owner-verified registration only", metadata["update_authorization"])
+        self.assertIn("File Management is the sole owner", metadata["update_authorization"])
+        self.assertIn("may not update its registered blob SHA", metadata["update_authorization"])
 
     def test_old_ambiguous_immutable_field_is_not_used(self):
         policy = json.loads((ROOT / "sources" / "policy.json").read_text(encoding="utf-8"))

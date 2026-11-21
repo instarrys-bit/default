@@ -127,8 +127,8 @@
       "automation_may_identify_file": true,
       "automation_may_hash_file": true,
       "automation_may_diff_file": true,
-      "automation_may_update_registered_blob_sha": true,
-      "update_authorization": "File Management may record the verified current Git blob SHA after reading modules/uu.conf before and after the same snapshot and confirming both values match; it must never write config content. Production automation has no baseline metadata write permission.",
+      "automation_may_update_registered_blob_sha": false,
+      "update_authorization": "File Management is the sole owner of repository-wide SHA inventory and baseline metadata. Automation may read, identify, hash and compare modules/uu.conf, but may not update its registered blob SHA or any baseline metadata. The file must be read-only and its blob SHA must match before and after each snapshot.",
       "registration_must_not_write_config_content": true
     }
   }
