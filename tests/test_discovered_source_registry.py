@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from register_discovered_sources import (build_registry, source_id_for, encode_registry_storage, decode_registry_storage)
+from validate_source_registry_artifact import load_existing_registry
 from json_document_store import manifest_path, read_document, write_document
 
 
@@ -137,6 +138,44 @@ class DiscoveredSourceRegistryTests(unittest.TestCase):
             self.assertEqual(restored["discovery_fingerprint"], logical["discovery_fingerprint"])
             self.assertEqual(restored["source_files"][0]["source_id"],
                              logical["source_files"][0]["source_id"])
+
+            historical = load_existing_registry(path)
+            later_url = "https://raw.githubusercontent.com/NewOrg/NewRules/main/new.list"
+            later_discovery = {
+                "schema_version": 1,
+                "candidates": [{
+                    "repository": "NewOrg/NewRules",
+                    "default_branch": "main",
+                    "rule_list_urls": [later_url],
+                    "tree_scan_status": "complete",
+                    "discovered_at": "2026-11-11T00:00:00+00:00",
+                }],
+            }
+            later_provenance = {
+                **self.provenance,
+                "workflow_run_id": "123457",
+                "workflow_head_sha": "c" * 40,
+                "artifact_sha256": "d" * 64,
+            }
+            merged = build_registry(
+                historical, later_discovery, later_provenance,
+                "2026-11-11T01:00:00+00:00",
+            )
+            self.assertEqual(merged["repository_count"], 1648)
+            self.assertEqual(merged["source_file_count"], 47458)
+            old_by_id = {item["source_id"]: item for item in historical["source_files"]}
+            merged_by_id = {item["source_id"]: item for item in merged["source_files"]}
+            for source_id, old in old_by_id.items():
+                self.assertEqual(merged_by_id[source_id]["first_seen_at"], old["first_seen_at"])
+            self.assertEqual(merged_by_id[source_id_for("NewOrg/NewRules", later_url)]["activation_status"], "NOT_ACTIVATED")
+            merged_payload = encode_registry_storage(merged)
+            write_document(
+                path, merged_payload, "records", lease_required=False,
+                force_sharded=True, max_file_bytes=40_000_000,
+                shard_target_bytes=35_000_000,
+            )
+            merged_readback = decode_registry_storage(read_document(path, "records"))
+            self.assertEqual(merged_readback, merged)
 
     def test_rejects_rule_url_from_another_repository(self):
         invalid = json.loads(json.dumps(self.discovery))

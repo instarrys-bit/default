@@ -1,5 +1,5 @@
 name: Shadowrocket automation watchdog
-run-name: "Automation watchdog / ${{ github.run_id }}"
+run-name: "Automation watchdog / ${{ inputs.automation_task_id || github.run_id }}"
 
 on:
   schedule:
@@ -7,6 +7,10 @@ on:
     - cron: "30 22 * * *"
   workflow_dispatch:
     inputs:
+      automation_task_id:
+        description: Durable correlation ID for a Watchdog wake dispatched by Auto Sync
+        required: false
+        type: string
       request_deterministic_audit:
         description: 'Explicitly authorize one deterministic production audit through the durable Watchdog queue'
         required: false
@@ -61,10 +65,11 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
-      actions: write
-      contents: write
+      actions: read
+      contents: read
     outputs:
       block_manifest: ${{ steps.stale-recovery.outputs.block_manifest }}
+      queue_task_json: ${{ steps.stale-recovery.outputs.queue_task_json }}
     steps:
       - name: Checkout watchdog policy code
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -84,7 +89,7 @@ jobs:
           python-version: "3.11"
       - name: Export durable queue snapshot
         env:
-          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           PYTHONPATH: scripts
         run: |
@@ -95,8 +100,8 @@ jobs:
         id: stale-recovery
         if: ${{ github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         env:
-          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
-          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           ORIGIN_EVENT: ${{ github.event_name }}
           ORIGIN_ACTOR: ${{ github.actor }}
@@ -157,6 +162,7 @@ jobs:
             INPUT_CHANGED|SCHEDULE_DUE)
               if [ "$production_dispatch_mode" != "enabled" ]; then
                 echo "Production demand held by production_control.json"
+                echo "queue_task_json=" >> "$GITHUB_OUTPUT"
                 echo "block_manifest=true" >> "$GITHUB_OUTPUT"
                 exit 0
               fi
@@ -174,18 +180,18 @@ jobs:
               if [ -z "$production_key" ]; then
                 production_key="production:$fingerprint"
               fi
-              printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py \
-                --repository "$REPO" --branch main --token-stdin \
-                --idempotency-key "$production_key" --priority 100 \
-                --input-json "$audit_input_json" enqueue-auto-sync
+              queue_task_json="$(jq -cn --arg key "$production_key" --argjson input "$audit_input_json" '{idempotency_key:$key,input:$input}')"
+              echo "queue_task_json=$queue_task_json" >> "$GITHUB_OUTPUT"
               echo "block_manifest=true" >> "$GITHUB_OUTPUT"
               ;;
             REVIEW_REQUIRED)
               echo "Production held: REVIEW_REQUIRED"
+              echo "queue_task_json=" >> "$GITHUB_OUTPUT"
               echo "block_manifest=true" >> "$GITHUB_OUTPUT"
               ;;
             IN_PROGRESS|WAIT_FOR_ACTIVE|ALREADY_SATISFIED|OBSERVE_ONLY)
               echo "No production task required: $decision"
+              echo "queue_task_json=" >> "$GITHUB_OUTPUT"
               echo "block_manifest=false" >> "$GITHUB_OUTPUT"
               ;;
             *)
@@ -197,6 +203,9 @@ jobs:
   task-queue-supervision:
     if: ${{ always() && needs.health-check.result == 'success' && github.ref == 'refs/heads/main' }}
     needs: [health-check]
+    concurrency:
+      group: shadowrocket-watchdog-queue-writer-main
+      cancel-in-progress: false
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
@@ -219,14 +228,33 @@ jobs:
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: "3.11"
-      - name: Recover leases and run scheduler once
+      - name: Persist production intent through the single queue writer
         env:
-          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
-          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          QUEUE_TASK_JSON: ${{ needs.health-check.outputs.queue_task_json }}
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
           PYTHONPATH: scripts
         run: |
           set -euo pipefail
-          python3 scripts/remote_task_queue_runtime.py --repository "$REPO" --branch main recover-expired || true
+          if [ -z "${QUEUE_TASK_JSON:-}" ]; then
+            echo "No new production queue intent to persist."
+            exit 0
+          fi
+          jq -e 'type == "object" and (.idempotency_key | type == "string" and length > 0) and (.input | type == "object")' <<< "$QUEUE_TASK_JSON" >/dev/null
+          idempotency_key="$(jq -r '.idempotency_key' <<< "$QUEUE_TASK_JSON")"
+          input_json="$(jq -c '.input' <<< "$QUEUE_TASK_JSON")"
+          printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py \
+            --repository "$REPO" --branch main --token-stdin \
+            --idempotency-key "$idempotency_key" --priority 100 \
+            --input-json "$input_json" enqueue-auto-sync
+      - name: Recover leases and run scheduler once
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PYTHONPATH: scripts
+        run: |
+          set -euo pipefail
           printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py \
             --repository "$REPO" --branch main --token-stdin --max-tasks 1 run-once

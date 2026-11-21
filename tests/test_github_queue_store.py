@@ -233,5 +233,17 @@ class RepositoryJsonQueueStoreTests(unittest.TestCase):
             GitHubContentsQueueStore("owner/repo", "rulesets/direct.list", token="test-token")
 
 
+    def test_compatibility_exports_use_checked_in_storage_module_without_runtime_fetch(self):
+        from storage.v2 import queue_store as implementation
+        import github_queue_store
+
+        self.assertIs(GitHubContentsQueueStore, implementation.GitHubContentsQueueStore)
+        self.assertIs(GitHubAPIError, implementation.GitHubAPIError)
+        wrapper_source = (ROOT / "scripts" / "github_queue_store.py").read_text(encoding="utf-8")
+        self.assertNotIn("raw.githubusercontent.com", wrapper_source)
+        self.assertNotIn("urllib.request", wrapper_source)
+        self.assertFalse((ROOT / "scripts" / "queue_store_impl.py").exists())
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

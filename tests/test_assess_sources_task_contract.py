@@ -161,8 +161,11 @@ class AssessSourcesTaskInputTests(unittest.TestCase):
         adapter = next(x for x in adapters["adapters"] if x["target_program_id"] == "script_assess_sources")
         self.assertEqual(adapter["write_resources"], [])
         self.assertEqual(adapter["publish_resources"], [])
-        self.assertEqual(adapter["resource_contract"]["resource_keys"],
-                         ["logical/production-pipeline", "logical/source-assessment-checkpoints", "logical/source-dag-supervision"])
+        self.assertFalse(adapter["enabled"])
+        self.assertEqual(adapter["allowed_callers"], [])
+        self.assertIsNone(adapter.get("resource_contract"))
+        self.assertIsNone(adapter.get("dependency_contract"))
+        self.assertIn("internal same-run Production stage", adapter["retry"]["policy"])
 
     def test_verified_discovery_artifact_is_resolved_from_runner_temp(self):
         with tempfile.TemporaryDirectory() as repository_dir, tempfile.TemporaryDirectory() as runner_dir:

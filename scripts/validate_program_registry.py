@@ -173,6 +173,13 @@ def validate_registry(root: Path = ROOT, registry_path: Path | None = None) -> d
             "workflow_" + re.sub(r"\.(yml|yaml)$", "", match.group(1)).replace("-", "_")
             for match in re.finditer(r"gh workflow run ([A-Za-z0-9_.-]+)", content)
         }
+        # Also recognize direct REST workflow_dispatch calls. These are used
+        # for wake-only callbacks where gh workflow run cannot express the
+        # intended no-input payload.
+        actual_dispatches.update(
+            "workflow_" + re.sub(r"\.(yml|yaml)$", "", match.group(1)).replace("-", "_")
+            for match in re.finditer(r"/actions/workflows/([A-Za-z0-9_.-]+\.ya?ml)/dispatches", content)
+        )
         # Production workflow dispatch may be delegated to the durable scheduler.
         if re.search(r"\benqueue-auto-sync\b", content):
             actual_dispatches.add("workflow_auto_sync")

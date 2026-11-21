@@ -264,6 +264,8 @@ class WorkflowAdapterTests(unittest.TestCase):
         self.client.run_detail[88] = dict(listed, status="completed", conclusion="success", head_sha="b" * 40)
         result = inspect_correlated_run(self.client, intent)
         self.assertEqual(result["state"], "stale")
+        self.assertEqual(result["stale_identity"]["head_sha"], "b" * 40)
+        self.assertFalse(result["stale_identity"]["cancel_requested"])
         self.assertEqual(result["evidence"]["head_sha_relationship"], "rejected")
 
 

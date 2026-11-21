@@ -86,7 +86,9 @@
       "completion": {
         "success_condition": "internal_production_stage_only; no standalone task dispatch",
         "independent_verification_required": true
-      }
+      },
+      "write_resources": [],
+      "publish_resources": []
     },
     {
       "target_program_id": "script_audit_adapter_activation",
@@ -1606,36 +1608,23 @@
       "target_program_id": "workflow_automation_watchdog",
       "target_kind": "github_actions_workflow",
       "adapter_type": "github_actions_workflow",
-      "enabled": false,
+      "enabled": true,
       "interface_status": "workflow_dispatch_reviewed",
-      "allowed_callers": [],
+      "allowed_callers": [
+        "workflow_auto_sync"
+      ],
       "workflow": {
         "path": ".github/workflows/automation-watchdog.yml",
         "dispatchable": true,
         "inputs": [
-          {
-            "name": "request_deterministic_audit",
-            "type": "boolean",
-            "required": false
-          },
           {
             "name": "automation_task_id",
             "type": "string",
             "required": false
           },
           {
-            "name": "source_discovery_run_id",
-            "type": "string",
-            "required": false
-          },
-          {
-            "name": "assessment_producer_run_id",
-            "type": "string",
-            "required": false
-          },
-          {
-            "name": "production_producer_run_id",
-            "type": "string",
+            "name": "request_deterministic_audit",
+            "type": "boolean",
             "required": false
           }
         ],
@@ -1649,10 +1638,10 @@
       "timeout_seconds": 30,
       "retry": {
         "max_attempts": 0,
-        "policy": "disabled_until_dispatcher_and_run_verifier"
+        "policy": "no automatic redispatch; scheduled Watchdog supervision provides bounded recovery"
       },
       "completion": {
-        "success_condition": "run_status_completed_and_conclusion_success",
+        "success_condition": "workflow_run_completed_and_conclusion_success",
         "required_result_fields": [
           "run_id",
           "html_url",
@@ -1661,7 +1650,8 @@
           "conclusion"
         ],
         "independent_verification_required": true
-      }
+      },
+      "workflow_run_timeout_seconds": 1800
     },
     {
       "target_program_id": "workflow_read_only_dashboard_pages",
@@ -1701,8 +1691,7 @@
       "enabled": true,
       "interface_status": "workflow_dispatch_reviewed",
       "allowed_callers": [
-        "workflow_auto_sync",
-        "workflow_automation_watchdog"
+        "workflow_auto_sync"
       ],
       "workflow": {
         "path": ".github/workflows/storage-management.yml",
@@ -1921,6 +1910,80 @@
       "retry": {
         "max_attempts": 0,
         "policy": "library-only or same-run workflow step; direct adapter dispatch disabled"
+      },
+      "completion": {
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "script_run_preflight_tests",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/run_preflight_tests.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_interface_review"
+      },
+      "completion": {
+        "success_condition": "process_exit_code_zero_and_output_contract_validated",
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "script_validate_automation_write_boundary",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/validate_automation_write_boundary.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 300,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "disabled_until_interface_review"
+      },
+      "completion": {
+        "success_condition": "process_exit_code_zero_and_output_contract_validated",
+        "independent_verification_required": true
+      }
+    },
+    {
+      "target_program_id": "storage_snapshot_repository_integrity",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "storage/v2/snapshot_repository_integrity.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 1200,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "Storage Management scheduled job only; direct adapter dispatch disabled; immutable object writes and projection updates are idempotent and SHA-CAS fenced."
       },
       "completion": {
         "independent_verification_required": true

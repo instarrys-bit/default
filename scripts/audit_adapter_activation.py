@@ -14,7 +14,7 @@ REGISTRY = ROOT / "automation" / "program_registry.json"
 ADAPTERS = ROOT / "automation" / "execution_adapters.json"
 WATCHDOG_ID = "workflow_automation_watchdog"
 WATCHDOG_JOB = "task-queue-supervision"
-REQUIRED_CALLER_SCOPES = {"actions": "write", "issues": "write"}
+REQUIRED_CALLER_SCOPES = {"actions": "write"}
 
 
 def load_json(path: Path, label: str) -> dict:

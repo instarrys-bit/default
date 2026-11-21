@@ -15,6 +15,7 @@
       ".github/workflows/self-healing-agent.yml",
       ".github/workflows/self-healing-tests.yml",
       ".github/workflows/source-discovery.yml",
+      ".github/workflows/validate-config.yml",
       "scripts/append_step_summary.py",
       "scripts/apply_safe_repair.py",
       "scripts/assess_sources.py",

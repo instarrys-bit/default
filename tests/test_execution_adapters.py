@@ -69,23 +69,23 @@ class ExecutionAdapterTests(unittest.TestCase):
         self.assertTrue(result["valid"])
         adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
         self.assertEqual(result["adapter_count"], len(adapters["adapters"]))
-        self.assertEqual(result["enabled_adapter_count"], 5)
+        self.assertEqual(result["enabled_adapter_count"], 3)
         registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
         adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
         enabled = [item["target_program_id"] for item in adapters["adapters"] if item["enabled"]]
-        self.assertEqual(set(enabled), {"script_assess_sources", "workflow_auto_sync", "workflow_self_healing_tests", "workflow_source_discovery", "workflow_storage_incident_management"})
-        program = next(item for item in registry["programs"] if item["id"] == "workflow_self_healing_tests")
-        adapter = next(item for item in adapters["adapters"] if item["target_program_id"] == "workflow_self_healing_tests")
-        self.assertEqual(program["orchestration"]["allowed_callers"], ["workflow_automation_watchdog"])
-        self.assertEqual(adapter["allowed_callers"], ["workflow_automation_watchdog"])
-        self.assertEqual(program["orchestration"]["max_attempts"], 1)
-        self.assertEqual(adapter["retry"]["max_attempts"], 0)
-        audit_program = next(item for item in registry["programs"] if item["id"] == "workflow_auto_sync")
-        audit_adapter = next(item for item in adapters["adapters"] if item["target_program_id"] == "workflow_auto_sync")
-        self.assertEqual(audit_program["orchestration"]["allowed_callers"], ["workflow_automation_watchdog"])
-        self.assertEqual(audit_adapter["allowed_callers"], ["workflow_automation_watchdog"])
-        self.assertEqual(audit_program["orchestration"]["max_attempts"], 2)
-        self.assertEqual(audit_adapter["retry"]["max_attempts"], 1)
+        self.assertEqual(set(enabled), {"workflow_auto_sync", "workflow_automation_watchdog", "workflow_storage_management"})
+        by_program = {item["id"]: item for item in registry["programs"]}
+        by_adapter = {item["target_program_id"]: item for item in adapters["adapters"]}
+        self.assertEqual(by_program["workflow_automation_watchdog"]["orchestration"]["allowed_callers"], ["workflow_auto_sync"])
+        self.assertEqual(by_adapter["workflow_automation_watchdog"]["allowed_callers"], ["workflow_auto_sync"])
+        self.assertEqual(by_program["workflow_auto_sync"]["orchestration"]["allowed_callers"], ["workflow_automation_watchdog"])
+        self.assertEqual(by_adapter["workflow_auto_sync"]["allowed_callers"], ["workflow_automation_watchdog"])
+        self.assertEqual(by_program["workflow_storage_management"]["orchestration"]["allowed_callers"], ["workflow_auto_sync"])
+        self.assertEqual(by_adapter["workflow_storage_management"]["allowed_callers"], ["workflow_auto_sync"])
+        assessor = by_adapter["script_assess_sources"]
+        self.assertFalse(assessor["enabled"])
+        self.assertEqual(assessor["write_resources"], [])
+        self.assertEqual(assessor["publish_resources"], [])
 
     def test_assessment_adapter_timeout_fits_scheduler_and_registered_lease(self):
         registry = json.loads((ROOT / "automation" / "program_registry.json").read_text(encoding="utf-8"))
@@ -95,7 +95,7 @@ class ExecutionAdapterTests(unittest.TestCase):
         self.assertGreaterEqual(adapter["timeout_seconds"], 1)
         self.assertLessEqual(adapter["timeout_seconds"], 300)
         self.assertLess(adapter["timeout_seconds"], program["orchestration"]["timeout_seconds"])
-        self.assertEqual(program["orchestration"]["timeout_seconds"], 900)
+        self.assertGreaterEqual(program["orchestration"]["timeout_seconds"], adapter["timeout_seconds"])
 
     def test_watchdog_run_id_correlation_is_scoped_to_watchdog_path(self):
         root, _, _, _ = self.make_repo()

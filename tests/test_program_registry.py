@@ -67,6 +67,12 @@ class ProgramRegistryTests(unittest.TestCase):
         registry.write_text(json.dumps(payload), encoding="utf-8")
         return root, registry
 
+    def test_rejects_schema_only_registry(self):
+        root, registry = self.make_repo()
+        registry.write_text(json.dumps({"schema_version": 1}), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "registry_policy must be an object"):
+            validate_registry(root, registry)
+
     def test_repository_registry_is_valid(self):
         result = validate_registry(ROOT)
         self.assertTrue(result["valid"])
@@ -129,6 +135,39 @@ class ProgramRegistryTests(unittest.TestCase):
         registry.write_text(json.dumps(payload), encoding="utf-8")
         result = validate_registry(root, registry)
         self.assertEqual(result["program_count"], 3)
+
+    def test_accepts_registered_rest_api_workflow_dispatch(self):
+        root, registry = self.make_repo()
+        workflow_path = root / ".github" / "workflows" / "run.yml"
+        workflow_path.write_text(
+            "steps:\n  - run: python scripts/alpha.py\n"
+            "  - run: curl -X POST \"$GITHUB_API_URL/repos/$REPO/actions/workflows/auto_sync.yml/dispatches\"\n",
+            encoding="utf-8",
+        )
+        target_path = root / ".github" / "workflows" / "auto_sync.yml"
+        target_path.write_text("on:\n  workflow_dispatch:\n", encoding="utf-8")
+        payload = json.loads(registry.read_text(encoding="utf-8"))
+        payload["programs"][1]["dispatches"] = ["workflow_auto_sync"]
+        payload["programs"].append({
+            "id": "workflow_auto_sync",
+            "path": ".github/workflows/auto_sync.yml",
+            "kind": "github_actions_workflow",
+            "responsibility": "test REST dispatch target",
+            "capabilities": ["deterministic_audit"],
+            "invocation": "workflow_dispatch",
+            "inputs": [],
+            "outputs": [],
+            "depends_on": [],
+            "dispatches": [],
+            "permission_boundary": "test",
+            "health_check": "test",
+            "orchestration": {
+                "enabled": False, "allowed_callers": [],
+                "max_attempts": 0, "timeout_seconds": 300,
+            },
+        })
+        registry.write_text(json.dumps(payload), encoding="utf-8")
+        self.assertEqual(validate_registry(root, registry)["program_count"], 3)
 
     def test_rejects_workflow_call_without_declared_dependency(self):
         root, registry = self.make_repo(dependency=False)

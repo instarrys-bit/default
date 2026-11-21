@@ -9,7 +9,7 @@ from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
 DEFAULT_QUEUE_PATH = "automation/task_queue.json"
-ALLOWED_STATE_PATHS = {DEFAULT_QUEUE_PATH, "storage/v2/incidents.json"}
+ALLOWED_STATE_PATHS = {DEFAULT_QUEUE_PATH, "storage/v2/incidents.json", "storage/v2/projections/repository_integrity.json"}
 class QueueStoreError(RuntimeError): pass
 class ConcurrentUpdate(QueueStoreError): pass
 class GitHubAPIError(QueueStoreError): pass
@@ -92,8 +92,10 @@ class GitHubContentsJsonStore:
         empty = {"schema_version": 1, "revision": 0}
         if self.path == DEFAULT_QUEUE_PATH:
             empty.update({"tasks": [], "resource_leases": {}})
-        else:
+        elif self.path == "storage/v2/incidents.json":
             empty.update({"incidents": [], "events": []})
+        else:
+            empty.update({"latest_snapshot": None})
         return QueueSnapshot(document=empty, content_sha="")
 
     def _ensure_bootstrap(self):
@@ -104,8 +106,10 @@ class GitHubContentsJsonStore:
         d.setdefault("schema_version", 1); d.setdefault("revision", 0)
         if self.path == DEFAULT_QUEUE_PATH:
             d.setdefault("tasks", []); d.setdefault("resource_leases", {})
-        else:
+        elif self.path == "storage/v2/incidents.json":
             d.setdefault("incidents", []); d.setdefault("events", [])
+        else:
+            d.setdefault("latest_snapshot", None)
         self._write_remote(d, git_blob_sha=None, message=f"chore(storage): bootstrap {self.path}")
         return self.read()
 

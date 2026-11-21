@@ -1,1 +1,2141 @@
-{"schema_version":1,"registry_policy":{"purpose":"Capability and dependency catalog for repository automation programs.","registration_required_for":"Every non-package Python component under scripts/ and storage/v2/, plus every active GitHub Actions workflow under .github/workflows/.","collaboration_rule":"A program may run independently under its own entry point. Cross-program orchestration requires an explicit registry entry and declared workflow dependencies or dispatch targets.","permission_rule":"Registry declarations describe boundaries; they never grant permissions. The workflow job's least-privilege permissions remain authoritative.","activation_rule":"Registration is mandatory for CI acceptance, but does not by itself authorize automatic dispatch, rule activation, publication, or modification of modules/uu.conf.","excluded_legacy_workflow_paths":[],"exclusion_rule":"Exactly four GitHub Actions workflow entry points are registered. During queue migration, historical target IDs may be represented by non-workflow compatibility components; deleted workflow paths and deleted workflow-dispatch adapters must never be restored."},"programs":[]}
+{
+  "schema_version": 1,
+  "registry_policy": {
+    "purpose": "Capability and dependency catalog for repository automation programs.",
+    "registration_required_for": "Every non-package Python component under scripts/ and storage/v2/, plus every active GitHub Actions workflow under .github/workflows/.",
+    "collaboration_rule": "A program may run independently under its own entry point. Cross-program orchestration requires an explicit registry entry and declared workflow dependencies or dispatch targets.",
+    "permission_rule": "Registry declarations describe boundaries; they never grant permissions. The workflow job's least-privilege permissions remain authoritative.",
+    "activation_rule": "Registration is mandatory for CI acceptance, but does not by itself authorize automatic dispatch, rule activation, publication, or modification of modules/uu.conf.",
+    "excluded_legacy_workflow_paths": [],
+    "exclusion_rule": "Exactly four GitHub Actions workflow entry points are registered. During queue migration, historical target IDs may be represented by non-workflow compatibility components; deleted workflow paths and deleted workflow-dispatch adapters must never be restored."
+  },
+  "programs": [
+    {
+      "id": "script_append_step_summary",
+      "path": "scripts/append_step_summary.py",
+      "kind": "python_component",
+      "responsibility": "append GitHub Actions step summaries from structured report data",
+      "capabilities": [
+        "workflow_reporting"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_apply_safe_repair",
+      "path": "scripts/apply_safe_repair.py",
+      "kind": "python_component",
+      "responsibility": "apply only explicitly allowlisted deterministic repository repairs",
+      "capabilities": [
+        "allowlisted_repair"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_assess_sources",
+      "path": "scripts/assess_sources.py",
+      "kind": "python_component",
+      "responsibility": "Bounded, non-activating assessment of discovered rule-list sources; progress is checkpointed through the durable task queue and all output documents remain runner-local immutable artifacts.",
+      "capabilities": [
+        "source_assessment"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "sources/discovered_sources.json produced by script_discover_sources earlier in the same Production run",
+        "read-only sources/source_assessments.json baseline history"
+      ],
+      "outputs": [
+        "stdout JSON: assessed, bytes_read, parser_candidates, policy_candidates, activated=0",
+        "runner-local sources/source_assessments.json, data/source_assessments_runtime.json and reports/source-assessment.md uploaded as immutable Actions artifact",
+        "durable per-URL checkpoint in automation/task_queue.json using CAS under task and logical resource leases"
+      ],
+      "depends_on": [
+        "script_discover_sources"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Runs as a same-run Production stage after source discovery. Reads the runner-local discovered source document and baseline; writes assessment outputs only in the isolated Production runner workspace. No independent workflow dispatch, source activation, or write to modules/uu.conf.",
+      "health_check": "Invoked only as a same-run Production stage in monolithic_fallback mode; Production checks the assessor exit status and deterministic output report. No standalone Watchdog dispatch is authorized.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 1800
+      }
+    },
+    {
+      "id": "script_audit_adapter_activation",
+      "path": "scripts/audit_adapter_activation.py",
+      "kind": "python_component",
+      "responsibility": "produce a read-only deterministic readiness and least-privilege canary report for execution adapters",
+      "capabilities": [
+        "adapter_activation_audit"
+      ],
+      "invocation": "python_cli",
+      "inputs": [
+        "program registry",
+        "execution adapter inventory",
+        "registered workflow files"
+      ],
+      "outputs": [
+        "activation readiness report",
+        "least-privilege canary candidates",
+        "blocker reasons"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Read-only repository inspection; no network access, no queue mutation, no adapter activation, and no changes to modules/uu.conf.",
+      "health_check": "Tests validate disabled-by-default state, workflow permission scope parsing, read-only canary classification, and protected-config write detection.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_audit_config_drift",
+      "path": "scripts/audit_config_drift.py",
+      "kind": "python_component",
+      "responsibility": "compare the user-managed configuration against its approved baseline",
+      "capabilities": [
+        "configuration_integrity"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_audit_external_domains",
+      "path": "scripts/audit_external_domains.py",
+      "kind": "python_component",
+      "responsibility": "audit external domain observations against current routing scope",
+      "capabilities": [
+        "external_domain_audit"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_audit_policy_source_overlap",
+      "path": "scripts/audit_policy_source_overlap.py",
+      "kind": "python_component",
+      "responsibility": "inspect policy-source overlap and declared source independence",
+      "capabilities": [
+        "source_independence_audit"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_audit_ruleset_config_overlap",
+      "path": "scripts/audit_ruleset_config_overlap.py",
+      "kind": "python_component",
+      "responsibility": "identify conflicts between published rulesets and the authoritative config",
+      "capabilities": [
+        "configuration_conflict_audit"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_audit_ruleset_references",
+      "path": "scripts/audit_ruleset_references.py",
+      "kind": "python_component",
+      "responsibility": "validate ruleset references and referenced artifacts",
+      "capabilities": [
+        "reference_validation"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_audit_source_lineage",
+      "path": "scripts/audit_source_lineage.py",
+      "kind": "python_component",
+      "responsibility": "inspect source lineage and upstream relationships",
+      "capabilities": [
+        "source_lineage_audit"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_auto_activate_sources",
+      "path": "scripts/auto_activate_sources.py",
+      "kind": "python_component",
+      "responsibility": "apply deterministic activation gates to eligible sources",
+      "capabilities": [
+        "source_activation_gate"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [
+        "script_build_source_candidates"
+      ],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_build_dashboard_snapshot",
+      "path": "scripts/build_dashboard_snapshot.py",
+      "kind": "python_component",
+      "responsibility": "read committed automation summaries and generate a sanitized static dashboard data snapshot",
+      "capabilities": [
+        "read_only_metrics_aggregation"
+      ],
+      "invocation": "dashboard_pages_workflow_step",
+      "inputs": [
+        "rulesets/manifest.json",
+        "automation/task_queue.json",
+        "rulesets/pending_queue.json",
+        "rulesets/lifecycle_state.json",
+        "reports/lifecycle/latest.json",
+        "data/candidates.json"
+      ],
+      "outputs": [
+        "dashboard/data.json in the temporary GitHub Pages build workspace"
+      ],
+      "depends_on": [
+        "script_remote_task_queue_runtime"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Read-only repository inputs; writes only the generated dashboard snapshot in the workflow workspace. No GitHub API write permission, no production dispatch, no edits to repository state or modules/uu.conf.",
+      "health_check": "Python compilation and deterministic snapshot-schema tests; Pages workflow build result.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_build_project_status",
+      "path": "scripts/build_project_status.py",
+      "kind": "python_component",
+      "responsibility": "aggregate deterministic project and discovery health status",
+      "capabilities": [
+        "project_health_reporting"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_build_rule_provenance",
+      "path": "scripts/build_rule_provenance.py",
+      "kind": "python_component",
+      "responsibility": "generate provenance records for published rules",
+      "capabilities": [
+        "rule_provenance"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_build_rulesets",
+      "path": "scripts/build_rulesets.py",
+      "kind": "python_component",
+      "responsibility": "build the three policy-separated rulesets",
+      "capabilities": [
+        "ruleset_build"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_build_source_candidates",
+      "path": "scripts/build_source_candidates.py",
+      "kind": "python_component",
+      "responsibility": "build candidate source inventory from discovered repositories",
+      "capabilities": [
+        "candidate_generation"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_collect_domains",
+      "path": "scripts/collect_domains.py",
+      "kind": "python_component",
+      "responsibility": "fetch and normalize domains from enabled sources",
+      "capabilities": [
+        "domain_collection"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [
+        "script_auto_activate_sources"
+      ],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_deterministic_review",
+      "path": "scripts/deterministic_review.py",
+      "kind": "python_component",
+      "responsibility": "review domain candidates using deterministic evidence and safety gates",
+      "capabilities": [
+        "deterministic_evidence_review"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_diagnose_workflow_failure",
+      "path": "scripts/diagnose_workflow_failure.py",
+      "kind": "python_component",
+      "responsibility": "classify workflow failures from execution logs",
+      "capabilities": [
+        "workflow_diagnosis"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_discover_sources",
+      "path": "scripts/discover_sources.py",
+      "kind": "python_component",
+      "responsibility": "discover public rule-source repositories and collect bounded, typed external intelligence observations without policy activation",
+      "capabilities": [
+        "source_discovery",
+        "external_intelligence_acquisition",
+        "typed_evidence_provenance"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation",
+        "validated external provider catalog; bounded public feeds; optional explicit CT domain and RIPEstat resource query inputs"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation",
+        "sources/discovered_sources.json external_intelligence section with typed observations, provider status, retrieval timestamps and SHA-256 provenance; no routing policy inference"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_domain_rule_engine",
+      "path": "scripts/domain_rule_engine.py",
+      "kind": "python_component",
+      "responsibility": "provide shared parsing, normalization, and matching primitives for domain rules",
+      "capabilities": [
+        "domain_rule_processing"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_github_queue_store",
+      "path": "scripts/github_queue_store.py",
+      "kind": "python_component",
+      "responsibility": "Compatibility import shim only; delegates durable JSON persistence to Storage Management storage/v2/queue_store.py.",
+      "capabilities": [
+        "github_queue_storage"
+      ],
+      "invocation": "python_library",
+      "inputs": [
+        "repository identity",
+        "queue document",
+        "expected revision digest",
+        "deterministic mutation callback"
+      ],
+      "outputs": [
+        "verified queue snapshot",
+        "new revision digest",
+        "conflict or API error"
+      ],
+      "depends_on": [
+        "storage_queue_store"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Compatibility import shim only; delegates to storage_queue_store. It performs no network or repository writes independently.",
+      "health_check": "Mocked API tests for snapshot compression, SHA-256 chain validation, canonical duplicate-revision resolution, bounded conflict retries, and fail-closed API errors.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_github_workflow_adapter",
+      "path": "scripts/github_workflow_adapter.py",
+      "kind": "python_component",
+      "responsibility": "validate workflow dispatch inputs, submit a uniquely correlated GitHub Actions dispatch, and independently inspect its run identity and conclusion",
+      "capabilities": [
+        "github_workflow_dispatch",
+        "workflow_run_correlation",
+        "workflow_run_verification"
+      ],
+      "invocation": "python_library_and_cli_contract",
+      "inputs": [
+        "reviewed workflow adapter contract",
+        "authorized task envelope",
+        "allowlisted GitHub ref",
+        "caller-provided GitHub Actions token"
+      ],
+      "outputs": [
+        "persistable workflow dispatch intent",
+        "correlated workflow run evidence",
+        "pending or failed run state"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Requires caller-provided actions:write for dispatch and actions:read for run inspection. Tokens are never returned in results or passed to child programs. This module does not modify modules/uu.conf.",
+      "health_check": "Unit tests cover caller/ref/input authorization, live workflow identity, correlation marker injection, ambiguous run detection, run identity validation, and completed-success verification.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_import_request_observations",
+      "path": "scripts/import_request_observations.py",
+      "kind": "python_component",
+      "responsibility": "validate and import manually submitted hostname observations",
+      "capabilities": [
+        "manual_observation_intake"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "data/domain_candidates.json unclassified candidate buffer; no policy action is assigned"
+      ],
+      "depends_on": [
+        "script_production_intent"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Reads the read-only repository seed and the checked-in sources/request_domain_observations.json observation seed only; no external transport or token required; writes only the runner-local candidate buffer.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_incident_state",
+      "path": "scripts/incident_state.py",
+      "kind": "python_component",
+      "responsibility": "validate and transition persisted incident lifecycle state",
+      "capabilities": [
+        "incident_lifecycle"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_json_document_store",
+      "path": "scripts/json_document_store.py",
+      "kind": "python_component",
+      "responsibility": "read and write validated large JSON or sharded JSONL documents",
+      "capabilities": [
+        "persistent_state_storage"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_lifecycle_audit",
+      "path": "scripts/lifecycle_audit.py",
+      "kind": "python_component",
+      "responsibility": "identify lifecycle candidates for conservative ruleset maintenance",
+      "capabilities": [
+        "ruleset_lifecycle_audit"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_lifecycle_gate",
+      "path": "scripts/lifecycle_gate.py",
+      "kind": "python_component",
+      "responsibility": "apply deterministic safety gates to lifecycle actions",
+      "capabilities": [
+        "ruleset_lifecycle_gate"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_persist_review_cursor",
+      "path": "scripts/persist_review_cursor.py",
+      "kind": "python_component",
+      "responsibility": "validate and persist resumable review cursor checkpoints from failed audit artifacts",
+      "capabilities": [
+        "review_cursor_persistence",
+        "failure_recovery"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "review cursor checkpoint artifact JSON",
+        "destination path for the persisted checkpoint"
+      ],
+      "outputs": [
+        "validated in-progress cursor checkpoint, safe missing-artifact no-op, or completed-checkpoint cleanup"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem authority is limited to the explicit cursor artifact and destination paths; Git staging permissions remain controlled by the invoking workflow job.",
+      "health_check": "Covered by dedicated cursor persistence unit tests and the repository deterministic test suite.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_production_intent",
+      "path": "scripts/production_intent.py",
+      "kind": "python_component",
+      "responsibility": "compute production fingerprints from read-only repository inputs and the checked-in request-observation seed, then classify whether a ruleset audit is required",
+      "capabilities": [
+        "production_intent_classification",
+        "production_input_fingerprinting"
+      ],
+      "invocation": "python_cli_and_python_library",
+      "inputs": [
+        "automation/production_inputs.json",
+        "read-only repository changed-path set",
+        "last successful audit fingerprint and timestamp",
+        "active and successful task fingerprints",
+        "checked-in sources/request_domain_observations.json observation seed"
+      ],
+      "outputs": [
+        "deterministic production-demand decision",
+        "SHA-256 production-input fingerprint",
+        "path classification report"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Read-only deterministic classification and hashing. No repository Contents writes, queue writes, observation-seed writes, ruleset writes, external Issues API or modification of modules/uu.conf.",
+      "health_check": "Dedicated deterministic unit tests plus Watchdog workflow integration tests.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_refresh_ruleset_manifest",
+      "path": "scripts/refresh_ruleset_manifest.py",
+      "kind": "python_component",
+      "responsibility": "reconcile manifest metadata against published ruleset files",
+      "capabilities": [
+        "manifest_reconciliation"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_register_config_baseline",
+      "path": "scripts/register_config_baseline.py",
+      "kind": "python_component",
+      "responsibility": "register owner-approved configuration baseline changes",
+      "capabilities": [
+        "configuration_baseline_registration"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Default mode only: reads modules/uu.conf and emits a runner-local review proposal under RUNNER_TEMP. No workflow has contents:write permission to apply baseline metadata, and the script is not authorized to write repository files. It never modifies modules/uu.conf; no independent dispatch is enabled.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_register_discovered_sources",
+      "path": "scripts/register_discovered_sources.py",
+      "kind": "python_component",
+      "responsibility": "Persist every discovered repository and each supported rule-list file as a durable non-activating candidate record.",
+      "capabilities": [
+        "source_candidate_registration"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "Exact verified source-discovery-output artifact (or explicit monolithic fallback inventory)",
+        "Prior rulesets/source_candidate_registry.json schema-v1 file or schema-v2 manifest and shards"
+      ],
+      "outputs": [
+        "rulesets/source_candidate_registry.json.manifest.json plus content-addressed JSONL shard files; no active source registry or policy rule set mutation"
+      ],
+      "depends_on": [
+        "script_json_document_store",
+        "script_resource_lease_runtime"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Runs only inside the existing Watchdog-owned auto_sync audit. Writes only the canonical source-candidate registry and its adjacent manifest/content-addressed shards beneath rulesets/** through the existing JSON document store and live logical/production-pipeline fence. It cannot modify modules/uu.conf, sources/domain_sources.json, or DIRECT/PROXY/REJECT rules.",
+      "health_check": "Deterministic migration/idempotency/storage tests, verified Discovery provenance, stable repository+URL identity, per-file 40 MB shard bound, SHA-256/count verification, and successful auto_sync artifact/publication validation.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_remote_task_queue_runtime",
+      "path": "scripts/remote_task_queue_runtime.py",
+      "kind": "python_component",
+      "responsibility": "execute durable task queue transitions through the Storage Management repository JSON Contents API SHA-CAS interface",
+      "capabilities": [
+        "remote_task_queue_runtime"
+      ],
+      "invocation": "python_cli",
+      "inputs": [
+        "registered task payload",
+        "worker identity and lease token",
+        "GitHub repository and branch context"
+      ],
+      "outputs": [
+        "CAS-persisted task state",
+        "claim lease",
+        "completion or recovery result"
+      ],
+      "depends_on": [
+        "script_github_queue_store",
+        "script_task_queue_runtime",
+        "script_task_queue",
+        "storage_queue_store"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Requires caller-provided GitHub Contents API read/write permission for automation/task_queue.json; repository task_queue_rebuild_seed.json is read-only bootstrap state and no path outside automation/task_queue.json may be written.",
+      "health_check": "Unit tests for repository JSON CAS enqueue, idempotency, priority claims, lease ownership, retry/dead-letter transitions, and expired-lease recovery.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_resolve_source_artifacts",
+      "path": "scripts/resolve_source_artifacts.py",
+      "kind": "python_component",
+      "responsibility": "resolve and cryptographically verify the exact immutable Discovery and Assessment artifacts consumed by one production audit",
+      "capabilities": [
+        "source_artifact_handoff"
+      ],
+      "invocation": "internal production workflow step",
+      "inputs": [
+        "durable task queue snapshot",
+        "exact Discovery workflow run and artifact",
+        "exact Assessment task and artifact"
+      ],
+      "outputs": [
+        "verified Discovery and Assessment artifact roots beneath RUNNER_TEMP"
+      ],
+      "depends_on": [
+        "script_discover_sources",
+        "script_assess_sources"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Read-only GitHub Actions API access; downloads immutable artifacts only; extraction is restricted to RUNNER_TEMP; no repository writes, no rule activation, no uu.conf access.",
+      "health_check": "Covered by the repository deterministic test suite and auto_sync preflight; production stops closed when producer identity, task linkage, or content digests fail.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_resource_lease_runtime",
+      "path": "scripts/resource_lease_runtime.py",
+      "kind": "python_component",
+      "responsibility": "manage CAS-backed exclusive resource leases and monotonic fencing tokens for task-owned resources",
+      "capabilities": [
+        "resource_lease_management",
+        "stale_writer_fencing"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "Durable task queue snapshot",
+        "Claimed task identity and task lease token",
+        "Canonical repository-relative resource keys",
+        "Lease duration and UTC time"
+      ],
+      "outputs": [
+        "Atomic all-or-none resource lease result",
+        "Per-resource lease ID and fencing token",
+        "Read-only lease registry summary"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No direct GitHub token grant. Queue mutations require the existing SHA-CAS store supplied by an authorized caller; module does not dispatch work or write production resources.",
+      "health_check": "Dedicated tests in tests/test_resource_lease_runtime.py cover atomic acquisition, conflict handling, expiration takeover, monotonic fencing, stale release rejection, and unsafe paths.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_restore_automation_state",
+      "path": "scripts/restore_automation_state.py",
+      "kind": "python_component",
+      "responsibility": "restore persisted automation state from validated artifacts",
+      "capabilities": [
+        "automation_state_restore"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_review_cursor",
+      "path": "scripts/review_cursor.py",
+      "kind": "python_component",
+      "responsibility": "manage deterministic review cursor state",
+      "capabilities": [
+        "review_cursor_management"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_source_handoff_policy",
+      "path": "scripts/source_handoff_policy.py",
+      "kind": "python_component",
+      "responsibility": "classify Discovery-to-Assessment handoff state by exact predecessor workflow run identity and suppress duplicate assessment or replacement discovery tasks",
+      "capabilities": [
+        "source_handoff_deduplication"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "durable task queue snapshot",
+        "exact successful Discovery workflow run ID"
+      ],
+      "outputs": [
+        "deterministic handoff state and canonical/duplicate Assessment task IDs"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Pure deterministic policy helper. It performs no filesystem, network, GitHub API, queue mutation, workflow dispatch, repository write, source activation, or protected-config access; caller permissions remain authoritative.",
+      "health_check": "Covered by tests/test_source_handoff_policy.py and Watchdog structural regression tests.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_source_registry",
+      "path": "scripts/source_registry.py",
+      "kind": "python_component",
+      "responsibility": "validate the policy-labelled source registry and its evidence requirements",
+      "capabilities": [
+        "source_registry_validation"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_sync_ruleset_config_conflicts",
+      "path": "scripts/sync_ruleset_config_conflicts.py",
+      "kind": "python_component",
+      "responsibility": "synchronize ruleset conflicts against the read-only user configuration baseline",
+      "capabilities": [
+        "configuration_conflict_sync"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_task_queue",
+      "path": "scripts/task_queue.py",
+      "kind": "python_component",
+      "responsibility": "validate the durable cross-program task envelope and queue without dispatching work",
+      "capabilities": [
+        "task_queue_validation"
+      ],
+      "invocation": "python_cli",
+      "inputs": [
+        "automation/task_queue.json",
+        "automation/program_registry.json"
+      ],
+      "outputs": [
+        "validation summary or non-zero exit on invalid queue state"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Read-only repository files; no GitHub token or repository write permission.",
+      "health_check": "Dedicated task queue unit tests and required config-validation CI invocation.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_task_queue_runtime",
+      "path": "scripts/task_queue_runtime.py",
+      "kind": "python_component",
+      "responsibility": "perform local single-writer queue mutations with idempotency, leases, bounded retries and expiry recovery",
+      "capabilities": [
+        "task_queue_runtime"
+      ],
+      "invocation": "python_module_or_cli",
+      "inputs": [
+        "automation/task_queue.json",
+        "automation/program_registry.json",
+        "explicit task payload"
+      ],
+      "outputs": [
+        "atomically updated local queue state and task result"
+      ],
+      "depends_on": [
+        "script_task_queue"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Local repository filesystem only; no network, GitHub token, workflow dispatch, or repository write API.",
+      "health_check": "Dedicated task queue runtime tests and CLI help smoke check.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_task_result_verifier",
+      "path": "scripts/task_result_verifier.py",
+      "kind": "python_component",
+      "responsibility": "independently validate Python results and GitHub Actions workflow run identity and completed conclusions",
+      "capabilities": [
+        "task_result_verification"
+      ],
+      "invocation": "python_cli",
+      "inputs": [
+        "remote task queue snapshot",
+        "program registry",
+        "reviewed Python output contracts",
+        "persisted GitHub Actions workflow dispatch intents"
+      ],
+      "outputs": [
+        "verified task IDs",
+        "rejected task IDs",
+        "pending workflow run IDs",
+        "blocked verification reasons"
+      ],
+      "depends_on": [
+        "script_remote_task_queue_runtime",
+        "script_task_queue",
+        "script_task_queue_runtime",
+        "script_github_workflow_adapter"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Requires caller-provided GitHub Contents read/write permission to persist verification transitions; never modifies modules/uu.conf, rulesets, or DNS.",
+      "health_check": "Tests cover deterministic JSON contract validation, workflow run correlation, identity/SHA checks, pending state, success/failure conclusions, and CAS-backed task transitions.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_task_scheduler",
+      "path": "scripts/task_scheduler.py",
+      "kind": "python_component",
+      "responsibility": "plan and execute only explicitly enabled, reviewed Python CLI or GitHub Actions workflow adapters with durable dispatch intent and least-privilege credentials",
+      "capabilities": [
+        "deterministic_task_scheduling",
+        "github_workflow_dispatch"
+      ],
+      "invocation": "python_cli",
+      "inputs": [
+        "GitHub-backed task queue",
+        "program registry",
+        "reviewed execution adapter inventory",
+        "worker identity and task limit"
+      ],
+      "outputs": [
+        "processed task summaries",
+        "blocked task reasons",
+        "persisted workflow dispatch intents",
+        "independent workflow run verification results"
+      ],
+      "depends_on": [
+        "script_remote_task_queue_runtime",
+        "script_task_result_verifier",
+        "script_task_queue",
+        "script_task_queue_runtime",
+        "script_github_workflow_adapter"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Requires caller-provided GitHub Contents read/write permission. Child programs receive only a non-secret environment allowlist, no shell, and no GitHub token. The scheduler does not modify modules/uu.conf.",
+      "health_check": "Tests cover disabled-adapter blocking, reviewed Python execution, workflow dispatch authorization, durable intent recovery, duplicate-dispatch prevention, and independent workflow run verification.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_validate_config",
+      "path": "scripts/validate_config.py",
+      "kind": "python_component",
+      "responsibility": "validate the Shadowrocket configuration structure and invariants",
+      "capabilities": [
+        "configuration_validation"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_validate_execution_adapters",
+      "path": "scripts/validate_execution_adapters.py",
+      "kind": "python_component",
+      "responsibility": "validate explicit deny-by-default execution adapter contracts against the registered program inventory and workflow dispatch interfaces",
+      "capabilities": [
+        "execution_adapter_validation"
+      ],
+      "invocation": "python_cli",
+      "inputs": [
+        "automation/execution_adapters.json",
+        "automation/program_registry.json",
+        "registered workflow files"
+      ],
+      "outputs": [
+        "validation summary or non-zero exit on adapter contract drift"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Validation is read-only; execution permissions remain defined by invoking workflow jobs.",
+      "health_check": "Run in validate-config CI and deterministic execution-adapter tests.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_validate_program_registry",
+      "path": "scripts/validate_program_registry.py",
+      "kind": "python_component",
+      "responsibility": "validate program registration, inventory, and orchestration dependencies",
+      "capabilities": [
+        "program_registry_validation"
+      ],
+      "invocation": "python_cli",
+      "inputs": [
+        "automation/program_registry.json",
+        "scripts/*.py",
+        " .github/workflows/*.yml and *.yaml"
+      ],
+      "outputs": [
+        "Validation summary or non-zero exit on registry drift"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Read-only repository inventory and registry validation; no GitHub token or repository write permission.",
+      "health_check": "Dedicated unit tests in tests/test_program_registry.py and required CI invocation.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_validate_release_manifest",
+      "path": "scripts/validate_release_manifest.py",
+      "kind": "python_component",
+      "responsibility": "validate the unified release manifest, immutable Git object pins, compatibility gate, and automation execution safety invariants",
+      "capabilities": [
+        "release_manifest_validation",
+        "version_compatibility_gate"
+      ],
+      "invocation": "python_cli",
+      "inputs": [
+        "automation/release_manifest.json",
+        "automation/program_registry.json",
+        "automation/execution_adapters.json",
+        "rulesets/manifest.json",
+        "registered workflow files",
+        "reachable Git object history"
+      ],
+      "outputs": [
+        "Validation summary or non-zero exit on release-manifest drift, unknown schema, invalid pin, or unsafe execution policy"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Read-only repository and Git object inspection; no GitHub token, network access, repository write permission, production dispatch, or configuration mutation.",
+      "health_check": "Required validate-config CI invocation and dedicated tests in tests/test_release_manifest.py.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_validate_source_registry_artifact",
+      "path": "scripts/validate_source_registry_artifact.py",
+      "kind": "python_component",
+      "responsibility": "Replay one pinned historical Source Discovery artifact through the exact candidate-registry migration, JSONL shard writer and SHA/count verifier in an isolated temporary directory without touching repository state.",
+      "capabilities": [
+        "source_candidate_registry_artifact_validation"
+      ],
+      "invocation": "read_only_validation_workflow_step",
+      "inputs": [
+        "Pinned source-discovery-output artifact ZIP, artifact SHA-256, inventory SHA-256, producer run ID and producer head SHA"
+      ],
+      "outputs": [
+        "Runner-local temporary sharded registry manifest and verified round-trip summary; no repository mutation"
+      ],
+      "depends_on": [
+        "script_json_document_store",
+        "script_register_discovered_sources"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Read-only validation component. It verifies artifact provenance, calls the production registry builder/encoder and JSON document store only against a temporary directory outside the checkout, then verifies every shard and reconstructed logical registry. It cannot write repository paths, modify modules/uu.conf, activate sources, or change DIRECT/PROXY/REJECT rules.",
+      "health_check": "Pinned artifact and inventory SHA-256 match; producer run/head match; exact repository/source counts match; every shard remains below 40,000,000 bytes; manifest and shard SHA/count checks pass; reconstructed registry equals the logical registry.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_verify_assess_sources_artifacts",
+      "path": "scripts/verify_assess_sources_artifacts.py",
+      "kind": "python_component",
+      "responsibility": "independently verify source assessment runtime output, persistent history, report presence, and non-activation invariants",
+      "capabilities": [
+        "source_assessment_artifact_verification"
+      ],
+      "invocation": "internal read-only verifier subprocess",
+      "inputs": [
+        "task scheduler result JSON file",
+        "data/source_assessments_runtime.json",
+        "sources/source_assessments.json",
+        "reports/source-assessment.md"
+      ],
+      "outputs": [
+        "valid flag and verified artifact counts"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Read-only filesystem access; no network, no repository mutation, no source activation, and no configuration access.",
+      "health_check": "Invoked by task_scheduler only through the reviewed assess_sources completion artifact_verifier contract.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 60
+      }
+    },
+    {
+      "id": "script_verify_baseline",
+      "path": "scripts/verify_baseline.py",
+      "kind": "python_component",
+      "responsibility": "verify the approved configuration baseline",
+      "capabilities": [
+        "configuration_baseline_verification"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_verify_published_rulesets",
+      "path": "scripts/verify_published_rulesets.py",
+      "kind": "python_component",
+      "responsibility": "verify the published remote ruleset artifacts",
+      "capabilities": [
+        "publication_verification"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_verify_recovery_run",
+      "path": "scripts/verify_recovery_run.py",
+      "kind": "python_component",
+      "responsibility": "independently verify a completed audit and publication recovery run",
+      "capabilities": [
+        "recovery_independent_verification"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_watchdog_recovery_policy",
+      "path": "scripts/watchdog_recovery_policy.py",
+      "kind": "python_component",
+      "responsibility": "decide whether a failed audit qualifies for bounded infrastructure retry",
+      "capabilities": [
+        "bounded_recovery_policy"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "CLI arguments and/or imported Python inputs as defined by the implementation"
+      ],
+      "outputs": [
+        "Return values and/or repository artifacts as defined by the implementation"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "storage_incident_store",
+      "path": "storage/v2/incident_store.py",
+      "kind": "python_component",
+      "responsibility": "idempotent incident ledger mutations and verified recovery transitions; sole code writer for storage/v2/incidents.json",
+      "capabilities": [
+        "incident_ledger_persistence"
+      ],
+      "invocation": "only from workflow_storage_management",
+      "inputs": [
+        "validated incident event",
+        "verified recovery event"
+      ],
+      "outputs": [
+        "incident state transition",
+        "append-only event record"
+      ],
+      "depends_on": [
+        "storage_queue_store",
+        "script_incident_state"
+      ],
+      "dispatches": [],
+      "permission_boundary": "No direct GitHub Issues access. The only writable path is storage/v2/incidents.json through storage_queue_store.",
+      "health_check": "Unit tests verify idempotency, classification filtering, revision monotonicity and verification-gated recovery.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "storage_migration",
+      "path": "storage/v2/migration.py",
+      "kind": "python_component",
+      "responsibility": "explicitly gated migration and reconciliation utilities for durable state; not an active scheduler",
+      "capabilities": [
+        "storage_management_support"
+      ],
+      "invocation": "imported only by registered Watchdog, Dashboard, Production or Storage Management entry points",
+      "inputs": [
+        "validated state or artifact references"
+      ],
+      "outputs": [
+        "validated projection, migration result or integrity report"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent credential grant or workflow dispatch. Runtime write authority is determined by the calling four-system workflow and Storage Management allowlists.",
+      "health_check": "Dedicated unit tests validate deterministic behavior, integrity checks and fail-closed error handling.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "storage_queue_store",
+      "path": "storage/v2/queue_store.py",
+      "kind": "python_component",
+      "responsibility": "authoritative allowlisted repository JSON persistence adapter for task queue and incident ledger state using GitHub Contents API SHA-CAS",
+      "capabilities": [
+        "storage_json_sha_cas"
+      ],
+      "invocation": "Storage Management persistence adapter called by Watchdog queue clients and the Storage Management incident workflow.",
+      "inputs": [
+        "allowlisted repository path",
+        "repository token",
+        "expected logical revision"
+      ],
+      "outputs": [
+        "verified JSON document",
+        "Git blob SHA",
+        "logical revision SHA"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Only automation/task_queue.json and storage/v2/incidents.json are allowlisted. Watchdog queue clients and the incident workflow call this single Storage Management writer; all writes use Contents API SHA-CAS and read-after-write verification. No Issues API, rulesets/** or modules/** writes.",
+      "health_check": "Unit tests cover allowlisted paths, SHA-CAS, stale revisions, conflicts, permission failures and read-after-write verification.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "storage_verify_archive_inventory",
+      "path": "storage/v2/verify_archive_inventory.py",
+      "kind": "python_component",
+      "responsibility": "read-only integrity verifier for immutable Storage Management archives",
+      "capabilities": [
+        "storage_management_support"
+      ],
+      "invocation": "imported only by registered Watchdog, Dashboard, Production or Storage Management entry points",
+      "inputs": [
+        "validated state or artifact references"
+      ],
+      "outputs": [
+        "validated projection, migration result or integrity report"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent credential grant or workflow dispatch. Runtime write authority is determined by the calling four-system workflow and Storage Management allowlists.",
+      "health_check": "Dedicated unit tests validate deterministic behavior, integrity checks and fail-closed error handling.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "workflow_auto_sync",
+      "path": ".github/workflows/auto_sync.yml",
+      "kind": "github_actions_workflow",
+      "responsibility": "Watchdog-queued deterministic collection, review, ruleset build, validation, and publication",
+      "capabilities": [
+        "deterministic_audit",
+        "source_discovery",
+        "source_assessment"
+      ],
+      "invocation": "Watchdog durable task-queue dispatch only; direct workflow dispatch requires a valid persisted queue correlation",
+      "inputs": [
+        "GitHub event payload",
+        "repository state and declared workflow inputs"
+      ],
+      "outputs": [
+        "workflow run result",
+        "reports, artifacts, and repository changes explicitly allowed by workflow jobs"
+      ],
+      "depends_on": [
+        "script_append_step_summary",
+        "script_assess_sources",
+        "script_audit_config_drift",
+        "script_audit_external_domains",
+        "script_audit_policy_source_overlap",
+        "script_audit_ruleset_config_overlap",
+        "script_audit_ruleset_references",
+        "script_audit_source_lineage",
+        "script_auto_activate_sources",
+        "script_build_project_status",
+        "script_build_rule_provenance",
+        "script_build_rulesets",
+        "script_build_source_candidates",
+        "script_collect_domains",
+        "script_deterministic_review",
+        "script_discover_sources",
+        "script_import_request_observations",
+        "script_lifecycle_audit",
+        "script_lifecycle_gate",
+        "script_refresh_ruleset_manifest",
+        "script_register_config_baseline",
+        "script_register_discovered_sources",
+        "script_remote_task_queue_runtime",
+        "script_resolve_source_artifacts",
+        "script_resource_lease_runtime",
+        "script_restore_automation_state",
+        "script_run_preflight_tests",
+        "script_sync_ruleset_config_conflicts",
+        "script_validate_config",
+        "script_verify_baseline",
+        "script_verify_published_rulesets"
+      ],
+      "dispatches": [
+        "workflow_automation_watchdog",
+        "workflow_storage_management"
+      ],
+      "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
+      "health_check": "GitHub Actions job and step conclusions; independent publication verification is required where configured.",
+      "orchestration": {
+        "enabled": true,
+        "allowed_callers": [
+          "workflow_automation_watchdog"
+        ],
+        "max_attempts": 2,
+        "timeout_seconds": 21600
+      }
+    },
+    {
+      "id": "workflow_automation_watchdog",
+      "path": ".github/workflows/automation-watchdog.yml",
+      "kind": "github_actions_workflow",
+      "responsibility": "top-level Watchdog for health, bounded recovery, queue leases, deterministic task scheduling, and explicit one-shot capability canaries",
+      "capabilities": [
+        "top_level_supervision",
+        "remote_task_queue_supervision"
+      ],
+      "invocation": "hourly and daily schedule, workflow completion, relevant push, manual dispatch",
+      "inputs": [
+        "automation_task_id (optional correlation id from Auto Sync)",
+        "request_deterministic_audit (optional boolean)"
+      ],
+      "outputs": [
+        "workflow run result",
+        "reports, artifacts, and repository changes explicitly allowed by workflow jobs",
+        "remote queue recovery and verification report"
+      ],
+      "depends_on": [
+        "script_production_intent",
+        "script_remote_task_queue_runtime",
+        "script_task_scheduler"
+      ],
+      "dispatches": [
+        "workflow_auto_sync"
+      ],
+      "permission_boundary": "Job-scoped GitHub Actions permissions in the workflow are authoritative. Registry metadata does not grant permissions.",
+      "health_check": "GitHub Actions job and step conclusions; independent publication verification and queue state validation are required where configured.",
+      "orchestration": {
+        "enabled": true,
+        "allowed_callers": [
+          "workflow_auto_sync"
+        ],
+        "max_attempts": 1,
+        "timeout_seconds": 30
+      }
+    },
+    {
+      "id": "workflow_read_only_dashboard_pages",
+      "path": ".github/workflows/dashboard-pages.yml",
+      "kind": "github_actions_workflow",
+      "responsibility": "periodically aggregate sanitized read-only metrics and publish the static GitHub Pages operations dashboard",
+      "capabilities": [
+        "read_only_dashboard_build",
+        "github_pages_deployment"
+      ],
+      "invocation": "hourly schedule and allowlisted main-branch data/dashboard pushes",
+      "inputs": [
+        "GitHub event payload",
+        "committed repository summary files"
+      ],
+      "outputs": [
+        "static GitHub Pages artifact and deployment"
+      ],
+      "depends_on": [
+        "script_build_dashboard_snapshot",
+        "storage_dashboard_snapshot"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Build job has contents:read only; deployment job has pages:write and id-token:write only. No contents:write, actions:write, production dispatch, queue mutation, or config access beyond read-only checkout.",
+      "health_check": "Snapshot builder exit status, artifact upload, and GitHub Pages deployment result.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "workflow_storage_management",
+      "path": ".github/workflows/storage-management.yml",
+      "kind": "github_actions_workflow",
+      "responsibility": "Independent Storage Management entry point for incident ledger operations and storage validation; shared JSON persistence, artifact and recovery components are registered as Storage Management-owned libraries.",
+      "capabilities": [
+        "incident_ledger_persistence",
+        "durable_state_management",
+        "storage_runtime_validation",
+        "actions_artifact_ingestion"
+      ],
+      "invocation": "push-triggered one-time migration of superseded source tasks; workflow_dispatch from Production and Watchdog for incident operations; read-only pull-request validation",
+      "inputs": [
+        "operation",
+        "automation_task_id",
+        "run_id",
+        "source_sha",
+        "classification",
+        "summary",
+        "run_url",
+        "before_run_id",
+        "classifications",
+        "verification_url"
+      ],
+      "outputs": [
+        "verified queue retirement report and revision when consolidating the old independent source DAG",
+        "committed incident ledger revision",
+        "idempotent event result"
+      ],
+      "depends_on": [
+        "script_register_config_baseline",
+        "script_run_preflight_tests",
+        "script_validate_automation_write_boundary",
+        "script_validate_execution_adapters",
+        "script_validate_program_registry",
+        "script_verify_baseline",
+        "storage_artifact_store",
+        "storage_incident_store",
+        "storage_ingest_actions_artifacts",
+        "storage_snapshot_repository_integrity"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Storage Management is the sole writer of automation/task_queue.json through script_remote_task_queue_runtime and of storage/v2/incidents.json through storage_incident_store. Queue writes use SHA-CAS and remain isolated from incident-ledger writes. No ruleset writes or modules/uu.conf access.",
+      "health_check": "Queue retirement uses GitHub Contents SHA-CAS and validates the migrated queue against the four-system registry; incident operations use idempotent event IDs, revision checks and read-after-write verification; pull requests run registry, adapter and V2 regression validation.",
+      "orchestration": {
+        "enabled": true,
+        "allowed_callers": [
+          "workflow_auto_sync"
+        ],
+        "max_attempts": 1,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "storage_runtime",
+      "path": "storage/v2/runtime.py",
+      "kind": "python_component",
+      "responsibility": "V2 event-sourced storage state engine with hash-chained events, revision checks, projections and fenced recovery-plan application primitives.",
+      "capabilities": [
+        "storage_management_support",
+        "event_sourced_state"
+      ],
+      "invocation": "imported by Storage Management persistence and recovery components; read/init/append CLI is restricted to the Storage Management boundary",
+      "inputs": [
+        "validated V2 state",
+        "typed event payloads",
+        "revision and epoch identity"
+      ],
+      "outputs": [
+        "hash-chained state transitions",
+        "deterministic task and resource projections"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent credential grant. Automated writes are limited to exact Storage Management allowlisted state paths; modules/uu.conf and all modules/** are prohibited.",
+      "health_check": "V2 runtime regression tests validate hash chains, CAS revisions, leases, fencing and protected-path denial.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "storage_artifact_store",
+      "path": "storage/v2/artifact_store.py",
+      "kind": "python_component",
+      "responsibility": "Immutable content-addressed artifact staging, chunking, deduplication and integrity verification primitives.",
+      "capabilities": [
+        "storage_management_support",
+        "content_addressed_artifact_storage"
+      ],
+      "invocation": "imported by Storage Management artifact and handoff components; no independent workflow dispatch",
+      "inputs": [
+        "bounded artifact bytes",
+        "provenance metadata",
+        "content-addressed manifests"
+      ],
+      "outputs": [
+        "immutable artifact records",
+        "verified chunk manifests"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Filesystem/object-store adapter only; no independent repository writer, no rulesets/** writes and no modules/** access.",
+      "health_check": "Artifact-store regression tests validate size limits, deduplication, manifest integrity and corruption detection.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "storage_ingest_actions_artifacts",
+      "path": "storage/v2/ingest_actions_artifacts.py",
+      "kind": "python_component",
+      "responsibility": "Ingest completed GitHub Actions workflow artifacts into the Storage Management SHA-256 CAS, publish immutable per-run provenance catalogs, verify read-back integrity, and delete source artifacts only after durable verification.",
+      "capabilities": [
+        "storage_management_support",
+        "actions_artifact_ingestion",
+        "artifact_provenance_catalog",
+        "verified_artifact_cleanup"
+      ],
+      "invocation": "direct CLI step in Storage Management workflow_run handler and 15-minute scheduled artifact-recovery poll; no independent dispatch",
+      "inputs": [
+        "completed main-branch workflow run ID",
+        "GitHub Actions artifact archives",
+        "source workflow and commit provenance"
+      ],
+      "outputs": [
+        "content-addressed artifact manifests",
+        "immutable per-run artifact catalog",
+        "source artifact cleanup result"
+      ],
+      "depends_on": [
+        "storage_artifact_store"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Storage Management only; actions:write and contents:write are scoped to the ingestion job; writes are limited to SHA-addressed CAS objects and numeric per-run catalog files under storage/v2/artifacts/**; modules/** and rulesets/** are not writable by this component.",
+      "health_check": "Storage Management regression suite validates catalog path authorization; runtime verifies every staged object by read-back before committing the catalog and deleting source artifacts.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 1200
+      }
+    },
+    {
+      "id": "storage_dashboard_snapshot",
+      "path": "storage/v2/dashboard_snapshot.py",
+      "kind": "python_component",
+      "responsibility": "Build sanitized read-only V2 queue, resource, migration and archive metrics for the independent Dashboard.",
+      "capabilities": [
+        "storage_management_support",
+        "read_only_dashboard_snapshot"
+      ],
+      "invocation": "direct read-only CLI step in workflow_read_only_dashboard_pages",
+      "inputs": [
+        "read-only V2 storage state",
+        "migration manifest",
+        "archive inventory"
+      ],
+      "outputs": [
+        "sanitized dashboard/v2/data.json snapshot"
+      ],
+      "depends_on": [
+        "storage_runtime"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Read-only access only; no queue mutation, repository writes, production dispatch or access to modules/uu.conf.",
+      "health_check": "Dashboard snapshot tests validate redaction, uninitialized state handling and absence of mutation controls.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "storage_source_handoff",
+      "path": "storage/v2/source_handoff.py",
+      "kind": "python_component",
+      "responsibility": "Verify and stage immutable Discovery-to-Assessment provenance handoff into V2 content-addressed storage.",
+      "capabilities": [
+        "storage_management_support",
+        "verified_source_handoff"
+      ],
+      "invocation": "imported by Storage Management migration and handoff tooling; no independent dispatch",
+      "inputs": [
+        "verified Discovery and Assessment artifact proofs",
+        "V2 epoch and artifact references"
+      ],
+      "outputs": [
+        "verified handoff manifest",
+        "non-activating content-addressed artifact references"
+      ],
+      "depends_on": [
+        "storage_runtime",
+        "storage_artifact_store"
+      ],
+      "dispatches": [],
+      "permission_boundary": "No independent credential grant or repository writer. Staging is explicitly gated and never activates sources or modifies modules/uu.conf.",
+      "health_check": "Source-handoff tests validate predecessor identity, digest integrity and non-activating staging.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "storage_watchdog_supervisor",
+      "path": "storage/v2/watchdog_supervisor.py",
+      "kind": "python_component",
+      "responsibility": "Read-only V2 task/resource lease inspection and deterministic recovery-plan generation for Watchdog.",
+      "capabilities": [
+        "storage_management_support",
+        "read_only_recovery_planning"
+      ],
+      "invocation": "read-only CLI/library for Watchdog supervision; recovery application remains owned by Storage Management",
+      "inputs": [
+        "read-only V2 state snapshot",
+        "timezone-aware observation timestamp"
+      ],
+      "outputs": [
+        "non-mutating fenced recovery plan"
+      ],
+      "depends_on": [
+        "storage_runtime"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Read-only planner only; never dispatches workers or writes repository state. Recovery plans can be applied only through Storage Management CAS and allowlists.",
+      "health_check": "Watchdog supervisor tests validate lease-expiry ordering, retry exhaustion and no-dispatch behavior.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_run_preflight_tests",
+      "path": "scripts/run_preflight_tests.py",
+      "kind": "python_component",
+      "responsibility": "Run the deterministic repository preflight test suite with explicitly documented legacy-contract exclusions.",
+      "capabilities": [
+        "workflow_testing",
+        "preflight_validation"
+      ],
+      "invocation": "python_module_or_workflow_step",
+      "inputs": [
+        "Repository tests directory and unittest discovery defaults."
+      ],
+      "outputs": [
+        "Process exit status and unittest test report."
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 1800
+      }
+    },
+    {
+      "id": "script_validate_automation_write_boundary",
+      "path": "scripts/validate_automation_write_boundary.py",
+      "kind": "python_component",
+      "responsibility": "fail-closed validation of production publisher path fences and read-only user configuration baseline",
+      "capabilities": [
+        "automation_write_boundary_validation"
+      ],
+      "invocation": "python_cli",
+      "inputs": [
+        "workflow YAML, baseline policy, release manifest, resource write inventory and modules/uu.conf"
+      ],
+      "outputs": [
+        "Validation summary or non-zero exit on write-boundary drift"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Read-only local repository inspection; no GitHub token, network request or repository write permission.",
+      "health_check": "Dedicated tests in tests/test_automation_write_boundary.py and required Storage Management CI invocation.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "storage_snapshot_repository_integrity",
+      "path": "storage/v2/snapshot_repository_integrity.py",
+      "kind": "python_component",
+      "responsibility": "File Management inventory of all repository Git blob SHAs, open PR heads and changed-file SHAs, review metadata, and protected uu.conf before/after integrity checks.",
+      "capabilities": [
+        "repository_integrity_tracking",
+        "content_addressed_snapshot",
+        "protected_config_read_only"
+      ],
+      "invocation": "Storage Management scheduled job only; not independently dispatchable.",
+      "inputs": [
+        "main Git tree and commit SHA",
+        "all open pull requests plus explicitly tracked closed PRs",
+        "paginated changed-file, review and review-comment metadata",
+        "modules/uu.conf Git blob and content"
+      ],
+      "outputs": [
+        "immutable content-addressed repository integrity snapshot",
+        "SHA-CAS latest-snapshot projection under storage/v2/projections/"
+      ],
+      "depends_on": [
+        "storage_artifact_store",
+        "storage_queue_store"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Storage Management only. Source files and modules/uu.conf are read-only. Repository writes are limited to immutable storage/v2/artifacts/sha256/<digest> objects and storage/v2/projections/repository_integrity.json using Contents API SHA-CAS and read-after-write verification. Production publishers remain limited to rulesets/**.",
+      "health_check": "tests/v2/test_repository_integrity.py validates complete-tree fallback, PR/base-SHA normalization, review/head/file digest changes, uu.conf read-only hashing, exact write allowlists, and scheduled no-cancel workflow wiring.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 1200
+      }
+    }
+  ]
+}

@@ -6,10 +6,12 @@ ROOT = Path(__file__).resolve().parents[1]
 WATCHDOG = ROOT / ".github" / "workflows" / "automation-watchdog.yml"
 
 
-@unittest.skip("V2 simplified watchdog: intent+supervision only; retired multi-job recovery plane")
 class WatchdogStaleRunRecoveryTests(unittest.TestCase):
     def test_placeholder(self):
         self.assertTrue(WATCHDOG.is_file())
+        content = WATCHDOG.read_text(encoding="utf-8")
+        self.assertIn("task-queue-supervision:", content)
+        self.assertIn("Persist production intent through the single queue writer", content)
 
 
 class WatchdogV2ControlPlaneTests(unittest.TestCase):

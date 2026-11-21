@@ -20,16 +20,16 @@ class AdapterActivationAuditTests(unittest.TestCase):
         adapters = json.loads((ROOT / "automation" / "execution_adapters.json").read_text(encoding="utf-8"))
         self.assertEqual(report["program_count"], len(registry["programs"]))
         self.assertEqual(report["adapter_count"], len(adapters["adapters"]))
-        self.assertEqual(report["enabled_adapter_count"], 5)
+        self.assertEqual(report["enabled_adapter_count"], 3)
         self.assertTrue(report["watchdog_caller_permissions_ready"])
         self.assertEqual(
             [row["program_id"] for row in report["adapters"] if row["enabled"]],
-            ["script_assess_sources", "workflow_auto_sync", "workflow_self_healing_tests", "workflow_source_discovery", "workflow_storage_incident_management"],
+            ["workflow_auto_sync", "workflow_automation_watchdog", "workflow_storage_management"],
         )
 
     def test_identifies_only_low_privilege_dispatchable_workflow_as_canary(self):
         report = audit_activation_readiness(ROOT)
-        self.assertIn("workflow_self_healing_tests", report["least_privilege_canary_candidates"])
+        self.assertEqual(report["least_privilege_canary_candidates"], [])
         for row in report["adapters"]:
             if row["least_privilege_canary_candidate"]:
                 self.assertEqual(row["write_scopes"], [])
@@ -52,11 +52,11 @@ class AdapterActivationAuditTests(unittest.TestCase):
         )
         self.assertEqual(
             job_permissions(content, "task-queue-supervision"),
-            {"actions": "write", "contents": "read", "packages": "write"},
+            {"actions": "write", "contents": "read", "issues": "write"},
         )
         self.assertEqual(
             job_permissions(content, "health"),
-            {"packages": "write"},
+            {"issues": "write"},
         )
 
     def test_permission_sections_capture_target_write_scopes(self):

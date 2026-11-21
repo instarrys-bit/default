@@ -20,19 +20,22 @@ class ReleaseManifestSmokeTests(unittest.TestCase):
         result = validate_release_manifest(ROOT)
         self.assertTrue(result["valid"])
         self.assertEqual(result["verified_git_blob_pins"], 6)
-        self.assertEqual(result["independent_python_dispatch"], "scoped_source_dag_enabled")
+        self.assertEqual(result["independent_python_dispatch"], "blocked")
+        self.assertEqual(result["python_adapters_enabled"], 0)
 
-
-    def test_active_release_requires_complete_non_activating_handoff_evidence(self):
+    def test_baseline_snapshot_does_not_claim_live_independent_handoff(self):
         manifest = json.loads((ROOT / "automation/release_manifest.json").read_text(encoding="utf-8"))
-        self.assertEqual(manifest["release_status"], "active_with_live_handoff_evidence")
-        with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / "release_manifest.json"
-            invalid = json.loads(json.dumps(manifest))
-            invalid["live_handoff_evidence"]["activation_count"] = 1
-            path.write_text(json.dumps(invalid), encoding="utf-8")
-            with self.assertRaisesRegex(ValueError, "activation_count must be zero"):
-                validate_release_manifest(ROOT, path)
+        self.assertEqual(manifest["release_status"], "baseline_snapshot")
+        self.assertEqual(manifest["python_adapter_policy"]["allowed_adapters"], [])
+        self.assertTrue(manifest["execution_policy"]["existing_adapter_enablement_unchanged"])
+        self.assertEqual(manifest["execution_policy"]["enabled_workflow_adapters"], ["workflow_auto_sync", "workflow_automation_watchdog", "workflow_storage_management"])
+        self.assertEqual(
+            manifest["next_migration_gate"]["completion_status"],
+            "blocked_pending_contract_and_runtime_enforcement",
+        )
+        workflow_map = json.loads((ROOT / "automation/production_workflow_map.json").read_text(encoding="utf-8"))
+        self.assertEqual(workflow_map["summary"]["independent_python_dispatch_enabled"], False)
+        self.assertEqual(workflow_map["independent_dags"], [])
 
     def test_release_pins_are_immutable_baseline_references(self):
         manifest = json.loads((ROOT / "automation/release_manifest.json").read_text(encoding="utf-8"))
@@ -75,7 +78,39 @@ class ReleaseManifestSmokeTests(unittest.TestCase):
         program = next(item for item in registry["programs"] if item["id"] == "script_assess_sources")
         callers = ["workflow_automation_watchdog"]
         adapter["enabled"] = True
+        adapter["interface_status"] = "reviewed"
         adapter["allowed_callers"] = callers
+        adapter["input_contract"] = {
+            "type": "object", "required": ["predecessor"],
+            "properties": {"predecessor": {"type": "object"}},
+        }
+        adapter["output_contract"] = {
+            "type": "object", "required": ["assessment_count", "activation_count"],
+            "properties": {"assessment_count": {"type": "integer"}, "activation_count": {"type": "integer"}},
+        }
+        adapter["dependency_contract"] = {
+            "predecessor_program_id": "script_discover_sources",
+            "artifact_path": "sources/discovered_sources.json",
+            "producer_workflow_name": "Shadowrocket Source Discovery (Watchdog)",
+            "edge_type": "intended_successful_workflow_run_with_immutable_artifact_digest",
+            "enforcement": "Exact predecessor identity and immutable artifact digest are verified before assessment.",
+        }
+        adapter["resource_contract"] = {
+            "mode": "exclusive",
+            "fencing_required": True,
+            "resource_keys": [
+                "logical/production-pipeline",
+                "logical/source-assessment-checkpoints",
+                "logical/source-dag-supervision",
+            ],
+            "lease_seconds": 3600,
+        }
+        adapter["write_resources"] = []
+        adapter["publish_resources"] = []
+        adapter["completion"]["artifact_verifier"] = {
+            "program_id": "script_verify_assess_sources_artifacts",
+            "path": "scripts/verify_assess_sources_artifacts.py",
+        }
         program["orchestration"] = {
             "enabled": True, "allowed_callers": callers,
             "max_attempts": 1, "timeout_seconds": 480,
