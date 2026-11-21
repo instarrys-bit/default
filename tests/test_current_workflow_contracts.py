@@ -79,5 +79,27 @@ class CurrentWorkflowContractTests(unittest.TestCase):
         self.assertNotIn("loadTestsFromName", runner)
 
 
+    def test_watchdog_has_one_scoped_queue_writer_and_read_only_intent_handoff(self):
+        watchdog = (WORKFLOWS / "automation-watchdog.yml").read_text(encoding="utf-8")
+        health = watchdog.split("  health-check:", 1)[1].split("  task-queue-supervision:", 1)[0]
+        supervision = watchdog.split("  task-queue-supervision:", 1)[1]
+
+        self.assertIn("contents: read", health)
+        self.assertNotIn("contents: write", health)
+        self.assertNotIn("enqueue-auto-sync", health)
+        self.assertIn("queue_task_json:", watchdog)
+        self.assertIn("QUEUE_TASK_JSON: ${{ needs.health-check.outputs.queue_task_json }}", supervision)
+        self.assertIn("Persist production intent through the single queue writer", supervision)
+        self.assertIn("enqueue-auto-sync", supervision)
+        self.assertIn("group: shadowrocket-watchdog-queue-writer-main", supervision)
+        self.assertEqual(watchdog.count("contents: write"), 1)
+        self.assertEqual(watchdog.count("enqueue-auto-sync"), 1)
+        self.assertNotIn("secrets.AUTOMATION_WRITE_TOKEN", health + supervision)
+        self.assertLess(
+            supervision.index("Persist production intent through the single queue writer"),
+            supervision.index("Recover leases and run scheduler once"),
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
