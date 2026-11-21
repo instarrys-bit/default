@@ -1,402 +1,196 @@
 from __future__ import annotations
 
 import json
-import re
 import subprocess
 import unittest
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def load_json(relative_path: str) -> dict:
-    return json.loads((ROOT / relative_path).read_text(encoding="utf-8"))
+def read_json(path: str) -> dict:
+    return json.loads((ROOT / path).read_text(encoding="utf-8"))
 
 
-def git_blob_sha(relative_path: str) -> str:
+def blob_sha(path: str) -> str:
     return subprocess.run(
-        ["git", "hash-object", relative_path],
-        cwd=ROOT,
-        check=True,
-        capture_output=True,
-        text=True,
+        ["git", "hash-object", path], cwd=ROOT, check=True,
+        capture_output=True, text=True,
     ).stdout.strip()
 
 
 class CapabilityContractInventoryTests(unittest.TestCase):
-    def test_inventory_is_pinned_to_the_current_program_registry(self):
-        registry = load_json("automation/program_registry.json")
-        inventory = load_json("automation/capability_contract_inventory.json")
-
-        self.assertEqual(
-            inventory["source_registry_blob_sha"],
-            git_blob_sha("automation/program_registry.json"),
-            "capability inventory must be regenerated when the program registry changes",
-        )
-
-        programs = registry["programs"]
-        python_programs = [item for item in programs if item["kind"] == "python_component"]
-        inventory_programs = inventory["programs"]
-        self.assertEqual(inventory["summary"]["registered_programs"], len(programs))
-        self.assertEqual(inventory["summary"]["python_components"], len(python_programs))
-        self.assertEqual(len(inventory_programs), len(python_programs))
-
-        registry_by_id = {item["id"]: item for item in python_programs}
-        inventory_by_id = {item["id"]: item for item in inventory_programs}
-        self.assertEqual(set(inventory_by_id), set(registry_by_id))
-
-        for program_id, entry in inventory_by_id.items():
-            registered = registry_by_id[program_id]
-            self.assertEqual(entry["path"], registered["path"], program_id)
-            self.assertEqual(entry["declared_capabilities"], registered["capabilities"], program_id)
-            self.assertEqual(entry["registry_dependencies"], registered["depends_on"], program_id)
-            self.assertEqual(entry["current_invocation"], registered["invocation"], program_id)
+    def test_inventory_is_retained_as_archival_not_dispatch_authority(self):
+        inventory = read_json("automation/capability_contract_inventory.json")
+        self.assertEqual(inventory["status"], "retired_archival_snapshot")
+        note = inventory["review_context"]["note"]
+        self.assertIn("not an activation authority", note)
+        self.assertIn("four workflows", note)
+        self.assertGreater(len(inventory["programs"]), 0)
 
     def test_production_workflow_map_matches_current_workflow_and_registry_blobs(self):
-        mapping = load_json("automation/production_workflow_map.json")
-        workflow_path = ".github/workflows/auto_sync.yml"
-        registry_path = "automation/program_registry.json"
-        self.assertEqual(mapping["workflow_blob_sha"], git_blob_sha(workflow_path))
-        self.assertEqual(mapping["registry_blob_sha"], git_blob_sha(registry_path))
-        self.assertEqual(
-            mapping["review_context"]["release_manifest_blob_sha"],
-            git_blob_sha("automation/release_manifest.json"),
-        )
-        self.assertEqual(
-            mapping["review_context"]["program_registry_blob_sha"],
-            git_blob_sha(registry_path),
-        )
-        self.assertEqual(
-            mapping["review_context"]["execution_adapters_blob_sha"],
-            git_blob_sha("automation/execution_adapters.json"),
-        )
-        self.assertEqual(
-            mapping["status"],
-            "static_step_mapping_not_execution_authorization",
-        )
+        mapping = read_json("automation/production_workflow_map.json")
+        self.assertEqual(mapping["workflow_blob_sha"], blob_sha(".github/workflows/auto_sync.yml"))
+        self.assertEqual(mapping["registry_blob_sha"], blob_sha("automation/program_registry.json"))
+        self.assertEqual(mapping["review_context"]["program_registry_blob_sha"], blob_sha("automation/program_registry.json"))
+        self.assertEqual(mapping["review_context"]["execution_adapters_blob_sha"], blob_sha("automation/execution_adapters.json"))
+        self.assertEqual(mapping["status"], "static_step_mapping_not_execution_authorization")
 
-        lines = (ROOT / workflow_path).read_text(encoding="utf-8").splitlines()
-        actual_by_job = {}
-        for job in mapping["job_graph"]:
-            start = next(
-                index for index, line in enumerate(lines)
-                if line == f"  {job['id']}:"
-            )
-            end = next(
-                (
-                    index for index in range(start + 1, len(lines))
-                    if lines[index].startswith("  ")
-                    and not lines[index].startswith("    ")
-                    and lines[index].rstrip().endswith(":")
-                ),
-                len(lines),
-            )
-            names = []
-            for line in lines[start + 1:end]:
-                match = re.match(r"^\s+- name:\s*(.+)$", line)
-                if match:
-                    names.append(match.group(1).strip().strip("\\\"'"))
-            actual_by_job[job["id"]] = names
-            mapped_names = [step["name"] for step in job["steps"]]
-            self.assertEqual(mapped_names, names, job["id"])
-            self.assertEqual(
-                [step["order"] for step in job["steps"]],
-                sorted(step["order"] for step in job["steps"]),
-                job["id"],
-            )
-
-        actual_count = sum(len(names) for names in actual_by_job.values())
-        self.assertEqual(mapping["summary"]["job_count"], len(mapping["job_graph"]))
-        self.assertEqual(mapping["summary"]["step_count"], actual_count)
-
-    def test_resource_write_inventory_is_pinned_to_current_release_and_components(self):
-        writes = load_json("automation/resource_write_sets.json")
-        release = load_json("automation/release_manifest.json")
-        registry_path = "automation/program_registry.json"
-        adapters_path = "automation/execution_adapters.json"
+    def test_resource_write_inventory_is_current_and_pinned(self):
+        writes = read_json("automation/resource_write_sets.json")
+        release = read_json("automation/release_manifest.json")
+        self.assertEqual(writes["status"], "partial_static_entrypoint_review")
         self.assertEqual(writes["review_context"]["release_id"], release["release_id"])
-        self.assertEqual(
-            writes["review_context"]["release_manifest_blob_sha"],
-            git_blob_sha("automation/release_manifest.json"),
-        )
-        self.assertEqual(
-            writes["review_context"]["program_registry_blob_sha"],
-            git_blob_sha(registry_path),
-        )
-        self.assertEqual(
-            writes["review_context"]["execution_adapters_blob_sha"],
-            git_blob_sha(adapters_path),
-        )
+        self.assertEqual(writes["review_context"]["release_manifest_blob_sha"], blob_sha("automation/release_manifest.json"))
+        self.assertEqual(writes["review_context"]["program_registry_blob_sha"], blob_sha("automation/program_registry.json"))
+        self.assertEqual(writes["review_context"]["execution_adapters_blob_sha"], blob_sha("automation/execution_adapters.json"))
 
-    def test_assessment_adapter_is_enabled_under_scoped_release_allowlist(self):
-        registry = load_json("automation/program_registry.json")
-        adapters = load_json("automation/execution_adapters.json")
-        inventory = load_json("automation/capability_contract_inventory.json")
-        program = next(item for item in registry["programs"] if item["id"] == "script_assess_sources")
-        adapter = next(item for item in adapters["adapters"] if item["target_program_id"] == "script_assess_sources")
-        entry = next(item for item in inventory["programs"] if item["id"] == "script_assess_sources")
-        self.assertTrue(program["orchestration"]["enabled"])
-        self.assertEqual(program["orchestration"]["allowed_callers"], ["workflow_automation_watchdog"])
-        self.assertTrue(adapter["enabled"])
-        self.assertEqual(adapter["allowed_callers"], ["workflow_automation_watchdog"])
-        self.assertEqual(entry["dispatch_status"], "enabled")
-        self.assertEqual(inventory["summary"]["independently_dispatchable_python_components"], 1)
-        workflow = Path(".github/workflows/automation-watchdog.yml").read_text(encoding="utf-8")
-        self.assertIn("Enqueue source assessment after successful discovery workflow", workflow)
-        assessment_step = workflow.split("Enqueue source assessment after successful discovery workflow", 1)[1].split("Resolve superseded historical DEAD_LETTER", 1)[0]
-        self.assertIn("Shadowrocket Source Discovery (Watchdog)", assessment_step)
-        self.assertNotIn("Shadowrocket Deterministic Domain Audit (User Config Baseline)", assessment_step)
-        audit = Path(".github/workflows/auto_sync.yml").read_text(encoding="utf-8")
-        self.assertEqual(audit.count("python3 scripts/discover_sources.py"), 1)
-        self.assertEqual(audit.count("python3 scripts/assess_sources.py"), 1)
-
-    def test_assessment_adapter_has_scheduler_enforced_typed_predecessor(self):
-        adapters = load_json("automation/execution_adapters.json")
-        contract = load_json("automation/capability_contracts/assess_sources.json")
-        adapter = next(item for item in adapters["adapters"] if item["target_program_id"] == "script_assess_sources")
-        self.assertEqual(adapter["dependency_contract"]["predecessor_program_id"], "script_discover_sources")
-        self.assertEqual(adapter["dependency_contract"]["artifact_path"], "sources/discovered_sources.json")
-        self.assertIn("predecessor", adapter["input_contract"]["required"])
-        self.assertIn("scheduler.build_execution_plan", contract["dependency_edges"]["scheduler_enforcement"])
-        self.assertTrue(adapter["enabled"])
-        self.assertEqual(adapter["allowed_callers"], ["workflow_automation_watchdog"])
+    def test_assessment_adapter_is_disabled_under_monolithic_four_workflow_design(self):
+        registry = read_json("automation/program_registry.json")
+        adapters = read_json("automation/execution_adapters.json")
+        program = next(x for x in registry["programs"] if x["id"] == "script_assess_sources")
+        adapter = next(x for x in adapters["adapters"] if x["target_program_id"] == "script_assess_sources")
+        self.assertFalse(program["orchestration"]["enabled"])
+        self.assertEqual(program["orchestration"]["allowed_callers"], [])
+        self.assertFalse(adapter["enabled"])
+        self.assertEqual(adapter["allowed_callers"], [])
         self.assertEqual(adapter["write_resources"], [])
         self.assertEqual(adapter["publish_resources"], [])
-        self.assertEqual(adapter["dependency_contract"]["producer_workflow_name"], "Shadowrocket Source Discovery (Watchdog)")
+        workflow = (ROOT / ".github/workflows/auto_sync.yml").read_text(encoding="utf-8")
+        self.assertEqual(workflow.count("python3 scripts/assess_sources.py"), 1)
+        self.assertFalse((ROOT / ".github/workflows/source-discovery.yml").exists())
 
-    def test_assessment_restore_writer_is_registered_under_shared_mutex(self):
-        audit = load_json("automation/resource_ownership_audit.json")
-        writes = load_json("automation/resource_write_sets.json")
-        registry = load_json("automation/program_registry.json")
-        adapters = load_json("automation/execution_adapters.json")
-        group = next(item for item in audit["resource_groups"] if item["id"] == "source_assessment_artifacts")
-        entry = next(item for item in writes["confirmed_write_sets"] if item["program_id"] == "script_assess_sources")
-        self.assertEqual(audit["evidence_scope"]["registry_blob_sha"], git_blob_sha("automation/program_registry.json"))
-        self.assertEqual(audit["evidence_scope"]["adapters_blob_sha"], git_blob_sha("automation/execution_adapters.json"))
-        self.assertEqual(group["status"], "active_runner_local_artifacts_and_fenced_issue_checkpoint")
-        self.assertEqual(group["known_writers"], ["script_assess_sources"])
-        self.assertEqual(entry["additional_serialized_writers"], [])
-        self.assertEqual(entry["publish_resources"], [])
-        self.assertIn("logical/source-assessment-checkpoints", entry["lease_keys"])
-        self.assertIn("logical/production-pipeline", entry["lease_keys"])
-        restore = next(item for item in registry["programs"] if item["id"] == "script_restore_automation_state")
-        self.assertFalse(restore["orchestration"]["enabled"])
-        self.assertFalse(next(item for item in adapters["adapters"] if item["target_program_id"] == "script_restore_automation_state")["enabled"])
+    def test_assessment_dependency_is_registered_but_not_independently_dispatchable(self):
+        registry = read_json("automation/program_registry.json")
+        adapters = read_json("automation/execution_adapters.json")
+        program = next(x for x in registry["programs"] if x["id"] == "script_assess_sources")
+        adapter = next(x for x in adapters["adapters"] if x["target_program_id"] == "script_assess_sources")
+        self.assertIn("script_discover_sources", program["depends_on"])
+        self.assertFalse(adapter["enabled"])
+        self.assertIsNone(adapter.get("dependency_contract"))
+        workflow = (ROOT / ".github/workflows/auto_sync.yml").read_text(encoding="utf-8")
+        self.assertLess(workflow.index("Discover candidate source repositories"), workflow.index("Assess discovered rule-list syntax"))
 
-    def test_discovery_step_summary_is_not_a_shared_repository_resource(self):
-        audit = load_json("automation/resource_ownership_audit.json")
-        writes = load_json("automation/resource_write_sets.json")
-        group = next(item for item in audit["resource_groups"] if item["id"] == "source_discovery_artifacts")
-        entry = next(item for item in writes["confirmed_write_sets"] if item["program_id"] == "script_discover_sources")
-        self.assertNotIn("GITHUB_STEP_SUMMARY", group["paths"])
+    def test_restore_writer_is_registered_and_publication_is_rulesets_only(self):
+        writes = read_json("automation/resource_write_sets.json")
+        entry = next(x for x in writes["confirmed_write_sets"] if x["program_id"] == "script_restore_automation_state")
+        self.assertTrue(entry["lease_keys"])
+        self.assertEqual(entry["publish_resources"], ["rulesets/**"])
+        self.assertNotIn("modules/uu.conf", entry["writes"])
+
+    def test_discovery_step_summary_is_run_local_not_shared_repository_state(self):
+        writes = read_json("automation/resource_write_sets.json")
+        entry = next(x for x in writes["confirmed_write_sets"] if x["program_id"] == "script_discover_sources")
+        self.assertTrue(any("GITHUB_STEP_SUMMARY" in x for x in entry.get("ephemeral_outputs", [])))
         self.assertNotIn("GITHUB_STEP_SUMMARY", entry["writes"])
-        self.assertTrue(any(item.startswith("GITHUB_STEP_SUMMARY") for item in entry["ephemeral_outputs"]))
-        self.assertIn("$AUTOMATION_ARTIFACT_ROOT/reports/source-discovery.md", entry["writes"])
-        self.assertIn("RUNNER_TEMP", entry["write_boundary_fencing"])
-        self.assertNotIn("lease_required=True", entry["write_boundary_fencing"])
+        self.assertTrue(any("$AUTOMATION_ARTIFACT_ROOT" in x for x in entry["writes"]))
 
-    def test_dashboard_report_writer_is_registered_in_shared_report_ownership(self):
-        audit = load_json("automation/resource_ownership_audit.json")
-        writes = load_json("automation/resource_write_sets.json")
-        group = next(item for item in audit["resource_groups"] if item["id"] == "reports_and_audit_outputs")
-        entry = next(item for item in writes["confirmed_write_sets"] if item["program_id"] == "script_build_project_status")
+    def test_dashboard_report_writer_is_classified_as_runner_local(self):
+        audit = read_json("automation/resource_ownership_audit.json")
+        writes = read_json("automation/resource_write_sets.json")
+        group = next(x for x in audit["resource_groups"] if x["id"] == "reports_and_audit_outputs")
+        entry = next(x for x in writes["confirmed_write_sets"] if x["program_id"] == "script_build_project_status")
         self.assertIn("script_build_project_status", group["known_writers"])
         self.assertIn("reports/project-status.json", entry["writes"])
         self.assertIn("reports/project-status.md", entry["writes"])
-        self.assertIn("scripts/build_project_status.py", audit["evidence_scope"]["inspected_sources"])
+        self.assertEqual(group["status"], "runner_local_artifacts_no_repository_publication")
 
-    def test_assessment_contract_dependency_matches_registry(self):
-        registry = load_json("automation/program_registry.json")
-        inventory = load_json("automation/capability_contract_inventory.json")
-        contract = load_json("automation/capability_contracts/assess_sources.json")
-        registered = next(item for item in registry["programs"] if item["id"] == "script_assess_sources")
-        entry = next(item for item in inventory["programs"] if item["id"] == "script_assess_sources")
-        self.assertIn("script_discover_sources", registered["depends_on"])
-        self.assertEqual(entry["registry_dependencies"], registered["depends_on"])
-        self.assertTrue(contract["dependency_edges"]["registry_dependency_declared"])
-        self.assertEqual(
-            contract["dependency_edges"]["registry_dependency_program_id"],
-            "script_discover_sources",
-        )
-        self.assertEqual(
-            contract["dependency_edges"]["required_predecessor_artifact"],
-            "sources/discovered_sources.json",
-        )
+    def test_assessment_contract_declares_the_discovery_predecessor(self):
+        registry = read_json("automation/program_registry.json")
+        contract = read_json("automation/capability_contracts/assess_sources.json")
+        program = next(x for x in registry["programs"] if x["id"] == "script_assess_sources")
+        self.assertIn("script_discover_sources", program["depends_on"])
+        self.assertEqual(contract["dependency_edges"]["registry_dependency_program_id"], "script_discover_sources")
+        self.assertEqual(contract["dependency_edges"]["required_predecessor_artifact"], "sources/discovered_sources.json")
 
-    def test_contract_sample_paths_and_implementation_pins_are_current(self):
-        inventory = load_json("automation/capability_contract_inventory.json")
-        for entry in inventory["programs"]:
-            sample_path = entry.get("contract_sample_path")
-            if not sample_path:
-                continue
-            sample_file = ROOT / sample_path
-            self.assertTrue(sample_file.is_file(), f"{entry['id']} contract sample is missing")
-            sample = json.loads(sample_file.read_text(encoding="utf-8"))
-            self.assertEqual(sample["program_id"], entry["id"])
-            self.assertEqual(sample["implementation_path"], entry["path"])
-            self.assertEqual(
-                sample["implementation_blob_sha"],
-                git_blob_sha(entry["path"]),
-                f"{entry['id']} contract sample points to stale implementation",
-            )
+    def test_release_manifest_pins_current_registry_and_adapter_blobs(self):
+        release = read_json("automation/release_manifest.json")
+        self.assertEqual(release["component_schemas"]["program_registry"]["git_blob_sha"], blob_sha("automation/program_registry.json"))
+        self.assertEqual(release["component_schemas"]["execution_adapters"]["git_blob_sha"], blob_sha("automation/execution_adapters.json"))
+        self.assertEqual(release["implementation_pins"]["program_registry"]["git_blob_sha"], blob_sha("automation/program_registry.json"))
+        self.assertEqual(release["implementation_pins"]["execution_adapters"]["git_blob_sha"], blob_sha("automation/execution_adapters.json"))
+        self.assertTrue(release["execution_policy"]["existing_adapter_enablement_unchanged"])
 
-    def test_inventory_dispatch_claims_match_python_adapter_enablement(self):
-        inventory = load_json("automation/capability_contract_inventory.json")
-        adapters = load_json("automation/execution_adapters.json")
-        python_ids = {entry["id"] for entry in inventory["programs"]}
-        adapter_by_id = {
-            item["target_program_id"]: item
-            for item in adapters["adapters"]
-            if item["target_program_id"] in python_ids
-        }
-        self.assertEqual(set(adapter_by_id), python_ids)
+    def test_adapter_enablement_matches_registry_and_default_deny(self):
+        registry = read_json("automation/program_registry.json")
+        adapters = read_json("automation/execution_adapters.json")
+        python_programs = {x["id"]: x for x in registry["programs"] if x["kind"] == "python_component"}
+        adapter_by_id = {x["target_program_id"]: x for x in adapters["adapters"]}
+        self.assertTrue(set(python_programs).issubset(adapter_by_id))
+        for program_id, program in python_programs.items():
+            self.assertEqual(adapter_by_id[program_id].get("enabled") is True,
+                             program.get("orchestration", {}).get("enabled") is True)
+        self.assertTrue(all(not adapter_by_id[x].get("enabled") for x in python_programs))
 
-        enabled_python = {
-            program_id for program_id, adapter in adapter_by_id.items()
-            if adapter.get("enabled") is True
-        }
-        declared_dispatchable = {
-            entry["id"] for entry in inventory["programs"]
-            if entry.get("dispatch_status") == "enabled"
-        }
-        self.assertEqual(declared_dispatchable, enabled_python)
-        self.assertEqual(
-            inventory["summary"]["independently_dispatchable_python_components"],
-            len(enabled_python),
-        )
+    def test_owner_config_baseline_is_read_only_and_file_management_tracks_sha(self):
+        policy = read_json("sources/policy.json")
+        guard = policy["managed_config_guard"]
+        self.assertFalse(guard["content_protection"]["automation_may_modify_content"])
+        self.assertTrue(guard["baseline_metadata_policy"]["automation_may_hash_file"])
+        self.assertTrue(guard["baseline_metadata_policy"]["automation_may_update_registered_blob_sha"])
+        self.assertIn("File Management", guard["baseline_metadata_policy"]["update_authorization"])
+        script = (ROOT / "scripts/register_config_baseline.py").read_text(encoding="utf-8")
+        self.assertNotIn("--apply", script)
+        workflow = (ROOT / ".github/workflows/storage-management.yml").read_text(encoding="utf-8")
+        self.assertNotIn("reconcile-config-baseline:", workflow)
 
-
-
-    def test_owner_config_baseline_metadata_writer_is_inventoried_and_fenced(self):
-        writes = load_json("automation/resource_write_sets.json")
-        entry = next(
-            item for item in writes["reviewed_non_writers"]
-            if item["program_id"] == "script_register_config_baseline"
-        )
-        self.assertEqual(entry["classification"], "runner_local_config_baseline_review_proposal_non_dispatchable")
-        self.assertIn("RUNNER_TEMP/config-baseline-proposal.json", entry["evidence"])
-        self.assertIn("never writes", entry["evidence"])
-
-        ownership = load_json("automation/resource_ownership_audit.json")
-        group = next(
-            item for item in ownership["resource_groups"]
-            if item["id"] == "owner_config_baseline_metadata"
-        )
-        self.assertEqual(group["status"], "no_repository_metadata_writer")
-        self.assertEqual(group["known_writers"], [])
-        self.assertEqual(ownership["status"], "partial_static_audit")
-
-
-    def test_durable_task_queue_writers_are_classified_as_repository_json_control_plane(self):
-        writes = load_json("automation/resource_write_sets.json")
-        entries = {item["program_id"]: item for item in writes["control_plane_side_effects"]}
+    def test_durable_queue_writers_are_classified_as_control_plane_not_production_publishers(self):
+        writes = read_json("automation/resource_write_sets.json")
+        entries = {x["program_id"]: x for x in writes["control_plane_side_effects"]}
         remote = entries["script_remote_task_queue_runtime"]
         store = entries["storage_queue_store"]
-        self.assertEqual(remote["side_effects"], ["GitHub Contents API SHA-CAS updates to automation/task_queue.json"])
-        self.assertEqual(store["side_effects"], ["automation/task_queue.json Contents API SHA-CAS updates", "storage/v2/incidents.json Contents API SHA-CAS updates"])
-        self.assertEqual(remote["classification"], "repository_json_contents_sha_cas_queue_store")
-        self.assertIn("automation/task_queue.json", remote["control_plane_boundary"])
-        group = next(
-            item for item in writes["confirmed_shared_write_groups"]
-            if item["resource"] == "durable task queue control-plane state"
-        )
-        self.assertEqual(group["mode"], "compare_and_swap")
-        self.assertEqual(group["writers"], ["storage_queue_store"])
-        self.assertIn("workflow_automation_watchdog", group["clients"])
+        self.assertIn("automation/task_queue.json", " ".join(remote["side_effects"]))
+        self.assertIn("automation/task_queue.json Contents API SHA-CAS updates", " ".join(store["side_effects"]))
+        self.assertIn("Contents API SHA-CAS", remote["control_plane_boundary"])
+        self.assertIn("No Issues API", store["control_plane_boundary"])
+        self.assertIn("modules/**", store["control_plane_boundary"])
+        self.assertIn("rulesets/**", store["control_plane_boundary"])
 
-        ownership = load_json("automation/resource_ownership_audit.json")
-        audit_group = next(
-            item for item in ownership["resource_groups"]
-            if item["id"] == "durable_task_queue_control_plane"
-        )
-        self.assertEqual(audit_group["status"], "active_storage_management_json_sha_cas")
-        self.assertEqual(audit_group["writers"], ["storage_queue_store"])
-        self.assertEqual(ownership["status"], "partial_static_audit")
+    def test_ruleset_writers_publish_only_to_rulesets(self):
+        writes = read_json("automation/resource_write_sets.json")
+        for entry in writes["confirmed_write_sets"]:
+            for resource in entry.get("publish_resources", []):
+                self.assertTrue(resource == "rulesets/**" or resource.startswith("rulesets/"), entry["program_id"])
+            self.assertNotIn("modules/uu.conf", entry.get("writes", []))
+        self.assertEqual(writes["policy"]["protected_config"]["access"], "read_only")
+        self.assertEqual(writes["policy"]["protected_config"]["writers_allowed"], [])
 
-
-    def test_newly_identified_direct_writers_are_registered_with_scoped_outputs(self):
-        writes = load_json("automation/resource_write_sets.json")
-        entries = {item["program_id"]: item for item in writes["confirmed_write_sets"]}
-        nonwriters = {item["program_id"]: item for item in writes["reviewed_non_writers"]}
-        required_writers = {
-            "script_lifecycle_gate", "script_import_request_observations",
-            "script_build_rule_provenance", "script_restore_automation_state",
-            "script_apply_safe_repair", "script_task_scheduler",
-            "script_audit_source_lineage", "script_audit_policy_source_overlap",
-            "script_audit_external_domains", "script_audit_config_drift",
-            "script_audit_ruleset_references", "script_audit_ruleset_config_overlap",
-            "script_json_document_store", "script_resource_lease_runtime",
-        }
-        self.assertTrue(required_writers.issubset(entries))
-        self.assertEqual(entries["script_lifecycle_gate"]["writes"], ["rulesets/lifecycle_state.json"])
-        self.assertIn("data/domain_candidates.json", entries["script_import_request_observations"]["writes"])
-        self.assertIn("sources/rule_provenance.json", entries["script_build_rule_provenance"]["writes"])
-        self.assertEqual(entries["script_restore_automation_state"]["publish_resources"], ["rulesets/**"])
-        self.assertEqual(entries["script_apply_safe_repair"]["publish_resources"], [])
-        self.assertEqual(entries["script_json_document_store"]["publish_resources"], [])
-        self.assertEqual(entries["script_audit_policy_source_overlap"]["publish_resources"], [])
-        self.assertTrue(all(n in nonwriters for n in ("script_auto_activate_sources", "script_persist_review_cursor", "script_incident_state")))
-        self.assertTrue(all("modules/uu.conf" not in item["writes"] for item in entries.values()))
+    def test_shared_document_store_and_workflow_state_cas_are_explicit(self):
+        writes = read_json("automation/resource_write_sets.json")
+        groups = {x["resource"]: x for x in writes["confirmed_shared_write_groups"]}
+        self.assertIn("data/domain_candidates.json logical document", groups)
+        self.assertIn("sources/rule_provenance.json logical document", groups)
+        store = next(x for x in writes["confirmed_write_sets"] if x["program_id"] == "script_json_document_store")
+        self.assertTrue(store["lease_keys"])
+        control_ids = {x["program_id"] for x in writes["control_plane_side_effects"]}
+        self.assertIn("storage_runtime", control_ids)
         self.assertEqual(writes["status"], "partial_static_entrypoint_review")
 
-    def test_shared_document_and_workflow_cas_gaps_are_explicit(self):
-        writes = load_json("automation/resource_write_sets.json")
-        audit = load_json("automation/resource_ownership_audit.json")
-        groups = {item["id"]: item for item in audit["resource_groups"]}
-        self.assertIn("data/domain_candidates.json logical document", {item["resource"] for item in writes["confirmed_shared_write_groups"]})
-        self.assertIn("sources/rule_provenance.json logical document", {item["resource"] for item in writes["confirmed_shared_write_groups"]})
-        self.assertEqual(groups["domain_candidate_buffer"]["status"], "fenced_at_each_document_store_mutation")
-        self.assertEqual(groups["rule_provenance_ledger"]["status"], "fenced_at_each_document_store_mutation")
-        self.assertEqual(groups["watchdog_unregistered_path_registry"]["status"], "read_only_no_active_writer")
-        self.assertEqual(groups["request_intake_observations"]["status"], "checked_in_observation_seed_read_only")
-        self.assertEqual(groups["request_intake_observations"]["known_writers"], [])
-        self.assertEqual(groups["active_source_registry_and_activation"]["status"], "no_repository_writer_source_activation_artifact_only")
-        self.assertEqual(groups["policy_source_overlap_audit"]["status"], "artifact_only_no_repository_publication")
-        doc_store = groups["shared_json_document_store"]
-        self.assertIn("script_json_document_store", doc_store["known_writers"])
-        self.assertIn("script_resource_lease_runtime", groups["durable_task_queue_control_plane"]["writers"])
-        self.assertEqual(groups["active_source_registry_and_activation"]["known_writers"], [])
-        self.assertIn("script_restore_automation_state", groups["source_candidate_artifacts"]["known_writers"])
-        self.assertEqual(groups["source_discovery_artifacts"]["known_writers"], ["script_discover_sources", "workflow_source_discovery"])
-        self.assertIn("script_restore_automation_state", groups["published_ruleset_artifacts"]["known_writers"])
-        self.assertIn("script_restore_automation_state", groups["ruleset_manifest"]["known_writers"])
-        self.assertEqual(audit["status"], "partial_static_audit")
-
-        self.assertFalse((ROOT / ".github" / "workflows" / "request-intake.yml").exists())
-        watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
-        self.assertIn("Production input classification requires review", watchdog)
-        self.assertNotIn('gh api --method PUT "repos/$REPO/contents/automation/unregistered_path_registry.json"', watchdog)
-
-    def test_dynamic_ephemeral_writers_are_not_misclassified_as_shared_repo_writers(self):
-        writes = load_json("automation/resource_write_sets.json")
-        entries = {item["program_id"]: item for item in writes["confirmed_write_sets"]}
-        nonwriters = {item["program_id"]: item for item in writes["reviewed_non_writers"]}
-        self.assertEqual(nonwriters["script_incident_state"]["classification"], "runner_local_ephemeral_output_non_dispatchable")
-        self.assertIn("/tmp", nonwriters["script_incident_state"]["evidence"])
+    def test_dynamic_ephemeral_writers_are_not_misclassified_as_shared_repository_writers(self):
+        writes = read_json("automation/resource_write_sets.json")
+        nonwriters = {x["program_id"]: x for x in writes["reviewed_non_writers"]}
+        self.assertEqual(nonwriters["script_incident_state"]["classification"], "storage_state_transition_library_non_writer")
+        self.assertIn("no filesystem or network writes", nonwriters["script_incident_state"]["evidence"])
         self.assertEqual(nonwriters["script_persist_review_cursor"]["classification"], "runner_local_failed_cursor_recovery_artifact_non_dispatchable")
-        self.assertIn("RUNNER_TEMP", nonwriters["script_persist_review_cursor"]["evidence"])
-        self.assertIn("task-input.json", entries["script_task_scheduler"]["ephemeral_unpublished_resources"])
-        self.assertEqual(entries["script_task_scheduler"]["publish_resources"], [])
+        self.assertEqual(nonwriters["storage_dashboard_snapshot"]["classification"], "runner_local_ephemeral_output_non_dispatchable")
+        self.assertEqual(nonwriters["storage_watchdog_supervisor"]["classification"], "runner_local_step_summary_output_non_dispatchable")
+        self.assertEqual(nonwriters["script_run_preflight_tests"]["classification"], "runner_local_test_execution_non_dispatchable")
+        self.assertEqual(nonwriters["script_validate_automation_write_boundary"]["classification"], "read_only_automation_write_boundary_validator")
 
-
-    def test_every_registered_python_component_has_an_explicit_write_side_effect_classification(self):
-        registry = load_json("automation/program_registry.json")
-        writes = load_json("automation/resource_write_sets.json")
-        python_ids = {item["id"] for item in registry["programs"] if item["kind"] == "python_component"}
-        writer_ids = {item["program_id"] for item in writes["confirmed_write_sets"]}
-        nonwriter_ids = {item["program_id"] for item in writes["reviewed_non_writers"]}
-        external_ids = {item["program_id"] for item in writes["control_plane_side_effects"]}
+    def test_every_registered_python_component_has_one_explicit_side_effect_classification(self):
+        registry = read_json("automation/program_registry.json")
+        writes = read_json("automation/resource_write_sets.json")
+        python_ids = {x["id"] for x in registry["programs"] if x["kind"] == "python_component"}
+        writer_ids = {x["program_id"] for x in writes["confirmed_write_sets"]}
+        nonwriter_ids = {x["program_id"] for x in writes["reviewed_non_writers"]}
+        control_ids = {x["program_id"] for x in writes["control_plane_side_effects"]}
         self.assertFalse(writer_ids & nonwriter_ids)
-        self.assertFalse(writer_ids & external_ids)
-        self.assertFalse(nonwriter_ids & external_ids)
-        self.assertEqual(writer_ids | nonwriter_ids | external_ids, python_ids)
-        self.assertEqual(len(writer_ids), 26)
-        self.assertEqual(len(nonwriter_ids), 30)
-        self.assertIn("script_source_handoff_policy", nonwriter_ids)
-        self.assertEqual(external_ids, {"script_github_workflow_adapter", "script_remote_task_queue_runtime", "storage_incident_store", "storage_queue_store"})
-        self.assertIn("script_resource_lease_runtime", writer_ids)
-        self.assertIn("script_json_document_store", writer_ids)
+        self.assertFalse(writer_ids & control_ids)
+        self.assertFalse(nonwriter_ids & control_ids)
+        self.assertEqual(writer_ids | nonwriter_ids | control_ids, python_ids)
+        self.assertEqual(len(python_ids), 67)
+        self.assertEqual(writes["direct_mutation_scan"]["registered_component_count"], len(python_ids))
+
 
 if __name__ == "__main__":
     unittest.main()

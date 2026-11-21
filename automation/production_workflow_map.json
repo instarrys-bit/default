@@ -2,7 +2,7 @@
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
   "workflow_blob_sha": "e4ad9c2a9ba9b0059e5995d7105c3870823c0d28",
-  "registry_blob_sha": "0c0ad14b1caf9d0622dde806439c6d278e4404ba",
+  "registry_blob_sha": "850baef17c57459021fee2177777c56061839364",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 7,
@@ -361,14 +361,10 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.21.1",
-    "release_manifest_blob_sha": "a9137340f4730abca68b86a324d8ba8675e6e928",
-    "program_registry_blob_sha": "0c0ad14b1caf9d0622dde806439c6d278e4404ba",
-    "execution_adapters_blob_sha": "6d1bfb61f6e6f7609ab99d7be27790b36ef4ee62",
-    "added_after_release_baseline": true,
-    "note": "Current execution is the consolidated four-workflow monolithic design. Discovery and non-activating assessment run within auto_sync; independent Python dispatch is disabled. The static map is descriptive, not an execution grant. uu.conf remains read-only.",
-    "reviewed_at": "2026-11-07",
-    "registry_blob_sha": "968c1ae613aa7c83eb4392ddb9eff6f7c6622767",
-    "source_dag_scope": "Monolithic fallback: Watchdog owns durable queue supervision; auto_sync performs bounded discovery, non-activating assessment, deterministic admission and ruleset publication; Storage Management owns incident and queue-state operations; dashboard is read-only. No separate source-discovery or assessment workflow exists."
+    "release_manifest_blob_sha": "c05928cf25288c1c9138023907dc43b7956ba2ea",
+    "program_registry_blob_sha": "850baef17c57459021fee2177777c56061839364",
+    "execution_adapters_blob_sha": "e1fbddd375971e6e07702df2ac3d7ef4f30453ae",
+    "note": "Current four-workflow static map. Descriptive only; no additional write/dispatch authorization. Production publication is rulesets/** only; modules/uu.conf is read-only and its SHA is tracked by File Management."
   },
   "independent_dags": [],
   "production_deliverables": [

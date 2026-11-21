@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "inventory_id": "resource-write-sets-2026.11.07-source-dag-active1",
-  "status": "retired_archival_snapshot",
+  "status": "partial_static_entrypoint_review",
   "policy": {
     "lock_identity": "canonical logical resource path, not program ID",
     "dynamic_document_store_children": "must be covered by the logical document lease",
@@ -1343,12 +1343,10 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.21.1",
-    "release_manifest_blob_sha": "a9137340f4730abca68b86a324d8ba8675e6e928",
-    "program_registry_blob_sha": "0c0ad14b1caf9d0622dde806439c6d278e4404ba",
-    "execution_adapters_blob_sha": "6d1bfb61f6e6f7609ab99d7be27790b36ef4ee62",
-    "added_after_release_baseline": true,
-    "note": "Historical V1 source-DAG / capability-write audit. Retained for traceability only; not an activation authority or current writer inventory. Current runtime topology is monolithic fallback across exactly four workflows. Do not infer active dispatch rights from this archival snapshot.",
-    "reviewed_at": "2026-11-07"
+    "release_manifest_blob_sha": "c05928cf25288c1c9138023907dc43b7956ba2ea",
+    "program_registry_blob_sha": "850baef17c57459021fee2177777c56061839364",
+    "execution_adapters_blob_sha": "e1fbddd375971e6e07702df2ac3d7ef4f30453ae",
+    "note": "Current four-workflow static mutation inventory. It is evidence, not an execution grant. Production publication remains restricted to rulesets/**. File Management may maintain read-only SHA observations; it cannot modify modules/uu.conf."
   },
   "scheduler_lock_contract": {
     "logical_resource_key": "logical/production-pipeline",
@@ -1540,6 +1538,30 @@
       "source": "storage/v2/verify_archive_inventory.py",
       "classification": "read_only_archive_integrity_verifier_non_dispatchable",
       "evidence": "Reads the frozen archive tree through GitHub GET requests only; no mutation HTTP methods or repository writes."
+    },
+    {
+      "program_id": "storage_dashboard_snapshot",
+      "source": "storage/v2/dashboard_snapshot.py",
+      "classification": "runner_local_ephemeral_output_non_dispatchable",
+      "evidence": "The dashboard CLI writes one sanitized dashboard/v2/data.json snapshot beneath the checked-out runner workspace. The dashboard-pages workflow uploads the generated site as a Pages artifact; it never stages or commits the generated file to a repository branch. The script has no repository write API or production dispatch path."
+    },
+    {
+      "program_id": "storage_watchdog_supervisor",
+      "source": "storage/v2/watchdog_supervisor.py",
+      "classification": "runner_local_step_summary_output_non_dispatchable",
+      "evidence": "The supervisor writes only its read-only recovery plan to stdout and the runner-provided GITHUB_STEP_SUMMARY path. It never applies a recovery event, writes repository state, dispatches a worker or mutates modules/uu.conf; Storage Management alone applies verified CAS transitions."
+    },
+    {
+      "program_id": "script_run_preflight_tests",
+      "source": "scripts/run_preflight_tests.py",
+      "classification": "runner_local_test_execution_non_dispatchable",
+      "evidence": "Runs the complete tests/ tree with unittest discovery in the current GitHub Actions runner. Test outputs and bytecode caches remain runner-local/ignored; the runner does not commit, dispatch production, write rulesets or modify modules/uu.conf."
+    },
+    {
+      "program_id": "script_validate_automation_write_boundary",
+      "source": "scripts/validate_automation_write_boundary.py",
+      "classification": "read_only_automation_write_boundary_validator",
+      "evidence": "Reads workflow YAML, release metadata, resource write inventory and modules/uu.conf, computes the Git blob SHA in memory, and exits non-zero on policy drift. It performs no filesystem or network mutation and has no repository write credential."
     }
   ],
   "control_plane_side_effects": [
@@ -1584,12 +1606,55 @@
       ],
       "file_writes": [],
       "control_plane_boundary": "Only the two allowlisted JSON state paths can be written. All mutations require a current blob SHA and next logical revision, then verify the persisted content. No Issues API, rulesets/** or modules/** writes."
+    },
+    {
+      "program_id": "storage_runtime",
+      "source": "storage/v2/runtime.py",
+      "classification": "storage_v2_event_sourced_state_cas_writer",
+      "side_effects": [
+        "storage/v2/state.json GitHub Contents API compare-and-swap writes for hash-chained V2 task/resource events and recovery transitions"
+      ],
+      "file_writes": [],
+      "control_plane_boundary": "Only Storage Management may apply typed state events. The runtime validates exact storage/v2/state.json authorization, expected revision and blob SHA, performs Contents API CAS, and independently reads back the committed revision/blob SHA. It cannot write modules/** or rulesets/**."
+    },
+    {
+      "program_id": "storage_artifact_store",
+      "source": "storage/v2/artifact_store.py",
+      "classification": "storage_v2_content_addressed_artifact_store",
+      "side_effects": [
+        "GitHub Contents API create-if-absent objects under storage/v2/artifacts/sha256/<digest>",
+        "runner-local FilesystemArtifactStore chunks/manifests beneath its explicitly configured storage root"
+      ],
+      "file_writes": [],
+      "control_plane_boundary": "GitHub writes are create-only, SHA-256-addressed and path-authorized by Storage Management; existing objects are read back and verified before deduplication. Filesystem mode is a storage adapter confined to its caller-supplied root. No production ruleset or modules writes."
+    },
+    {
+      "program_id": "storage_ingest_actions_artifacts",
+      "source": "storage/v2/ingest_actions_artifacts.py",
+      "classification": "storage_management_verified_actions_artifact_ingestion",
+      "side_effects": [
+        "GitHub Contents API create-if-absent SHA-256 artifact objects under storage/v2/artifacts/sha256/<digest>",
+        "immutable per-run catalog writes under storage/v2/artifacts/catalog/<run_id>.json",
+        "GitHub Actions source-artifact deletion only after durable object and catalog read-back verification"
+      ],
+      "file_writes": [],
+      "control_plane_boundary": "Runs only in Storage Management. Exact artifact object and numeric catalog paths are authorized through assert_automation_write_allowed. The source artifact is retained on any staging, catalog, or read-back failure; deletion occurs only after complete SHA-256 verification. No modules/** or rulesets/** writes."
+    },
+    {
+      "program_id": "storage_source_handoff",
+      "source": "storage/v2/source_handoff.py",
+      "classification": "storage_management_verified_source_handoff_artifact_stager",
+      "side_effects": [
+        "Explicitly gated content-addressed artifact staging under storage/v2/artifacts/sha256/<digest> with immutable manifests and chunk SHA-256 verification"
+      ],
+      "file_writes": [],
+      "control_plane_boundary": "Validation is read-only by default. Staging requires an explicit execute flag, initialized V2 epoch and Storage Management credentials. It writes only immutable artifact-store objects, never repository source files, rulesets/** or modules/uu.conf."
     }
   ],
   "direct_mutation_scan": {
     "status": "partial_python_direct_callsite_scan",
     "scanner": "tests/test_transitive_write_site_inventory.py",
-    "registered_component_count": 66,
+    "registered_component_count": 67,
     "mutation_api_families": [
       "Path/open write modes",
       "Path write_text/write_bytes/unlink/mkdir/replace/rename/touch",
@@ -1724,6 +1789,21 @@
       ],
       "fence": "Each event is bound to the exact Watchdog run ID/source SHA; verified recovery operations carry a successful verification URL. Storage Management performs the only durable incident write.",
       "boundary": "Watchdog has actions:write for dispatch and contents:write only for its separately allowlisted queue operations; no Issues API."
+    },
+    {
+      "workflow_path": ".github/workflows/storage-management.yml",
+      "step_name": "Inventory repository and pull-request SHAs into the Storage Management CAS store",
+      "mutation_kinds": [
+        "github_contents_api_create_if_absent",
+        "github_contents_api_sha_cas_update"
+      ],
+      "resources": [
+        "storage/v2/artifacts/sha256/<digest>",
+        "storage/v2/artifacts/catalog/<run_id>.json",
+        "storage/v2/projections/repository_integrity.json"
+      ],
+      "fence": "Scheduled Storage Management job only. Immutable object writes require exact SHA-256 content addressing and read-back verification; the run catalog is create-only and idempotent; latest projection uses the current Contents blob SHA, bounded conflict retry and read-after-write verification. Main tree and modules/uu.conf blob SHA are re-read before and after the operation.",
+      "boundary": "Storage Management control-plane state only. The tracker never writes modules/**, rulesets/**, sources/**, automation/** or production outputs. The content-addressed artifact namespace and its latest-pointer projection are excluded from the source-tree digest to prevent recursion."
     }
   ],
   "workflow_native_scan": {
@@ -1757,7 +1837,7 @@
   "repository_write_policy": {
     "model": "per-capability-explicit-resource-contract",
     "allowed_repository_write_resources": "Only exact paths declared in the capability's exclusive resource_contract.resource_keys may be written or published; each shared path must have the corresponding live lease and fencing assertion.",
-    "control_plane_paths": "Explicitly declared and fenced control-plane metadata paths are permitted; they are not globally blocked by the production ruleset publisher's staging allowlist.",
+    "control_plane_paths": "Explicitly declared and fenced control-plane metadata paths are permitted; they are not globally blocked by the production ruleset publisher's staging allowlist. The repository-integrity tracker is additionally limited to storage/v2/artifacts/sha256/<digest>, storage/v2/artifacts/catalog/<run_id>.json and storage/v2/projections/repository_integrity.json.",
     "protected_paths": [
       "modules/**",
       "**/*.js"
@@ -1768,5 +1848,14 @@
       "rulesets/reject.list"
     ],
     "production_publisher_boundary": "auto_sync stages only rulesets/** because the production deliverables are the three rule sets; this is a publisher-specific boundary, not a system-wide write restriction."
+  },
+  "historical_review_context": {
+    "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.21.1",
+    "release_manifest_blob_sha": "a9137340f4730abca68b86a324d8ba8675e6e928",
+    "program_registry_blob_sha": "0c0ad14b1caf9d0622dde806439c6d278e4404ba",
+    "execution_adapters_blob_sha": "6d1bfb61f6e6f7609ab99d7be27790b36ef4ee62",
+    "added_after_release_baseline": true,
+    "note": "Historical V1 source-DAG / capability-write audit. Retained for traceability only; not an activation authority or current writer inventory. Current runtime topology is monolithic fallback across exactly four workflows. Do not infer active dispatch rights from this archival snapshot.",
+    "reviewed_at": "2026-11-07"
   }
 }

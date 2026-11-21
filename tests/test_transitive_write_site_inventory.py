@@ -39,7 +39,7 @@ def call_is_mutation(node):
     if leaf in {"replace", "rename"} and isinstance(node.func, ast.Attribute):
         receiver = dotted_name(node.func.value).rsplit(".", 1)[-1]
         return receiver in PATH_REPLACERS
-    if leaf in {"open"}:
+    if leaf == "open":
         mode = None
         if len(node.args) > 1 and isinstance(node.args[1], ast.Constant):
             mode = node.args[1].value
@@ -48,12 +48,8 @@ def call_is_mutation(node):
                 mode = keyword.value.value
         return isinstance(mode, str) and any(flag in mode for flag in ("w", "a", "x", "+"))
     if leaf == "Request":
-        return any(
-            keyword.arg == "method"
-            and isinstance(keyword.value, ast.Constant)
-            and keyword.value.value in HTTP_MUTATION_METHODS
-            for keyword in node.keywords
-        )
+        return any(keyword.arg == "method" and isinstance(keyword.value, ast.Constant)
+                   and keyword.value.value in HTTP_MUTATION_METHODS for keyword in node.keywords)
     return False
 
 
@@ -67,7 +63,9 @@ def imported_local_modules(tree):
             candidates.append(node.module)
         for candidate in candidates:
             module = candidate.rsplit(".", 1)[-1]
-            if candidate.startswith("scripts.") or (ROOT / "scripts" / (module + ".py")).is_file():
+            if (candidate.startswith("scripts.") or candidate.startswith("storage.v2.")
+                    or (ROOT / "scripts" / (module + ".py")).is_file()
+                    or (ROOT / "storage" / "v2" / (module + ".py")).is_file()):
                 found.add(module)
     return found
 
@@ -77,23 +75,16 @@ class TransitiveWriteSiteInventoryTests(unittest.TestCase):
     def setUpClass(cls):
         cls.registry = json.loads((ROOT / "automation/program_registry.json").read_text(encoding="utf-8"))
         cls.inventory = json.loads((ROOT / "automation/resource_write_sets.json").read_text(encoding="utf-8"))
-        cls.programs = {
-            item["id"]: item for item in cls.registry["programs"]
-            if item.get("kind") == "python_component"
-        }
+        cls.programs = {item["id"]: item for item in cls.registry["programs"] if item.get("kind") == "python_component"}
         cls.writers = {item["program_id"]: item for item in cls.inventory["confirmed_write_sets"]}
         cls.nonwriters = {item["program_id"]: item for item in cls.inventory["reviewed_non_writers"]}
         cls.control = {item["program_id"]: item for item in cls.inventory["control_plane_side_effects"]}
-        cls.trees = {}
-        cls.mutations = {}
+        cls.trees, cls.mutations = {}, {}
         for program_id, program in cls.programs.items():
             path = ROOT / program["path"]
             tree = ast.parse(path.read_text(encoding="utf-8"), filename=program["path"])
             cls.trees[program_id] = tree
-            cls.mutations[program_id] = [
-                node for node in ast.walk(tree)
-                if isinstance(node, ast.Call) and call_is_mutation(node)
-            ]
+            cls.mutations[program_id] = [node for node in ast.walk(tree) if isinstance(node, ast.Call) and call_is_mutation(node)]
 
     def test_every_python_mutation_site_has_a_write_or_side_effect_classification(self):
         total_sites = 0
@@ -105,15 +96,12 @@ class TransitiveWriteSiteInventoryTests(unittest.TestCase):
                 if program_id in self.writers:
                     entry = self.writers[program_id]
                     self.assertTrue(entry.get("writes"), "writer must declare output resources")
-                    self.assertTrue(
-                        entry.get("write_boundary_fencing") or entry.get("lease_enforcement")
-                        or entry.get("control_plane_consistency"),
-                        "writer must declare its mutation-boundary protection or isolation",
-                    )
+                    self.assertTrue(entry.get("write_boundary_fencing") or entry.get("lease_enforcement")
+                                    or entry.get("control_plane_consistency"),
+                                    "writer must declare its mutation-boundary protection or isolation")
                 elif program_id in self.nonwriters:
                     entry = self.nonwriters[program_id]
-                    classification = entry.get("classification", "")
-                    self.assertNotEqual(classification, "pure_library_no_repository_mutation")
+                    self.assertNotEqual(entry.get("classification", ""), "pure_library_no_repository_mutation")
                     self.assertTrue(entry.get("evidence"), "non-writer mutation must explain its ephemeral/read-only boundary")
                 elif program_id in self.control:
                     self.assertTrue(self.control[program_id].get("control_plane_boundary"))
@@ -121,26 +109,21 @@ class TransitiveWriteSiteInventoryTests(unittest.TestCase):
                     self.fail("unclassified direct mutation site in " + program_id)
         self.assertGreater(total_sites, 20)
 
-    def test_every_scripts_python_file_is_registered(self):
+    def test_every_registered_python_file_is_discovered(self):
         registered = {item["path"] for item in self.programs.values()}
-        discovered = {path.relative_to(ROOT).as_posix() for path in (ROOT / "scripts").glob("*.py")}
+        discovered = {path.relative_to(ROOT).as_posix() for root in (ROOT / "scripts", ROOT / "storage" / "v2")
+                      for path in root.rglob("*.py") if path.is_file()}
         self.assertEqual(discovered, registered)
 
     def test_imported_local_helpers_are_registered_and_mutators_classified(self):
-        module_to_program = {
-            Path(item["path"]).stem: program_id
-            for program_id, item in self.programs.items()
-        }
+        module_to_program = {Path(item["path"]).stem: program_id for program_id, item in self.programs.items()}
         for program_id, tree in self.trees.items():
             for module in imported_local_modules(tree):
                 with self.subTest(caller=program_id, helper=module):
-                    self.assertIn(module, module_to_program, "imported local script helper must be registered")
+                    self.assertIn(module, module_to_program, "imported local helper must be registered")
                     helper_id = module_to_program[module]
                     if self.mutations.get(helper_id):
-                        self.assertTrue(
-                            helper_id in self.writers or helper_id in self.nonwriters or helper_id in self.control,
-                            "transitively imported mutating helper must have an explicit classification",
-                        )
+                        self.assertTrue(helper_id in self.writers or helper_id in self.nonwriters or helper_id in self.control)
 
     def test_every_shared_writer_has_canonical_leases_and_shared_peers_overlap(self):
         adapters = json.loads((ROOT / "automation/execution_adapters.json").read_text(encoding="utf-8"))
@@ -151,22 +134,13 @@ class TransitiveWriteSiteInventoryTests(unittest.TestCase):
                 self.assertTrue(keys, "shared repository writer must declare exact or canonical resource leases")
                 for peer in entry.get("additional_serialized_writers", []):
                     peer_entry = self.writers.get(peer)
-                    if peer_entry:
-                        peer_keys = set(peer_entry.get("lease_keys", []))
-                    else:
-                        peer_adapter = adapter_by_id.get(peer, {})
-                        peer_keys = set((peer_adapter.get("resource_contract") or {}).get("resource_keys", []))
-                    self.assertTrue(keys & peer_keys, f"{program_id} and {peer} must share at least one canonical fence")
+                    peer_keys = set(peer_entry.get("lease_keys", [])) if peer_entry else set((adapter_by_id.get(peer, {}).get("resource_contract") or {}).get("resource_keys", []))
+                    self.assertTrue(keys & peer_keys, f"{program_id} and {peer} must share a canonical fence")
 
     def test_ruleset_mutation_scripts_assert_exact_resource_leases(self):
-        scripts = [
-            "build_rulesets.py", "lifecycle_audit.py", "lifecycle_gate.py",
-            "sync_ruleset_config_conflicts.py", "refresh_ruleset_manifest.py",
-        ]
-        for name in scripts:
-            source = (ROOT / "scripts" / name).read_text(encoding="utf-8")
+        for name in ("build_rulesets.py", "lifecycle_audit.py", "lifecycle_gate.py", "sync_ruleset_config_conflicts.py", "refresh_ruleset_manifest.py"):
             with self.subTest(script=name):
-                self.assertIn("assert_resource_lease_for_repository_path", source)
+                self.assertIn("assert_resource_lease_for_repository_path", (ROOT / "scripts" / name).read_text(encoding="utf-8"))
         restore = (ROOT / "scripts" / "restore_automation_state.py").read_text(encoding="utf-8")
         self.assertIn("assert_resource_lease_from_environment(name)", restore)
 

@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "audit_id": "resource-ownership-audit-2026.11.10.source-registry-artifact-replay",
-  "status": "retired_archival_snapshot",
+  "status": "partial_static_audit",
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
-    "registry_blob_sha": "0c0ad14b1caf9d0622dde806439c6d278e4404ba",
-    "adapters_blob_sha": "6d1bfb61f6e6f7609ab99d7be27790b36ef4ee62",
+    "registry_blob_sha": "968c1ae613aa7c83eb4392ddb9eff6f7c6622767",
+    "adapters_blob_sha": "af0f8d196c70a07fcd30cdc7f97eaba7a025cb56",
     "inspected_sources": [
       ".github/workflow_helpers/check_source_assessment_artifact.py",
       ".github/workflows/assessment-completion-relay.yml",
@@ -15,6 +15,7 @@
       ".github/workflows/self-healing-agent.yml",
       ".github/workflows/self-healing-tests.yml",
       ".github/workflows/source-discovery.yml",
+      ".github/workflows/validate-config.yml",
       "scripts/append_step_summary.py",
       "scripts/apply_safe_repair.py",
       "scripts/assess_sources.py",
@@ -88,7 +89,7 @@
       "storage/v2/incident_store.py",
       ".github/workflows/storage-incident-management.yml"
     ],
-    "limitation": "Historical V1 inventory; current production uses the consolidated four-workflow monolithic path.",
+    "limitation": "The active Source Discovery → Assessment DAG remains scoped to runner-local immutable artifacts and a fenced automation/task_queue.json checkpoint. A separate durable non-activating source-candidate registry is committed only as rulesets/source_candidate_registry.json by the existing single auto_sync publisher under the Watchdog logical/production-pipeline fence. Protected modules/** and JavaScript remain unwritable. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
     "reviewed_at": "2026-11-07",
     "isolated_ephemeral_outputs": [
       {
@@ -615,12 +616,5 @@
     ]
   },
   "limitation": "The active source DAG uses runner-local immutable artifacts and a Storage Management-owned automation/task_queue.json checkpoint. Incident state is held in storage/v2/incidents.json. No runtime workflow or script calls GitHub Issues. Production deliverables are limited to rulesets/**; modules/** remain read-only.",
-  "reviewed_at": "2026-11-18",
-  "review_context": {
-    "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.21.1",
-    "release_manifest_blob_sha": "b5d5d43be8c839da39c23de2eaaed90c86a951fd",
-    "program_registry_blob_sha": "0c0ad14b1caf9d0622dde806439c6d278e4404ba",
-    "execution_adapters_blob_sha": "6d1bfb61f6e6f7609ab99d7be27790b36ef4ee62",
-    "note": "Historical V1 source-DAG / capability-write audit. Retained for traceability only; not an activation authority or current writer inventory. Current runtime topology is monolithic fallback across exactly four workflows. Do not infer active dispatch rights from this archival snapshot."
-  }
+  "reviewed_at": "2026-11-18"
 }

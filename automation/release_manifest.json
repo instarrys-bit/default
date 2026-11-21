@@ -37,7 +37,7 @@
     },
     "config_baseline": {
       "path": "modules/uu.conf",
-      "git_blob_sha": "487afc23fb232e52f171d2cd44601f4220632448",
+      "git_blob_sha": "5990678148452ae9fe634aa2d7e5d481aa9bbe3f",
       "access": "read_only"
     },
     "source_assessor": {
@@ -82,7 +82,7 @@
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "79075cfdb8522db8848c75f1b846722848374a94"
+      "git_blob_sha": "27b662a5c3e9f91fedf7a24dd0aef461a69ed41f"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
@@ -204,7 +204,7 @@
     "unknown_versions_are_blocking": true
   },
   "execution_policy": {
-    "existing_adapter_enablement_unchanged": false,
+    "existing_adapter_enablement_unchanged": true,
     "watchdog_is_top_level_orchestrator": true,
     "dashboard_is_read_only_observer": true,
     "production_may_not_write_config_baseline": true,
