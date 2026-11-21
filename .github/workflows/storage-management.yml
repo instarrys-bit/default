@@ -147,6 +147,7 @@ jobs:
           persist-credentials: false
           sparse-checkout: |
             .github/workflows
+            .github/workflow_helpers
             automation
             data
             docs/v2
