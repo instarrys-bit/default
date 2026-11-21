@@ -242,7 +242,7 @@
       "worker_id": "44939498811"
     }
   },
-  "revision": 94,
+  "revision": 95,
   "schema_version": 1,
   "tasks": [
     {
@@ -1679,6 +1679,17 @@
       "attempts": 2,
       "capability": "deterministic_audit",
       "created_at": "2026-11-21T19:08:58Z",
+      "dispatch_intent": {
+        "correlation_id": "task_f31096f672c64e659ee91554-a2",
+        "correlation_title": "Automation task task_f31096f672c64e659ee91554-a2",
+        "dispatch_attempt": 2,
+        "prepared_at": "2026-11-21T19:12:37Z",
+        "ref": "main",
+        "requested_head_sha": "65635352f4c5ef412c7c6a8dff11e0fa9864f110",
+        "task_id": "task_f31096f672c64e659ee91554",
+        "workflow_id": 402712272,
+        "workflow_path": ".github/workflows/auto_sync.yml"
+      },
       "execution_backend": "github_contents",
       "idempotency_key": "production:input:b492505ecc2605dcf194adb665fa051fa44654eb36247f2f80de7cba09436ebb:ef3295e511a9526dab4f66e076931dbc5b38b587",
       "input": {
