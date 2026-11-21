@@ -76,7 +76,7 @@ jobs:
 
       - name: Compile and run deterministic review tests
         env:
-          PYTHONPATH: scripts
+          PYTHONPATH: scripts:.
         run: |
           python3 -m compileall -q scripts tests
           python3 scripts/run_preflight_tests.py
@@ -85,7 +85,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 300
     env:
-      PYTHONPATH: scripts
+      PYTHONPATH: scripts:.
       REVIEW_WORKERS: "2"
     permissions:
       contents: write
@@ -729,7 +729,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
-      PYTHONPATH: scripts
+      PYTHONPATH: scripts:.
     permissions:
       contents: write
     steps:
