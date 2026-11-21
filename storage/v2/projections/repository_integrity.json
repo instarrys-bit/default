@@ -1,5 +1,16 @@
 {
-  "latest_snapshot": null,
-  "revision": 0,
+  "latest_snapshot": {
+    "artifact_content_sha256": "e5aab8adf1ea7a46372a827522bc93dd395f91c9b4264aa78e806480e1e17e7c",
+    "artifact_record_id": "f59fac014146b394bfa0631a6a422b3a92901be6c1189d126806bd533d198769",
+    "captured_at": "2026-11-21T16:51:00Z",
+    "file_count": 266,
+    "inventory_digest": "02ea6b9fb19a51e2b4bb870a8766d9eda7ae6ee29c16db627e19e3007778140e",
+    "pull_request_count": 2,
+    "source_main_sha": "cfea3cbef3ea36e3de53bcfb82968d08dcb321da",
+    "source_tree_digest": "45cf105177ff617564827358cd425a91530484218e230cb8c291cfe2a6e3efff",
+    "uu_conf_git_blob_sha": "86b87a33b07e881ff3bb1a32e852001b52708e97",
+    "uu_conf_sha256": "f2765481c4331bdc7b572eb557a84c2d341c960488d55a31846bf8c843398427"
+  },
+  "revision": 1,
   "schema_version": 1
 }
