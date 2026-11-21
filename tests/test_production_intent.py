@@ -127,13 +127,29 @@ class ProductionIntentTests(unittest.TestCase):
         self.assertIn("modules/uu.conf", entry["classification_reason"])
         self.assertTrue(entry["classification_basis"])
 
-    def test_repository_manifest_classifies_cas_recovery_helper_as_non_production(self):
+    def test_repository_manifest_classifies_cas_recovery_helper_as_production_input(self):
         manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
         path = ".github/workflow_helpers/restore_audit_state_from_cas.py"
+        self.assertIn(path, manifest["production_input_paths"])
         result = classify_paths([path], manifest)
-        self.assertEqual(result["status"], "NO_INPUT_CHANGE")
-        self.assertEqual(result["non_production_changes"], [path])
+        self.assertEqual(result["status"], "INPUT_CHANGED")
+        self.assertEqual(result["production_input_changes"], [path])
         self.assertEqual(result["unknown_changes"], [])
+
+        # A recovery-code change must create a new production generation even
+        # when the rule policy inputs themselves are unchanged.
+        decision = decide(
+            event="push",
+            current_fingerprint=self.fp,
+            last_success_fingerprint=self.fp,
+            path_classification=result,
+            last_success_at=self.now.isoformat(),
+            successful_fingerprints={self.fp},
+            revision="recovery-helper-commit",
+            now=self.now,
+        )
+        self.assertEqual(decision["decision"], "INPUT_CHANGED")
+        self.assertTrue(decision["should_produce"])
 
     def test_repository_manifest_classifies_external_intelligence_catalog_as_production_input(self):
         manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
