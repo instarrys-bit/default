@@ -345,9 +345,9 @@
   "rule_count": {
     "DIRECT": 147,
     "PROXY": 3262,
-    "REJECT": 16627
+    "REJECT": 16629
   },
-  "published_rule_total": 20036,
+  "published_rule_total": 20037,
   "max_published_rules": 30000,
   "queued_rule_total": 0,
   "baseline_conflict_hold_count": 42,
@@ -799,12 +799,14 @@
     },
     "REJECT": {
       "previous_count": 16627,
-      "current_count": 16627,
-      "added_count": 0,
+      "current_count": 16629,
+      "added_count": 1,
       "removed_count": 0,
       "previous_sha256": "fc8699aec64781fa23f2a9e6e7613741df528ca1e82fd66e1e7fe26d274fca48",
-      "current_sha256": "fc8699aec64781fa23f2a9e6e7613741df528ca1e82fd66e1e7fe26d274fca48",
-      "added_sample": [],
+      "current_sha256": "5907854c63d592ff4b86eb5a6528822ea240cae7f990b9f9152bcb57ee8ccf07",
+      "added_sample": [
+        "DOMAIN,tab.volces.com"
+      ],
       "removed_sample": [],
       "baseline_initialized": false
     }
@@ -813,20 +815,21 @@
   "approved_total": 20035,
   "promoted_queue_total": 0,
   "publication_accounting": {
-    "published_rule_total": 20036,
+    "published_rule_total": 20037,
     "approved_review_total": 20035,
     "approved_review_published_total": 20035,
     "approved_review_not_published_total": 0,
     "promoted_queue_total": 0,
     "promoted_queue_published_without_current_approval_total": 0,
     "promoted_queue_not_published_total": 0,
-    "retained_published_without_current_approval_total": 1,
-    "published_without_current_approval_total": 1,
+    "retained_published_without_current_approval_total": 2,
+    "published_without_current_approval_total": 2,
     "published_without_current_approval_sample": [
-      "DIRECT|DOMAIN-SUFFIX|oschina.net"
+      "DIRECT|DOMAIN-SUFFIX|oschina.net",
+      "REJECT|DOMAIN|tab.volces.com"
     ],
     "promoted_queue_not_published_sample": [],
-    "published_count_delta_vs_approved_review_total": 1,
+    "published_count_delta_vs_approved_review_total": 2,
     "accounting_reconciled": true
   },
   "held_total": 148832,
