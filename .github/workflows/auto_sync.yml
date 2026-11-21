@@ -418,7 +418,7 @@ jobs:
                   exit 1
                 fi
               fi
-              python3 scripts/restore_audit_state_from_cas.py \
+              python3 storage/v2/restore_audit_state_from_cas.py \
                 --repository "$REPO" --branch main --run-id "$run_id" \
                 --catalog "$catalog" --output "$archive"
               echo "Reconstructed the expired Actions artifact from verified immutable Storage V2 CAS segments."
