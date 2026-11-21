@@ -127,6 +127,14 @@ class ProductionIntentTests(unittest.TestCase):
         self.assertIn("modules/uu.conf", entry["classification_reason"])
         self.assertTrue(entry["classification_basis"])
 
+    def test_repository_manifest_classifies_cas_recovery_helper_as_non_production(self):
+        manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
+        path = ".github/workflow_helpers/restore_audit_state_from_cas.py"
+        result = classify_paths([path], manifest)
+        self.assertEqual(result["status"], "NO_INPUT_CHANGE")
+        self.assertEqual(result["non_production_changes"], [path])
+        self.assertEqual(result["unknown_changes"], [])
+
     def test_repository_manifest_classifies_external_intelligence_catalog_as_production_input(self):
         manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
         path = "sources/external_intelligence_catalog.json"
