@@ -7,16 +7,21 @@ on:
     paths:
       - ".github/workflows/storage-management.yml"
       - "storage/v2/**"
-      - "tests/v2/**"
+      - "tests/**"
       - ".github/workflows/automation-watchdog.yml"
       - ".github/workflows/auto_sync.yml"
       - ".github/workflows/dashboard-pages.yml"
       - "automation/program_registry.json"
       - "automation/execution_adapters.json"
       - "automation/production_control.json"
+      - "automation/capability_contract_inventory.json"
+      - "automation/production_workflow_map.json"
+      - "automation/release_manifest.json"
+      - "automation/resource_ownership_audit.json"
+      - "automation/resource_write_sets.json"
       - "scripts/validate_program_registry.py"
       - "scripts/validate_execution_adapters.py"
-      - "scripts/remote_task_queue_runtime.py"
+      - "scripts/**"
   push:
     branches: [main]
     paths:
@@ -25,7 +30,12 @@ on:
       - "automation/program_registry.json"
       - "automation/execution_adapters.json"
       - "automation/production_control.json"
-      - "scripts/remote_task_queue_runtime.py"
+      - "automation/capability_contract_inventory.json"
+      - "automation/production_workflow_map.json"
+      - "automation/release_manifest.json"
+      - "automation/resource_ownership_audit.json"
+      - "automation/resource_write_sets.json"
+      - "scripts/**"
       - "scripts/register_config_baseline.py"
       - "scripts/verify_baseline.py"
       - "modules/uu.conf"
@@ -33,7 +43,7 @@ on:
       - "storage/v2/artifact_store.py"
       - "storage/v2/ingest_actions_artifacts.py"
       - "storage/v2/**"
-      - "tests/v2/**"
+      - "tests/**"
   schedule:
     - cron: "*/15 * * * *"
   workflow_run:
