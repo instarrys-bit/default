@@ -26,6 +26,7 @@ on:
     paths:
       - ".github/workflows/automation-watchdog.yml"
       - ".github/workflows/auto_sync.yml"
+      - ".github/workflow_helpers/restore_audit_state_from_cas.py"
       - "sources/policy.json"
       - "sources/domain_sources.json"
       - "sources/protected_domains.json"
