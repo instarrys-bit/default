@@ -149,6 +149,7 @@ jobs:
             .github/workflows
             .github/workflow_helpers
             automation
+            dashboard
             data
             docs/v2
             modules
