@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from scripts.restore_audit_state_from_cas import reconstruct_archive
+from storage.v2.restore_audit_state_from_cas import reconstruct_archive
 
 
 class FakeStore:
