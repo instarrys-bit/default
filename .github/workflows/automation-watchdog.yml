@@ -85,6 +85,7 @@ jobs:
           fetch-depth: 1
           sparse-checkout: |
             .github/workflows
+            .github/workflow_helpers
             scripts
             storage
             automation
