@@ -1,4 +1,6 @@
 import hashlib
+import io
+import zipfile
 import sys
 import unittest
 from pathlib import Path
@@ -11,6 +13,7 @@ SPEC = importlib.util.spec_from_file_location("restore_audit_state_from_cas", HE
 HELPER = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(HELPER)
 reconstruct_archive = HELPER.reconstruct_archive
+unwrap_artifact_payload = HELPER.unwrap_artifact_payload
 
 
 class FakeStore:
@@ -84,6 +87,24 @@ class RestoreAuditStateFromCASTests(unittest.TestCase):
         store.objects[store.read_ids[0] if store.read_ids else catalog["artifacts"][0]["segments"][0]["manifest_record_id"]] = b"tampered"
         with self.assertRaisesRegex(ValueError, "failed content verification"):
             reconstruct_archive(catalog, store, expected_run_id="42243792540")
+
+    def test_unwraps_github_artifact_zip_envelope(self):
+        payload = b"\\x1f\\x8b" + b"compressed-tar-payload"
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, "w", compression=zipfile.ZIP_STORED) as bundle:
+            bundle.writestr("audit-output.tar.gz", payload)
+        self.assertEqual(unwrap_artifact_payload(buffer.getvalue()), payload)
+
+    def test_accepts_direct_gzip_archive(self):
+        payload = b"\\x1f\\x8b" + b"direct-tar-payload"
+        self.assertEqual(unwrap_artifact_payload(payload), payload)
+
+    def test_rejects_unexpected_zip_contents(self):
+        buffer = io.BytesIO()
+        with zipfile.ZipFile(buffer, "w", compression=zipfile.ZIP_STORED) as bundle:
+            bundle.writestr("unexpected.bin", b"data")
+        with self.assertRaisesRegex(ValueError, "exactly one audit-output.tar.gz"):
+            unwrap_artifact_payload(buffer.getvalue())
 
     def test_rejects_wrong_whole_archive_digest(self):
         catalog, store, _ = self.fixture()
