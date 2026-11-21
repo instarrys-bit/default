@@ -71,6 +71,13 @@ class CurrentWorkflowContractTests(unittest.TestCase):
         self.assertIn("recover_remote(store, registry, initial_now)", run_once)
         self.assertIn("verify_pending_remote(store, registry, adapters, initial_now)", run_once)
 
+    def test_preflight_runner_discovers_entire_test_tree_without_allowlist(self):
+        runner = (ROOT / "scripts" / "run_preflight_tests.py").read_text(encoding="utf-8")
+        self.assertIn('"discover"', runner)
+        self.assertIn('"tests"', runner)
+        self.assertNotIn("ACTIVE_TEST_MODULES", runner)
+        self.assertNotIn("loadTestsFromName", runner)
+
 
 if __name__ == "__main__":
     unittest.main()
