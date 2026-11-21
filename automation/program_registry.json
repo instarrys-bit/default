@@ -2100,6 +2100,41 @@
         "max_attempts": 0,
         "timeout_seconds": 300
       }
+    },
+    {
+      "id": "storage_repository_integrity",
+      "path": "storage/v2/snapshot_repository_integrity.py",
+      "kind": "python_component",
+      "responsibility": "File Management inventory of all repository Git blob SHAs, open PR heads and changed-file SHAs, review metadata, and protected uu.conf before/after integrity checks.",
+      "capabilities": [
+        "repository_integrity_tracking",
+        "content_addressed_snapshot",
+        "protected_config_read_only"
+      ],
+      "invocation": "Storage Management scheduled job only; not independently dispatchable.",
+      "inputs": [
+        "main Git tree and commit SHA",
+        "all open pull requests plus explicitly tracked closed PRs",
+        "paginated changed-file, review and review-comment metadata",
+        "modules/uu.conf Git blob and content"
+      ],
+      "outputs": [
+        "immutable content-addressed repository integrity snapshot",
+        "SHA-CAS latest-snapshot projection under storage/v2/projections/"
+      ],
+      "depends_on": [
+        "storage_artifact_store",
+        "storage_queue_store"
+      ],
+      "dispatches": [],
+      "permission_boundary": "Storage Management only. Source files and modules/uu.conf are read-only. Repository writes are limited to immutable storage/v2/artifacts/sha256/<digest> objects and storage/v2/projections/repository_integrity.json using Contents API SHA-CAS and read-after-write verification. Production publishers remain limited to rulesets/**.",
+      "health_check": "tests/v2/test_repository_integrity.py validates complete-tree fallback, PR/base-SHA normalization, review/head/file digest changes, uu.conf read-only hashing, exact write allowlists, and scheduled no-cancel workflow wiring.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 1200
+      }
     }
   ]
 }

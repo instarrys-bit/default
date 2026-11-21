@@ -1964,6 +1964,30 @@
         "success_condition": "process_exit_code_zero_and_output_contract_validated",
         "independent_verification_required": true
       }
+    },
+    {
+      "target_program_id": "storage_repository_integrity",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "unreviewed",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "storage/v2/snapshot_repository_integrity.py",
+        "executable": "python3",
+        "argv_template": [],
+        "shell": false
+      },
+      "input_contract": null,
+      "output_contract": null,
+      "timeout_seconds": 1200,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "Storage Management scheduled job only; direct adapter dispatch disabled; immutable object writes and projection updates are idempotent and SHA-CAS fenced."
+      },
+      "completion": {
+        "independent_verification_required": true
+      }
     }
   ]
 }

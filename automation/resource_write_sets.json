@@ -1343,10 +1343,10 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.21.1",
-    "release_manifest_blob_sha": "c05928cf25288c1c9138023907dc43b7956ba2ea",
-    "program_registry_blob_sha": "850baef17c57459021fee2177777c56061839364",
-    "execution_adapters_blob_sha": "e1fbddd375971e6e07702df2ac3d7ef4f30453ae",
-    "note": "Current four-workflow static mutation inventory. It is evidence, not an execution grant. Production publication remains restricted to rulesets/**. File Management may maintain read-only SHA observations; it cannot modify modules/uu.conf."
+    "release_manifest_blob_sha": "8f75d344564de2956f839f67a9a9412bda3d2eb5",
+    "program_registry_blob_sha": "9fdc041ea114b35e4f66ee02a6960e437cf1661e",
+    "execution_adapters_blob_sha": "a93891bfd49fa93e7a6a29c33d84b1ef506b3c3e",
+    "note": "Static inventory of all registered Python components and workflow-native write sites. File Management is the sole repository SHA inventory writer; production publisher write scope remains rulesets/** and modules/uu.conf remains read-only."
   },
   "scheduler_lock_contract": {
     "logical_resource_key": "logical/production-pipeline",
@@ -1584,7 +1584,7 @@
         "automation/task_queue.json Contents API SHA-CAS updates (repository durable queue state)"
       ],
       "file_writes": [],
-      "control_plane_boundary": "Queue orchestration client. All durable task/lease/checkpoint reads and mutations go through storage_queue_store; no direct GitHub Issues API or independent persistent writer."
+      "control_plane_boundary": "Queue orchestration client. All durable task/lease/checkpoint reads and mutations are delegated to storage_queue_store through GitHub Contents API SHA-CAS operations; this client has no independent persistent writer and no direct GitHub Issues API access."
     },
     {
       "program_id": "storage_incident_store",
@@ -1649,12 +1649,27 @@
       ],
       "file_writes": [],
       "control_plane_boundary": "Validation is read-only by default. Staging requires an explicit execute flag, initialized V2 epoch and Storage Management credentials. It writes only immutable artifact-store objects, never repository source files, rulesets/** or modules/uu.conf."
+    },
+    {
+      "program_id": "storage_repository_integrity",
+      "source": "storage/v2/snapshot_repository_integrity.py",
+      "classification": "storage_management_content_addressed_repository_and_pr_sha_inventory",
+      "side_effects": [
+        "GitHub Contents API create-if-absent SHA-256 snapshot objects under storage/v2/artifacts/sha256/<digest>",
+        "GitHub Contents API SHA-CAS updates to storage/v2/projections/repository_integrity.json",
+        "Read-only GitHub API inventory of every source-tree Git blob SHA, open PR head SHA, changed-file blob SHA, review submission commit SHA, review-comment commit SHA, and PR #504 lineage",
+        "Read-only modules/uu.conf Git blob SHA and SHA-256 verification before and after every snapshot"
+      ],
+      "file_writes": [
+        "runner-local temporary bootstrap JSON only; no checked-out source or production files"
+      ],
+      "control_plane_boundary": "Storage Management scheduled job only. Immutable artifact objects are create-only and read-back verified; latest pointer is updated with Contents API SHA-CAS and read-after-write verification. Snapshot digest excludes its own artifact namespace and pointer, and normalizes main-target PR base SHA to prevent self-trigger loops. The tracker aborts on source-tree, PR inventory or uu.conf drift. It cannot write modules/** or rulesets/**."
     }
   ],
   "direct_mutation_scan": {
     "status": "partial_python_direct_callsite_scan",
     "scanner": "tests/test_transitive_write_site_inventory.py",
-    "registered_component_count": 67,
+    "registered_component_count": 68,
     "mutation_api_families": [
       "Path/open write modes",
       "Path write_text/write_bytes/unlink/mkdir/replace/rename/touch",
@@ -1804,6 +1819,20 @@
       ],
       "fence": "Scheduled Storage Management job only. Immutable object writes require exact SHA-256 content addressing and read-back verification; the run catalog is create-only and idempotent; latest projection uses the current Contents blob SHA, bounded conflict retry and read-after-write verification. Main tree and modules/uu.conf blob SHA are re-read before and after the operation.",
       "boundary": "Storage Management control-plane state only. The tracker never writes modules/**, rulesets/**, sources/**, automation/** or production outputs. The content-addressed artifact namespace and its latest-pointer projection are excluded from the source-tree digest to prevent recursion."
+    },
+    {
+      "workflow_path": ".github/workflows/storage-management.yml",
+      "step_name": "Capture full Git blob inventory and verify uu.conf is unchanged",
+      "mutation_kinds": [
+        "github_contents_api_create_if_absent",
+        "github_contents_api_sha_cas_update"
+      ],
+      "resources": [
+        "storage/v2/artifacts/sha256/<digest>",
+        "storage/v2/projections/repository_integrity.json"
+      ],
+      "fence": "Storage Management scheduled job only. Immutable objects require exact SHA-256 addressing and read-back verification; the latest projection uses Contents API SHA-CAS. The tracker re-reads the full source tree, PR inventory and modules/uu.conf before and after staging and aborts on drift.",
+      "boundary": "File Management control-plane writes only. All source files are read-only; modules/uu.conf is checked before/after and never written; production publication remains limited to rulesets/**."
     }
   ],
   "workflow_native_scan": {
@@ -1857,5 +1886,18 @@
     "added_after_release_baseline": true,
     "note": "Historical V1 source-DAG / capability-write audit. Retained for traceability only; not an activation authority or current writer inventory. Current runtime topology is monolithic fallback across exactly four workflows. Do not infer active dispatch rights from this archival snapshot.",
     "reviewed_at": "2026-11-07"
+  },
+  "repository_integrity_tracker": {
+    "owner": "Storage Management / File Management",
+    "snapshot": "complete Git tree path-to-blob-SHA inventory plus open PR head/file SHA and review metadata; PR #504 retained as tracked closed lineage",
+    "pointer_path": "storage/v2/projections/repository_integrity.json",
+    "artifact_namespace": "storage/v2/artifacts/sha256/<digest>",
+    "source_tree_exclusions": [
+      "storage/v2/artifacts/**",
+      "storage/v2/projections/repository_integrity.json"
+    ],
+    "protected_config": "modules/uu.conf is read-only; Git blob SHA and SHA-256 must match before and after each snapshot",
+    "no_op_rule": "If the normalized source-tree and PR inventory digest is unchanged, verify the existing pointer and do not write a new artifact or pointer revision.",
+    "self_trigger_guard": "Normalize main-target PR base SHA and exclude the tracker's own artifact/pointer paths from the inventory digest."
   }
 }
