@@ -5,7 +5,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from storage.v2.restore_audit_state_from_cas import reconstruct_archive
+import importlib.util
+HELPER_PATH = ROOT / ".github" / "workflow_helpers" / "restore_audit_state_from_cas.py"
+SPEC = importlib.util.spec_from_file_location("restore_audit_state_from_cas", HELPER_PATH)
+HELPER = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(HELPER)
+reconstruct_archive = HELPER.reconstruct_archive
 
 
 class FakeStore:
