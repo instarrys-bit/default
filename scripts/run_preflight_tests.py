@@ -1,27 +1,32 @@
 #!/usr/bin/env python3
-"""Run deterministic review unit tests, excluding retired V1 multi-job watchdog inventory."""
+"""Run the complete repository test suite without a curated module allowlist.
+
+The production preflight must exercise every discovered test under tests/.
+Retired workflow contracts must be updated to the current four-workflow
+architecture; they must not be silently excluded from CI.
+"""
 from __future__ import annotations
-import unittest
+
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def main() -> int:
-    loader = unittest.TestLoader()
-    suite = loader.discover("tests")
-    filtered = unittest.TestSuite()
-
-    def walk(s: unittest.TestSuite) -> None:
-        for t in s:
-            if isinstance(t, unittest.TestSuite):
-                walk(t)
-                continue
-            name = f"{t.__class__.__module__}.{t.__class__.__name__}"
-            if "WatchdogStaleRunRecovery" in name or "WorkflowConfigGuardOrder" in name:
-                continue
-            filtered.addTest(t)
-
-    walk(suite)
-    result = unittest.TextTestRunner(verbosity=2).run(filtered)
-    return 0 if result.wasSuccessful() else 1
+    command = [
+        sys.executable,
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v",
+    ]
+    print("Running the complete tests/ tree with unittest discovery; no test modules are excluded.")
+    completed = subprocess.run(command, cwd=ROOT, check=False)
+    return completed.returncode
 
 
 if __name__ == "__main__":

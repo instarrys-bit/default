@@ -101,7 +101,7 @@
   "managed_config_guard": {
     "path": "modules/uu.conf",
     "approved_git_blob_sha": "487afc23fb232e52f171d2cd44601f4220632448",
-    "description": "Authoritative owner-managed Shadowrocket config. Automation may read, identify, hash, diff, and register baseline metadata only after owner verification; it must never rewrite file contents, user-authored rules, or existing functionality. Watchdog performs near-real-time (push-driven) metadata reconciliation when the owner changes this file so automation is never permanently blocked by a legitimate user update. Sub-second polling is not used; reaction latency is bounded by GitHub Actions start-up after the push event, with a 15-minute schedule as safety net.",
+    "description": "Authoritative owner-managed Shadowrocket config. Automation may read, identify, hash and diff the file, and may emit a runner-local baseline proposal. It must never rewrite file contents or automatically update repository baseline metadata; any metadata change requires a separately reviewed pull request.",
     "last_user_approved_baseline_update": {
       "previous_blob_sha": "95405995d0aebc3ac700c06f91528f109f7d715b",
       "new_blob_sha": "487afc23fb232e52f171d2cd44601f4220632448",
@@ -119,16 +119,16 @@
       "owner_may_edit": true,
       "automation_may_modify_content": false,
       "protected_scope": "All bytes in modules/uu.conf, including user-authored rules, section contents, DNS settings, and existing code or feature behavior.",
-      "watchdog_near_realtime_reconciliation": true,
-      "reaction_model": "push_event_immediate_job + 15min_schedule_safety_net; never rewrite uu.conf bytes"
+      "watchdog_near_realtime_reconciliation": false,
+      "reaction_model": "push_event_detects_change_and_emits_runner_local_proposal; no automated repository writes"
     },
     "baseline_metadata_policy": {
       "automation_may_read_file": true,
       "automation_may_identify_file": true,
       "automation_may_hash_file": true,
       "automation_may_diff_file": true,
-      "automation_may_update_registered_blob_sha": true,
-      "update_authorization": "Owner-verified registration only. Verify repository owner identity and every intervening uu.conf-changing commit before updating baseline metadata.",
+      "automation_may_update_registered_blob_sha": false,
+      "update_authorization": "No automated repository metadata synchronization is authorized. Baseline pin changes require a separately reviewed pull request after owner attribution and blob verification.",
       "registration_must_not_write_config_content": true
     }
   }

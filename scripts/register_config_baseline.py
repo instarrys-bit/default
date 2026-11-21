@@ -40,8 +40,10 @@ def build_release_pin_updates(root: Path, config_path: str, config_sha: str) -> 
     if isinstance(policy, dict):
         sync = policy.get("watchdog_baseline_metadata_sync")
         if isinstance(sync, dict):
-            sync["writer"] = "storage-management.yml reconcile-config-baseline job"
-            sync["trigger"] = ["main push (modules/uu.conf, sources/policy.json, control-plane paths)", "15-minute schedule"]
+            sync["writer"] = None
+            sync["trigger"] = []
+            sync["authorization"] = "No automated repository metadata synchronization is authorized."
+            sync["write_allowlist"] = []
     release_text = json.dumps(release, ensure_ascii=False, indent=2) + "\n"
     release_sha = git_blob_sha(release_text.encode("utf-8"))
 
@@ -168,35 +170,8 @@ def write_baseline_proposal(proposal: dict) -> Path:
 
 
 
-def apply_baseline_updates(root: Path, config_path: str, config_sha: str, policy: dict,
-                           release_text: str, workflow_map_text: str, write_sets_text: str) -> list[str]:
-    """Apply only owner-verified baseline metadata and prove config bytes remain unchanged."""
-    config = root / config_path
-    before = config.read_bytes()
-    if git_blob_sha(before) != config_sha:
-        raise ValueError("uu.conf changed after owner-history verification; refusing metadata sync")
-    updates = {
-        "sources/policy.json": json.dumps(policy, ensure_ascii=False, indent=2) + "\n",
-        "automation/release_manifest.json": release_text,
-        "automation/production_workflow_map.json": workflow_map_text,
-        "automation/resource_write_sets.json": write_sets_text,
-    }
-    for relative, content in updates.items():
-        destination = root / relative
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        temporary = destination.with_name(destination.name + f".baseline-sync-{os.getpid()}.tmp")
-        temporary.write_text(content, encoding="utf-8")
-        os.replace(temporary, destination)
-    after = config.read_bytes()
-    if after != before or git_blob_sha(after) != config_sha:
-        raise ValueError("protected modules/uu.conf bytes changed during metadata sync")
-    return sorted(updates)
-
-
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--apply", action="store_true",
-                        help="Apply owner-verified metadata-only sync; reserved for Storage Management baseline reconciliation (and equivalent control-plane writers).")
     args = parser.parse_args()
     policy = json.loads(POLICY.read_text(encoding="utf-8"))
     guard = policy["managed_config_guard"]
@@ -223,7 +198,7 @@ def main() -> int:
     guard["last_user_approved_baseline_update"] = {
         "previous_blob_sha": previous,
         "new_blob_sha": actual,
-        "reason": "Storage Management synchronized the exact main-branch uu.conf Git blob after verifying every intervening config-changing commit is associated with the repository owner. Only baseline metadata and derived release pins are updated; uu.conf bytes are immutable to automation.",
+        "reason": "An owner-authored uu.conf change was detected and recorded as a runner-local proposal. Repository metadata changes require a separately reviewed pull request; uu.conf bytes remain immutable to automation.",
         "approval_mode": approval_mode,
         "config_change_commits": commits,
         "actor": owner,
@@ -237,14 +212,6 @@ def main() -> int:
         "automation/production_workflow_map.json": json.loads(map_text),
         "automation/resource_write_sets.json": json.loads(sets_text),
     }
-    if args.apply:
-        updated = apply_baseline_updates(ROOT, guard["path"], actual, policy, release_text, map_text, sets_text)
-        print(json.dumps({"registered": True, "path": guard["path"], "previous_blob_sha": previous,
-                          "new_blob_sha": actual, "approval_mode": approval_mode,
-                          "config_change_commits": commits, "metadata_paths_updated": updated,
-                          "repository_files_modified": True, "config_file_modified": False,
-                          "config_bytes_unchanged": True}, ensure_ascii=False, sort_keys=True))
-        return 0
     proposal = {"schema_version": 1, "status": "requires_storage_baseline_sync", "path": guard["path"],
                 "previous_blob_sha": previous, "new_blob_sha": actual, "actor": owner,
                 "approval_mode": approval_mode, "config_change_commits": commits,

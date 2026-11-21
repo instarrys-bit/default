@@ -7,16 +7,22 @@ on:
     paths:
       - ".github/workflows/storage-management.yml"
       - "storage/v2/**"
-      - "tests/v2/**"
+      - "tests/**"
       - ".github/workflows/automation-watchdog.yml"
       - ".github/workflows/auto_sync.yml"
       - ".github/workflows/dashboard-pages.yml"
       - "automation/program_registry.json"
       - "automation/execution_adapters.json"
       - "automation/production_control.json"
+      - "automation/capability_contract_inventory.json"
+      - "automation/production_workflow_map.json"
+      - "automation/release_manifest.json"
+      - "automation/resource_ownership_audit.json"
+      - "automation/resource_write_sets.json"
       - "scripts/validate_program_registry.py"
+      - "scripts/validate_automation_write_boundary.py"
       - "scripts/validate_execution_adapters.py"
-      - "scripts/remote_task_queue_runtime.py"
+      - "scripts/**"
   push:
     branches: [main]
     paths:
@@ -25,7 +31,12 @@ on:
       - "automation/program_registry.json"
       - "automation/execution_adapters.json"
       - "automation/production_control.json"
-      - "scripts/remote_task_queue_runtime.py"
+      - "automation/capability_contract_inventory.json"
+      - "automation/production_workflow_map.json"
+      - "automation/release_manifest.json"
+      - "automation/resource_ownership_audit.json"
+      - "automation/resource_write_sets.json"
+      - "scripts/**"
       - "scripts/register_config_baseline.py"
       - "scripts/verify_baseline.py"
       - "modules/uu.conf"
@@ -33,7 +44,7 @@ on:
       - "storage/v2/artifact_store.py"
       - "storage/v2/ingest_actions_artifacts.py"
       - "storage/v2/**"
-      - "tests/v2/**"
+      - "tests/**"
   schedule:
     - cron: "*/15 * * * *"
   workflow_run:
@@ -129,6 +140,24 @@ jobs:
     steps:
       - name: Checkout proposed Storage Management changes
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          filter: blob:none
+          persist-credentials: false
+          sparse-checkout: |
+            .github/workflows
+            automation
+            data
+            docs/v2
+            modules
+            reports
+            rulesets
+            scripts
+            sources
+            storage/v2
+            tests
+          sparse-checkout-cone-mode: true
       - name: Validate all retained workflow YAML files and reject duplicate keys
         run: |
           ruby <<'RUBY'
@@ -179,8 +208,14 @@ jobs:
         run: python3 -m compileall -q scripts storage/v2
       - name: Validate program registry
         run: python3 scripts/validate_program_registry.py
+      - name: Validate automation write boundaries
+        run: python3 scripts/validate_automation_write_boundary.py
       - name: Validate execution adapter contracts
         run: python3 scripts/validate_execution_adapters.py
+      - name: Run maintained production preflight suite
+        env:
+          PYTHONPATH: scripts
+        run: python3 scripts/run_preflight_tests.py
       - name: Run Storage Management regression suite
         env:
           PYTHONPATH: storage/v2
@@ -207,7 +242,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           OPERATION: ${{ inputs.operation }}
-          WORKFLOW_KEY: automation_watchdog
+          WORKFLOW_KEY: ${{ startsWith(inputs.automation_task_id, 'auto-sync-') && 'auto_sync' || 'automation_watchdog' }}
           EVENT_ID: ${{ inputs.automation_task_id }}
           RUN_ID: ${{ inputs.run_id }}
           SOURCE_SHA: ${{ inputs.source_sha }}
@@ -226,72 +261,6 @@ jobs:
             args+=(--before-run-id "$BEFORE_RUN_ID" --classifications "$CLASSIFICATIONS" --verification-url "$VERIFICATION_URL")
           fi
           python3 storage/v2/incident_store.py "${args[@]}" | tee "$GITHUB_STEP_SUMMARY"
-
-  reconcile-config-baseline:
-    name: Reconcile owner-verified uu.conf baseline metadata
-    if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
-    concurrency:
-      group: storage-baseline-reconcile-main
-      cancel-in-progress: false
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout main with full history for owner-config verification
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-        with:
-          ref: main
-          fetch-depth: 0
-          persist-credentials: true
-      - name: Set up Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
-        with:
-          python-version: "3.11"
-      - name: Detect and register owner-verified baseline drift
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GITHUB_TOKEN: ${{ github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_EVENT_NAME: ${{ github.event_name }}
-          GITHUB_REF: ${{ github.ref }}
-          GITHUB_SHA: ${{ github.sha }}
-          GITHUB_BEFORE: ${{ github.event.before }}
-          BASELINE_SOURCE_EVENT: ${{ github.event_name }}
-          BASELINE_SOURCE_SHA: ${{ github.sha }}
-          BASELINE_SOURCE_REF: refs/heads/main
-          PYTHONPATH: scripts
-        run: |
-          set -euo pipefail
-          result_json="$(python3 scripts/register_config_baseline.py --apply)"
-          echo "$result_json" | tee "$GITHUB_STEP_SUMMARY"
-          registered="$(jq -r '.registered // false' <<<"$result_json")"
-          if [ "$registered" != "true" ]; then
-            echo "No baseline metadata write required."
-            exit 0
-          fi
-          git add -- sources/policy.json automation/release_manifest.json automation/production_workflow_map.json automation/resource_write_sets.json
-          if git diff --cached --quiet; then
-            echo "Apply reported registration but working tree has no staged metadata changes."
-            exit 0
-          fi
-          if git diff --cached --name-only | grep -q '^modules/uu.conf$'; then
-            echo "Refusing to commit modules/uu.conf; baseline sync is metadata-only." >&2
-            exit 1
-          fi
-          new_blob="$(jq -r '.new_blob_sha // empty' <<<"$result_json")"
-          short_blob="${new_blob:0:12}"
-          git -c user.name='storage-baseline-reconcile' -c user.email='github-actions[bot]@users.noreply.github.com' \
-            commit -m "chore(baseline): register owner-verified uu.conf blob ${short_blob}"
-          git fetch origin main
-          if ! git merge-base --is-ancestor origin/main HEAD^; then
-            echo "origin/main moved during reconciliation; deferring push to the next cycle."
-            exit 0
-          fi
-          git push origin HEAD:main
-          echo "Baseline metadata pushed for blob $new_blob" >> "$GITHUB_STEP_SUMMARY"
 
   poll-recent-actions-artifacts:
     name: Poll and ingest recent completed workflow artifacts

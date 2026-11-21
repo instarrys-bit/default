@@ -20,19 +20,22 @@ class ReleaseManifestSmokeTests(unittest.TestCase):
         result = validate_release_manifest(ROOT)
         self.assertTrue(result["valid"])
         self.assertEqual(result["verified_git_blob_pins"], 6)
-        self.assertEqual(result["independent_python_dispatch"], "scoped_source_dag_enabled")
+        self.assertEqual(result["independent_python_dispatch"], "blocked")
+        self.assertEqual(result["python_adapters_enabled"], 0)
 
-
-    def test_active_release_requires_complete_non_activating_handoff_evidence(self):
+    def test_baseline_snapshot_does_not_claim_live_independent_handoff(self):
         manifest = json.loads((ROOT / "automation/release_manifest.json").read_text(encoding="utf-8"))
-        self.assertEqual(manifest["release_status"], "active_with_live_handoff_evidence")
-        with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / "release_manifest.json"
-            invalid = json.loads(json.dumps(manifest))
-            invalid["live_handoff_evidence"]["activation_count"] = 1
-            path.write_text(json.dumps(invalid), encoding="utf-8")
-            with self.assertRaisesRegex(ValueError, "activation_count must be zero"):
-                validate_release_manifest(ROOT, path)
+        self.assertEqual(manifest["release_status"], "baseline_snapshot")
+        self.assertEqual(manifest["python_adapter_policy"]["allowed_adapters"], [])
+        self.assertFalse(manifest["execution_policy"]["existing_adapter_enablement_unchanged"])
+        self.assertEqual(manifest["execution_policy"]["enabled_workflow_adapters"], ["workflow_auto_sync", "workflow_automation_watchdog", "workflow_storage_management"])
+        self.assertEqual(
+            manifest["next_migration_gate"]["completion_status"],
+            "blocked_pending_contract_and_runtime_enforcement",
+        )
+        workflow_map = json.loads((ROOT / "automation/production_workflow_map.json").read_text(encoding="utf-8"))
+        self.assertEqual(workflow_map["summary"]["independent_python_dispatch_enabled"], False)
+        self.assertEqual(workflow_map["independent_dags"], [])
 
     def test_release_pins_are_immutable_baseline_references(self):
         manifest = json.loads((ROOT / "automation/release_manifest.json").read_text(encoding="utf-8"))
