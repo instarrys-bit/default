@@ -8,12 +8,12 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "9fdc041ea114b35e4f66ee02a6960e437cf1661e"
+      "git_blob_sha": "3be98b3a1d090f4f18351e96e11f265a7d965c7c"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "a93891bfd49fa93e7a6a29c33d84b1ef506b3c3e"
+      "git_blob_sha": "c2b84eff17d0b5b6eaa42861cad9124a49dffede"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -74,11 +74,11 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "9fdc041ea114b35e4f66ee02a6960e437cf1661e"
+      "git_blob_sha": "3be98b3a1d090f4f18351e96e11f265a7d965c7c"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "a93891bfd49fa93e7a6a29c33d84b1ef506b3c3e"
+      "git_blob_sha": "c2b84eff17d0b5b6eaa42861cad9124a49dffede"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
