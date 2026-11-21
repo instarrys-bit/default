@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "8dfa01ff1a95cabbc8bcf73d090323a6646b3a7e",
+  "workflow_blob_sha": "0a1626495a9789df83904d521f7f098fb439cf14",
   "registry_blob_sha": "3be98b3a1d090f4f18351e96e11f265a7d965c7c",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
@@ -350,7 +350,7 @@
     "The production publisher is the single controlled writer for the three policy outputs rulesets/direct.list, rulesets/proxy.list and rulesets/reject.list, together with their required manifest/lifecycle/queue metadata. This is a production-output boundary, not a system-wide automation write restriction. Watchdog queue/checkpoint state, immutable Actions artifacts and runner-local workspaces are inventoried separately; modules/uu.conf and user-managed module/JavaScript assets remain unwritable.",
     "Other non-dispatchable Python capabilities retain default-deny status until their own complete transitive side-effect and resource contracts are reviewed.",
     "Daily Discovery idempotency now fingerprints the producer, Watchdog handoff, durable queue, scheduler, fencing, Assessment, verifier and their active contracts; changes in the DAG receive a new same-day task key without weakening per-revision deduplication.",
-    "Watchdog queue reads and task supervision are serialized per main branch to reduce GitHub Contents API rate-limit pressure; the append-only queue remains authoritative and the 15-minute schedule recovers coalesced workflow_run callbacks. Discovery and Assessment are also serialized by the shared logical/source-dag-supervision lease acquired atomically with task claim and held through verification."
+    "Watchdog queue reads and task supervision are serialized per main branch to reduce GitHub Contents API rate-limit pressure; the append-only queue remains authoritative, short retry backoffs receive a bounded in-run scheduler wake, and the 15-minute schedule remains the long-delay recovery fallback. Discovery and Assessment are also serialized by the shared logical/source-dag-supervision lease acquired atomically with task claim and held through verification."
   ],
   "decomposition_constraints": [
     "Preserve the audit -> publish dependency and the existing single-writer concurrency boundary.",

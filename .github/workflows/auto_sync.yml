@@ -393,18 +393,43 @@ jobs:
           for run_id in $run_ids; do
             [ "$run_id" = "$CURRENT_RUN_ID" ] && continue
             artifact_id="$(gh api "repos/$REPO/actions/runs/$run_id/artifacts" --jq '[.artifacts[] | select(.name == "deterministic-audit-output" and .expired == false)] | first | .id // empty' 2>/dev/null || true)"
-            if [ -z "$artifact_id" ]; then
-              if [ -s "$pointer" ]; then
-                echo "The state artifact for recorded run $run_id is missing or expired; refusing destructive reinitialization."
-                exit 1
-              fi
-              continue
-            fi
-            gh run download "$run_id" --name deterministic-audit-output --dir /tmp/prior-audit-state
             archive="/tmp/prior-audit-state/audit-output.tar.gz"
+            if [ -n "$artifact_id" ]; then
+              if ! gh run download "$run_id" --name deterministic-audit-output --dir /tmp/prior-audit-state; then
+                echo "Actions artifact download failed; trying the immutable Storage V2 CAS copy."
+                rm -f "$archive"
+                artifact_id=""
+              fi
+            fi
+            if [ ! -s "$archive" ]; then
+              catalog="storage/v2/artifacts/catalog/$run_id.json"
+              if [ ! -s "$catalog" ]; then
+                if [ -s "$pointer" ]; then
+                  echo "Recorded state has neither a downloadable Actions artifact nor a Storage V2 catalog; refusing destructive reinitialization."
+                  exit 1
+                fi
+                continue
+              fi
+              if [ -s "$pointer" ]; then
+                pointer_source_commit="$(jq -r '.source_commit // empty' "$pointer")"
+                catalog_source_commit="$(jq -r '.source_commit // empty' "$catalog")"
+                if [ -n "$pointer_source_commit" ] && [ "$pointer_source_commit" != "$catalog_source_commit" ]; then
+                  echo "Storage V2 catalog source commit does not match the recorded state pointer."
+                  exit 1
+                fi
+              fi
+              python3 .github/workflow_helpers/restore_audit_state_from_cas.py \
+                --repository "$REPO" --branch main --run-id "$run_id" \
+                --catalog "$catalog" --output "$archive"
+              echo "Reconstructed the expired Actions artifact from verified immutable Storage V2 CAS segments."
+            fi
             test -s "$archive"
             python3 scripts/restore_automation_state.py --archive "$archive" --root .
-            echo "Restored high-volume state from audit run $run_id (artifact $artifact_id)."
+            if [ -n "$artifact_id" ]; then
+              echo "Restored high-volume state from audit run $run_id using Actions artifact $artifact_id."
+            else
+              echo "Restored high-volume state from audit run $run_id using verified Storage V2 CAS."
+            fi
             restored=1
             break
           done
