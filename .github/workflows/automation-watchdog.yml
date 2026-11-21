@@ -258,7 +258,7 @@ jobs:
             --repository "$REPO" --branch main --token-stdin \
             --idempotency-key "$idempotency_key" --priority 100 \
             --input-json "$input_json" enqueue-auto-sync
-      - name: Recover leases and run scheduler with bounded retry wake
+      - name: Recover leases and run scheduler once (bounded retry wake)
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_TOKEN: ${{ github.token }}
