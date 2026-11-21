@@ -392,6 +392,13 @@ def inspect_correlated_run(client: GitHubWorkflowClient, intent: dict,
                 "run_status": run_status,
                 "cancel_requested": cancel_requested,
                 "cancel_error": cancel_error,
+                "stale_identity": {
+                    "head_sha": run.get("head_sha"),
+                    "requested_head_sha": intent.get("requested_head_sha"),
+                    "cancel_requested": cancel_requested,
+                    "cancel_error": cancel_error,
+                    "reason": str(exc)[:500],
+                },
                 "evidence": {
                     "run_id": run_id,
                     "html_url": run.get("html_url"),
@@ -405,9 +412,16 @@ def inspect_correlated_run(client: GitHubWorkflowClient, intent: dict,
                 "reason": "correlated workflow run used a stale or unauthorized main revision",
             }
         return {
-            "state": "failure",
+            "state": "stale",
             "run_id": run_id,
             "html_url": run.get("html_url"),
+            "stale_identity": {
+                "head_sha": run.get("head_sha"),
+                "requested_head_sha": intent.get("requested_head_sha"),
+                "cancel_requested": False,
+                "cancel_error": None,
+                "reason": str(exc)[:500],
+            },
             "evidence": {
                 "run_id": run_id,
                 "html_url": run.get("html_url"),
