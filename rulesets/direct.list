@@ -7,7 +7,6 @@ DOMAIN,xz.pphimalayanrt.com
 DOMAIN-SUFFIX,00cdn.com
 DOMAIN-SUFFIX,10010.com
 DOMAIN-SUFFIX,115.com
-DOMAIN-SUFFIX,127.net
 DOMAIN-SUFFIX,178.com
 DOMAIN-SUFFIX,360doc.com
 DOMAIN-SUFFIX,360kuai.com
@@ -23,9 +22,7 @@ DOMAIN-SUFFIX,88cdn.com
 DOMAIN-SUFFIX,air-matters.com
 DOMAIN-SUFFIX,aixifan.com
 DOMAIN-SUFFIX,alibabachengdun.com
-DOMAIN-SUFFIX,alibabausercontent.com
 DOMAIN-SUFFIX,alicloudccp.com
-DOMAIN-SUFFIX,aliexpress.com
 DOMAIN-SUFFIX,alikunlun.com
 DOMAIN-SUFFIX,alisoft.com
 DOMAIN-SUFFIX,aliyuncdn.com
@@ -35,11 +32,8 @@ DOMAIN-SUFFIX,appsimg.com
 DOMAIN-SUFFIX,appvipshop.com
 DOMAIN-SUFFIX,asklink.com
 DOMAIN-SUFFIX,babytreeimg.com
-DOMAIN-SUFFIX,baidubcr.com
 DOMAIN-SUFFIX,baike.com
 DOMAIN-SUFFIX,baomitu.com
-DOMAIN-SUFFIX,bdimg.com
-DOMAIN-SUFFIX,bdurl.net
 DOMAIN-SUFFIX,bitauto.com
 DOMAIN-SUFFIX,bokecc.com
 DOMAIN-SUFFIX,bootcss.com
@@ -69,13 +63,11 @@ DOMAIN-SUFFIX,go2map.com
 DOMAIN-SUFFIX,guazi.com
 DOMAIN-SUFFIX,gwdang.com
 DOMAIN-SUFFIX,gzlzfm.com
-DOMAIN-SUFFIX,hao123img.com
 DOMAIN-SUFFIX,hc-cdn.com
 DOMAIN-SUFFIX,hdslb.com
 DOMAIN-SUFFIX,hichina.com
 DOMAIN-SUFFIX,hitv.com
 DOMAIN-SUFFIX,huajiao.com
-DOMAIN-SUFFIX,huaweicloud.com
 DOMAIN-SUFFIX,hunantv.com
 DOMAIN-SUFFIX,huxiucdn.com
 DOMAIN-SUFFIX,hwccpc.com
@@ -85,7 +77,6 @@ DOMAIN-SUFFIX,img4399.com
 DOMAIN-SUFFIX,jianguoyun.com
 DOMAIN-SUFFIX,jiasule.com
 DOMAIN-SUFFIX,jmstatic.com
-DOMAIN-SUFFIX,jomodns.com
 DOMAIN-SUFFIX,jumei.com
 DOMAIN-SUFFIX,kanimg.com
 DOMAIN-SUFFIX,ksapisrv.com
@@ -123,7 +114,6 @@ DOMAIN-SUFFIX,qiniudn.com
 DOMAIN-SUFFIX,qy.net
 DOMAIN-SUFFIX,realme.com
 DOMAIN-SUFFIX,smtcdns.com
-DOMAIN-SUFFIX,smtcdns.net
 DOMAIN-SUFFIX,soufunimg.com
 DOMAIN-SUFFIX,steamchina.com
 DOMAIN-SUFFIX,steamcontent.com

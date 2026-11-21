@@ -48,6 +48,7 @@ DOMAIN-SUFFIX,4shared.com
 DOMAIN-SUFFIX,4sqi.net
 DOMAIN-SUFFIX,500px.com
 DOMAIN-SUFFIX,51luoben.com
+DOMAIN-SUFFIX,51papaya.com
 DOMAIN-SUFFIX,611study.com
 DOMAIN-SUFFIX,63i.com
 DOMAIN-SUFFIX,666kb.com
@@ -642,6 +643,7 @@ DOMAIN-SUFFIX,cn6.eu
 DOMAIN-SUFFIX,cnbbnews.wordpress.com
 DOMAIN-SUFFIX,cnnews.chosun.com
 DOMAIN-SUFFIX,cnproxy.com
+DOMAIN-SUFFIX,cnyes.com
 DOMAIN-SUFFIX,cobinhood.com
 DOMAIN-SUFFIX,codeshare.io
 DOMAIN-SUFFIX,coffeemanga.to
@@ -824,6 +826,7 @@ DOMAIN-SUFFIX,dt18.com
 DOMAIN-SUFFIX,dtdns.net
 DOMAIN-SUFFIX,dtiblog.com
 DOMAIN-SUFFIX,dubox.com
+DOMAIN-SUFFIX,duck.ai
 DOMAIN-SUFFIX,duck.com
 DOMAIN-SUFFIX,duckmylife.com
 DOMAIN-SUFFIX,duping.net
@@ -1092,6 +1095,7 @@ DOMAIN-SUFFIX,gagaoolala.com
 DOMAIN-SUFFIX,galenwu.com
 DOMAIN-SUFFIX,game735.com
 DOMAIN-SUFFIX,gamejolt.com
+DOMAIN-SUFFIX,gamma.app
 DOMAIN-SUFFIX,ganges.com
 DOMAIN-SUFFIX,ganjing.com
 DOMAIN-SUFFIX,ganjingworld.com
@@ -1281,13 +1285,16 @@ DOMAIN-SUFFIX,hkanews.wordpress.com
 DOMAIN-SUFFIX,hkbc.net
 DOMAIN-SUFFIX,hkbookcity.com
 DOMAIN-SUFFIX,hkchronicles.com
+DOMAIN-SUFFIX,hkcitycreation.com
 DOMAIN-SUFFIX,hkcnews.com
 DOMAIN-SUFFIX,hkcoc.com
 DOMAIN-SUFFIX,hkcoc.weather.com.hk
+DOMAIN-SUFFIX,hkcourtnews.com
 DOMAIN-SUFFIX,hkctu.org.hk
 DOMAIN-SUFFIX,hkej.com
 DOMAIN-SUFFIX,hket.com
 DOMAIN-SUFFIX,hkfaa.com
+DOMAIN-SUFFIX,hkfeature.com
 DOMAIN-SUFFIX,hkgalden.com
 DOMAIN-SUFFIX,hkgolden.com
 DOMAIN-SUFFIX,hkgpao.com
@@ -1613,6 +1620,7 @@ DOMAIN-SUFFIX,library-access.sk
 DOMAIN-SUFFIX,library.usc.cuhk.edu.hk
 DOMAIN-SUFFIX,licdn.com
 DOMAIN-SUFFIX,lifemiles.com
+DOMAIN-SUFFIX,lifesitenews.com
 DOMAIN-SUFFIX,lightyearvpn.com
 DOMAIN-SUFFIX,lih.kg
 DOMAIN-SUFFIX,lihkg.com
@@ -1703,6 +1711,7 @@ DOMAIN-SUFFIX,marxist.com
 DOMAIN-SUFFIX,marxist.net
 DOMAIN-SUFFIX,mas.to
 DOMAIN-SUFFIX,mash.to
+DOMAIN-SUFFIX,master-insight.com
 DOMAIN-SUFFIX,mastodon.xyz
 DOMAIN-SUFFIX,matainja.com
 DOMAIN-SUFFIX,material.io
@@ -1898,6 +1907,7 @@ DOMAIN-SUFFIX,newthuhole.com
 DOMAIN-SUFFIX,newyorker.com
 DOMAIN-SUFFIX,newyorktimes.com
 DOMAIN-SUFFIX,nexon.com
+DOMAIN-SUFFIX,nextapple.com
 DOMAIN-SUFFIX,nextdigital.com.hk
 DOMAIN-SUFFIX,nextmedia.com
 DOMAIN-SUFFIX,nf.id.au
@@ -2196,6 +2206,7 @@ DOMAIN-SUFFIX,pttgame.com
 DOMAIN-SUFFIX,ptwxz.com
 DOMAIN-SUFFIX,puffinbrowser.com
 DOMAIN-SUFFIX,puffstore.com
+DOMAIN-SUFFIX,pulsehknews.com
 DOMAIN-SUFFIX,pure18.com
 DOMAIN-SUFFIX,pureconcepts.net
 DOMAIN-SUFFIX,purepdf.com
@@ -2357,6 +2368,7 @@ DOMAIN-SUFFIX,shadowsky.xyz
 DOMAIN-SUFFIX,shadowsocks.be
 DOMAIN-SUFFIX,shadowsocks.com
 DOMAIN-SUFFIX,shadowsocks.com.hk
+DOMAIN-SUFFIX,shanghainationalparty.com
 DOMAIN-SUFFIX,shapeservices.com
 DOMAIN-SUFFIX,sharpdaily.hk
 DOMAIN-SUFFIX,shattered.io
@@ -2436,6 +2448,7 @@ DOMAIN-SUFFIX,sosreader.com
 DOMAIN-SUFFIX,sotwe.com
 DOMAIN-SUFFIX,soubory.com
 DOMAIN-SUFFIX,soulcaliburhentai.net
+DOMAIN-SUFFIX,soulogic.com
 DOMAIN-SUFFIX,soundon.fm
 DOMAIN-SUFFIX,soup.io
 DOMAIN-SUFFIX,sourceforge.net
@@ -2602,6 +2615,7 @@ DOMAIN-SUFFIX,thebcomplex.com
 DOMAIN-SUFFIX,theblaze.com
 DOMAIN-SUFFIX,thebobs.com
 DOMAIN-SUFFIX,thebodyshop-usa.com
+DOMAIN-SUFFIX,thecollectivehk.com
 DOMAIN-SUFFIX,theconversation.com
 DOMAIN-SUFFIX,thedalailamamovie.com
 DOMAIN-SUFFIX,thediplomat.com
@@ -2615,14 +2629,18 @@ DOMAIN-SUFFIX,thehousenews.com
 DOMAIN-SUFFIX,thehun.net
 DOMAIN-SUFFIX,theintercept.com
 DOMAIN-SUFFIX,thenewslens.com
+DOMAIN-SUFFIX,theonlinecitizen.com
 DOMAIN-SUFFIX,theporndude.com
 DOMAIN-SUFFIX,theportalwiki.com
 DOMAIN-SUFFIX,thesaturdaypaper.com.au
+DOMAIN-SUFFIX,thestandard.com.hk
 DOMAIN-SUFFIX,thestandnews.com
+DOMAIN-SUFFIX,thestar.com
 DOMAIN-SUFFIX,thetibetpost.com
 DOMAIN-SUFFIX,thetvdb.com
 DOMAIN-SUFFIX,theweek.com
 DOMAIN-SUFFIX,thewirechina.com
+DOMAIN-SUFFIX,thewitnesshk.com
 DOMAIN-SUFFIX,theync.com
 DOMAIN-SUFFIX,thinkchina.sg
 DOMAIN-SUFFIX,thinkgeek.com
@@ -3048,6 +3066,7 @@ DOMAIN-SUFFIX,wo.tc
 DOMAIN-SUFFIX,wo3ttt.wordpress.com
 DOMAIN-SUFFIX,woeser.com
 DOMAIN-SUFFIX,wolfax.com
+DOMAIN-SUFFIX,womany.net
 DOMAIN-SUFFIX,wombo.ai
 DOMAIN-SUFFIX,woolyss.com
 DOMAIN-SUFFIX,woopie.tv
