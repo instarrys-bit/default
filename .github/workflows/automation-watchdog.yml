@@ -83,6 +83,7 @@ jobs:
           ref: main
           fetch-depth: 1
           sparse-checkout: |
+            .github/workflows
             scripts
             storage
             automation
@@ -225,6 +226,7 @@ jobs:
           ref: main
           fetch-depth: 1
           sparse-checkout: |
+            .github/workflows
             scripts
             storage
             automation
