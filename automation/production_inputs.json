@@ -4,6 +4,7 @@
   "production_input_paths": [
     "automation/production_inputs.json",
     ".github/workflows/auto_sync.yml",
+    ".github/workflow_helpers/restore_audit_state_from_cas.py",
     "modules/uu.conf",
     "sources/domain_sources.json",
     "sources/external_intelligence_catalog.json",
@@ -50,7 +51,6 @@
   ],
   "non_production_path_patterns": [
     ".github/workflow_helpers/check_source_assessment_artifact.py",
-    ".github/workflow_helpers/restore_audit_state_from_cas.py",
     ".github/workflows/automation-watchdog.yml",
     ".github/workflows/storage-management.yml",
     ".github/workflows/request-intake.yml",
