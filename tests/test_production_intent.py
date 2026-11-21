@@ -133,14 +133,19 @@ class ProductionIntentTests(unittest.TestCase):
         self.assertIn(path, manifest["production_input_paths"])
         watchdog = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
         self.assertIn('      - "' + path + '"\n', watchdog)
-        sparse_block = watchdog.split("sparse-checkout: |", 1)[1].split("sparse-checkout-cone-mode:", 1)[0]
-        sparse_paths = {line.strip() for line in sparse_block.splitlines() if line.strip()}
-        for production_path in manifest["production_input_paths"]:
-            self.assertTrue(
-                any(production_path == item or production_path.startswith(item.rstrip("/") + "/")
-                    for item in sparse_paths),
-                "Watchdog sparse checkout omits production input: " + production_path,
-            )
+        sparse_blocks = watchdog.split("sparse-checkout: |")[1:]
+        self.assertGreaterEqual(len(sparse_blocks), 2)
+        for sparse_block in sparse_blocks:
+            sparse_paths = {
+                line.strip() for line in sparse_block.split("sparse-checkout-cone-mode:", 1)[0].splitlines()
+                if line.strip()
+            }
+            for production_path in manifest["production_input_paths"]:
+                self.assertTrue(
+                    any(production_path == item or production_path.startswith(item.rstrip("/") + "/")
+                        for item in sparse_paths),
+                    "Watchdog sparse checkout omits production input: " + production_path,
+                )
         result = classify_paths([path], manifest)
         self.assertEqual(result["status"], "INPUT_CHANGED")
         self.assertEqual(result["production_input_changes"], [path])
