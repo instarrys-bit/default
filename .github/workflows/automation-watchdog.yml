@@ -267,6 +267,7 @@ jobs:
         run: |
           set -euo pipefail
           for cycle in 1 2 3; do
+            echo "Watchdog scheduler pass $cycle/3."
             printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py \
               --repository "$REPO" --branch main --token-stdin --max-tasks 1 run-once
 
