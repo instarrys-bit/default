@@ -50,6 +50,7 @@
   ],
   "non_production_path_patterns": [
     ".github/workflow_helpers/check_source_assessment_artifact.py",
+    ".github/workflow_helpers/restore_audit_state_from_cas.py",
     ".github/workflows/automation-watchdog.yml",
     ".github/workflows/storage-management.yml",
     ".github/workflows/request-intake.yml",
