@@ -89,14 +89,14 @@ class RestoreAuditStateFromCASTests(unittest.TestCase):
             reconstruct_archive(catalog, store, expected_run_id="42243792540")
 
     def test_unwraps_github_artifact_zip_envelope(self):
-        payload = b"\x1f\x8b" + b"compressed-tar-payload"
+        payload = bytes.fromhex("1f8b") + b"compressed-tar-payload"
         buffer = io.BytesIO()
         with zipfile.ZipFile(buffer, "w", compression=zipfile.ZIP_STORED) as bundle:
             bundle.writestr("audit-output.tar.gz", payload)
         self.assertEqual(unwrap_artifact_payload(buffer.getvalue()), payload)
 
     def test_accepts_direct_gzip_archive(self):
-        payload = b"\x1f\x8b" + b"direct-tar-payload"
+        payload = bytes.fromhex("1f8b") + b"direct-tar-payload"
         self.assertEqual(unwrap_artifact_payload(payload), payload)
 
     def test_rejects_unexpected_zip_contents(self):
