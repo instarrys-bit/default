@@ -244,8 +244,12 @@ def persist_registry(
     storage = write_document(
         output, payload, "records", lease_required=lease_required,
         force_sharded=True, max_file_bytes=MAX_REGISTRY_BYTES,
-        shard_target_bytes=min(35_000_000, MAX_REGISTRY_BYTES),
+        # The 40 MB ceiling applies to the final gzip file stored in GitHub.
+        # Allow bounded decompression headroom so compressible registries can
+        # fill the physical shard instead of rolling over at 35 MB raw.
+        shard_target_bytes=MAX_REGISTRY_BYTES,
         compress_shards=True,
+        max_uncompressed_file_bytes=MAX_REGISTRY_BYTES * 4,
     )
     if read_document(output, "records") != payload:
         raise ValueError("source candidate registry read-after-write verification failed")
