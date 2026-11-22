@@ -74,26 +74,37 @@ def resolve_incidents(document, *, workflow, before_run_id, classifications, eve
         if not isinstance(source_sha, str) or not re.fullmatch(r"[0-9a-f]{40}", source_sha): continue
         body = record.get("body") or (record.get("summary") or "Legacy incident")
         state = record.get("incident_state")
+        # Archived issue records predate the incident-ledger schema and have
+        # legacy_id rather than incident_id. Derive a stable per-record key
+        # without discarding or rewriting their original archive identity.
+        record_key = record.get("incident_id")
+        if not isinstance(record_key, str) or not record_key:
+            legacy_id = record.get("legacy_id")
+            record_key = f"legacy-{legacy_id}" if isinstance(legacy_id, str) and legacy_id else (
+                f"legacy-{workflow}-{record.get('run_id', '')}-{source_sha[:12]}-{record['classification']}"
+            )
         if not isinstance(state, dict) or state.get("state") not in {
             "DETECTED", "DIAGNOSING", "RECOVERING", "VERIFYING", "MANUAL_INTERVENTION", "RECOVERED"}:
             body, state = transition_incident(body, workflow=workflow, source_sha=source_sha,
-                classification=record["classification"], event_id=f"legacy-detected-{record['incident_id']}",
+                classification=record["classification"], event_id=f"legacy-detected-{record_key}",
                 target_state="MANUAL_INTERVENTION")
         if state["state"] == "RECOVERED":
-            record.update({"lifecycle_status": "RECOVERED", "incident_state": state, "body": body})
+            canonical_id = record.get("incident_id") or f"{incident_key(workflow, source_sha, record['classification'])}-{record['run_id']}"
+            record.update({"incident_id": canonical_id, "lifecycle_status": "RECOVERED", "incident_state": state, "body": body})
             continue
-        verify_event = f"{event_id}:verify:{record['incident_id']}"
-        recovered_event = f"{event_id}:recovered:{record['incident_id']}"
+        verify_event = f"{event_id}:verify:{record_key}"
+        recovered_event = f"{event_id}:recovered:{record_key}"
         if state["state"] != "VERIFYING":
             body, state = transition_incident(body, workflow=workflow, source_sha=source_sha,
                 classification=record["classification"], event_id=verify_event, target_state="VERIFYING")
         body, state = transition_incident(body, workflow=workflow, source_sha=source_sha,
             classification=record["classification"], event_id=recovered_event,
             target_state="RECOVERED", verification_url=verification_url)
-        record.update({"body": body, "incident_state": state, "lifecycle_status": "RECOVERED",
+        canonical_id = record.get("incident_id") or f"{incident_key(workflow, source_sha, record['classification'])}-{record['run_id']}"
+        record.update({"incident_id": canonical_id, "body": body, "incident_state": state, "lifecycle_status": "RECOVERED",
             "verification_url": verification_url, "updated_at": event_id})
         record.setdefault("events", []).extend([verify_event, recovered_event])
-        resolved.append(record["incident_id"])
+        resolved.append(canonical_id)
     document["events"].append({"event_id": event_id, "operation": "resolve", "workflow": workflow,
         "before_run_id": str(before_run_id), "classifications": sorted(allowed),
         "verification_url": verification_url, "resolved_incident_ids": resolved})
