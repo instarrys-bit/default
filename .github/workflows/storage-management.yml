@@ -295,8 +295,17 @@ jobs:
           task_file="$RUNNER_TEMP/verified-auto-sync-task.json"
           run_file="$RUNNER_TEMP/verified-auto-sync-run.json"
           jobs_file="$RUNNER_TEMP/verified-auto-sync-jobs.json"
-          jq -c '[.tasks[]
+          current_fingerprint="$(PYTHONPATH=scripts python3 - <<'PY'
+          from pathlib import Path
+          from production_intent import compute_fingerprint, load_manifest
+          root = Path(".")
+          manifest = load_manifest(root / "automation" / "production_inputs.json")
+          print(compute_fingerprint(root, manifest))
+          PY
+          )"
+          jq --arg current_fingerprint "$current_fingerprint" -c '[.tasks[]
             | select(.status == "SUCCEEDED" and .verification.status == "passed")
+            | select(.input.production_fingerprint == $current_fingerprint)
             | select(.dispatch_intent.workflow_id == 402712272
                 and .dispatch_intent.workflow_path == ".github/workflows/auto_sync.yml")
             | select(.result.workflow_id == 402712272
@@ -305,7 +314,7 @@ jobs:
             | sort_by(.verification.verified_at) | last // empty' \
             automation/task_queue.json > "$task_file"
           if [ ! -s "$task_file" ]; then
-            echo "No independently verified Auto Sync queue task is available; incident state is unchanged." \
+            echo "No independently verified Auto Sync queue task matches current production inputs; incident state is unchanged." \
               | tee "$GITHUB_STEP_SUMMARY"
             exit 0
           fi

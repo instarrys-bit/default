@@ -218,6 +218,7 @@ class ProductionIntentTests(unittest.TestCase):
         paths = [
             "automation/release_manifest.json",
             "automation/production_workflow_map.json",
+            "automation/production_control.json",
             "automation/resource_write_sets.json",
             "automation/capability_contract_inventory.json",
             "automation/resource_ownership_audit.json",
@@ -261,7 +262,7 @@ class ProductionIntentTests(unittest.TestCase):
             workflow,
         )
 
-    def test_scheduled_refresh_idempotency_key_does_not_depend_on_cron_revision(self):
+    def test_scheduled_refresh_idempotency_key_tracks_main_revision_even_after_success(self):
         stamp = (self.now - timedelta(days=9)).isoformat()
         args = dict(
             event="schedule", current_fingerprint=self.fp,
@@ -269,10 +270,40 @@ class ProductionIntentTests(unittest.TestCase):
             path_classification={"status": "NO_INPUT_CHANGE"},
             last_success_at=stamp, successful_fingerprints={self.fp}, now=self.now,
         )
-        first = decide(**args, revision="cron-run-a")
-        replay = decide(**args, revision="cron-run-b")
+        first = decide(**args, revision="main-sha-a")
+        replay = decide(**args, revision="main-sha-a")
+        later_main = decide(**args, revision="main-sha-b")
         self.assertEqual(first["decision"], "SCHEDULE_DUE")
+        self.assertEqual(first["idempotency_key"], f"production:schedule:{self.fp}:main-sha-a")
         self.assertEqual(first["idempotency_key"], replay["idempotency_key"])
+        self.assertNotEqual(first["idempotency_key"], later_main["idempotency_key"])
+
+    def test_bootstrap_schedule_key_changes_with_main_revision(self):
+        args = dict(
+            event="schedule", current_fingerprint=self.fp,
+            last_success_fingerprint=self.fp,
+            path_classification={"status": "NO_INPUT_CHANGE"},
+            last_success_at=None, successful_fingerprints={self.fp}, now=self.now,
+        )
+        first = decide(**args, revision="main-sha-a")
+        replay = decide(**args, revision="main-sha-a")
+        later_main = decide(**args, revision="main-sha-b")
+        self.assertEqual(first["decision"], "SCHEDULE_DUE")
+        self.assertEqual(first["idempotency_key"], f"production:schedule:{self.fp}:main-sha-a")
+        self.assertEqual(first["idempotency_key"], replay["idempotency_key"])
+        self.assertNotEqual(first["idempotency_key"], later_main["idempotency_key"])
+
+    def test_bootstrap_schedule_key_changes_with_revision_without_success_set(self):
+        args = dict(
+            event="schedule", current_fingerprint=self.fp,
+            last_success_fingerprint=self.fp,
+            path_classification={"status": "NO_INPUT_CHANGE"},
+            last_success_at=None, now=self.now,
+        )
+        first = decide(**args, revision="main-sha-a")
+        later_main = decide(**args, revision="main-sha-b")
+        self.assertEqual(first["decision"], "SCHEDULE_DUE")
+        self.assertNotEqual(first["idempotency_key"], later_main["idempotency_key"])
 
     def test_schedule_is_due_only_after_explicit_refresh_interval(self):
         due = decide(event="schedule", current_fingerprint=self.fp,
