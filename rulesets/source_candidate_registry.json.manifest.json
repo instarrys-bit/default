@@ -6,17 +6,17 @@
   "record_count": 49115,
   "total_shard_bytes": 39916642,
   "max_file_bytes": 40000000,
-  "shard_directory": "source_candidate_registry.json.parts-0595cee0d299eee7",
+  "shard_directory": "source_candidate_registry.json.parts-3a55c7e6d11dc229",
   "metadata": {
     "registry_type": "discovered_source_candidates_non_activating",
-    "updated_at": "2026-11-21T21:29:02.725173+00:00",
+    "updated_at": "2026-11-22T00:33:15.980801+00:00",
     "latest_discovery": {
       "workflow_name": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
-      "workflow_run_id": "44950104499",
-      "workflow_head_sha": "71f8a4fd8f28eb50dbc2647cd1b098f200db42d2",
+      "workflow_run_id": "44965841153",
+      "workflow_head_sha": "75843fd62149db810e776b429fb95b3c92350049",
       "artifact_sha256": "773c2a124d638d6098fb9bc438b76a70c228e0495e8f48b249468ed16fdab037",
       "mode": "monolithic_fallback",
-      "recorded_at": "2026-11-21T21:29:02.725173+00:00"
+      "recorded_at": "2026-11-22T00:33:15.980801+00:00"
     },
     "repository_count": 1651,
     "source_file_count": 47464,
@@ -32,13 +32,13 @@
       "file": "part-000000.jsonl",
       "records": 42797,
       "bytes": 34999696,
-      "sha256": "202fcc915881f4715901ceee66f04f8b7b1669f0a1f7629d09d21079e11e27a4"
+      "sha256": "b968b905678005ebc96387afb9f6ca0410ae898eec84b907141c907c8a421e92"
     },
     {
       "file": "part-000001.jsonl",
       "records": 6318,
       "bytes": 4916946,
-      "sha256": "848ec8da9e03dc3ba7c2faad084a627355bef5a676d1294eba33447a80769b93"
+      "sha256": "8d986ecf7764128609cf38ab4cfae1777dcea42f1529d980c5a9f4c09e4f9b84"
     }
   ]
 }
