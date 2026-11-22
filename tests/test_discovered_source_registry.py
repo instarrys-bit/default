@@ -185,9 +185,12 @@ class DiscoveredSourceRegistryTests(unittest.TestCase):
 
     def test_registry_persistence_uses_multiple_40mb_shards_without_total_cap(self):
         discovery = json.loads(json.dumps(self.discovery))
+        # Hash each path so gzip cannot hide the scale of the stored registry.
+        # Enough independent records must exceed the compressed per-shard ceiling.
         discovery["candidates"][0]["rule_list_urls"] = [
-            f"https://raw.githubusercontent.com/{self.repo}/main/extra-{index:02d}.list"
-            for index in range(500)
+            "https://raw.githubusercontent.com/" + self.repo + "/main/extra-"
+            + hashlib.sha256(f"candidate-{index}".encode("utf-8")).hexdigest() + ".list"
+            for index in range(3000)
         ]
         logical = build_registry({}, discovery, self.provenance, "2026-11-10T01:00:00+00:00")
         with tempfile.TemporaryDirectory() as tmp:
