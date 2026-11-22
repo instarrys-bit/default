@@ -237,14 +237,13 @@ def encode_registry_storage(registry: dict) -> dict:
 def persist_registry(
     logical_registry: dict, *, output: Path = OUTPUT, lease_required: bool = True
 ) -> dict:
-    """Persist the complete registry under the 40 MB total cap and verify read-back."""
+    """Persist the registry as multiple independently bounded 40 MB shards."""
     if lease_required:
         assert_resource_lease_from_environment("rulesets/source_candidate_registry.json")
     payload = encode_registry_storage(logical_registry)
     storage = write_document(
         output, payload, "records", lease_required=lease_required,
         force_sharded=True, max_file_bytes=MAX_REGISTRY_BYTES,
-        max_total_bytes=MAX_REGISTRY_BYTES,
         shard_target_bytes=min(35_000_000, MAX_REGISTRY_BYTES),
         compress_shards=True,
     )
@@ -324,7 +323,7 @@ def main() -> int:
             "shard_count": storage["shards"],
             "stored_bytes": storage["bytes"],
             "stored_total_bytes": storage["total_bytes"],
-            "total_byte_limit": MAX_REGISTRY_BYTES,
+            "max_shard_bytes": MAX_REGISTRY_BYTES,
         }, sort_keys=True))
         return 0
     except (OSError, ValueError, json.JSONDecodeError) as exc:
