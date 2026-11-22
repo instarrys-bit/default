@@ -241,6 +241,13 @@ def decode_registry_storage(payload: dict) -> dict:
     result.pop("storage_format", None)
     result.pop("record_count", None)
     result["schema_version"] = REGISTRY_SCHEMA
+    # The logical v1 shape has canonical per-type ordering. Keep that public
+    # shape stable after decoding; the hidden sequence remains on each record
+    # and encode_registry_storage() uses it to preserve global append order.
+    repositories.sort(key=lambda item: str(item.get("repository", "")).casefold())
+    source_files.sort(key=lambda item: (
+        str(item.get("repository", "")).casefold(), str(item.get("url", ""))
+    ))
     result["repositories"] = repositories
     result["source_files"] = source_files
     return result
