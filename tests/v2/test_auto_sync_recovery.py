@@ -16,6 +16,7 @@ from verify_auto_sync_recovery import (
 RUN_ID = 44965841153
 HEAD_SHA = "75843fd62149db810e776b429fb95b3c92350049"
 REQUESTED_SHA = "934b94a091574616e28b14b220b010bcacd4f88b"
+CURRENT_FINGERPRINT = "ac40e12d5f6e03cea835dff4017803add70df6128f979035b9f1ebce6a20d592"
 
 
 def successful_run():
@@ -52,6 +53,7 @@ def successful_queue():
             {
                 "task_id": "task_ddab0e5429ef471eb76405fd",
                 "status": "SUCCEEDED",
+                "input": {"production_fingerprint": CURRENT_FINGERPRINT},
                 "dispatch_intent": {
                     "task_id": "task_ddab0e5429ef471eb76405fd",
                     "correlation_id": "task_ddab0e5429ef471eb76405fd-a1",
@@ -88,7 +90,9 @@ def successful_queue():
 
 class VerifyAutoSyncRecoveryTests(unittest.TestCase):
     def test_requires_exact_workflow_publish_verification_and_verified_queue_task(self):
-        result = verify_auto_sync_recovery(successful_run(), successful_jobs(), successful_queue())
+        result = verify_auto_sync_recovery(
+            successful_run(), successful_jobs(), successful_queue(), CURRENT_FINGERPRINT
+        )
         self.assertTrue(result["verified"])
         self.assertEqual(result["reasons"], [])
         self.assertEqual(result["run_id"], str(RUN_ID))
@@ -100,7 +104,7 @@ class VerifyAutoSyncRecoveryTests(unittest.TestCase):
         run["path"] = ".github/workflows/other.yml"
         run["head_branch"] = "feature"
         run["event"] = "push"
-        result = verify_auto_sync_recovery(run, successful_jobs(), successful_queue())
+        result = verify_auto_sync_recovery(run, successful_jobs(), successful_queue(), CURRENT_FINGERPRINT)
         self.assertFalse(result["verified"])
         self.assertIn("unexpected_workflow_id", result["reasons"])
         self.assertIn("unexpected_workflow_path", result["reasons"])
@@ -110,7 +114,7 @@ class VerifyAutoSyncRecoveryTests(unittest.TestCase):
     def test_rejects_overall_success_without_remote_publish_verification(self):
         jobs = successful_jobs()
         jobs["jobs"][1]["steps"] = []
-        result = verify_auto_sync_recovery(successful_run(), jobs, successful_queue())
+        result = verify_auto_sync_recovery(successful_run(), jobs, successful_queue(), CURRENT_FINGERPRINT)
         self.assertFalse(result["verified"])
         self.assertIn("remote_publish_verification_missing_or_failed", result["reasons"])
 
@@ -118,7 +122,7 @@ class VerifyAutoSyncRecoveryTests(unittest.TestCase):
         jobs = successful_jobs()
         jobs["jobs"][0]["conclusion"] = "failure"
         jobs["jobs"][1]["conclusion"] = "failure"
-        result = verify_auto_sync_recovery(successful_run(), jobs, successful_queue())
+        result = verify_auto_sync_recovery(successful_run(), jobs, successful_queue(), CURRENT_FINGERPRINT)
         self.assertFalse(result["verified"])
         self.assertIn("audit_job_not_successful", result["reasons"])
         self.assertIn("publish_job_not_successful", result["reasons"])
@@ -126,28 +130,35 @@ class VerifyAutoSyncRecoveryTests(unittest.TestCase):
     def test_rejects_missing_or_unverified_queue_task(self):
         queue = successful_queue()
         queue["tasks"][0]["verification"]["status"] = "failed"
-        result = verify_auto_sync_recovery(successful_run(), successful_jobs(), queue)
+        result = verify_auto_sync_recovery(successful_run(), successful_jobs(), queue, CURRENT_FINGERPRINT)
         self.assertFalse(result["verified"])
         self.assertIn("independent_queue_verification_missing", result["reasons"])
 
     def test_rejects_queue_run_sha_or_requested_sha_mismatch(self):
         queue = successful_queue()
         queue["tasks"][0]["result"]["run_evidence"]["head_sha"] = "a" * 40
-        result = verify_auto_sync_recovery(successful_run(), successful_jobs(), queue)
+        result = verify_auto_sync_recovery(successful_run(), successful_jobs(), queue, CURRENT_FINGERPRINT)
         self.assertFalse(result["verified"])
         self.assertIn("queue_run_evidence_mismatch", result["reasons"])
+
+    def test_rejects_stale_queue_task_after_production_inputs_change(self):
+        result = verify_auto_sync_recovery(
+            successful_run(), successful_jobs(), successful_queue(), "b" * 64
+        )
+        self.assertFalse(result["verified"])
+        self.assertIn("queue_production_fingerprint_mismatch", result["reasons"])
 
     def test_rejects_queue_task_without_released_lease_or_verifier_identity(self):
         queue = successful_queue()
         queue["tasks"][0]["resource_lease"]["status"] = "ACTIVE"
-        result = verify_auto_sync_recovery(successful_run(), successful_jobs(), queue)
+        result = verify_auto_sync_recovery(successful_run(), successful_jobs(), queue, CURRENT_FINGERPRINT)
         self.assertFalse(result["verified"])
         self.assertIn("resource_lease_not_released", result["reasons"])
 
     def test_rejects_ambiguous_duplicate_queue_matches(self):
         queue = successful_queue()
         queue["tasks"].append(dict(queue["tasks"][0]))
-        result = verify_auto_sync_recovery(successful_run(), successful_jobs(), queue)
+        result = verify_auto_sync_recovery(successful_run(), successful_jobs(), queue, CURRENT_FINGERPRINT)
         self.assertFalse(result["verified"])
         self.assertIn("matching_verified_queue_task_missing_or_ambiguous", result["reasons"])
 
