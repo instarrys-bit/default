@@ -142,6 +142,24 @@ class JsonDocumentStoreTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "checksum mismatch"):
                     store.read_document(path, "reviews")
 
+    def test_shard_byte_count_mismatch_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ledger.json"
+            payload = {"reviews": [{"id": i, "payload": "q" * 900} for i in range(6)]}
+            with patch.object(store, "MAX_FILE_BYTES", 4096), patch.object(store, "SHARD_TARGET_BYTES", 1000):
+                store.write_document(path, payload, "reviews")
+                manifest_file = store.manifest_path(path)
+                manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
+                manifest["shards"][0]["bytes"] += 1
+                manifest["total_shard_bytes"] += 1
+                manifest["total_document_bytes"] += 1
+                manifest_file.write_text(json.dumps(manifest), encoding="utf-8")
+
+                with self.assertRaisesRegex(ValueError, "shard byte-count mismatch"):
+                    store.read_document(path, "reviews")
+                with self.assertRaisesRegex(ValueError, "shard byte-count mismatch"):
+                    list(store.iter_document_records(path, "reviews"))
+
     def test_failed_manifest_swap_keeps_previous_version_readable(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "ledger.json"

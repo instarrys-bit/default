@@ -208,10 +208,10 @@ def iter_document_records(path: Path, collection_key: str):
             raw = shard_path.read_bytes()
             if len(raw) > MAX_FILE_BYTES:
                 raise ValueError(f"shard exceeds {MAX_FILE_BYTES} bytes: {shard_path}")
-            if len(raw) != int(shard.get("bytes", -1)):
-                raise ValueError(f"shard byte-count mismatch: {shard_path}")
             if hashlib.sha256(raw).hexdigest() != shard.get("sha256"):
                 raise ValueError(f"shard checksum mismatch: {shard_path}")
+            if len(raw) != int(shard.get("bytes", -1)):
+                raise ValueError(f"shard byte-count mismatch: {shard_path}")
             shard_count = 0
             for line in raw.splitlines():
                 if not line:
@@ -272,10 +272,10 @@ def read_document(path: Path, collection_key: str, default: dict | None = None) 
         raw = shard_path.read_bytes()
         if len(raw) > MAX_FILE_BYTES:
             raise ValueError(f"shard exceeds {MAX_FILE_BYTES} bytes: {shard_path}")
-        if len(raw) != int(shard.get("bytes", -1)):
-            raise ValueError(f"shard byte-count mismatch: {shard_path}")
         if hashlib.sha256(raw).hexdigest() != shard.get("sha256"):
             raise ValueError(f"shard checksum mismatch: {shard_path}")
+        if len(raw) != int(shard.get("bytes", -1)):
+            raise ValueError(f"shard byte-count mismatch: {shard_path}")
         rows = [line for line in raw.splitlines() if line]
         if len(rows) != int(shard.get("records", -1)):
             raise ValueError(f"shard record-count mismatch: {shard_path}")
