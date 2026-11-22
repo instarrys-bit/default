@@ -92,7 +92,7 @@ class RejectManualApprovalTests(unittest.TestCase):
             }
             original_limit = build_rulesets.MAX_REJECT_REVIEW_QUEUE_BYTES
             try:
-                build_rulesets.MAX_REJECT_REVIEW_QUEUE_BYTES = 512
+                build_rulesets.MAX_REJECT_REVIEW_QUEUE_BYTES = 4096
                 storage = build_rulesets.write_reject_review_queue(path, payload)
                 self.assertEqual(storage["storage"], "jsonl-shards-v1")
                 manifest_file = manifest_path(path)
@@ -100,7 +100,8 @@ class RejectManualApprovalTests(unittest.TestCase):
                 self.assertFalse(path.exists())
                 manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
                 self.assertEqual(manifest["record_count"], len(payload["items"]))
-                self.assertTrue(all(0 < shard["bytes"] <= 512 for shard in manifest["shards"]))
+                self.assertTrue(all(0 < shard["bytes"] <= 4096 for shard in manifest["shards"]))
+                self.assertLessEqual(manifest_file.stat().st_size, 4096)
                 self.assertEqual(read_document(path, "items"), payload)
             finally:
                 build_rulesets.MAX_REJECT_REVIEW_QUEUE_BYTES = original_limit
