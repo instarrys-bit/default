@@ -1023,7 +1023,8 @@
       "source": "scripts/register_discovered_sources.py",
       "writes": [
         "rulesets/source_candidate_registry.json.manifest.json",
-        "rulesets/source_candidate_registry.json.parts-*/part-*.jsonl and *.jsonl.gz",
+        "rulesets/source_candidate_registry.json.parts-*/part-*.jsonl",
+        "rulesets/source_candidate_registry.json.parts-*/part-*.jsonl.gz",
         "rulesets/source_candidate_registry.json (legacy schema-v1 input only)"
       ],
       "document_store": [
@@ -1031,7 +1032,8 @@
       ],
       "dynamic_children": [
         "rulesets/source_candidate_registry.json.manifest.json",
-        "rulesets/source_candidate_registry.json.parts-*/part-*.jsonl and *.jsonl.gz",
+        "rulesets/source_candidate_registry.json.parts-*/part-*.jsonl",
+        "rulesets/source_candidate_registry.json.parts-*/part-*.jsonl.gz",
         "rulesets/source_candidate_registry.json.parts.tmp-* staging directories"
       ],
       "read_resources": [
@@ -1056,7 +1058,8 @@
       "lease_enforcement": "json_document_store rechecks the live logical-document lease for the base path, staging directory, each shard, manifest replacement and old-shard cleanup; production-pipeline remains the outer Watchdog fence.",
       "publish_resources": [
         "rulesets/source_candidate_registry.json.manifest.json",
-        "rulesets/source_candidate_registry.json.parts-*/part-*.jsonl and *.jsonl.gz"
+        "rulesets/source_candidate_registry.json.parts-*/part-*.jsonl",
+        "rulesets/source_candidate_registry.json.parts-*/part-*.jsonl.gz"
       ],
       "ephemeral_unpublished_resources": []
     }
