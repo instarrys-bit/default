@@ -23,6 +23,7 @@ def successful_run():
         "id": RUN_ID,
         "workflow_id": AUTO_SYNC_WORKFLOW_ID,
         "path": AUTO_SYNC_WORKFLOW_PATH,
+        "event": "workflow_dispatch",
         "head_branch": "main",
         "status": "completed",
         "conclusion": "success",
@@ -52,11 +53,18 @@ def successful_queue():
                 "task_id": "task_ddab0e5429ef471eb76405fd",
                 "status": "SUCCEEDED",
                 "dispatch_intent": {
+                    "task_id": "task_ddab0e5429ef471eb76405fd",
+                    "correlation_id": "task_ddab0e5429ef471eb76405fd-a1",
+                    "dispatch_attempt": 1,
                     "workflow_id": AUTO_SYNC_WORKFLOW_ID,
                     "workflow_path": AUTO_SYNC_WORKFLOW_PATH,
                     "requested_head_sha": REQUESTED_SHA,
                 },
+                "resource_lease": {"status": "RELEASED", "released_at": "2026-11-22T00:36:21Z"},
                 "result": {
+                    "task_id": "task_ddab0e5429ef471eb76405fd",
+                    "correlation_id": "task_ddab0e5429ef471eb76405fd-a1",
+                    "dispatch_attempt": 1,
                     "workflow_id": AUTO_SYNC_WORKFLOW_ID,
                     "workflow_path": AUTO_SYNC_WORKFLOW_PATH,
                     "run_evidence": {
@@ -68,7 +76,11 @@ def successful_queue():
                         "head_sha_relationship": "queue_intent_commit_only",
                     },
                 },
-                "verification": {"status": "passed"},
+                "verification": {
+                    "status": "passed",
+                    "verifier_program_id": "script_task_result_verifier",
+                    "contract_sha256": "f" * 64,
+                },
             }
         ],
     }
@@ -82,16 +94,18 @@ class VerifyAutoSyncRecoveryTests(unittest.TestCase):
         self.assertEqual(result["run_id"], str(RUN_ID))
         self.assertEqual(result["task_id"], "task_ddab0e5429ef471eb76405fd")
 
-    def test_rejects_wrong_workflow_identity_or_branch(self):
+    def test_rejects_wrong_workflow_identity_branch_or_dispatch_event(self):
         run = successful_run()
         run["workflow_id"] = AUTO_SYNC_WORKFLOW_ID + 1
         run["path"] = ".github/workflows/other.yml"
         run["head_branch"] = "feature"
+        run["event"] = "push"
         result = verify_auto_sync_recovery(run, successful_jobs(), successful_queue())
         self.assertFalse(result["verified"])
         self.assertIn("unexpected_workflow_id", result["reasons"])
         self.assertIn("unexpected_workflow_path", result["reasons"])
         self.assertIn("run_not_main_branch", result["reasons"])
+        self.assertIn("run_not_watchdog_dispatched", result["reasons"])
 
     def test_rejects_overall_success_without_remote_publish_verification(self):
         jobs = successful_jobs()
@@ -123,6 +137,13 @@ class VerifyAutoSyncRecoveryTests(unittest.TestCase):
         self.assertFalse(result["verified"])
         self.assertIn("queue_run_evidence_mismatch", result["reasons"])
 
+    def test_rejects_queue_task_without_released_lease_or_verifier_identity(self):
+        queue = successful_queue()
+        queue["tasks"][0]["resource_lease"]["status"] = "ACTIVE"
+        result = verify_auto_sync_recovery(successful_run(), successful_jobs(), queue)
+        self.assertFalse(result["verified"])
+        self.assertIn("resource_lease_not_released", result["reasons"])
+
     def test_rejects_ambiguous_duplicate_queue_matches(self):
         queue = successful_queue()
         queue["tasks"].append(dict(queue["tasks"][0]))
@@ -130,10 +151,12 @@ class VerifyAutoSyncRecoveryTests(unittest.TestCase):
         self.assertFalse(result["verified"])
         self.assertIn("matching_verified_queue_task_missing_or_ambiguous", result["reasons"])
 
-    def test_storage_workflow_runs_retry_after_push_and_schedule_and_verifies_before_mutation(self):
+    def test_storage_workflow_retries_from_queue_evidence_and_verifies_before_mutation(self):
         workflow = (ROOT / ".github" / "workflows" / "storage-management.yml").read_text(encoding="utf-8")
         self.assertIn("reconcile-verified-auto-sync-incidents:", workflow)
         self.assertIn("github.event_name == 'schedule' || github.event_name == 'push'", workflow)
+        self.assertIn("verified-auto-sync-task.json", workflow)
+        self.assertIn("automation/task_queue.json", workflow)
         verify_at = workflow.index("verify_auto_sync_recovery.py")
         mutate_at = workflow.index("python3 storage/v2/incident_store.py resolve", verify_at)
         self.assertLess(verify_at, mutate_at)

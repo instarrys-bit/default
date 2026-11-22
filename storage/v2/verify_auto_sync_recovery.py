@@ -12,6 +12,11 @@ AUTO_SYNC_WORKFLOW_ID = 402712272
 AUTO_SYNC_WORKFLOW_PATH = ".github/workflows/auto_sync.yml"
 PUBLISH_VERIFY_STEP = "Independently verify committed remote rulesets"
 SHA_RE = re.compile(r"^[0-9a-f]{40}$")
+SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
+
+
+def _mapping(value: Any) -> dict[str, Any]:
+    return value if isinstance(value, dict) else {}
 
 
 def verify_auto_sync_recovery(
@@ -30,6 +35,8 @@ def verify_auto_sync_recovery(
         reasons.append("unexpected_workflow_id")
     if run.get("path") != AUTO_SYNC_WORKFLOW_PATH:
         reasons.append("unexpected_workflow_path")
+    if run.get("event") != "workflow_dispatch":
+        reasons.append("run_not_watchdog_dispatched")
     if run.get("head_branch") != "main":
         reasons.append("run_not_main_branch")
     if run.get("status") != "completed":
@@ -68,44 +75,62 @@ def verify_auto_sync_recovery(
     if not isinstance(tasks, list):
         reasons.append("queue_tasks_invalid")
         tasks = []
-    matching = [
-        task for task in tasks
-        if isinstance(task, dict)
-        and str(
-            (task.get("result") or {}).get("run_evidence", {}).get("run_id", "")
-        ) == run_id
-    ]
+    matching: list[dict[str, Any]] = []
+    for candidate in tasks:
+        if not isinstance(candidate, dict):
+            continue
+        evidence = _mapping(_mapping(candidate.get("result")).get("run_evidence"))
+        if str(evidence.get("run_id", "")) == run_id:
+            matching.append(candidate)
     if len(matching) != 1:
         reasons.append("matching_verified_queue_task_missing_or_ambiguous")
-        task = {}
+        task: dict[str, Any] = {}
     else:
         task = matching[0]
-    intent = task.get("dispatch_intent") if isinstance(task, dict) else None
-    result = task.get("result") if isinstance(task, dict) else None
-    evidence = result.get("run_evidence") if isinstance(result, dict) else None
-    verification = task.get("verification") if isinstance(task, dict) else None
+
+    intent = _mapping(task.get("dispatch_intent"))
+    result = _mapping(task.get("result"))
+    evidence = _mapping(result.get("run_evidence"))
+    verification = _mapping(task.get("verification"))
+    resource_lease = _mapping(task.get("resource_lease"))
+    requested_sha = intent.get("requested_head_sha")
     if task.get("status") != "SUCCEEDED":
         reasons.append("queue_task_not_succeeded")
-    if not isinstance(verification, dict) or verification.get("status") != "passed":
+    if verification.get("status") != "passed":
         reasons.append("independent_queue_verification_missing")
-    if not isinstance(intent, dict) or (
+    if (
+        verification.get("verifier_program_id") != "script_task_result_verifier"
+        or not isinstance(verification.get("contract_sha256"), str)
+        or not SHA256_RE.fullmatch(verification.get("contract_sha256", ""))
+    ):
+        reasons.append("queue_verifier_identity_invalid")
+    if (
         intent.get("workflow_id") != AUTO_SYNC_WORKFLOW_ID
         or intent.get("workflow_path") != AUTO_SYNC_WORKFLOW_PATH
-        or not isinstance(intent.get("requested_head_sha"), str)
-        or not SHA_RE.fullmatch(intent.get("requested_head_sha", ""))
+        or intent.get("task_id") != task.get("task_id")
+        or not isinstance(requested_sha, str)
+        or not SHA_RE.fullmatch(requested_sha)
     ):
         reasons.append("queue_dispatch_identity_invalid")
-    if not isinstance(result, dict) or (
+    if (
         result.get("workflow_id") != AUTO_SYNC_WORKFLOW_ID
         or result.get("workflow_path") != AUTO_SYNC_WORKFLOW_PATH
+        or result.get("task_id") != task.get("task_id")
+        or result.get("correlation_id") != intent.get("correlation_id")
+        or result.get("dispatch_attempt") != intent.get("dispatch_attempt")
     ):
         reasons.append("queue_result_identity_invalid")
-    if not isinstance(evidence, dict) or (
+    if (
+        resource_lease.get("status") != "RELEASED"
+        or not resource_lease.get("released_at")
+    ):
+        reasons.append("resource_lease_not_released")
+    if (
         evidence.get("status") != "completed"
         or evidence.get("conclusion") != "success"
         or str(evidence.get("run_id", "")) != run_id
         or evidence.get("head_sha") != head_sha
-        or evidence.get("requested_head_sha") != (intent or {}).get("requested_head_sha")
+        or evidence.get("requested_head_sha") != requested_sha
         or evidence.get("head_sha_relationship") not in {"exact", "queue_intent_commit_only"}
     ):
         reasons.append("queue_run_evidence_mismatch")
@@ -115,7 +140,7 @@ def verify_auto_sync_recovery(
         "run_id": run_id,
         "source_sha": head_sha,
         "run_url": run_url,
-        "task_id": task.get("task_id") if isinstance(task, dict) else None,
+        "task_id": task.get("task_id"),
         "reasons": reasons,
     }
 
