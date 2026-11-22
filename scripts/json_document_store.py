@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 
+import gzip
 import hashlib
+import io
 import json
 import os
 import shutil
@@ -79,6 +81,36 @@ def document_delta_watermark(path: Path, collection_key: str) -> int:
 
 def _compact_bytes(value: Any) -> bytes:
     return json.dumps(value, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+
+
+def _verified_shard_payload(raw: bytes, shard: dict, shard_path: Path, compressed: bool) -> bytes:
+    """Verify stored bytes, then safely decode one bounded JSONL shard."""
+    if len(raw) > MAX_FILE_BYTES:
+        raise ValueError(f"shard exceeds {MAX_FILE_BYTES} bytes: {shard_path}")
+    if hashlib.sha256(raw).hexdigest() != shard.get("sha256"):
+        raise ValueError(f"shard checksum mismatch: {shard_path}")
+    if len(raw) != int(shard.get("bytes", -1)):
+        raise ValueError(f"shard byte-count mismatch: {shard_path}")
+    if not compressed:
+        return raw
+    try:
+        decoded = gzip.decompress(raw)
+    except (OSError, EOFError) as exc:
+        raise ValueError(f"compressed shard cannot be decoded: {shard_path}") from exc
+    expected = int(shard.get("uncompressed_bytes", -1))
+    if expected < 0 or len(decoded) != expected:
+        raise ValueError(f"shard uncompressed byte-count mismatch: {shard_path}")
+    if len(decoded) > MAX_FILE_BYTES:
+        raise ValueError(f"uncompressed shard exceeds {MAX_FILE_BYTES} bytes: {shard_path}")
+    return decoded
+
+
+def _gzip_shard(raw: bytes) -> bytes:
+    """Produce reproducible gzip bytes for content-addressed shard storage."""
+    buffer = io.BytesIO()
+    with gzip.GzipFile(fileobj=buffer, mode="wb", compresslevel=9, mtime=0) as stream:
+        stream.write(raw)
+    return buffer.getvalue()
 
 
 def _validate_sharded_document_total(manifest: dict, collection_key: str) -> int:
@@ -191,27 +223,22 @@ def iter_document_records(path: Path, collection_key: str):
         if manifest_file.stat().st_size > MAX_FILE_BYTES:
             raise ValueError(f"shard manifest exceeds {MAX_FILE_BYTES} bytes: {manifest_file}")
         manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
-        if manifest.get("schema_version") != 1 or manifest.get("format") != "jsonl-shards-v1":
+        if manifest.get("schema_version") != 1 or manifest.get("format") not in {"jsonl-shards-v1", "jsonl-gzip-shards-v1"}:
             raise ValueError(f"unsupported shard manifest: {manifest_file}")
         if manifest.get("logical_path") != path.name or manifest.get("collection_key") != collection_key:
             raise ValueError(f"shard manifest identity mismatch: {manifest_file}")
         _validate_sharded_document_total(manifest, collection_key)
+        compressed = manifest.get("format") == "jsonl-gzip-shards-v1"
         directory = str(manifest.get("shard_directory", ""))
         if not directory or Path(directory).name != directory:
             raise ValueError(f"unsafe shard directory in {manifest_file}")
         total_records = 0
         for shard in manifest.get("shards", []):
             name = str(shard.get("file", ""))
-            if not name or Path(name).name != name or not name.endswith(".jsonl"):
+            if not name or Path(name).name != name or not (name.endswith(".jsonl") or name.endswith(".jsonl.gz")):
                 raise ValueError(f"unsafe shard name in {manifest_file}: {name!r}")
             shard_path = manifest_file.parent / directory / name
-            raw = shard_path.read_bytes()
-            if len(raw) > MAX_FILE_BYTES:
-                raise ValueError(f"shard exceeds {MAX_FILE_BYTES} bytes: {shard_path}")
-            if hashlib.sha256(raw).hexdigest() != shard.get("sha256"):
-                raise ValueError(f"shard checksum mismatch: {shard_path}")
-            if len(raw) != int(shard.get("bytes", -1)):
-                raise ValueError(f"shard byte-count mismatch: {shard_path}")
+            raw = _verified_shard_payload(shard_path.read_bytes(), shard, shard_path, compressed)
             shard_count = 0
             for line in raw.splitlines():
                 if not line:
@@ -254,28 +281,23 @@ def read_document(path: Path, collection_key: str, default: dict | None = None) 
     if manifest_file.stat().st_size > MAX_FILE_BYTES:
         raise ValueError(f"shard manifest exceeds {MAX_FILE_BYTES} bytes: {manifest_file}")
     manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
-    if manifest.get("schema_version") != 1 or manifest.get("format") != "jsonl-shards-v1":
+    if manifest.get("schema_version") != 1 or manifest.get("format") not in {"jsonl-shards-v1", "jsonl-gzip-shards-v1"}:
         raise ValueError(f"unsupported shard manifest: {manifest_file}")
     if manifest.get("logical_path") != path.name or manifest.get("collection_key") != collection_key:
         raise ValueError(f"shard manifest identity mismatch: {manifest_file}")
     _validate_sharded_document_total(manifest, collection_key)
 
+    compressed = manifest.get("format") == "jsonl-gzip-shards-v1"
     records = []
     for shard in manifest.get("shards", []):
         name = str(shard.get("file", ""))
-        if not name or Path(name).name != name or not name.endswith(".jsonl"):
+        if not name or Path(name).name != name or not (name.endswith(".jsonl") or name.endswith(".jsonl.gz")):
             raise ValueError(f"unsafe shard name in {manifest_file}: {name!r}")
         directory = str(manifest.get("shard_directory", ""))
         if not directory or Path(directory).name != directory:
             raise ValueError(f"unsafe shard directory in {manifest_file}")
         shard_path = manifest_file.parent / directory / name
-        raw = shard_path.read_bytes()
-        if len(raw) > MAX_FILE_BYTES:
-            raise ValueError(f"shard exceeds {MAX_FILE_BYTES} bytes: {shard_path}")
-        if hashlib.sha256(raw).hexdigest() != shard.get("sha256"):
-            raise ValueError(f"shard checksum mismatch: {shard_path}")
-        if len(raw) != int(shard.get("bytes", -1)):
-            raise ValueError(f"shard byte-count mismatch: {shard_path}")
+        raw = _verified_shard_payload(shard_path.read_bytes(), shard, shard_path, compressed)
         rows = [line for line in raw.splitlines() if line]
         if len(rows) != int(shard.get("records", -1)):
             raise ValueError(f"shard record-count mismatch: {shard_path}")
@@ -300,6 +322,7 @@ def write_document(
     path: Path, payload: dict, collection_key: str, *, lease_required: bool = True,
     force_sharded: bool = False, max_file_bytes: int | None = None,
     shard_target_bytes: int | None = None, max_total_bytes: int | None = None,
+    compress_shards: bool = False,
 ) -> dict:
     """Write one bounded JSON file, or switch atomically to immutable JSONL shards.
 
@@ -368,18 +391,24 @@ def write_document(
             return
         if len(shard_buffer) > file_limit:
             raise ValueError("internal shard sizing error")
-        name = f"part-{shard_index:06d}.jsonl"
         raw = bytes(shard_buffer)
+        stored = _gzip_shard(raw) if compress_shards else raw
+        if len(stored) > file_limit:
+            raise ValueError(f"stored shard exceeds the {file_limit}-byte single-file limit")
+        name = f"part-{shard_index:06d}.jsonl" + (".gz" if compress_shards else "")
         shard_path = staging / name
         _assert_document_lease(shard_path, lease_required)
-        shard_path.write_bytes(raw)
-        shard_entries.append({
+        shard_path.write_bytes(stored)
+        entry = {
             "file": name,
             "records": len(raw.splitlines()),
-            "bytes": len(raw),
-            "sha256": hashlib.sha256(raw).hexdigest(),
-        })
-        total_shard_bytes += len(raw)
+            "bytes": len(stored),
+            "sha256": hashlib.sha256(stored).hexdigest(),
+        }
+        if compress_shards:
+            entry["uncompressed_bytes"] = len(raw)
+        shard_entries.append(entry)
+        total_shard_bytes += len(stored)
         shard_index += 1
         shard_buffer = bytearray()
 
@@ -414,7 +443,7 @@ def write_document(
 
         manifest = {
             "schema_version": 1,
-            "format": "jsonl-shards-v1",
+            "format": "jsonl-gzip-shards-v1" if compress_shards else "jsonl-shards-v1",
             "logical_path": path.name,
             "collection_key": collection_key,
             "record_count": len(records),
@@ -439,7 +468,7 @@ def write_document(
                 _assert_document_lease(old, lease_required)
                 shutil.rmtree(old)
         return {
-            "storage": "jsonl-shards-v1", "records": len(records), "bytes": total_shard_bytes,
+            "storage": "jsonl-gzip-shards-v1" if compress_shards else "jsonl-shards-v1", "records": len(records), "bytes": total_shard_bytes,
             "total_bytes": total_document_bytes, "max_total_bytes": total_limit,
             "shards": len(shard_entries),
         }
