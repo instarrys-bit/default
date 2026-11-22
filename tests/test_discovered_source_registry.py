@@ -189,7 +189,7 @@ class DiscoveredSourceRegistryTests(unittest.TestCase):
         # Enough independent records must exceed the compressed per-shard ceiling.
         discovery["candidates"][0]["rule_list_urls"] = [
             "https://raw.githubusercontent.com/" + self.repo + "/main/extra-"
-            + hashlib.sha256(f"candidate-{index}".encode("utf-8")).hexdigest() + ".list"
+            + __import__("hashlib").sha256(f"candidate-{index}".encode("utf-8")).hexdigest() + ".list"
             for index in range(3000)
         ]
         logical = build_registry({}, discovery, self.provenance, "2026-11-10T01:00:00+00:00")
