@@ -22,3 +22,11 @@ class WatchdogV2ControlPlaneTests(unittest.TestCase):
         self.assertIn("group: shadowrocket-watchdog-control-plane-main", text)
         self.assertNotIn("stale-run-watch", text)
         self.assertNotIn("manifest-integrity:", text)
+
+    def test_superseded_dead_letters_are_reconciled_before_scheduler_dispatch(self):
+        text = WATCHDOG.read_text(encoding="utf-8")
+        reconcile = "Reconcile superseded terminal production tasks"
+        scheduler = "Recover leases and run scheduler once"
+        self.assertIn(reconcile, text)
+        self.assertIn('--current-main-sha "$GITHUB_SHA" resolve-superseded-dead-letters', text)
+        self.assertLess(text.index(reconcile), text.index(scheduler))

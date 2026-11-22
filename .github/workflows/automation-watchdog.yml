@@ -261,6 +261,17 @@ jobs:
             --repository "$REPO" --branch main --token-stdin \
             --idempotency-key "$idempotency_key" --priority 100 \
             --input-json "$input_json" enqueue-auto-sync
+      - name: Reconcile superseded terminal production tasks
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PYTHONPATH: scripts:.
+        run: |
+          set -euo pipefail
+          printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py \
+            --repository "$REPO" --branch main --token-stdin \
+            --current-main-sha "$GITHUB_SHA" resolve-superseded-dead-letters
       - name: Recover leases and run scheduler once (bounded retry wake)
         env:
           GH_TOKEN: ${{ github.token }}
