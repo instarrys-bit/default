@@ -2027,7 +2027,9 @@
         "automation/task_queue.json",
         "automation/production_inputs.json",
         "modules/uu.conf"
-      ]
+      ],
+      "write_resources": [],
+      "publish_resources": []
     }
   ]
 }
