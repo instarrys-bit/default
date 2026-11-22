@@ -262,6 +262,7 @@ jobs:
             --idempotency-key "$idempotency_key" --priority 100 \
             --input-json "$input_json" enqueue-auto-sync
       - name: Reconcile superseded terminal production tasks
+        id: superseded
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_TOKEN: ${{ github.token }}
@@ -269,9 +270,20 @@ jobs:
           PYTHONPATH: scripts:.
         run: |
           set -euo pipefail
-          printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py \
+          result="$(printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py \
             --repository "$REPO" --branch main --token-stdin \
-            --current-main-sha "$GITHUB_SHA" resolve-superseded-dead-letters
+            --current-main-sha "$GITHUB_SHA" resolve-superseded-dead-letters)"
+          echo "$result"
+          echo "superseded_stale_production_task_ids=$(jq -c '.superseded_stale_production_task_ids // []' <<< "$result")" >> "$GITHUB_OUTPUT"
+      - name: Re-wake Watchdog after stale production task release
+        if: ${{ needs.health-check.outputs.queue_task_json == '' && steps.superseded.outputs.superseded_stale_production_task_ids != '' && steps.superseded.outputs.superseded_stale_production_task_ids != '[]' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          WATCHDOG_WORKFLOW_ID: ${{ env.WATCHDOG_WORKFLOW_ID }}
+        run: |
+          set -euo pipefail
+          gh api --method POST "repos/$REPO/actions/workflows/$WATCHDOG_WORKFLOW_ID/dispatches" -f ref=main
       - name: Recover leases and run scheduler once (bounded retry wake)
         env:
           GH_TOKEN: ${{ github.token }}
