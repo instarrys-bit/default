@@ -101,6 +101,42 @@ class JsonDocumentStoreTests(unittest.TestCase):
             self.assertTrue(all(0 < item["bytes"] <= 40000 for item in manifest["shards"]))
             self.assertEqual(store.read_document(path, "records"), payload)
             self.assertEqual(list(store.iter_document_records(path, "records")), payload["records"])
+    def test_compressed_shards_pack_to_final_stored_size_and_accept_bounded_expansion(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "physical-size-registry.json"
+            rng = random.Random(19)
+            alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+            initial = {"records": [
+                {"id": i, "payload": "".join(rng.choice(alphabet) for _ in range(500))}
+                for i in range(40)
+            ]}
+            expanded = {"records": initial["records"] + [
+                {"id": i, "payload": "".join(rng.choice(alphabet) for _ in range(500))}
+                for i in range(40, 300)
+            ]}
+            with patch.object(store, "MAX_FILE_BYTES", 40000):
+                first = store.write_document(
+                    path, initial, "records", force_sharded=True,
+                    max_file_bytes=40000, shard_target_bytes=40000,
+                    compress_shards=True, max_uncompressed_file_bytes=200000,
+                )
+                first_manifest = json.loads(store.manifest_path(path).read_text(encoding="utf-8"))
+                self.assertEqual(first["shards"], 1)
+                self.assertLessEqual(first_manifest["shards"][0]["bytes"], 40000)
+
+                result = store.write_document(
+                    path, expanded, "records", force_sharded=True,
+                    max_file_bytes=40000, shard_target_bytes=40000,
+                    compress_shards=True, max_uncompressed_file_bytes=200000,
+                )
+                manifest = json.loads(store.manifest_path(path).read_text(encoding="utf-8"))
+                self.assertGreater(result["shards"], 1)
+                self.assertTrue(all(0 < item["bytes"] <= 40000 for item in manifest["shards"]))
+                self.assertGreater(manifest["shards"][0]["bytes"], 30000)
+                self.assertGreater(manifest["shards"][0]["uncompressed_bytes"], 40000)
+                self.assertEqual(store.read_document(path, "records"), expanded)
+                self.assertEqual(list(store.iter_document_records(path, "records")), expanded["records"])
+
     def test_compressed_shard_reader_enforces_manifest_file_limit(self):
         raw = store._gzip_shard(b"x" * 2048)
         shard = {
