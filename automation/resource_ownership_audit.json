@@ -169,7 +169,8 @@
       "paths": [
         "rulesets/source_candidate_registry.json (logical document)",
         "rulesets/source_candidate_registry.json.manifest.json",
-        "rulesets/source_candidate_registry.json.parts-<digest>/part-*.jsonl and *.jsonl.gz",
+        "rulesets/source_candidate_registry.json.parts-<digest>/part-*.jsonl",
+        "rulesets/source_candidate_registry.json.parts-<digest>/part-*.jsonl.gz",
         "rulesets/source_candidate_registry.json.parts.tmp-*"
       ],
       "known_writers": [
