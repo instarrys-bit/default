@@ -195,6 +195,11 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "different task payload"):
             enqueue_remote(conflicting, self.store, self.registry, self.now)
 
+        conflicting_metadata = copy.deepcopy(replay_payload)
+        conflicting_metadata["input"]["production_reason"] = "a different reason is not a source-SHA-only replay"
+        with self.assertRaisesRegex(ValueError, "different task payload"):
+            enqueue_remote(conflicting_metadata, self.store, self.registry, self.now)
+
     def test_enqueue_is_idempotent_and_rejects_payload_reuse(self):
         first = enqueue_remote(self.payload(), self.store, self.registry, self.now)
         second = enqueue_remote(self.payload(), self.store, self.registry, self.now)
