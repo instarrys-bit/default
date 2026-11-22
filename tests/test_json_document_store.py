@@ -62,6 +62,52 @@ class JsonDocumentStoreTests(unittest.TestCase):
             self.assertTrue(all(p.stat().st_size <= 2048 for p in shard_dir.glob("*.jsonl")))
             self.assertEqual(store.read_document(path, "records"), payload)
 
+    def test_total_document_limit_rejects_sharded_update_before_manifest_swap(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ledger.json"
+            first = {"reviews": [{"id": i, "payload": "a" * 500} for i in range(4)]}
+            second = {"reviews": [{"id": i, "payload": "b" * 500} for i in range(10)]}
+            with patch.object(store, "MAX_FILE_BYTES", 4096), patch.object(store, "SHARD_TARGET_BYTES", 1500):
+                store.write_document(
+                    path, first, "reviews", force_sharded=True,
+                    max_file_bytes=4096, shard_target_bytes=1500, max_total_bytes=5000,
+                )
+                manifest_file = store.manifest_path(path)
+                previous_manifest = manifest_file.read_bytes()
+                with self.assertRaisesRegex(ValueError, "total document limit"):
+                    store.write_document(
+                        path, second, "reviews", force_sharded=True,
+                        max_file_bytes=4096, shard_target_bytes=1500, max_total_bytes=2000,
+                    )
+                self.assertEqual(manifest_file.read_bytes(), previous_manifest)
+                self.assertEqual(store.read_document(path, "reviews"), first)
+                self.assertEqual(list(path.parent.glob(path.name + ".parts.tmp-*")), [])
+
+    def test_total_document_limit_applies_to_legacy_json(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ledger.json"
+            payload = {"reviews": [{"id": 1, "payload": "x" * 100}]}
+            with self.assertRaisesRegex(ValueError, "total document limit"):
+                store.write_document(path, payload, "reviews", max_total_bytes=50)
+            self.assertFalse(path.exists())
+
+    def test_sharded_reader_rejects_manifest_over_total_document_limit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ledger.json"
+            payload = {"reviews": [{"id": i, "payload": "x" * 100} for i in range(4)]}
+            store.write_document(
+                path, payload, "reviews", force_sharded=True,
+                max_file_bytes=4096, shard_target_bytes=1500, max_total_bytes=5000,
+            )
+            manifest_file = store.manifest_path(path)
+            manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
+            manifest["max_total_bytes"] = 100
+            manifest_file.write_text(json.dumps(manifest), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "total document limit"):
+                store.read_document(path, "reviews")
+            with self.assertRaisesRegex(ValueError, "total document limit"):
+                list(store.iter_document_records(path, "reviews"))
+
     def test_invalid_per_document_shard_limits_are_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "registry.json"
@@ -95,6 +141,24 @@ class JsonDocumentStoreTests(unittest.TestCase):
                 shard.write_bytes(shard.read_bytes() + b"corruption")
                 with self.assertRaisesRegex(ValueError, "checksum mismatch"):
                     store.read_document(path, "reviews")
+
+    def test_shard_byte_count_mismatch_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ledger.json"
+            payload = {"reviews": [{"id": i, "payload": "q" * 900} for i in range(6)]}
+            with patch.object(store, "MAX_FILE_BYTES", 4096), patch.object(store, "SHARD_TARGET_BYTES", 1000):
+                store.write_document(path, payload, "reviews")
+                manifest_file = store.manifest_path(path)
+                manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
+                manifest["shards"][0]["bytes"] += 1
+                manifest["total_shard_bytes"] += 1
+                manifest["total_document_bytes"] += 1
+                manifest_file.write_text(json.dumps(manifest), encoding="utf-8")
+
+                with self.assertRaisesRegex(ValueError, "shard byte-count mismatch"):
+                    store.read_document(path, "reviews")
+                with self.assertRaisesRegex(ValueError, "shard byte-count mismatch"):
+                    list(store.iter_document_records(path, "reviews"))
 
     def test_failed_manifest_swap_keeps_previous_version_readable(self):
         with tempfile.TemporaryDirectory() as tmp:

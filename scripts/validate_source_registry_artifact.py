@@ -83,6 +83,7 @@ def main() -> int:
             lease_required=True,
             force_sharded=True,
             max_file_bytes=40_000_000,
+            max_total_bytes=40_000_000,
             shard_target_bytes=35_000_000,
         )
         manifest_file = manifest_path(path)
@@ -93,6 +94,9 @@ def main() -> int:
             raise SystemExit("manifest record count mismatch")
         if manifest.get("max_file_bytes") != 40_000_000:
             raise SystemExit("manifest did not preserve the 40 MB per-file cap")
+        if (manifest.get("max_total_bytes") != 40_000_000
+                or int(manifest.get("total_document_bytes", -1)) > 40_000_000):
+            raise SystemExit("sharded registry exceeds the 40 MB total-registry cap")
         if any(int(shard.get("bytes", -1)) > 40_000_000 for shard in manifest.get("shards", [])):
             raise SystemExit("a shard exceeds the 40 MB per-file cap")
 
