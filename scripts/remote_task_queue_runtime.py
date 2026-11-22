@@ -99,8 +99,25 @@ def enqueue_remote(task: dict, store: GitHubContentsQueueStore,
         validate_candidate(queue, registry)
         for old in queue["tasks"]:
             if old.get("idempotency_key") == idem:
-                fields = ("requester_program_id", "target_program_id", "capability", "priority", "input")
+                fields = ("requester_program_id", "target_program_id", "capability", "priority")
                 if any(old.get(k) != task.get(k, 50 if k == "priority" else {}) for k in fields):
+                    raise ValueError("idempotency_key is already used for a different task payload")
+                old_input = old.get("input") if isinstance(old.get("input"), dict) else {}
+                incoming_input = payload
+                old_semantic_input = dict(old_input)
+                incoming_semantic_input = dict(incoming_input)
+                old_semantic_input.pop("baseline_source_sha", None)
+                incoming_semantic_input.pop("baseline_source_sha", None)
+                scheduled_replay = (
+                    old.get("target_program_id") == "workflow_auto_sync"
+                    and task.get("target_program_id") == "workflow_auto_sync"
+                    and idem.startswith("production:schedule:")
+                    and old_input.get("production_decision") == "SCHEDULE_DUE"
+                    and incoming_input.get("production_decision") == "SCHEDULE_DUE"
+                    and old_input.get("production_fingerprint") == incoming_input.get("production_fingerprint")
+                    and old_semantic_input == incoming_semantic_input
+                )
+                if old_input != incoming_input and not scheduled_replay:
                     raise ValueError("idempotency_key is already used for a different task payload")
                 if authorization:
                     validate_manual_authorization_consumption(queue, old, authorization)

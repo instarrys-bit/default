@@ -166,6 +166,40 @@ class RemoteQueueRuntimeTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "workflow_dispatch"):
                 enqueue_remote(payload, self.store, self.registry, self.now)
 
+    def test_scheduled_refresh_replay_ignores_only_changing_source_commit_metadata(self):
+        base = self.payload(
+            idempotency_key="production:schedule:" + "a" * 64 + ":2026-11-01T00:00:00Z",
+            requester_program_id="workflow_automation_watchdog",
+            target_program_id="workflow_auto_sync",
+            capability="deterministic_audit",
+            input={
+                "production_fingerprint": "a" * 64,
+                "production_decision": "SCHEDULE_DUE",
+                "production_reason": "the configured refresh interval has elapsed",
+                "baseline_source_event": "schedule",
+                "baseline_source_actor": "instarrys-bit",
+                "baseline_source_before": "",
+                "baseline_source_sha": "1" * 40,
+            },
+        )
+        first = enqueue_remote(base, self.store, self.registry, self.now)
+        replay_payload = copy.deepcopy(base)
+        replay_payload["input"]["baseline_source_sha"] = "2" * 40
+        replay = enqueue_remote(replay_payload, self.store, self.registry, self.now)
+        self.assertTrue(first["created"])
+        self.assertFalse(replay["created"])
+        self.assertEqual(first["task"]["task_id"], replay["task"]["task_id"])
+
+        conflicting = copy.deepcopy(replay_payload)
+        conflicting["input"]["production_fingerprint"] = "b" * 64
+        with self.assertRaisesRegex(ValueError, "different task payload"):
+            enqueue_remote(conflicting, self.store, self.registry, self.now)
+
+        conflicting_metadata = copy.deepcopy(replay_payload)
+        conflicting_metadata["input"]["production_reason"] = "a different reason is not a source-SHA-only replay"
+        with self.assertRaisesRegex(ValueError, "different task payload"):
+            enqueue_remote(conflicting_metadata, self.store, self.registry, self.now)
+
     def test_enqueue_is_idempotent_and_rejects_payload_reuse(self):
         first = enqueue_remote(self.payload(), self.store, self.registry, self.now)
         second = enqueue_remote(self.payload(), self.store, self.registry, self.now)
