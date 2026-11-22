@@ -187,17 +187,17 @@ class DiscoveredSourceRegistryTests(unittest.TestCase):
         discovery = json.loads(json.dumps(self.discovery))
         discovery["candidates"][0]["rule_list_urls"] = [
             f"https://raw.githubusercontent.com/{self.repo}/main/extra-{index:02d}.list"
-            for index in range(12)
+            for index in range(50)
         ]
         logical = build_registry({}, discovery, self.provenance, "2026-11-10T01:00:00+00:00")
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "source_candidate_registry.json"
-            with patch("register_discovered_sources.MAX_REGISTRY_BYTES", 1024):
+            with patch("register_discovered_sources.MAX_REGISTRY_BYTES", 4096):
                 storage = persist_registry(logical, output=path, lease_required=False)
             manifest = json.loads(manifest_path(path).read_text(encoding="utf-8"))
             self.assertGreater(storage["shards"], 1)
-            self.assertGreater(storage["total_bytes"], 1024)
-            self.assertTrue(all(0 < item["bytes"] <= 1024 for item in manifest["shards"]))
+            self.assertGreater(storage["total_bytes"], 4096)
+            self.assertTrue(all(0 < item["bytes"] <= 4096 for item in manifest["shards"]))
             self.assertEqual(read_document(path, "records"), encode_registry_storage(logical))
     def test_rejects_rule_url_from_another_repository(self):
         invalid = json.loads(json.dumps(self.discovery))
