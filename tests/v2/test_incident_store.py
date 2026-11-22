@@ -55,6 +55,52 @@ class IncidentStoreTests(unittest.TestCase):
         self.assertGreaterEqual(len(active["incidents"]), archive["record_count"])
         self.assertEqual(active["migration"]["records_imported"], archive["record_count"])
 
+    def test_resolve_migrated_legacy_issue_without_incident_id(self):
+        legacy = {
+            "legacy_id": "legacy_issue_502",
+            "workflow": "auto_sync",
+            "classification": "PIPELINE_FAILURE",
+            "run_id": "100",
+            "source_sha": "a" * 40,
+            "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
+            "body": "Historical Auto Sync failure",
+            "incident_state": None,
+            "events": [],
+        }
+        doc = seed()
+        doc["incidents"].append(legacy)
+        doc, result = resolve_incidents(doc, workflow="auto_sync", before_run_id="101",
+            classifications=["PIPELINE_FAILURE"], event_id="verified-success-101",
+            verification_url="https://github.com/example/run/101")
+        resolved = doc["incidents"][0]
+        self.assertEqual(result["resolved"], 1)
+        self.assertEqual(resolved["legacy_id"], "legacy_issue_502")
+        self.assertTrue(resolved["incident_id"])
+        self.assertEqual(resolved["lifecycle_status"], "RECOVERED")
+        self.assertEqual(resolved["incident_state"]["state"], "RECOVERED")
+        self.assertIn("legacy-detected-legacy-legacy_issue_502", resolved["incident_state"]["processed_events"])
+
+    def test_resolve_skips_legacy_record_without_valid_source_sha(self):
+        legacy = {
+            "legacy_id": "legacy_issue_488",
+            "workflow": "auto_sync",
+            "classification": "PIPELINE_FAILURE",
+            "run_id": "100",
+            "source_sha": None,
+            "lifecycle_status": "LEGACY_OPEN_REQUIRES_RECONCILIATION",
+            "body": "Historical record without source SHA",
+            "incident_state": None,
+            "events": [],
+        }
+        doc = seed()
+        doc["incidents"].append(legacy)
+        doc, result = resolve_incidents(doc, workflow="auto_sync", before_run_id="101",
+            classifications=["PIPELINE_FAILURE"], event_id="verified-success-101",
+            verification_url="https://github.com/example/run/101")
+        self.assertEqual(result["resolved"], 0)
+        self.assertEqual(doc["incidents"][0]["lifecycle_status"], "LEGACY_OPEN_REQUIRES_RECONCILIATION")
+        self.assertNotIn("incident_id", doc["incidents"][0])
+
     def test_rejects_partial_source_sha(self):
         with self.assertRaisesRegex(ValueError,"full Git commit SHA"):
             record_incident(seed(),workflow="config_validator",run_id="100",source_sha="deadbeef",
