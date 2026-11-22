@@ -185,13 +185,22 @@ class DiscoveredSourceRegistryTests(unittest.TestCase):
 
     def test_registry_persistence_uses_multiple_40mb_shards_without_total_cap(self):
         discovery = json.loads(json.dumps(self.discovery))
-        # Hash each path so gzip cannot hide the scale of the stored registry.
-        # Enough independent records must exceed the compressed per-shard ceiling.
-        discovery["candidates"][0]["rule_list_urls"] = [
-            "https://raw.githubusercontent.com/" + self.repo + "/main/extra-"
-            + __import__("hashlib").sha256(f"candidate-{index}".encode("utf-8")).hexdigest() + ".list"
-            for index in range(3000)
-        ]
+        # Spread candidates across repositories so no individual repository
+        # record exceeds the deliberately small test shard ceiling.
+        owner = self.repo.split("/", 1)[0]
+        template = discovery["candidates"][0]
+        discovery["candidates"] = []
+        for batch in range(10):
+            repository = f"{owner}/scale-{batch:02d}"
+            candidate = {**template, "repository": repository}
+            candidate["rule_list_urls"] = [
+                "https://raw.githubusercontent.com/" + repository + "/main/extra-"
+                + __import__("hashlib").sha256(f"candidate-{index}".encode("utf-8")).hexdigest() + ".list"
+                for index in range(batch * 300, (batch + 1) * 300)
+            ]
+            candidate["readme_rule_list_urls"] = []
+            candidate["seeded_source_urls"] = []
+            discovery["candidates"].append(candidate)
         logical = build_registry({}, discovery, self.provenance, "2026-11-10T01:00:00+00:00")
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "source_candidate_registry.json"
