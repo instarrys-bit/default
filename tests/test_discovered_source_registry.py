@@ -183,7 +183,7 @@ class DiscoveredSourceRegistryTests(unittest.TestCase):
             merged_readback = decode_registry_storage(read_document(path, "records"))
             self.assertEqual(merged_readback, merged)
 
-    def test_registry_persistence_enforces_total_registry_cap(self):
+    def test_registry_persistence_uses_multiple_40mb_shards_without_total_cap(self):
         discovery = json.loads(json.dumps(self.discovery))
         discovery["candidates"][0]["rule_list_urls"] = [
             f"https://raw.githubusercontent.com/{self.repo}/main/extra-{index:02d}.list"
@@ -193,12 +193,12 @@ class DiscoveredSourceRegistryTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "source_candidate_registry.json"
             with patch("register_discovered_sources.MAX_REGISTRY_BYTES", 1024):
-                with self.assertRaisesRegex(ValueError, "total document limit"):
-                    persist_registry(logical, output=path, lease_required=False)
-            self.assertFalse(manifest_path(path).exists())
-            self.assertFalse(path.exists())
-            self.assertEqual(list(Path(tmp).glob(path.name + ".parts.tmp-*")), [])
-
+                storage = persist_registry(logical, output=path, lease_required=False)
+            manifest = json.loads(manifest_path(path).read_text(encoding="utf-8"))
+            self.assertGreater(storage["shards"], 1)
+            self.assertGreater(storage["total_bytes"], 1024)
+            self.assertTrue(all(0 < item["bytes"] <= 1024 for item in manifest["shards"]))
+            self.assertEqual(read_document(path, "records"), encode_registry_storage(logical))
     def test_rejects_rule_url_from_another_repository(self):
         invalid = json.loads(json.dumps(self.discovery))
         invalid["candidates"][0]["rule_list_urls"] = [
