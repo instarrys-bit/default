@@ -264,6 +264,66 @@ jobs:
           fi
           python3 storage/v2/incident_store.py "${args[@]}" | tee "$GITHUB_STEP_SUMMARY"
 
+
+  reconcile-verified-auto-sync-incidents:
+    name: Reconcile incidents from independently verified Auto Sync success
+    if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'push') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - name: Checkout Storage Management code
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: main
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+      - name: Retry recovery from the latest independently verified Auto Sync task
+        env:
+          GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GH_REPO: ${{ github.repository }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          task_file="$RUNNER_TEMP/verified-auto-sync-task.json"
+          run_file="$RUNNER_TEMP/verified-auto-sync-run.json"
+          jobs_file="$RUNNER_TEMP/verified-auto-sync-jobs.json"
+          jq -c '[.tasks[]
+            | select(.status == "SUCCEEDED" and .verification.status == "passed")
+            | select(.dispatch_intent.workflow_id == 402712272
+                and .dispatch_intent.workflow_path == ".github/workflows/auto_sync.yml")
+            | select(.result.workflow_id == 402712272
+                and .result.workflow_path == ".github/workflows/auto_sync.yml"
+                and .result.run_evidence.run_id != null)]
+            | sort_by(.verification.verified_at) | last // empty' \
+            automation/task_queue.json > "$task_file"
+          if [ ! -s "$task_file" ]; then
+            echo "No independently verified Auto Sync queue task is available; incident state is unchanged." \
+              | tee "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          run_id="$(jq -er '.result.run_evidence.run_id' "$task_file")"
+          gh api "repos/$GH_REPO/actions/runs/$run_id" > "$run_file"
+          gh api "repos/$GH_REPO/actions/runs/$run_id/jobs?per_page=100" > "$jobs_file"
+          python3 storage/v2/verify_auto_sync_recovery.py \
+            --run "$run_file" --jobs "$jobs_file" --queue automation/task_queue.json \
+            | tee "$GITHUB_STEP_SUMMARY"
+          run_url="$(jq -er '.html_url' "$run_file")"
+          python3 storage/v2/incident_store.py resolve \
+            --workflow auto_sync \
+            --event-id "auto-sync-recovery-$run_id" \
+            --before-run-id "$run_id" \
+            --classifications PIPELINE_FAILURE \
+            --verification-url "$run_url" \
+            | tee -a "$GITHUB_STEP_SUMMARY"
+
   repository-integrity-snapshot:
     name: Inventory repository and pull-request SHAs through File Management
     if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'push') }}

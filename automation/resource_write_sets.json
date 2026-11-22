@@ -1343,9 +1343,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.21.1",
-    "release_manifest_blob_sha": "000fb3a0044767343fccf9374983adea89536e00",
-    "program_registry_blob_sha": "3be98b3a1d090f4f18351e96e11f265a7d965c7c",
-    "execution_adapters_blob_sha": "c2b84eff17d0b5b6eaa42861cad9124a49dffede",
+    "release_manifest_blob_sha": "76a8d79c98538c6c9da7714e426f04e22342cf21",
+    "program_registry_blob_sha": "300c5ee0697e0c4483e6546c312cedb889b5ea22",
+    "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
     "note": "Static inventory of all registered Python components and workflow-native write sites. File Management is the sole repository SHA inventory writer; production publisher write scope remains rulesets/** and modules/uu.conf remains read-only."
   },
   "scheduler_lock_contract": {
@@ -1562,6 +1562,12 @@
       "source": "scripts/validate_automation_write_boundary.py",
       "classification": "read_only_automation_write_boundary_validator",
       "evidence": "Reads workflow YAML, release metadata, resource write inventory and modules/uu.conf, computes the Git blob SHA in memory, and exits non-zero on policy drift. It performs no filesystem or network mutation and has no repository write credential."
+    },
+    {
+      "program_id": "storage_verify_auto_sync_recovery",
+      "source": "storage/v2/verify_auto_sync_recovery.py",
+      "classification": "read_only_recovery_verifier",
+      "evidence": "Reads exact workflow run/job JSON, automation/task_queue.json, automation/production_inputs.json and the declared production inputs (including modules/uu.conf solely for integrity fingerprinting). It performs no GitHub API calls, repository writes, ruleset writes or configuration changes."
     }
   ],
   "control_plane_side_effects": [
@@ -1669,7 +1675,7 @@
   "direct_mutation_scan": {
     "status": "partial_python_direct_callsite_scan",
     "scanner": "tests/test_transitive_write_site_inventory.py",
-    "registered_component_count": 68,
+    "registered_component_count": 69,
     "mutation_api_families": [
       "Path/open write modes",
       "Path write_text/write_bytes/unlink/mkdir/replace/rename/touch",

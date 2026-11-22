@@ -109,6 +109,8 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(release["component_schemas"]["execution_adapters"]["git_blob_sha"], blob_sha("automation/execution_adapters.json"))
         self.assertEqual(release["implementation_pins"]["program_registry"]["git_blob_sha"], blob_sha("automation/program_registry.json"))
         self.assertEqual(release["implementation_pins"]["execution_adapters"]["git_blob_sha"], blob_sha("automation/execution_adapters.json"))
+        self.assertEqual(release["implementation_pins"]["storage_management_workflow"]["git_blob_sha"], blob_sha(".github/workflows/storage-management.yml"))
+        self.assertEqual(release["implementation_pins"]["storage_auto_sync_recovery_verifier"]["git_blob_sha"], blob_sha("storage/v2/verify_auto_sync_recovery.py"))
         self.assertTrue(release["execution_policy"]["existing_adapter_enablement_unchanged"])
 
     def test_adapter_enablement_matches_registry_and_default_deny(self):
@@ -177,6 +179,23 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(nonwriters["script_run_preflight_tests"]["classification"], "runner_local_test_execution_non_dispatchable")
         self.assertEqual(nonwriters["script_validate_automation_write_boundary"]["classification"], "read_only_automation_write_boundary_validator")
 
+
+    def test_storage_recovery_verifier_is_read_only_and_not_independently_dispatchable(self):
+        registry = read_json("automation/program_registry.json")
+        adapters = read_json("automation/execution_adapters.json")
+        writes = read_json("automation/resource_write_sets.json")
+        program = next(x for x in registry["programs"] if x["id"] == "storage_verify_auto_sync_recovery")
+        adapter = next(x for x in adapters["adapters"] if x["target_program_id"] == "storage_verify_auto_sync_recovery")
+        nonwriter = next(x for x in writes["reviewed_non_writers"] if x["program_id"] == "storage_verify_auto_sync_recovery")
+        self.assertFalse(program["orchestration"]["enabled"])
+        self.assertEqual(program["orchestration"]["allowed_callers"], [])
+        self.assertFalse(adapter["enabled"])
+        self.assertEqual(adapter["allowed_callers"], [])
+        self.assertEqual(adapter["write_resources"], [])
+        self.assertEqual(adapter["publish_resources"], [])
+        self.assertEqual(nonwriter["classification"], "read_only_recovery_verifier")
+        self.assertIn("modules/uu.conf solely for integrity fingerprinting", nonwriter["evidence"])
+
     def test_every_registered_python_component_has_one_explicit_side_effect_classification(self):
         registry = read_json("automation/program_registry.json")
         writes = read_json("automation/resource_write_sets.json")
@@ -188,7 +207,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertFalse(writer_ids & control_ids)
         self.assertFalse(nonwriter_ids & control_ids)
         self.assertEqual(writer_ids | nonwriter_ids | control_ids, python_ids)
-        self.assertEqual(len(python_ids), 68)
+        self.assertEqual(len(python_ids), 69)
         self.assertEqual(writes["direct_mutation_scan"]["registered_component_count"], len(python_ids))
 
 

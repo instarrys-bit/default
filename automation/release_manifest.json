@@ -8,12 +8,12 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "3be98b3a1d090f4f18351e96e11f265a7d965c7c"
+      "git_blob_sha": "300c5ee0697e0c4483e6546c312cedb889b5ea22"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "c2b84eff17d0b5b6eaa42861cad9124a49dffede"
+      "git_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -74,11 +74,11 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "3be98b3a1d090f4f18351e96e11f265a7d965c7c"
+      "git_blob_sha": "300c5ee0697e0c4483e6546c312cedb889b5ea22"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "c2b84eff17d0b5b6eaa42861cad9124a49dffede"
+      "git_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
@@ -207,11 +207,15 @@
     },
     "storage_management_workflow": {
       "path": ".github/workflows/storage-management.yml",
-      "git_blob_sha": "a9826fa6a14b55ad1dd9960f79f5f2559c36a9c7"
+      "git_blob_sha": "21c3762af5a364b5e6c612277c4164f11039598c"
     },
     "repository_integrity_tests": {
       "path": "tests/v2/test_repository_integrity.py",
       "git_blob_sha": "bf6453dc0777f108725db6edf7af3d62601a92c9"
+    },
+    "storage_auto_sync_recovery_verifier": {
+      "path": "storage/v2/verify_auto_sync_recovery.py",
+      "git_blob_sha": "2e24c693ae20038e5a2978b5754dabceaa3610f6"
     }
   },
   "compatibility": {
