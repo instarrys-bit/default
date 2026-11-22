@@ -358,6 +358,11 @@ def write_document(
     Per-document limits allow large ledgers to use a stricter shard budget without
     changing the defaults for other callers. max_total_bytes caps stored bytes,
     including metadata and compressed or uncompressed shard payloads.
+
+    For compressed shards, shard_target_bytes measures the final gzip bytes stored
+    on disk. Records remain in input order and fill the current shard until the
+    next complete record would cross that stored-byte target. The separate
+    max_uncompressed_file_bytes bound limits safe read-time expansion.
     """
     path = Path(path)
     if not isinstance(payload, dict) or not isinstance(payload.get(collection_key), list):
