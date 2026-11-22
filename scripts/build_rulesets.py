@@ -86,8 +86,11 @@ def write_reject_review_queue(path, payload):
         path,
         payload,
         "items",
+        force_sharded=True,
         max_file_bytes=MAX_REJECT_REVIEW_QUEUE_BYTES,
+        max_total_bytes=MAX_REJECT_REVIEW_QUEUE_BYTES,
         shard_target_bytes=min(45_000_000, MAX_REJECT_REVIEW_QUEUE_BYTES),
+        compress_shards=True,
     )
 
 
