@@ -8,11 +8,11 @@
   "total_document_bytes": 42816489,
   "max_file_bytes": 50000000,
   "max_total_bytes": null,
-  "shard_directory": "reject_review_queue.json.parts-c45921bc839eb119",
+  "shard_directory": "reject_review_queue.json.parts-6f859a0fa7ce9e22",
   "metadata": {
     "schema_version": 1,
     "policy": "REJECT",
-    "updated_at": "2026-11-22T12:59:16.250841+00:00",
+    "updated_at": "2026-11-22T13:27:06.742241+00:00",
     "criteria": {
       "minimum_current_sources": 3,
       "minimum_independent_publishers": 2,
