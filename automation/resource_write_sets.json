@@ -408,7 +408,11 @@
         "rulesets/proxy.list",
         "rulesets/reject.list",
         "rulesets/pending_queue.json",
-        "rulesets/manifest.json"
+        "rulesets/manifest.json",
+        "rulesets/reject_review_queue.json",
+        "rulesets/reject_review_queue.json.manifest.json",
+        "rulesets/reject_review_queue.json.parts-*/part-*.jsonl",
+        "rulesets/reject_review_queue.json.parts-*/part-*.jsonl.gz"
       ],
       "read_resources": [
         "sources/domain_reviews.json",
@@ -442,6 +446,12 @@
         "rulesets/proxy.list",
         "rulesets/reject.list",
         "rulesets/manifest.json"
+      ],
+      "dynamic_children": [
+        "rulesets/reject_review_queue.json.manifest.json",
+        "rulesets/reject_review_queue.json.parts-*/part-*.jsonl",
+        "rulesets/reject_review_queue.json.parts-*/part-*.jsonl.gz",
+        "rulesets/reject_review_queue.json.parts.tmp-*"
       ]
     },
     {
@@ -658,7 +668,7 @@
       "writes": [
         "<caller-supplied logical JSON document path>",
         "<logical-name>.manifest.json",
-        "<logical-name>.parts-<digest>/part-*.jsonl",
+        "<logical-name>.parts-<digest>/part-*.jsonl and *.jsonl.gz",
         "<logical-name>.parts.tmp-* staging paths",
         "superseded <logical-name>.parts-* directories"
       ],
@@ -668,7 +678,7 @@
       "dynamic_children": [
         "legacy base file",
         "adjacent manifest",
-        "content-addressed JSONL shard directory and part files",
+        "content-addressed JSONL or deterministic gzip-JSONL shard directory and part files",
         "temporary staging files/directories",
         "superseded shard directories removed after manifest switch"
       ],
@@ -687,7 +697,7 @@
       "ephemeral_unpublished_resources": [
         "<caller-supplied logical JSON document path>",
         "<logical-name>.manifest.json",
-        "<logical-name>.parts-<digest>/part-*.jsonl",
+        "<logical-name>.parts-<digest>/part-*.jsonl and *.jsonl.gz",
         "<logical-name>.parts.tmp-* staging paths",
         "superseded <logical-name>.parts-* directories"
       ],
@@ -1024,6 +1034,7 @@
       "writes": [
         "rulesets/source_candidate_registry.json.manifest.json",
         "rulesets/source_candidate_registry.json.parts-*/part-*.jsonl",
+        "rulesets/source_candidate_registry.json.parts-*/part-*.jsonl.gz",
         "rulesets/source_candidate_registry.json (legacy schema-v1 input only)"
       ],
       "document_store": [
@@ -1032,6 +1043,7 @@
       "dynamic_children": [
         "rulesets/source_candidate_registry.json.manifest.json",
         "rulesets/source_candidate_registry.json.parts-*/part-*.jsonl",
+        "rulesets/source_candidate_registry.json.parts-*/part-*.jsonl.gz",
         "rulesets/source_candidate_registry.json.parts.tmp-* staging directories"
       ],
       "read_resources": [
@@ -1043,7 +1055,7 @@
         "External-intelligence observations are excluded; no DIRECT/PROXY/REJECT classification or source activation is performed.",
         "Writes only beneath rulesets/** and is published only by the existing single auto_sync publisher."
       ],
-      "evidence": "main() reads schema-v1 legacy JSON or verifies the schema-v2 JSONL shard manifest and every shard SHA-256/count, merges stable repository/file identities, then writes the canonical logical document through json_document_store.write_document(force_sharded=True) with a 40,000,000-byte per-file cap and 35,000,000-byte shard target. The adjacent manifest is the atomic commit point; all base/manifest/shard/staging mutations are checked against the live resource lease.",
+      "evidence": "main() reads schema-v1 legacy JSON or verifies the schema-v2 JSONL shard manifest and every shard SHA-256/count, merges stable repository/file identities, then writes the canonical logical document through json_document_store.write_document(force_sharded=True, compress_shards=True) with a 40,000,000-byte stored per-file and total cap and a 35,000,000-byte uncompressed shard target. The adjacent manifest is the atomic commit point; all base/manifest/shard/staging mutations are checked against the live resource lease.",
       "write_boundary_fencing": "The script re-reads the durable queue and asserts the exact rulesets path; the existing Watchdog logical/production-pipeline resource fence is the covering lease. The auto_sync publisher stages rulesets/** only.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
@@ -1056,7 +1068,8 @@
       "lease_enforcement": "json_document_store rechecks the live logical-document lease for the base path, staging directory, each shard, manifest replacement and old-shard cleanup; production-pipeline remains the outer Watchdog fence.",
       "publish_resources": [
         "rulesets/source_candidate_registry.json.manifest.json",
-        "rulesets/source_candidate_registry.json.parts-*/part-*.jsonl"
+        "rulesets/source_candidate_registry.json.parts-*/part-*.jsonl",
+        "rulesets/source_candidate_registry.json.parts-*/part-*.jsonl.gz"
       ],
       "ephemeral_unpublished_resources": []
     }

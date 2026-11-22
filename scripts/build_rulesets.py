@@ -86,8 +86,11 @@ def write_reject_review_queue(path, payload):
         path,
         payload,
         "items",
+        force_sharded=True,
         max_file_bytes=MAX_REJECT_REVIEW_QUEUE_BYTES,
+        max_total_bytes=MAX_REJECT_REVIEW_QUEUE_BYTES,
         shard_target_bytes=min(45_000_000, MAX_REJECT_REVIEW_QUEUE_BYTES),
+        compress_shards=True,
     )
 
 
@@ -766,7 +769,7 @@ def main():
             "manual_approval_required":True,
             "queue_path":"rulesets/reject_review_queue.json",
             "queue_storage_format":reject_queue_storage["storage"],
-            "queue_storage_manifest":"rulesets/reject_review_queue.json.manifest.json" if reject_queue_storage["storage"]=="jsonl-shards-v1" else None,
+            "queue_storage_manifest":"rulesets/reject_review_queue.json.manifest.json" if reject_queue_storage["storage"] in {"jsonl-shards-v1","jsonl-gzip-shards-v1"} else None,
             "queue_shard_count":reject_queue_storage["shards"],
             "queue_record_count":reject_queue_storage["records"],
             "queue_max_file_bytes":MAX_REJECT_REVIEW_QUEUE_BYTES

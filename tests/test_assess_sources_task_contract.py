@@ -316,6 +316,9 @@ class AssessSourcesArtifactVerifierTests(unittest.TestCase):
         self.assertTrue(task_scheduler.publishable_resource_path(
             persistent + ".parts-0123456789abcdef/part-000000.jsonl", [persistent]
         ))
+        self.assertTrue(task_scheduler.publishable_resource_path(
+            persistent + ".parts-0123456789abcdef/part-000000.jsonl.gz", [persistent]
+        ))
         self.assertFalse(task_scheduler.publishable_resource_path(
             persistent + ".parts.tmp-abc/part-000000.jsonl", [persistent]
         ))
