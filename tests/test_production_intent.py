@@ -218,6 +218,7 @@ class ProductionIntentTests(unittest.TestCase):
         paths = [
             "automation/release_manifest.json",
             "automation/production_workflow_map.json",
+            "automation/production_control.json",
             "automation/resource_write_sets.json",
             "automation/capability_contract_inventory.json",
             "automation/resource_ownership_audit.json",

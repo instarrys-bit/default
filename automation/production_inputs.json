@@ -62,6 +62,7 @@
     "automation/execution_adapters.json",
     "automation/heartbeat.json",
     "automation/production_intent_ledger.json",
+    "automation/production_control.json",
     "automation/production_workflow_map.json",
     "automation/program_registry.json",
     "automation/release_manifest.json",
