@@ -246,6 +246,7 @@ def persist_registry(
         force_sharded=True, max_file_bytes=MAX_REGISTRY_BYTES,
         max_total_bytes=MAX_REGISTRY_BYTES,
         shard_target_bytes=min(35_000_000, MAX_REGISTRY_BYTES),
+        compress_shards=True,
     )
     if read_document(output, "records") != payload:
         raise ValueError("source candidate registry read-after-write verification failed")
