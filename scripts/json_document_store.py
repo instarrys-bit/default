@@ -83,7 +83,10 @@ def _compact_bytes(value: Any) -> bytes:
     return json.dumps(value, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
 
 
-def _verified_shard_payload(raw: bytes, shard: dict, shard_path: Path, compressed: bool) -> bytes:
+def _verified_shard_payload(
+    raw: bytes, shard: dict, shard_path: Path, compressed: bool,
+    max_uncompressed_bytes: int = MAX_FILE_BYTES,
+) -> bytes:
     """Verify stored bytes, then safely decode one bounded JSONL shard."""
     if len(raw) > MAX_FILE_BYTES:
         raise ValueError(f"shard exceeds {MAX_FILE_BYTES} bytes: {shard_path}")
@@ -100,8 +103,9 @@ def _verified_shard_payload(raw: bytes, shard: dict, shard_path: Path, compresse
     expected = int(shard.get("uncompressed_bytes", -1))
     if expected < 0 or len(decoded) != expected:
         raise ValueError(f"shard uncompressed byte-count mismatch: {shard_path}")
-    if len(decoded) > MAX_FILE_BYTES:
-        raise ValueError(f"uncompressed shard exceeds {MAX_FILE_BYTES} bytes: {shard_path}")
+    uncompressed_limit = min(MAX_FILE_BYTES, int(max_uncompressed_bytes))
+    if uncompressed_limit <= 0 or len(decoded) > uncompressed_limit:
+        raise ValueError(f"uncompressed shard exceeds {uncompressed_limit} bytes: {shard_path}")
     return decoded
 
 
@@ -114,7 +118,7 @@ def _gzip_shard(raw: bytes) -> bytes:
 
 
 def _validate_sharded_document_total(manifest: dict, collection_key: str) -> int:
-    """Verify declared shard sizes and the compact logical-document byte budget."""
+    """Verify declared shard sizes and the stored-document byte budget."""
     metadata = manifest.get("metadata", {})
     shards = manifest.get("shards", [])
     if not isinstance(metadata, dict) or not isinstance(shards, list):
@@ -238,7 +242,7 @@ def iter_document_records(path: Path, collection_key: str):
             if not name or Path(name).name != name or not (name.endswith(".jsonl") or name.endswith(".jsonl.gz")):
                 raise ValueError(f"unsafe shard name in {manifest_file}: {name!r}")
             shard_path = manifest_file.parent / directory / name
-            raw = _verified_shard_payload(shard_path.read_bytes(), shard, shard_path, compressed)
+            raw = _verified_shard_payload(shard_path.read_bytes(), shard, shard_path, compressed, int(manifest.get("max_file_bytes", MAX_FILE_BYTES)))
             shard_count = 0
             for line in raw.splitlines():
                 if not line:
@@ -327,8 +331,8 @@ def write_document(
     """Write one bounded JSON file, or switch atomically to immutable JSONL shards.
 
     Per-document limits allow large ledgers to use a stricter shard budget without
-    changing the defaults for other callers. max_total_bytes caps the compact
-    logical document across its metadata and every shard.
+    changing the defaults for other callers. max_total_bytes caps stored bytes,
+    including metadata and compressed or uncompressed shard payloads.
     """
     path = Path(path)
     if not isinstance(payload, dict) or not isinstance(payload.get(collection_key), list):
