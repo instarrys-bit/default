@@ -27,14 +27,57 @@ POLICIES={"DIRECT","PROXY","REJECT"}
 DOMAIN_RE=re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
 
 
-def reject_rule_authorized(line, previously_published, secondary_passed):
-    """A new REJECT rule is eligible only after current automated secondary review."""
-    return line in previously_published or line in secondary_passed
+MAX_REJECT_REVIEW_QUEUE_BYTES=50_000_000
 
 
-def reject_queue_entry_authorized(line, previously_published, secondary_passed):
-    """A queued REJECT rule must pass the current secondary gate again before promotion."""
-    return line in previously_published or line in secondary_passed
+def manual_approved_reject_rule_lines(policy_control):
+    """Validate explicit, auditable user approvals for new REJECT rules."""
+    records=policy_control.get("manual_approved_reject_rules",[])
+    if not isinstance(records,list):
+        raise ValueError("manual_approved_reject_rules must be a list")
+    approved=set()
+    for record in records:
+        if not isinstance(record,dict):
+            raise ValueError("each manual REJECT approval must be an object")
+        rule=str(record.get("rule","")).strip()
+        scope,separator,domain=rule.partition(",")
+        if not separator or scope not in {"DOMAIN","DOMAIN-SUFFIX"} or not DOMAIN_RE.fullmatch(domain):
+            raise ValueError("manual REJECT approval contains an invalid exact rule line: "+rule)
+        if rule != scope+","+domain:
+            raise ValueError("manual REJECT approval rule must be normalized: "+rule)
+        approved_by=str(record.get("approved_by","")).strip()
+        approved_at=str(record.get("approved_at","")).strip()
+        approval_reference=str(record.get("approval_reference","")).strip()
+        if not approved_by or not approved_at or not approval_reference:
+            raise ValueError("manual REJECT approval requires approved_by, approved_at, and approval_reference")
+        try:
+            timestamp=datetime.fromisoformat(approved_at.replace("Z","+00:00"))
+        except ValueError as exc:
+            raise ValueError("manual REJECT approval approved_at must be ISO-8601") from exc
+        if timestamp.tzinfo is None:
+            raise ValueError("manual REJECT approval approved_at must include a timezone")
+        if rule in approved:
+            raise ValueError("duplicate manual REJECT approval: "+rule)
+        approved.add(rule)
+    return approved
+
+
+def reject_rule_authorized(line, previously_published, secondary_passed, manual_approved):
+    """Preserve published REJECT rules; require secondary evidence and explicit approval for new rules."""
+    return line in previously_published or (line in secondary_passed and line in manual_approved)
+
+
+def reject_queue_entry_authorized(line, previously_published, secondary_passed, manual_approved):
+    """A queued REJECT rule needs current secondary evidence and explicit approval before promotion."""
+    return line in previously_published or (line in secondary_passed and line in manual_approved)
+
+
+def serialize_reject_review_queue(payload):
+    """Serialize the manual-review queue without exceeding the repository's per-file cap."""
+    raw=(json.dumps(payload,ensure_ascii=False,indent=2)+"\n").encode("utf-8")
+    if len(raw)>MAX_REJECT_REVIEW_QUEUE_BYTES:
+        raise ValueError("REJECT manual-review queue exceeds the 50 MB per-file limit")
+    return raw
 
 
 def reject_secondary_decision(evidence, scoring, minimum, threshold, correlated_pairs, required_sources=()):
@@ -180,10 +223,11 @@ def source_evidence_eligible_ids(source_inventory):
 def main():
     control=json.loads(PRODUCTION_CONTROL.read_text(encoding="utf-8"))
     policy_control=control.get("policy",{})
-    if policy_control.get("reject_publication_mode")!="automatic_after_deterministic_gates":
-        raise ValueError("REJECT automatic publication is not explicitly enabled in production_control.json")
-    if policy_control.get("manual_review_scope")!="runtime_exceptions_only":
-        raise ValueError("manual review must be restricted to runtime exceptions")
+    if policy_control.get("reject_publication_mode")!="manual_approval_after_deterministic_gates":
+        raise ValueError("new REJECT rules must require manual approval after deterministic gates")
+    if policy_control.get("manual_review_scope")!="new_reject_rules_after_deterministic_secondary_review":
+        raise ValueError("REJECT manual review must cover every new rule after deterministic secondary review")
+    manual_approved_reject_lines=manual_approved_reject_rule_lines(policy_control)
     data=read_document(LEDGER,"reviews",{"reviews":[]})
     source_cfg=load_registry(SOURCE_FILE)
     source_map=validate_registry(source_cfg)
@@ -268,6 +312,7 @@ def main():
     reject_secondary_eligible_count=0
     reject_automated_hold_count=0
     reject_hold_queue_items=[]
+    reject_manual_approval_items={}
     reject_secondary_passed_lines=set()
     reviews=data.get("reviews",[])
     if len({str(item.get("domain","")).lower() for item in reviews})!=len(reviews):
@@ -450,56 +495,33 @@ def main():
                 continue
             reject_secondary_eligible_count+=1
             reject_secondary_passed_lines.add(archived_line)
+            if not reject_rule_authorized(
+                archived_line,previously_published_reject,reject_secondary_passed_lines,manual_approved_reject_lines
+            ):
+                held+=1
+                reject_manual_approval_items[archived_line]={
+                    "rule":candidate_line,
+                    "domain":domain,
+                    "scope":scope,
+                    "policy":"REJECT",
+                    "status":"AWAITING_MANUAL_APPROVAL",
+                    "approval_status":"PENDING",
+                    "manual_approval_required":True,
+                    "confidence":secondary["confidence"],
+                    "current_source_count":secondary["current_source_count"],
+                    "independent_publisher_count":secondary["independent_publisher_count"],
+                    "source_ids":secondary["source_ids"],
+                    "publishers":secondary["publishers"],
+                    "independent_publisher_groups":secondary["independent_publisher_groups"],
+                    "reason":"Passed deterministic secondary review; explicit manual approval is required before publication."
+                }
+                continue
         seen[domain]=policy
         new_approved[policy].add((scope,domain))
         approved_review_rules.add((policy,scope,domain))
         approved+=1
 
-    assert_resource_lease_for_repository_path(ROOT, "rulesets/reject_review_queue.json")
     OUT.mkdir(parents=True,exist_ok=True)
-    reject_hold_queue_items.sort(key=lambda item:(item["domain"],item["scope"]))
-    reject_queue_path=OUT/"reject_review_queue.json"
-    assert_resource_lease_for_repository_path(ROOT, "rulesets/reject_review_queue.json")
-    reject_queue_path.write_text(json.dumps({
-        "schema_version":1,
-        "policy":"REJECT",
-        "updated_at":datetime.now(timezone.utc).isoformat(),
-        "criteria":{
-            "minimum_current_sources":secondary_min_sources,
-            "minimum_independent_publishers":secondary_min_groups,
-            "required_any_sources":sorted(secondary_required_any),
-            "manual_approval_required":False,
-            "queue_role":"automated_candidate_recheck_holds"
-        },
-        "eligible_count":reject_secondary_eligible_count,
-        "held_for_automated_recheck_count":len(reject_hold_queue_items),
-        "items":reject_hold_queue_items
-    },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-    report_dir=ROOT/"reports"
-    report_dir.mkdir(parents=True,exist_ok=True)
-    report_lines=[
-        "# REJECT 自动审核与暂缓项报告","",
-        f"- REJECT 相关候选总量：{reject_candidate_count}",
-        f"- 一审未通过/暂缓：{sum(reject_first_stage_status_counts.values())}",
-        f"- 二审自动审核通过：{reject_secondary_eligible_count}",
-        f"- 自动暂缓、等待后续复查：{len(reject_hold_queue_items)}",
-        f"- 自动发布门槛：至少 {secondary_min_sources} 个当前来源、至少 {secondary_min_groups} 个独立发布者，并至少包含一个指定专业广告拦截来源。",
-        "- 通过一审、二审及配置冲突检查的 REJECT 规则自动进入发布队列；人工只处理异常项。",
-        "",
-        "## 一审状态暂缓统计","",
-    ]
-    report_lines.extend(f"- {name}: {count}" for name,count in sorted(reject_first_stage_status_counts.items()))
-    report_lines.extend(["","## 二审拦截原因",""])
-    report_lines.extend(f"- {name}: {count}" for name,count in sorted(reject_secondary_hold_reason_counts.items()))
-    report_lines.extend(["","## 自动暂缓队列",""])
-    report_lines.extend(["| 规则 | 当前来源数 | 独立发布者组 | 置信度 | 来源 |","|---|---:|---:|---:|---|"])
-    for item in reject_hold_queue_items:
-        report_lines.append(
-            f"| {item.get('rule', '')} | {item.get('current_source_count', '—')} | "
-            f"{item.get('independent_publisher_count', '—')} | "
-            f"{float(item.get('confidence', 0)):.2f} | {', '.join(item.get('source_ids', []))} |"
-        )
-    (report_dir/"reject-secondary-review.md").write_text("\\n".join(report_lines)+"\n",encoding="utf-8")
     queue_path=OUT/"pending_queue.json"
     prior_queue=json.loads(queue_path.read_text(encoding="utf-8")) if queue_path.exists() else {"schema_version":1,"items":[]}
     queue_map={}
@@ -508,8 +530,29 @@ def main():
         if key[0] in POLICIES and key[1] in {"exact_candidate","suffix_candidate"} and key[2]:
             queued_line=("DOMAIN-SUFFIX," if key[1]=="suffix_candidate" else "DOMAIN,")+key[2]
             if key[0]=="REJECT" and not reject_queue_entry_authorized(
-                queued_line,previously_published_reject,reject_secondary_passed_lines
+                queued_line,previously_published_reject,reject_secondary_passed_lines,manual_approved_reject_lines
             ):
+                if queued_line in reject_secondary_passed_lines:
+                    reject_manual_approval_items.setdefault(queued_line,{
+                        "rule":queued_line,
+                        "domain":key[2],
+                        "scope":key[1],
+                        "policy":"REJECT",
+                        "status":"AWAITING_MANUAL_APPROVAL",
+                        "approval_status":"PENDING",
+                        "manual_approval_required":True,
+                        "reason":"Previously queued REJECT candidate passed current deterministic secondary review; explicit manual approval is required before publication."
+                    })
+                else:
+                    reject_hold_queue_items.append({
+                        "rule":queued_line,
+                        "domain":key[2],
+                        "scope":key[1],
+                        "policy":"REJECT",
+                        "status":"HELD_FOR_AUTOMATED_RECHECK",
+                        "manual_approval_required":False,
+                        "reason":"Previously queued REJECT candidate has no current deterministic secondary-review evidence; it remains held for recheck."
+                    })
                 continue
             if (key[0],queued_line) not in archived_deleted:
                 queue_map[key]=queued
@@ -548,6 +591,80 @@ def main():
         "queued_count":len(queue_map),
         "items":[queue_map[key] for key in sorted(queue_map)]
     },ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    review_items_by_rule={}
+    for item in reject_hold_queue_items:
+        rule=str(item.get("rule",""))
+        if rule:
+            item.setdefault("manual_approval_required",False)
+            item.setdefault("approval_status","NOT_READY")
+            review_items_by_rule[rule]=item
+    for rule,item in reject_manual_approval_items.items():
+        review_items_by_rule[rule]=item
+    reject_review_items=sorted(
+        review_items_by_rule.values(),
+        key=lambda item:(str(item.get("domain","")),str(item.get("scope","")),str(item.get("status","")))
+    )
+    held_for_automated_recheck_count=sum(
+        1 for item in reject_review_items if item.get("status")=="HELD_FOR_AUTOMATED_RECHECK"
+    )
+    held_for_manual_approval_count=sum(
+        1 for item in reject_review_items if item.get("status")=="AWAITING_MANUAL_APPROVAL"
+    )
+    manual_approved_current_count=len(manual_approved_reject_lines & reject_secondary_passed_lines)
+    assert_resource_lease_for_repository_path(ROOT, "rulesets/reject_review_queue.json")
+    reject_queue_path=OUT/"reject_review_queue.json"
+    reject_queue_payload={
+        "schema_version":1,
+        "policy":"REJECT",
+        "updated_at":datetime.now(timezone.utc).isoformat(),
+        "criteria":{
+            "minimum_current_sources":secondary_min_sources,
+            "minimum_independent_publishers":secondary_min_groups,
+            "required_any_sources":sorted(secondary_required_any),
+            "manual_approval_required":True,
+            "queue_role":"deterministic_secondary_review_then_manual_approval"
+        },
+        "eligible_count":reject_secondary_eligible_count,
+        "held_for_automated_recheck_count":held_for_automated_recheck_count,
+        "held_for_manual_approval_count":held_for_manual_approval_count,
+        "manual_approved_count":manual_approved_current_count,
+        "items":reject_review_items
+    }
+    reject_queue_path.write_bytes(serialize_reject_review_queue(reject_queue_payload))
+    report_dir=ROOT/"reports"
+    report_dir.mkdir(parents=True,exist_ok=True)
+    report_lines=[
+        "# REJECT 自动审核与人工审批队列","",
+        f"- REJECT 相关候选总量：{reject_candidate_count}",
+        f"- 一审未通过/暂缓：{sum(reject_first_stage_status_counts.values())}",
+        f"- 二审确定性审核通过：{reject_secondary_eligible_count}",
+        f"- 等待人工审批：{held_for_manual_approval_count}",
+        f"- 自动暂缓、等待后续复查：{held_for_automated_recheck_count}",
+        f"- 已配置且通过本轮二审的人工批准：{manual_approved_current_count}",
+        f"- 自动审核门槛：至少 {secondary_min_sources} 个当前来源、至少 {secondary_min_groups} 个独立发布者，并至少包含一个指定专业广告拦截来源。",
+        "- 新 REJECT 规则通过一审、二审及配置冲突检查后仍不会自动发布；必须在 automation/production_control.json 的 policy.manual_approved_reject_rules 中提供完整审批记录，下一轮才可发布。",
+        "",
+        "## 一审状态暂缓统计","",
+    ]
+    report_lines.extend(f"- {name}: {count}" for name,count in sorted(reject_first_stage_status_counts.items()))
+    report_lines.extend(["","## 二审拦截原因",""])
+    report_lines.extend(f"- {name}: {count}" for name,count in sorted(reject_secondary_hold_reason_counts.items()))
+    report_lines.extend(["","## 等待人工审批",""])
+    report_lines.extend(["| 规则 | 当前来源数 | 独立发布者组 | 置信度 | 来源 |","|---|---:|---:|---:|---|"])
+    for item in reject_review_items:
+        if item.get("status")!="AWAITING_MANUAL_APPROVAL":
+            continue
+        report_lines.append(
+            f"| {item.get('rule', '')} | {item.get('current_source_count', '—')} | "
+            f"{item.get('independent_publisher_count', '—')} | "
+            f"{float(item.get('confidence', 0)):.2f} | {', '.join(item.get('source_ids', []))} |"
+        )
+    report_lines.extend(["","## 自动暂缓队列",""])
+    for item in reject_review_items:
+        if item.get("status")!="HELD_FOR_AUTOMATED_RECHECK":
+            continue
+        report_lines.append(f"- {item.get('rule','')}: {item.get('reason','')}")
+    (report_dir/"reject-secondary-review.md").write_text("\n".join(report_lines)+"\n",encoding="utf-8")
     rule_lifecycle={}
     for policy in sorted(POLICIES):
         output_path=OUT/(policy.lower()+".list")
@@ -620,20 +737,22 @@ def main():
         "promoted_queue_total":len(promoted),
         "publication_accounting":publication_accounting,
         "held_total":held,
-        "reject_manual_approval_required":False,
-        "manual_review_scope":"runtime_exceptions_only",
+        "reject_manual_approval_required":True,
+        "manual_review_scope":"new_reject_rules_after_deterministic_secondary_review",
         "reject_automated_hold_count":reject_automated_hold_count,
         "reject_secondary_review":{
             "candidate_count":reject_candidate_count,
             "first_stage_held_by_status":dict(sorted(reject_first_stage_status_counts.items())),
             "automatically_eligible_count":reject_secondary_eligible_count,
-            "held_for_automated_recheck_count":len(reject_hold_queue_items),
-            "queue_role":"automated_candidate_recheck_holds",
+            "held_for_automated_recheck_count":held_for_automated_recheck_count,
+            "held_for_manual_approval_count":held_for_manual_approval_count,
+            "manual_approved_count":manual_approved_current_count,
+            "queue_role":"deterministic_secondary_review_then_manual_approval",
             "held_reason_counts":dict(sorted(reject_secondary_hold_reason_counts.items())),
             "minimum_current_sources":secondary_min_sources,
             "minimum_independent_publishers":secondary_min_groups,
             "required_any_sources":sorted(secondary_required_any),
-            "manual_approval_required":False,
+            "manual_approval_required":True,
             "queue_path":"rulesets/reject_review_queue.json"
         },
         "status_count":dict(sorted(status_counts.items())),
