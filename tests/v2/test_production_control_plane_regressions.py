@@ -37,7 +37,7 @@ class ProductionControlPlaneRegressionTests(unittest.TestCase):
 
 
 class StorageManagementWorkflowRegressionTests(unittest.TestCase):
-    def test_incident_store_cli_expands_the_bash_argument_array(self):
+    def test_incident_store_cli_preserves_array_and_verified_recovery_invocations(self):
         workflow = (ROOT / ".github" / "workflows" / "storage-management.yml").read_text(encoding="utf-8")
         invocations = [
             line.strip()
@@ -45,10 +45,24 @@ class StorageManagementWorkflowRegressionTests(unittest.TestCase):
             if "python3 storage/v2/incident_store.py" in line
         ]
 
-        self.assertEqual(len(invocations), 1)
+        self.assertEqual(len(invocations), 2)
         self.assertEqual(
-            invocations[0],
-            'python3 storage/v2/incident_store.py "${args[@]}" | tee "$GITHUB_STEP_SUMMARY"',
+            invocations.count(
+                'python3 storage/v2/incident_store.py "${args[@]}" | tee "$GITHUB_STEP_SUMMARY"'
+            ),
+            1,
+        )
+        self.assertEqual(
+            invocations.count("python3 storage/v2/incident_store.py resolve \\"),
+            1,
+        )
+        self.assertIn('--event-id "auto-sync-recovery-$run_id"', workflow)
+        self.assertIn('--before-run-id "$run_id"', workflow)
+        self.assertIn("--classifications PIPELINE_FAILURE", workflow)
+        self.assertIn('--verification-url "$run_url"', workflow)
+        self.assertLess(
+            workflow.index("verify_auto_sync_recovery.py"),
+            workflow.index("python3 storage/v2/incident_store.py resolve"),
         )
 
 
