@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "format": "jsonl-shards-v1",
+  "logical_path": "reject_review_queue.json",
+  "collection_key": "items",
+  "record_count": 101797,
+  "total_shard_bytes": 42816014,
+  "total_document_bytes": 42816489,
+  "max_file_bytes": 50000000,
+  "max_total_bytes": null,
+  "shard_directory": "reject_review_queue.json.parts-c45921bc839eb119",
+  "metadata": {
+    "schema_version": 1,
+    "policy": "REJECT",
+    "updated_at": "2026-11-22T12:59:16.250841+00:00",
+    "criteria": {
+      "minimum_current_sources": 3,
+      "minimum_independent_publishers": 2,
+      "required_any_sources": [
+        "hagezi-domains-pro",
+        "sr-adblock-domain-lite"
+      ],
+      "manual_approval_required": true,
+      "queue_role": "deterministic_secondary_review_then_manual_approval"
+    },
+    "eligible_count": 0,
+    "held_for_automated_recheck_count": 101797,
+    "held_for_manual_approval_count": 0,
+    "manual_approved_count": 0
+  },
+  "shards": [
+    {
+      "file": "part-000000.jsonl",
+      "records": 101797,
+      "bytes": 42816014,
+      "sha256": "6943d717e144c1e1bedc050a1f0bb4d9d4ca6a214d04437fb499e379c3244969"
+    }
+  ]
+}

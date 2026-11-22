@@ -255,7 +255,7 @@
         "zakird/crux-top-lists"
       ],
       "status": "STALE_QUARANTINED",
-      "error": "hagezi-domains-pro source drift exceeds automatic safety limit: 51065 added + 27217 removed = 78282; limit 22263",
+      "error": "hagezi-domains-pro source drift exceeds automatic safety limit: 88540 added + 27171 removed = 115711; limit 22263",
       "pending_confirmations": 1,
       "new_entries": 0,
       "removed_entries": 0,
@@ -786,8 +786,8 @@
     "accounting_reconciled": true
   },
   "held_total": 146668,
-  "reject_manual_approval_required": false,
-  "manual_review_scope": "runtime_exceptions_only",
+  "reject_manual_approval_required": true,
+  "manual_review_scope": "new_reject_rules_after_deterministic_secondary_review",
   "reject_automated_hold_count": 101797,
   "reject_secondary_review": {
     "candidate_count": 118420,
@@ -799,7 +799,9 @@
     },
     "automatically_eligible_count": 0,
     "held_for_automated_recheck_count": 101797,
-    "queue_role": "automated_candidate_recheck_holds",
+    "held_for_manual_approval_count": 0,
+    "manual_approved_count": 0,
+    "queue_role": "deterministic_secondary_review_then_manual_approval",
     "held_reason_counts": {
       "first_stage_conflict": 32752,
       "first_stage_policy_conflict": 388,
@@ -813,8 +815,13 @@
       "hagezi-domains-pro",
       "sr-adblock-domain-lite"
     ],
-    "manual_approval_required": false,
-    "queue_path": "rulesets/reject_review_queue.json"
+    "manual_approval_required": true,
+    "queue_path": "rulesets/reject_review_queue.json",
+    "queue_storage_format": "jsonl-shards-v1",
+    "queue_storage_manifest": "rulesets/reject_review_queue.json.manifest.json",
+    "queue_shard_count": 1,
+    "queue_record_count": 101797,
+    "queue_max_file_bytes": 50000000
   },
   "status_count": {
     "ALREADY_COVERED": 9629,
