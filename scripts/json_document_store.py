@@ -81,6 +81,38 @@ def _compact_bytes(value: Any) -> bytes:
     return json.dumps(value, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
 
 
+def _validate_sharded_document_total(manifest: dict, collection_key: str) -> int:
+    """Verify declared shard sizes and the compact logical-document byte budget."""
+    metadata = manifest.get("metadata", {})
+    shards = manifest.get("shards", [])
+    if not isinstance(metadata, dict) or not isinstance(shards, list):
+        raise ValueError("invalid shard manifest totals")
+    shard_bytes = 0
+    for shard in shards:
+        if not isinstance(shard, dict):
+            raise ValueError("invalid shard manifest entry")
+        size = int(shard.get("bytes", -1))
+        if size < 0:
+            raise ValueError("invalid shard byte count")
+        shard_bytes += size
+    declared_shard_bytes = manifest.get("total_shard_bytes")
+    if declared_shard_bytes is not None and int(declared_shard_bytes) != shard_bytes:
+        raise ValueError("document total shard byte-count mismatch")
+    total_document_bytes = (
+        len(_compact_bytes(metadata)) + len(collection_key.encode("utf-8")) + 16 + shard_bytes
+    )
+    declared_total_bytes = manifest.get("total_document_bytes")
+    if declared_total_bytes is not None and int(declared_total_bytes) != total_document_bytes:
+        raise ValueError("document total byte-count mismatch")
+    total_limit = manifest.get("max_total_bytes")
+    if total_limit is not None and total_document_bytes > int(total_limit):
+        raise ValueError(
+            f"document exceeds the {int(total_limit)}-byte total document limit "
+            f"({total_document_bytes} bytes)"
+        )
+    return total_document_bytes
+
+
 def _assert_document_lease(path: Path, required: bool = True) -> None:
     """Require a live fence for every repository mutation; caller flags cannot bypass it.
 
@@ -163,6 +195,7 @@ def iter_document_records(path: Path, collection_key: str):
             raise ValueError(f"unsupported shard manifest: {manifest_file}")
         if manifest.get("logical_path") != path.name or manifest.get("collection_key") != collection_key:
             raise ValueError(f"shard manifest identity mismatch: {manifest_file}")
+        _validate_sharded_document_total(manifest, collection_key)
         directory = str(manifest.get("shard_directory", ""))
         if not directory or Path(directory).name != directory:
             raise ValueError(f"unsafe shard directory in {manifest_file}")
@@ -175,6 +208,8 @@ def iter_document_records(path: Path, collection_key: str):
             raw = shard_path.read_bytes()
             if len(raw) > MAX_FILE_BYTES:
                 raise ValueError(f"shard exceeds {MAX_FILE_BYTES} bytes: {shard_path}")
+            if len(raw) != int(shard.get("bytes", -1)):
+                raise ValueError(f"shard byte-count mismatch: {shard_path}")
             if hashlib.sha256(raw).hexdigest() != shard.get("sha256"):
                 raise ValueError(f"shard checksum mismatch: {shard_path}")
             shard_count = 0
@@ -223,6 +258,7 @@ def read_document(path: Path, collection_key: str, default: dict | None = None) 
         raise ValueError(f"unsupported shard manifest: {manifest_file}")
     if manifest.get("logical_path") != path.name or manifest.get("collection_key") != collection_key:
         raise ValueError(f"shard manifest identity mismatch: {manifest_file}")
+    _validate_sharded_document_total(manifest, collection_key)
 
     records = []
     for shard in manifest.get("shards", []):
@@ -236,6 +272,8 @@ def read_document(path: Path, collection_key: str, default: dict | None = None) 
         raw = shard_path.read_bytes()
         if len(raw) > MAX_FILE_BYTES:
             raise ValueError(f"shard exceeds {MAX_FILE_BYTES} bytes: {shard_path}")
+        if len(raw) != int(shard.get("bytes", -1)):
+            raise ValueError(f"shard byte-count mismatch: {shard_path}")
         if hashlib.sha256(raw).hexdigest() != shard.get("sha256"):
             raise ValueError(f"shard checksum mismatch: {shard_path}")
         rows = [line for line in raw.splitlines() if line]
@@ -261,12 +299,13 @@ def read_document(path: Path, collection_key: str, default: dict | None = None) 
 def write_document(
     path: Path, payload: dict, collection_key: str, *, lease_required: bool = True,
     force_sharded: bool = False, max_file_bytes: int | None = None,
-    shard_target_bytes: int | None = None,
+    shard_target_bytes: int | None = None, max_total_bytes: int | None = None,
 ) -> dict:
     """Write one bounded JSON file, or switch atomically to immutable JSONL shards.
 
     Per-document limits allow large ledgers to use a stricter shard budget without
-    changing the defaults for other callers.
+    changing the defaults for other callers. max_total_bytes caps the compact
+    logical document across its metadata and every shard.
     """
     path = Path(path)
     if not isinstance(payload, dict) or not isinstance(payload.get(collection_key), list):
@@ -275,6 +314,9 @@ def write_document(
     metadata = {key: value for key, value in payload.items() if key != collection_key}
     file_limit = MAX_FILE_BYTES if max_file_bytes is None else int(max_file_bytes)
     shard_limit = SHARD_TARGET_BYTES if shard_target_bytes is None else int(shard_target_bytes)
+    total_limit = None if max_total_bytes is None else int(max_total_bytes)
+    if total_limit is not None and total_limit <= 0:
+        raise ValueError("document total byte limit must be positive")
     if file_limit <= 0 or shard_limit <= 0 or shard_limit > file_limit:
         raise ValueError("document shard limits must be positive and shard_target_bytes <= max_file_bytes")
     manifest_file = manifest_path(path)
@@ -284,7 +326,12 @@ def write_document(
     metadata_bytes = _compact_bytes(metadata)
     if len(metadata_bytes) > file_limit:
         raise ValueError(f"document metadata exceeds the {file_limit}-byte single-file limit")
-    estimate = len(metadata_bytes) + len(collection_key.encode("utf-8")) + 16
+    envelope_bytes = len(collection_key.encode("utf-8")) + 16
+    if total_limit is not None and len(metadata_bytes) + envelope_bytes > total_limit:
+        raise ValueError(
+            f"document metadata exceeds the {total_limit}-byte total document limit"
+        )
+    estimate = len(metadata_bytes) + envelope_bytes
     for record in records:
         estimate += len(_compact_bytes(record)) + 1
         if estimate > file_limit:
@@ -293,8 +340,15 @@ def write_document(
     if estimate <= file_limit and not already_sharded and not force_sharded:
         legacy = (json.dumps(payload, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
         if len(legacy) <= file_limit:
+            if total_limit is not None and len(legacy) > total_limit:
+                raise ValueError(
+                    f"document exceeds the {total_limit}-byte total document limit ({len(legacy)} bytes)"
+                )
             _atomic_write(path, legacy, lease_required=lease_required)
-            return {"storage": "json", "records": len(records), "bytes": len(legacy), "shards": 0}
+            return {
+                "storage": "json", "records": len(records), "bytes": len(legacy),
+                "total_bytes": len(legacy), "max_total_bytes": total_limit, "shards": 0,
+            }
 
     _assert_document_lease(path, lease_required)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -339,6 +393,12 @@ def write_document(
                 flush_shard()
             shard_buffer.extend(line)
         flush_shard()
+        total_document_bytes = len(metadata_bytes) + envelope_bytes + total_shard_bytes
+        if total_limit is not None and total_document_bytes > total_limit:
+            raise ValueError(
+                f"document exceeds the {total_limit}-byte total document limit "
+                f"({total_document_bytes} bytes)"
+            )
 
         version = digest.hexdigest()[:16]
         shard_directory = path.name + ".parts-" + version
@@ -359,7 +419,9 @@ def write_document(
             "collection_key": collection_key,
             "record_count": len(records),
             "total_shard_bytes": total_shard_bytes,
+            "total_document_bytes": total_document_bytes,
             "max_file_bytes": file_limit,
+            "max_total_bytes": total_limit,
             "shard_directory": shard_directory,
             "metadata": metadata,
             "shards": shard_entries,
@@ -376,7 +438,11 @@ def write_document(
             if old.is_dir() and old.name != shard_directory:
                 _assert_document_lease(old, lease_required)
                 shutil.rmtree(old)
-        return {"storage": "jsonl-shards-v1", "records": len(records), "bytes": total_shard_bytes, "shards": len(shard_entries)}
+        return {
+            "storage": "jsonl-shards-v1", "records": len(records), "bytes": total_shard_bytes,
+            "total_bytes": total_document_bytes, "max_total_bytes": total_limit,
+            "shards": len(shard_entries),
+        }
     except Exception:
         if staging.exists():
             try:
