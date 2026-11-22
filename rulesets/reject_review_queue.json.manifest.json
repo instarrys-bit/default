@@ -1,18 +1,18 @@
 {
   "schema_version": 1,
-  "format": "jsonl-shards-v1",
+  "format": "jsonl-gzip-shards-v1",
   "logical_path": "reject_review_queue.json",
   "collection_key": "items",
   "record_count": 101797,
-  "total_shard_bytes": 42816014,
-  "total_document_bytes": 42816489,
+  "total_shard_bytes": 1619398,
+  "total_document_bytes": 1619873,
   "max_file_bytes": 50000000,
-  "max_total_bytes": null,
-  "shard_directory": "reject_review_queue.json.parts-6f859a0fa7ce9e22",
+  "max_total_bytes": 50000000,
+  "shard_directory": "reject_review_queue.json.parts-2d29bee777741f31",
   "metadata": {
     "schema_version": 1,
     "policy": "REJECT",
-    "updated_at": "2026-11-22T13:27:06.742241+00:00",
+    "updated_at": "2026-11-22T20:02:03.583302+00:00",
     "criteria": {
       "minimum_current_sources": 3,
       "minimum_independent_publishers": 2,
@@ -30,10 +30,11 @@
   },
   "shards": [
     {
-      "file": "part-000000.jsonl",
+      "file": "part-000000.jsonl.gz",
       "records": 101797,
-      "bytes": 42816014,
-      "sha256": "6943d717e144c1e1bedc050a1f0bb4d9d4ca6a214d04437fb499e379c3244969"
+      "bytes": 1619398,
+      "sha256": "5275056164c0c7e34ed2359ae629188fdf9b1353c1f432a46248f81ad6cc1ae5",
+      "uncompressed_bytes": 42816014
     }
   ]
 }

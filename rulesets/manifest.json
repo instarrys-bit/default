@@ -255,7 +255,7 @@
         "zakird/crux-top-lists"
       ],
       "status": "STALE_QUARANTINED",
-      "error": "hagezi-domains-pro source drift exceeds automatic safety limit: 88540 added + 27171 removed = 115711; limit 22263",
+      "error": "hagezi-domains-pro source drift exceeds automatic safety limit: 51260 added + 31832 removed = 83092; limit 22263",
       "pending_confirmations": 1,
       "new_entries": 0,
       "removed_entries": 0,
@@ -817,7 +817,7 @@
     ],
     "manual_approval_required": true,
     "queue_path": "rulesets/reject_review_queue.json",
-    "queue_storage_format": "jsonl-shards-v1",
+    "queue_storage_format": "jsonl-gzip-shards-v1",
     "queue_storage_manifest": "rulesets/reject_review_queue.json.manifest.json",
     "queue_shard_count": 1,
     "queue_record_count": 101797,
