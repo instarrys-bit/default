@@ -207,7 +207,7 @@
     },
     "storage_management_workflow": {
       "path": ".github/workflows/storage-management.yml",
-      "git_blob_sha": "21c3762af5a364b5e6c612277c4164f11039598c"
+      "git_blob_sha": "495c00eef3f0707dc81172b7e4706b7d4a132d00"
     },
     "repository_integrity_tests": {
       "path": "tests/v2/test_repository_integrity.py",
