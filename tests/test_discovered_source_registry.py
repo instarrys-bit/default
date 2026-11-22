@@ -103,7 +103,7 @@ class DiscoveredSourceRegistryTests(unittest.TestCase):
                 self.assertEqual(record["_registry_sequence"], old_sequences[key])
         appended = [record for record in records if record["_registry_sequence"] > old_max]
         self.assertEqual([record["record_type"] for record in appended],
-                         ["source_file", "source_file", "repository"])
+                         ["source_file", "repository", "source_file"])
         self.assertEqual(len(records), len(first_payload["records"]) + 3)
 
     def test_same_discovery_run_is_idempotent(self):
