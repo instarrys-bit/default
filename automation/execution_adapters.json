@@ -2022,6 +2022,11 @@
         "scripts/**",
         ".github/workflows/auto_sync.yml",
         ".github/workflow_helpers/**"
+      ],
+      "required_read_only_resources": [
+        "automation/task_queue.json",
+        "automation/production_inputs.json",
+        "modules/uu.conf"
       ]
     }
   ]

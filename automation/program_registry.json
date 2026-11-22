@@ -1851,8 +1851,8 @@
         "storage_verify_auto_sync_recovery"
       ],
       "dispatches": [],
-      "permission_boundary": "Storage Management is the sole writer of automation/task_queue.json through script_remote_task_queue_runtime and of storage/v2/incidents.json through storage_incident_store. Queue writes use SHA-CAS and remain isolated from incident-ledger writes. No ruleset writes or modules/uu.conf access.",
-      "health_check": "Queue retirement uses GitHub Contents SHA-CAS and validates the migrated queue against the four-system registry; incident operations use idempotent event IDs, revision checks and read-after-write verification; pull requests run registry, adapter and V2 regression validation.",
+      "permission_boundary": "Storage Management is the sole writer of automation/task_queue.json through script_remote_task_queue_runtime and storage/v2/incidents.json through storage_incident_store. Queue writes use SHA-CAS and remain isolated from incident-ledger writes. No ruleset writes. It may read modules/uu.conf only as a protected input to compute and compare the production-integrity fingerprint; no code path may modify it.",
+      "health_check": "Queue retirement uses GitHub Contents SHA-CAS and validates the migrated queue against the four-system registry; incident operations use idempotent event IDs, revision checks and read-after-write verification; scheduled recovery retries require exact workflow/run identity, successful audit and publish verification, a matching independently verified queue task, current production fingerprint equality and a released lease; pull requests run registry, adapter and V2 regression validation.",
       "orchestration": {
         "enabled": true,
         "allowed_callers": [
