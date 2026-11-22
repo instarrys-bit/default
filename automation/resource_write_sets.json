@@ -408,7 +408,11 @@
         "rulesets/proxy.list",
         "rulesets/reject.list",
         "rulesets/pending_queue.json",
-        "rulesets/manifest.json"
+        "rulesets/manifest.json",
+        "rulesets/reject_review_queue.json",
+        "rulesets/reject_review_queue.json.manifest.json",
+        "rulesets/reject_review_queue.json.parts-*/part-*.jsonl",
+        "rulesets/reject_review_queue.json.parts-*/part-*.jsonl.gz"
       ],
       "read_resources": [
         "sources/domain_reviews.json",
@@ -442,6 +446,12 @@
         "rulesets/proxy.list",
         "rulesets/reject.list",
         "rulesets/manifest.json"
+      ],
+      "dynamic_children": [
+        "rulesets/reject_review_queue.json.manifest.json",
+        "rulesets/reject_review_queue.json.parts-*/part-*.jsonl",
+        "rulesets/reject_review_queue.json.parts-*/part-*.jsonl.gz",
+        "rulesets/reject_review_queue.json.parts.tmp-*"
       ]
     },
     {
