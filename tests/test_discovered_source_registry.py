@@ -56,6 +56,56 @@ class DiscoveredSourceRegistryTests(unittest.TestCase):
         self.assertEqual({item["url"] for item in result["source_files"]}, {self.url_a, self.url_b})
         self.assertEqual(len(result["repositories"][0]["source_ids"]), 2)
 
+    def test_new_registry_records_append_after_existing_global_record_order(self):
+        first = build_registry({}, self.discovery, self.provenance, "2026-11-10T01:00:00+00:00")
+        first_payload = encode_registry_storage(first)
+        old_sequences = {
+            (record["record_type"], record.get("source_id") or record.get("repository")):
+            record["_registry_sequence"]
+            for record in first_payload["records"]
+        }
+        old_max = max(old_sequences.values())
+
+        new_url_a = "https://raw.githubusercontent.com/Example/Rules/main/new-direct.list"
+        new_url_b = "https://raw.githubusercontent.com/NewOrg/NewRules/main/new-proxy.list"
+        next_discovery = {
+            "schema_version": 1,
+            "candidates": [
+                {
+                    "repository": self.repo,
+                    "default_branch": "main",
+                    "rule_list_urls": [self.url_a, self.url_b, new_url_a],
+                    "tree_scan_status": "complete",
+                },
+                {
+                    "repository": "NewOrg/NewRules",
+                    "default_branch": "main",
+                    "rule_list_urls": [new_url_b],
+                    "tree_scan_status": "complete",
+                },
+            ],
+        }
+        next_provenance = {
+            **self.provenance,
+            "workflow_run_id": "123457",
+            "workflow_head_sha": "c" * 40,
+            "artifact_sha256": "d" * 64,
+        }
+        updated = build_registry(
+            first, next_discovery, next_provenance, "2026-11-11T01:00:00+00:00"
+        )
+        records = encode_registry_storage(updated)["records"]
+        sequences = [record["_registry_sequence"] for record in records]
+        self.assertEqual(sequences, sorted(sequences))
+        for record in records:
+            key = (record["record_type"], record.get("source_id") or record.get("repository"))
+            if key in old_sequences:
+                self.assertEqual(record["_registry_sequence"], old_sequences[key])
+        appended = [record for record in records if record["_registry_sequence"] > old_max]
+        self.assertEqual([record["record_type"] for record in appended],
+                         ["source_file", "repository", "source_file"])
+        self.assertEqual(len(records), len(first_payload["records"]) + 3)
+
     def test_same_discovery_run_is_idempotent(self):
         first = build_registry({}, self.discovery, self.provenance, "2026-11-10T01:00:00+00:00")
         second = build_registry(first, self.discovery, self.provenance, "2026-11-10T02:00:00+00:00")

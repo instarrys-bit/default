@@ -45,16 +45,35 @@ def build_registry(existing: dict, discovery: dict, provenance: dict, now: str) 
         raise ValueError("existing source candidate registry must be an object")
     if existing and existing.get("schema_version") != REGISTRY_SCHEMA:
         raise ValueError("existing source candidate registry schema is unsupported")
-    repositories = {
-        str(item.get("repository", "")).casefold(): dict(item)
-        for item in existing.get("repositories", [])
-        if isinstance(item, dict) and item.get("repository")
-    }
-    source_files = {
-        str(item.get("source_id", "")): dict(item)
-        for item in existing.get("source_files", [])
-        if isinstance(item, dict) and item.get("source_id")
-    }
+    # Keep a stable append order across repository and source-file records.
+    # Existing v1 registries receive sequence numbers once, in their stored order;
+    # every newly discovered record is then assigned a larger sequence.
+    used_sequences = set()
+    next_sequence = 0
+    repositories = {}
+    for raw_item in existing.get("repositories", []):
+        if not isinstance(raw_item, dict) or not raw_item.get("repository"):
+            continue
+        item = dict(raw_item)
+        sequence = int(item.get("_registry_sequence", next_sequence))
+        if sequence < 0 or sequence in used_sequences:
+            raise ValueError("source registry record sequence is invalid or duplicated")
+        item["_registry_sequence"] = sequence
+        used_sequences.add(sequence)
+        next_sequence = max(next_sequence, sequence + 1)
+        repositories[str(item["repository"]).casefold()] = item
+    source_files = {}
+    for raw_item in existing.get("source_files", []):
+        if not isinstance(raw_item, dict) or not raw_item.get("source_id"):
+            continue
+        item = dict(raw_item)
+        sequence = int(item.get("_registry_sequence", next_sequence))
+        if sequence < 0 or sequence in used_sequences:
+            raise ValueError("source registry record sequence is invalid or duplicated")
+        item["_registry_sequence"] = sequence
+        used_sequences.add(sequence)
+        next_sequence = max(next_sequence, sequence + 1)
+        source_files[str(item["source_id"])] = item
     run_id = str(provenance.get("workflow_run_id", ""))
     if not run_id.isdigit():
         raise ValueError("discovery provenance must contain a numeric workflow run ID")
@@ -80,6 +99,10 @@ def build_registry(existing: dict, discovery: dict, provenance: dict, now: str) 
             raise ValueError("discovered repository identity is invalid")
         repo_key = repository.casefold()
         old_repo = repositories.get(repo_key, {})
+        is_new_repository = not bool(old_repo)
+        repository_sequence = next_sequence if is_new_repository else int(old_repo["_registry_sequence"])
+        if is_new_repository:
+            next_sequence += 1
         is_new_run = old_repo.get("last_seen_run_id") != run_id
         discovered_at = str(candidate.get("discovered_at") or now)
         urls = candidate.get("rule_list_urls", [])
@@ -92,6 +115,10 @@ def build_registry(existing: dict, discovery: dict, provenance: dict, now: str) 
             source_id = source_id_for(repository, url)
             ids.append(source_id)
             old_source = source_files.get(source_id, {})
+            is_new_source = not bool(old_source)
+            source_sequence = next_sequence if is_new_source else int(old_source["_registry_sequence"])
+            if is_new_source:
+                next_sequence += 1
             source_new_run = old_source.get("last_seen_run_id") != run_id
             methods = []
             if url in candidate.get("readme_rule_list_urls", []):
@@ -103,6 +130,7 @@ def build_registry(existing: dict, discovery: dict, provenance: dict, now: str) 
             source_files[source_id] = {
                 **old_source,
                 "source_id": source_id,
+                "_registry_sequence": source_sequence,
                 "source_type": "policy_rule_list_candidate",
                 "repository": repository,
                 "publisher": repository,
@@ -128,6 +156,7 @@ def build_registry(existing: dict, discovery: dict, provenance: dict, now: str) 
         repo_record = {
             **old_repo,
             "repository": repository,
+            "_registry_sequence": repository_sequence,
             "html_url": str(candidate.get("html_url") or ("https://github.com/" + repository)),
             "description": str(candidate.get("description") or "")[:1000],
             "default_branch": str(candidate.get("default_branch") or "main"),
@@ -212,6 +241,13 @@ def decode_registry_storage(payload: dict) -> dict:
     result.pop("storage_format", None)
     result.pop("record_count", None)
     result["schema_version"] = REGISTRY_SCHEMA
+    # The logical v1 shape has canonical per-type ordering. Keep that public
+    # shape stable after decoding; the hidden sequence remains on each record
+    # and encode_registry_storage() uses it to preserve global append order.
+    repositories.sort(key=lambda item: str(item.get("repository", "")).casefold())
+    source_files.sort(key=lambda item: (
+        str(item.get("repository", "")).casefold(), str(item.get("url", ""))
+    ))
     result["repositories"] = repositories
     result["source_files"] = source_files
     return result
@@ -219,11 +255,20 @@ def decode_registry_storage(payload: dict) -> dict:
 
 def encode_registry_storage(registry: dict) -> dict:
     """Convert the stable v1 logical shape to one typed, checksummed shard collection."""
-    records = []
-    for item in registry.get("repositories", []):
-        records.append({"record_type": "repository", **item})
-    for item in registry.get("source_files", []):
-        records.append({"record_type": "source_file", **item})
+    ordered_records = []
+    for kind, items in (
+        ("repository", registry.get("repositories", [])),
+        ("source_file", registry.get("source_files", [])),
+    ):
+        for item in items:
+            if "_registry_sequence" not in item:
+                raise ValueError("source registry record is missing its append sequence")
+            ordered_records.append((int(item["_registry_sequence"]), {"record_type": kind, **item}))
+    ordered_records.sort(key=lambda entry: entry[0])
+    sequences = [sequence for sequence, _ in ordered_records]
+    if len(sequences) != len(set(sequences)):
+        raise ValueError("source registry record sequences must be unique")
+    records = [record for _, record in ordered_records]
     metadata = {key: value for key, value in registry.items()
                 if key not in {"repositories", "source_files", "schema_version"}}
     return {
