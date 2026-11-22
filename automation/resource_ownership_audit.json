@@ -426,7 +426,10 @@
       "id": "ruleset_conflict_archives",
       "paths": [
         "rulesets/config_conflict_archive.json",
-        "rulesets/reject_review_queue.json"
+        "rulesets/reject_review_queue.json",
+        "rulesets/reject_review_queue.json.manifest.json",
+        "rulesets/reject_review_queue.json.parts-<digest>/part-*.jsonl",
+        "rulesets/reject_review_queue.json.parts-<digest>/part-*.jsonl.gz"
       ],
       "known_writers": [
         "script_build_rulesets",
