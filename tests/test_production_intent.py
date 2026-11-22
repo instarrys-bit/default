@@ -256,6 +256,10 @@ class ProductionIntentTests(unittest.TestCase):
             'sort_by(.verification.verified_at // .completed_at // .updated_at // "")',
             workflow,
         )
+        self.assertIn(
+            'sort_by(.verification.verified_at // .completed_at // .updated_at // "") | last | .input.production_fingerprint',
+            workflow,
+        )
 
     def test_scheduled_refresh_idempotency_key_does_not_depend_on_cron_revision(self):
         stamp = (self.now - timedelta(days=9)).isoformat()
