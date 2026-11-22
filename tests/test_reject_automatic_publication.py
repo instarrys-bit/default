@@ -1,3 +1,5 @@
+import json
+import tempfile
 import unittest
 from pathlib import Path
 import sys
@@ -5,6 +7,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 import build_rulesets
+from json_document_store import manifest_path, read_document
 
 
 class RejectManualApprovalTests(unittest.TestCase):
@@ -74,6 +77,33 @@ class RejectManualApprovalTests(unittest.TestCase):
         finally:
             build_rulesets.MAX_REJECT_REVIEW_QUEUE_BYTES = original_limit
 
+
+
+    def test_reject_review_queue_shards_and_round_trips_above_single_file_limit(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "reject_review_queue.json"
+            payload = {
+                "schema_version": 1,
+                "policy": "REJECT",
+                "items": [
+                    {"rule": f"DOMAIN,ad-{index}.example", "reason": "evidence-" * 18}
+                    for index in range(24)
+                ],
+            }
+            original_limit = build_rulesets.MAX_REJECT_REVIEW_QUEUE_BYTES
+            try:
+                build_rulesets.MAX_REJECT_REVIEW_QUEUE_BYTES = 512
+                storage = build_rulesets.write_reject_review_queue(path, payload)
+                self.assertEqual(storage["storage"], "jsonl-shards-v1")
+                manifest_file = manifest_path(path)
+                self.assertTrue(manifest_file.is_file())
+                self.assertFalse(path.exists())
+                manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
+                self.assertEqual(manifest["record_count"], len(payload["items"]))
+                self.assertTrue(all(0 < shard["bytes"] <= 512 for shard in manifest["shards"]))
+                self.assertEqual(read_document(path, "items"), payload)
+            finally:
+                build_rulesets.MAX_REJECT_REVIEW_QUEUE_BYTES = original_limit
 
     def test_production_control_requires_manual_approval_after_secondary_review(self):
         import json
