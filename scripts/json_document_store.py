@@ -301,7 +301,7 @@ def read_document(path: Path, collection_key: str, default: dict | None = None) 
         if not directory or Path(directory).name != directory:
             raise ValueError(f"unsafe shard directory in {manifest_file}")
         shard_path = manifest_file.parent / directory / name
-        raw = _verified_shard_payload(shard_path.read_bytes(), shard, shard_path, compressed)
+        raw = _verified_shard_payload(shard_path.read_bytes(), shard, shard_path, compressed, int(manifest.get("max_file_bytes", MAX_FILE_BYTES)))
         rows = [line for line in raw.splitlines() if line]
         if len(rows) != int(shard.get("records", -1)):
             raise ValueError(f"shard record-count mismatch: {shard_path}")
