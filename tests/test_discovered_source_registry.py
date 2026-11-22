@@ -192,12 +192,14 @@ class DiscoveredSourceRegistryTests(unittest.TestCase):
         logical = build_registry({}, discovery, self.provenance, "2026-11-10T01:00:00+00:00")
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "source_candidate_registry.json"
-            with patch("register_discovered_sources.MAX_REGISTRY_BYTES", 8192):
+            # Keep the test's per-shard ceiling large enough for one complete
+            # source record; use many records to exercise automatic shard rollover.
+            with patch("register_discovered_sources.MAX_REGISTRY_BYTES", 65536):
                 storage = persist_registry(logical, output=path, lease_required=False)
             manifest = json.loads(manifest_path(path).read_text(encoding="utf-8"))
             self.assertGreater(storage["shards"], 1)
-            self.assertGreater(storage["total_bytes"], 8192)
-            self.assertTrue(all(0 < item["bytes"] <= 8192 for item in manifest["shards"]))
+            self.assertGreater(storage["total_bytes"], 65536)
+            self.assertTrue(all(0 < item["bytes"] <= 65536 for item in manifest["shards"]))
             self.assertEqual(read_document(path, "records"), encode_registry_storage(logical))
     def test_rejects_rule_url_from_another_repository(self):
         invalid = json.loads(json.dumps(self.discovery))
