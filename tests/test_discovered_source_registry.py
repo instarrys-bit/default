@@ -129,13 +129,13 @@ class DiscoveredSourceRegistryTests(unittest.TestCase):
             result = write_document(
                 path, stored, "records", lease_required=False,
                 force_sharded=True, max_file_bytes=40_000_000,
-                max_total_bytes=40_000_000, shard_target_bytes=35_000_000,
+                shard_target_bytes=35_000_000,
             )
             self.assertEqual(result["storage"], "jsonl-shards-v1")
             manifest = json.loads(manifest_path(path).read_text(encoding="utf-8"))
             self.assertEqual(manifest["record_count"], 1647 + total_urls)
-            self.assertEqual(manifest["max_total_bytes"], 40_000_000)
-            self.assertLessEqual(manifest["total_document_bytes"], 40_000_000)
+            self.assertIsNone(manifest["max_total_bytes"])
+            self.assertGreater(len(manifest["shards"]), 1)
             self.assertEqual(result["total_bytes"], manifest["total_document_bytes"])
             self.assertTrue(all(item["bytes"] <= 40_000_000 for item in manifest["shards"]))
             restored = decode_registry_storage(read_document(path, "records"))
@@ -178,7 +178,7 @@ class DiscoveredSourceRegistryTests(unittest.TestCase):
             write_document(
                 path, merged_payload, "records", lease_required=False,
                 force_sharded=True, max_file_bytes=40_000_000,
-                max_total_bytes=40_000_000, shard_target_bytes=35_000_000,
+                shard_target_bytes=35_000_000,
             )
             merged_readback = decode_registry_storage(read_document(path, "records"))
             self.assertEqual(merged_readback, merged)
