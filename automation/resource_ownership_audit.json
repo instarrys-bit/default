@@ -180,7 +180,7 @@
       "lock_key": "logical/production-pipeline",
       "required_mode": "exclusive_live_resource_lease",
       "status": "fenced_single_publisher_rulesets_only",
-      "note": "Stores every discovered candidate repository and each supported rule-list file as typed JSONL records in a durable, non-activating registry. Schema-v1 inline JSON is migrated on the next successful write; schema-v2 readers verify the adjacent manifest, each shard SHA-256 and record count. Shard files are content-addressed; the adjacent manifest is atomically replaced only after all shards are complete. The per-file limit remains 40,000,000 bytes with a 35,000,000-byte target. Source identity is repository+URL; discovery provenance and first/last-seen run IDs are retained. External intelligence is excluded. The registry is never treated as an active policy source."
+      "note": "Stores every discovered candidate repository and each supported rule-list file as typed JSONL records in a durable, non-activating registry. Schema-v1 inline JSON is migrated on the next successful write; schema-v2 readers verify the adjacent manifest, each shard SHA-256 and record count. Shard files are content-addressed; the adjacent manifest is atomically replaced only after all shards are complete. Each stored shard has a 40,000,000-byte per-file limit and a 35,000,000-byte uncompressed target; the registry has no aggregate byte cap and grows by adding shards. Source identity is repository+URL; discovery provenance and first/last-seen run IDs are retained. External intelligence is excluded. The registry is never treated as an active policy source."
     },
     {
       "id": "domain_candidate_buffer",

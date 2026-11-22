@@ -202,6 +202,8 @@ class DiscoveredSourceRegistryTests(unittest.TestCase):
             manifest = json.loads(manifest_path(path).read_text(encoding="utf-8"))
             self.assertGreater(storage["shards"], 1)
             self.assertGreater(storage["total_bytes"], 65536)
+            self.assertIsNone(storage["max_total_bytes"])
+            self.assertIsNone(manifest["max_total_bytes"])
             self.assertTrue(all(0 < item["bytes"] <= 65536 for item in manifest["shards"]))
             self.assertEqual(read_document(path, "records"), encode_registry_storage(logical))
     def test_rejects_rule_url_from_another_repository(self):
