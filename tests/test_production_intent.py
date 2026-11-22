@@ -250,6 +250,26 @@ class ProductionIntentTests(unittest.TestCase):
             last_success_at=self.now.isoformat(), successful_fingerprints={self.fp}, now=self.now)
         self.assertEqual(result["decision"], "ALREADY_SATISFIED")
 
+    def test_watchdog_uses_independent_verification_timestamp_for_refresh_clock(self):
+        workflow = (ROOT / ".github" / "workflows" / "automation-watchdog.yml").read_text(encoding="utf-8")
+        self.assertIn(
+            'sort_by(.verification.verified_at // .completed_at // .updated_at // "")',
+            workflow,
+        )
+
+    def test_scheduled_refresh_idempotency_key_does_not_depend_on_cron_revision(self):
+        stamp = (self.now - timedelta(days=9)).isoformat()
+        args = dict(
+            event="schedule", current_fingerprint=self.fp,
+            last_success_fingerprint=self.fp,
+            path_classification={"status": "NO_INPUT_CHANGE"},
+            last_success_at=stamp, successful_fingerprints={self.fp}, now=self.now,
+        )
+        first = decide(**args, revision="cron-run-a")
+        replay = decide(**args, revision="cron-run-b")
+        self.assertEqual(first["decision"], "SCHEDULE_DUE")
+        self.assertEqual(first["idempotency_key"], replay["idempotency_key"])
+
     def test_schedule_is_due_only_after_explicit_refresh_interval(self):
         due = decide(event="schedule", current_fingerprint=self.fp,
             last_success_fingerprint=self.fp, path_classification={"status":"NO_INPUT_CHANGE"},
