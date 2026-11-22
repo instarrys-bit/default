@@ -134,13 +134,15 @@ def verify_auto_sync_recovery(
         or not resource_lease.get("released_at")
     ):
         reasons.append("resource_lease_not_released")
+    relationship = evidence.get("head_sha_relationship")
     if (
         evidence.get("status") != "completed"
         or evidence.get("conclusion") != "success"
         or str(evidence.get("run_id", "")) != run_id
         or evidence.get("head_sha") != head_sha
         or evidence.get("requested_head_sha") != requested_sha
-        or evidence.get("head_sha_relationship") not in {"exact", "queue_intent_commit_only"}
+        or not isinstance(relationship, str)
+        or relationship not in {"exact", "queue_intent_commit_only"}
     ):
         reasons.append("queue_run_evidence_mismatch")
     if task_input.get("production_fingerprint") != current_fingerprint:
