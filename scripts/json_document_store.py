@@ -87,6 +87,7 @@ def _compact_bytes(value: Any) -> bytes:
 def _verified_shard_payload(
     raw: bytes, shard: dict, shard_path: Path, compressed: bool,
     max_file_bytes: int = MAX_FILE_BYTES,
+    max_uncompressed_bytes: int | None = None,
 ) -> bytes:
     """Verify one physical shard and boundedly decode its logical JSONL payload."""
     file_limit = min(MAX_FILE_BYTES, int(max_file_bytes))
@@ -104,15 +105,18 @@ def _verified_shard_payload(
     expected = int(shard.get("uncompressed_bytes", -1))
     if expected < 0:
         raise ValueError(f"invalid shard uncompressed byte count: {shard_path}")
-    if expected > file_limit:
-        raise ValueError(f"uncompressed shard exceeds {file_limit} bytes: {shard_path}")
+    uncompressed_limit = file_limit if max_uncompressed_bytes is None else int(max_uncompressed_bytes)
+    if uncompressed_limit <= 0:
+        raise ValueError("shard uncompressed byte limit must be positive")
+    if expected > uncompressed_limit:
+        raise ValueError(f"uncompressed shard exceeds {uncompressed_limit} bytes: {shard_path}")
     try:
         decoder = zlib.decompressobj(16 + zlib.MAX_WBITS)
-        decoded = decoder.decompress(raw, file_limit + 1)
+        decoded = decoder.decompress(raw, uncompressed_limit + 1)
     except zlib.error as exc:
         raise ValueError(f"compressed shard cannot be decoded: {shard_path}") from exc
-    if len(decoded) > file_limit or decoder.unconsumed_tail:
-        raise ValueError(f"uncompressed shard exceeds {file_limit} bytes: {shard_path}")
+    if len(decoded) > uncompressed_limit or decoder.unconsumed_tail:
+        raise ValueError(f"uncompressed shard exceeds {uncompressed_limit} bytes: {shard_path}")
     if not decoder.eof:
         raise ValueError(f"compressed shard is truncated: {shard_path}")
     if decoder.unused_data:
@@ -255,7 +259,11 @@ def iter_document_records(path: Path, collection_key: str):
             if not name or Path(name).name != name or not (name.endswith(".jsonl") or name.endswith(".jsonl.gz")):
                 raise ValueError(f"unsafe shard name in {manifest_file}: {name!r}")
             shard_path = manifest_file.parent / directory / name
-            raw = _verified_shard_payload(shard_path.read_bytes(), shard, shard_path, compressed, int(manifest.get("max_file_bytes", MAX_FILE_BYTES)))
+            raw = _verified_shard_payload(
+                shard_path.read_bytes(), shard, shard_path, compressed,
+                int(manifest.get("max_file_bytes", MAX_FILE_BYTES)),
+                int(manifest.get("max_uncompressed_file_bytes", manifest.get("max_file_bytes", MAX_FILE_BYTES))),
+            )
             shard_count = 0
             for line in raw.splitlines():
                 if not line:
@@ -314,7 +322,11 @@ def read_document(path: Path, collection_key: str, default: dict | None = None) 
         if not directory or Path(directory).name != directory:
             raise ValueError(f"unsafe shard directory in {manifest_file}")
         shard_path = manifest_file.parent / directory / name
-        raw = _verified_shard_payload(shard_path.read_bytes(), shard, shard_path, compressed, int(manifest.get("max_file_bytes", MAX_FILE_BYTES)))
+        raw = _verified_shard_payload(
+                shard_path.read_bytes(), shard, shard_path, compressed,
+                int(manifest.get("max_file_bytes", MAX_FILE_BYTES)),
+                int(manifest.get("max_uncompressed_file_bytes", manifest.get("max_file_bytes", MAX_FILE_BYTES))),
+            )
         rows = [line for line in raw.splitlines() if line]
         if len(rows) != int(shard.get("records", -1)):
             raise ValueError(f"shard record-count mismatch: {shard_path}")
@@ -339,7 +351,7 @@ def write_document(
     path: Path, payload: dict, collection_key: str, *, lease_required: bool = True,
     force_sharded: bool = False, max_file_bytes: int | None = None,
     shard_target_bytes: int | None = None, max_total_bytes: int | None = None,
-    compress_shards: bool = False,
+    compress_shards: bool = False, max_uncompressed_file_bytes: int | None = None,
 ) -> dict:
     """Write one bounded JSON file, or switch atomically to immutable JSONL shards.
 
@@ -354,7 +366,13 @@ def write_document(
     metadata = {key: value for key, value in payload.items() if key != collection_key}
     file_limit = MAX_FILE_BYTES if max_file_bytes is None else int(max_file_bytes)
     shard_limit = SHARD_TARGET_BYTES if shard_target_bytes is None else int(shard_target_bytes)
+    uncompressed_limit = (
+        file_limit if max_uncompressed_file_bytes is None
+        else int(max_uncompressed_file_bytes)
+    )
     total_limit = None if max_total_bytes is None else int(max_total_bytes)
+    if uncompressed_limit <= 0:
+        raise ValueError("uncompressed shard limit must be positive")
     if total_limit is not None and total_limit <= 0:
         raise ValueError("document total byte limit must be positive")
     if file_limit <= 0 or shard_limit <= 0 or shard_limit > file_limit:
@@ -396,6 +414,8 @@ def write_document(
     staging = Path(tempfile.mkdtemp(prefix=path.name + ".parts.tmp-", dir=str(path.parent)))
     shard_entries = []
     shard_buffer = bytearray()
+    shard_compressed = bytearray()
+    shard_compressor = None
     shard_index = 0
     total_shard_bytes = 0
     digest = hashlib.sha256()
@@ -403,13 +423,18 @@ def write_document(
     digest.update(collection_key.encode("utf-8"))
 
     def flush_shard() -> None:
-        nonlocal shard_index, shard_buffer, total_shard_bytes
+        nonlocal shard_index, shard_buffer, shard_compressed, shard_compressor, total_shard_bytes
         if not shard_buffer:
             return
-        if len(shard_buffer) > file_limit:
-            raise ValueError("internal shard sizing error")
+        if len(shard_buffer) > uncompressed_limit:
+            raise ValueError("internal shard uncompressed sizing error")
         raw = bytes(shard_buffer)
-        stored = _gzip_shard(raw) if compress_shards else raw
+        if compress_shards:
+            if shard_compressor is None:
+                raise ValueError("compressed shard is missing its compressor")
+            stored = bytes(shard_compressed) + shard_compressor.flush()
+        else:
+            stored = raw
         if len(stored) > file_limit:
             raise ValueError(f"stored shard exceeds the {file_limit}-byte single-file limit")
         name = f"part-{shard_index:06d}.jsonl" + (".gz" if compress_shards else "")
@@ -428,16 +453,40 @@ def write_document(
         total_shard_bytes += len(stored)
         shard_index += 1
         shard_buffer = bytearray()
+        shard_compressed = bytearray()
+        shard_compressor = None
 
     try:
         for record in records:
             line = _compact_bytes(record) + b"\n"
-            if len(line) > file_limit:
-                raise ValueError(f"one record exceeds the {file_limit}-byte single-file limit")
+            if len(line) > uncompressed_limit:
+                raise ValueError(
+                    f"one record exceeds the {uncompressed_limit}-byte uncompressed shard limit"
+                )
             digest.update(line)
-            if shard_buffer and len(shard_buffer) + len(line) > shard_limit:
-                flush_shard()
-            shard_buffer.extend(line)
+            if compress_shards:
+                if shard_buffer:
+                    trial = shard_compressor.copy()
+                    trial_output = trial.compress(line)
+                    projected_size = len(shard_compressed) + len(trial_output) + len(trial.copy().flush())
+                    if projected_size > shard_limit or len(shard_buffer) + len(line) > uncompressed_limit:
+                        flush_shard()
+                if not shard_buffer:
+                    shard_compressor = zlib.compressobj(level=9, wbits=16 + zlib.MAX_WBITS)
+                trial = shard_compressor.copy()
+                trial_output = trial.compress(line)
+                projected_size = len(shard_compressed) + len(trial_output) + len(trial.copy().flush())
+                if projected_size > shard_limit:
+                    raise ValueError(
+                        f"one record cannot fit within the {shard_limit}-byte stored shard limit"
+                    )
+                shard_compressor = trial
+                shard_compressed.extend(trial_output)
+                shard_buffer.extend(line)
+            else:
+                if shard_buffer and len(shard_buffer) + len(line) > shard_limit:
+                    flush_shard()
+                shard_buffer.extend(line)
         flush_shard()
         total_document_bytes = len(metadata_bytes) + envelope_bytes + total_shard_bytes
         if total_limit is not None and total_document_bytes > total_limit:
@@ -467,6 +516,7 @@ def write_document(
             "total_shard_bytes": total_shard_bytes,
             "total_document_bytes": total_document_bytes,
             "max_file_bytes": file_limit,
+            "max_uncompressed_file_bytes": uncompressed_limit,
             "max_total_bytes": total_limit,
             "shard_directory": shard_directory,
             "metadata": metadata,
