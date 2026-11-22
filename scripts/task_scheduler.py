@@ -693,7 +693,7 @@ def publishable_resource_path(path: str, resources: list[str]) -> bool:
         base=re.escape(logical)
         if path in {logical, logical + ".manifest.json"}:
             return True
-        if re.fullmatch(base + r"\.parts-[0-9a-f]{16}/part-[0-9]{6}\.jsonl", path):
+        if re.fullmatch(base + r"\.parts-[0-9a-f]{16}/part-[0-9]{6}\.jsonl(?:\.gz)?", path):
             return True
     return False
 
