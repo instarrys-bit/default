@@ -80,6 +80,24 @@ class JsonDocumentStoreTests(unittest.TestCase):
             self.assertEqual(store.read_document(path, "records"), payload)
             self.assertEqual(list(store.iter_document_records(path, "records")), payload["records"])
 
+    def test_multiple_compressed_shards_each_obey_file_cap_without_total_cap(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "large-registry.json"
+            payload = {"records": [
+                {"id": i, "payload": f"record-{i:04d}-" + ("abcde" * 90)
+                for i in range(40)
+            ]}
+            result = store.write_document(
+                path, payload, "records", force_sharded=True,
+                max_file_bytes=1024, shard_target_bytes=900,
+                compress_shards=True,
+            )
+            manifest = json.loads(store.manifest_path(path).read_text(encoding="utf-8"))
+            self.assertGreater(result["shards"], 1)
+            self.assertGreater(result["total_bytes"], 1024)
+            self.assertTrue(all(0 < item["bytes"] <= 1024 for item in manifest["shards"]))
+            self.assertEqual(store.read_document(path, "records"), payload)
+            self.assertEqual(list(store.iter_document_records(path, "records")), payload["records"])
     def test_compressed_shard_corruption_fails_closed(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "registry.json"
