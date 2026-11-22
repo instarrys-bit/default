@@ -242,7 +242,7 @@
       "worker_id": "44949922749"
     }
   },
-  "revision": 133,
+  "revision": 134,
   "schema_version": 1,
   "tasks": [
     {
@@ -2404,6 +2404,36 @@
         "verified_at": "2026-11-21T21:32:50Z",
         "verifier_program_id": "script_task_result_verifier"
       }
+    },
+    {
+      "attempts": 0,
+      "capability": "deterministic_audit",
+      "created_at": "2026-11-22T00:16:41Z",
+      "execution_backend": "github_contents",
+      "idempotency_key": "production:schedule:ac40e12d5f6e03cea835dff4017803add70df6128f979035b9f1ebce6a20d592:bootstrap",
+      "input": {
+        "baseline_source_actor": "instarrys-bit",
+        "baseline_source_before": "",
+        "baseline_source_event": "schedule",
+        "baseline_source_sha": "72a05bc3fae3c6631300513dd960940d07ae0326",
+        "production_decision": "SCHEDULE_DUE",
+        "production_fingerprint": "ac40e12d5f6e03cea835dff4017803add70df6128f979035b9f1ebce6a20d592",
+        "production_reason": "the configured refresh interval has elapsed"
+      },
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 2,
+      "not_before": "2026-11-22T00:16:41Z",
+      "priority": 100,
+      "requester_program_id": "workflow_automation_watchdog",
+      "result": null,
+      "state_history": [
+        "QUEUED"
+      ],
+      "status": "QUEUED",
+      "target_program_id": "workflow_auto_sync",
+      "task_id": "task_ddab0e5429ef471eb76405fd",
+      "trace_id": "4bb911b7a4e94f72a8145e075c24fae2"
     }
   ]
 }
