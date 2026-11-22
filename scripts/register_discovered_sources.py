@@ -234,6 +234,24 @@ def encode_registry_storage(registry: dict) -> dict:
         "records": records,
     }
 
+def persist_registry(
+    logical_registry: dict, *, output: Path = OUTPUT, lease_required: bool = True
+) -> dict:
+    """Persist the complete registry under the 40 MB total cap and verify read-back."""
+    if lease_required:
+        assert_resource_lease_from_environment("rulesets/source_candidate_registry.json")
+    payload = encode_registry_storage(logical_registry)
+    storage = write_document(
+        output, payload, "records", lease_required=lease_required,
+        force_sharded=True, max_file_bytes=MAX_REGISTRY_BYTES,
+        max_total_bytes=MAX_REGISTRY_BYTES,
+        shard_target_bytes=min(35_000_000, MAX_REGISTRY_BYTES),
+    )
+    if read_document(output, "records") != payload:
+        raise ValueError("source candidate registry read-after-write verification failed")
+    return storage
+
+
 def load_discovery() -> tuple[dict, dict]:
     supplied_root = os.environ.get("AUTOMATION_SOURCE_DISCOVERY_ROOT", "").strip()
     if supplied_root:
@@ -293,13 +311,7 @@ def main() -> int:
         existing = decode_registry_storage(stored)
         now = datetime.now(timezone.utc).isoformat()
         logical_registry = build_registry(existing, discovery, provenance, now)
-        payload = encode_registry_storage(logical_registry)
-        assert_resource_lease_from_environment("rulesets/source_candidate_registry.json")
-        storage = write_document(
-            OUTPUT, payload, "records", lease_required=True,
-            force_sharded=True, max_file_bytes=MAX_REGISTRY_BYTES,
-            shard_target_bytes=35_000_000,
-        )
+        storage = persist_registry(logical_registry)
         print(json.dumps({
             "registered_repositories": logical_registry["repository_count"],
             "registered_rule_list_files": logical_registry["source_file_count"],
@@ -310,6 +322,8 @@ def main() -> int:
             "storage": storage["storage"],
             "shard_count": storage["shards"],
             "stored_bytes": storage["bytes"],
+            "stored_total_bytes": storage["total_bytes"],
+            "total_byte_limit": MAX_REGISTRY_BYTES,
         }, sort_keys=True))
         return 0
     except (OSError, ValueError, json.JSONDecodeError) as exc:
