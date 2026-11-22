@@ -13,7 +13,7 @@ from sync_ruleset_config_conflicts import classify_rule
 from source_registry import load_registry, validate_registry
 from resource_lease_runtime import assert_resource_lease_for_repository_path
 
-from json_document_store import read_document
+from json_document_store import read_document, write_document
 ROOT=Path(__file__).resolve().parents[1]
 LEDGER=ROOT/"sources/domain_reviews.json"
 SOURCE_FILE=ROOT/"sources/domain_sources.json"
@@ -78,6 +78,17 @@ def serialize_reject_review_queue(payload):
     if len(raw)>MAX_REJECT_REVIEW_QUEUE_BYTES:
         raise ValueError("REJECT manual-review queue exceeds the 50 MB per-file limit")
     return raw
+
+
+def write_reject_review_queue(path, payload):
+    """Persist the complete REJECT review queue with every file below the repository cap."""
+    return write_document(
+        path,
+        payload,
+        "items",
+        max_file_bytes=MAX_REJECT_REVIEW_QUEUE_BYTES,
+        shard_target_bytes=min(45_000_000, MAX_REJECT_REVIEW_QUEUE_BYTES),
+    )
 
 
 def reject_secondary_decision(evidence, scoring, minimum, threshold, correlated_pairs, required_sources=()):
@@ -630,7 +641,7 @@ def main():
         "manual_approved_count":manual_approved_current_count,
         "items":reject_review_items
     }
-    reject_queue_path.write_bytes(serialize_reject_review_queue(reject_queue_payload))
+    reject_queue_storage=write_reject_review_queue(reject_queue_path,reject_queue_payload)
     report_dir=ROOT/"reports"
     report_dir.mkdir(parents=True,exist_ok=True)
     report_lines=[
@@ -753,7 +764,12 @@ def main():
             "minimum_independent_publishers":secondary_min_groups,
             "required_any_sources":sorted(secondary_required_any),
             "manual_approval_required":True,
-            "queue_path":"rulesets/reject_review_queue.json"
+            "queue_path":"rulesets/reject_review_queue.json",
+            "queue_storage_format":reject_queue_storage["storage"],
+            "queue_storage_manifest":"rulesets/reject_review_queue.json.manifest.json" if reject_queue_storage["storage"]=="jsonl-shards-v1" else None,
+            "queue_shard_count":reject_queue_storage["shards"],
+            "queue_record_count":reject_queue_storage["records"],
+            "queue_max_file_bytes":MAX_REJECT_REVIEW_QUEUE_BYTES
         },
         "status_count":dict(sorted(status_counts.items())),
         "deterministic_review_progress":{
