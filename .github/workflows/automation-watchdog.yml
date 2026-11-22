@@ -152,7 +152,7 @@ jobs:
 
           successful_fingerprints="$(jq -c '[.tasks[] | select(.status == "SUCCEEDED" and ((.verification.status // "") == "passed")) | .input.production_fingerprint // empty] | map(select(type == "string")) | unique' "$AUTOMATION_QUEUE_SNAPSHOT")"
           last_success_fingerprint="$(jq -r '[.tasks[] | select(.status == "SUCCEEDED" and ((.verification.status // "") == "passed") and (.input.production_fingerprint != null))] | sort_by(.completed_at // .updated_at // "") | last | .input.production_fingerprint // empty' "$AUTOMATION_QUEUE_SNAPSHOT")"
-          last_success_at="$(jq -r '[.tasks[] | select(.status == "SUCCEEDED" and ((.verification.status // "") == "passed"))] | sort_by(.completed_at // .updated_at // "") | last | .completed_at // .updated_at // empty' "$AUTOMATION_QUEUE_SNAPSHOT")"
+          last_success_at="$(jq -r '[.tasks[] | select(.status == "SUCCEEDED" and ((.verification.status // "") == "passed"))] | sort_by(.verification.verified_at // .completed_at // .updated_at // "") | last | .verification.verified_at // .completed_at // .updated_at // empty' "$AUTOMATION_QUEUE_SNAPSHOT")"
 
           intent_json="$(python3 scripts/production_intent.py \
             --event "$ORIGIN_EVENT" \
