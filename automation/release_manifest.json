@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.21.1",
+  "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
   "release_status": "baseline_snapshot",
-  "created_on": "2026-11-21",
+  "created_on": "2026-11-22",
   "purpose": "Scoped independent Source Discovery → non-activating Source Assessment DAG with a gated Watchdog dispatch into the reviewed deterministic production workflow. The only shared source-DAG mutation is the fenced repository JSON task.assessment_checkpoint in automation/task_queue.json; Assessment outputs remain immutable Actions artifacts and production publication remains restricted to rulesets/**.",
   "component_schemas": {
     "program_registry": {
@@ -126,7 +126,7 @@
     },
     "ruleset_builder": {
       "path": "scripts/build_rulesets.py",
-      "git_blob_sha": "953e4604af30bf65e22486e6d3b848c6f0cd6954"
+      "git_blob_sha": "edc93e91e3f46cc822bd3f274a1415b336d4e718"
     },
     "lifecycle_auditor": {
       "path": "scripts/lifecycle_audit.py",
@@ -150,7 +150,7 @@
     },
     "production_control": {
       "path": "automation/production_control.json",
-      "git_blob_sha": "401c7278b711406732f5ca995e91a688163a0d04"
+      "git_blob_sha": "6eac41b6e73abea9b6203928a94b7470d3a054cd"
     },
     "source_handoff_policy": {
       "path": "scripts/source_handoff_policy.py",
@@ -216,6 +216,10 @@
     "storage_auto_sync_recovery_verifier": {
       "path": "storage/v2/verify_auto_sync_recovery.py",
       "git_blob_sha": "2e24c693ae20038e5a2978b5754dabceaa3610f6"
+    },
+    "dashboard_snapshot": {
+      "path": "scripts/build_dashboard_snapshot.py",
+      "git_blob_sha": "6d8dcdd5294d958e26fe88de13a3a273d16640f1"
     }
   },
   "compatibility": {
