@@ -10,6 +10,7 @@ import json
 import os
 import shutil
 import tempfile
+import zlib
 from pathlib import Path
 from typing import Any
 
@@ -85,27 +86,39 @@ def _compact_bytes(value: Any) -> bytes:
 
 def _verified_shard_payload(
     raw: bytes, shard: dict, shard_path: Path, compressed: bool,
-    max_uncompressed_bytes: int = MAX_FILE_BYTES,
+    max_file_bytes: int = MAX_FILE_BYTES,
 ) -> bytes:
-    """Verify stored bytes, then safely decode one bounded JSONL shard."""
-    if len(raw) > MAX_FILE_BYTES:
-        raise ValueError(f"shard exceeds {MAX_FILE_BYTES} bytes: {shard_path}")
+    """Verify one physical shard and boundedly decode its logical JSONL payload."""
+    file_limit = min(MAX_FILE_BYTES, int(max_file_bytes))
+    if file_limit <= 0:
+        raise ValueError("shard file limit must be positive")
+    if len(raw) > file_limit:
+        raise ValueError(f"shard exceeds {file_limit} bytes: {shard_path}")
     if hashlib.sha256(raw).hexdigest() != shard.get("sha256"):
         raise ValueError(f"shard checksum mismatch: {shard_path}")
     if len(raw) != int(shard.get("bytes", -1)):
         raise ValueError(f"shard byte-count mismatch: {shard_path}")
     if not compressed:
         return raw
-    try:
-        decoded = gzip.decompress(raw)
-    except (OSError, EOFError) as exc:
-        raise ValueError(f"compressed shard cannot be decoded: {shard_path}") from exc
+
     expected = int(shard.get("uncompressed_bytes", -1))
-    if expected < 0 or len(decoded) != expected:
+    if expected < 0:
+        raise ValueError(f"invalid shard uncompressed byte count: {shard_path}")
+    if expected > file_limit:
+        raise ValueError(f"uncompressed shard exceeds {file_limit} bytes: {shard_path}")
+    try:
+        decoder = zlib.decompressobj(16 + zlib.MAX_WBITS)
+        decoded = decoder.decompress(raw, file_limit + 1)
+    except zlib.error as exc:
+        raise ValueError(f"compressed shard cannot be decoded: {shard_path}") from exc
+    if len(decoded) > file_limit or decoder.unconsumed_tail:
+        raise ValueError(f"uncompressed shard exceeds {file_limit} bytes: {shard_path}")
+    if not decoder.eof:
+        raise ValueError(f"compressed shard is truncated: {shard_path}")
+    if decoder.unused_data:
+        raise ValueError(f"compressed shard has trailing data: {shard_path}")
+    if len(decoded) != expected:
         raise ValueError(f"shard uncompressed byte-count mismatch: {shard_path}")
-    uncompressed_limit = min(MAX_FILE_BYTES, int(max_uncompressed_bytes))
-    if uncompressed_limit <= 0 or len(decoded) > uncompressed_limit:
-        raise ValueError(f"uncompressed shard exceeds {uncompressed_limit} bytes: {shard_path}")
     return decoded
 
 

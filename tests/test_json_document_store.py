@@ -101,6 +101,28 @@ class JsonDocumentStoreTests(unittest.TestCase):
             self.assertTrue(all(0 < item["bytes"] <= 40000 for item in manifest["shards"]))
             self.assertEqual(store.read_document(path, "records"), payload)
             self.assertEqual(list(store.iter_document_records(path, "records")), payload["records"])
+    def test_compressed_shard_reader_enforces_manifest_file_limit(self):
+        raw = store._gzip_shard(b"x" * 2048)
+        shard = {
+            "bytes": len(raw),
+            "sha256": __import__("hashlib").sha256(raw).hexdigest(),
+            "uncompressed_bytes": 2048,
+        }
+        with self.assertRaisesRegex(ValueError, "shard exceeds 16 bytes"):
+            store._verified_shard_payload(raw, shard, Path("oversized.jsonl.gz"), True, 16)
+
+    def test_compressed_shard_rejects_expansion_before_unbounded_decode(self):
+        raw = store._gzip_shard(b"x" * 100000)
+        shard = {
+            "bytes": len(raw),
+            "sha256": __import__("hashlib").sha256(raw).hexdigest(),
+            "uncompressed_bytes": 100000,
+        }
+        with patch.object(store.gzip, "decompress") as unbounded:
+            with self.assertRaisesRegex(ValueError, "uncompressed shard exceeds 4096 bytes"):
+                store._verified_shard_payload(raw, shard, Path("expansion.jsonl.gz"), True, 4096)
+            unbounded.assert_not_called()
+
     def test_compressed_shard_corruption_fails_closed(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "registry.json"
