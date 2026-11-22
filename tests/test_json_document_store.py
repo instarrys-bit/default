@@ -62,6 +62,39 @@ class JsonDocumentStoreTests(unittest.TestCase):
             self.assertTrue(all(p.stat().st_size <= 2048 for p in shard_dir.glob("*.jsonl")))
             self.assertEqual(store.read_document(path, "records"), payload)
 
+    def test_compressed_shards_preserve_logical_records_and_fit_physical_budget(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "registry.json"
+            payload = {"records": [{"id": i, "payload": "repeated-domain-rule-" * 120} for i in range(8)]}
+            result = store.write_document(
+                path, payload, "records", force_sharded=True,
+                max_file_bytes=4096, shard_target_bytes=3500,
+                max_total_bytes=1200, compress_shards=True,
+            )
+            self.assertEqual(result["storage"], "jsonl-gzip-shards-v1")
+            self.assertLessEqual(result["total_bytes"], 1200)
+            manifest = json.loads(store.manifest_path(path).read_text(encoding="utf-8"))
+            self.assertEqual(manifest["format"], "jsonl-gzip-shards-v1")
+            self.assertTrue(all(item["file"].endswith(".jsonl.gz") for item in manifest["shards"]))
+            self.assertTrue(all(item["uncompressed_bytes"] > item["bytes"] for item in manifest["shards"]))
+            self.assertEqual(store.read_document(path, "records"), payload)
+            self.assertEqual(list(store.iter_document_records(path, "records")), payload["records"])
+
+    def test_compressed_shard_corruption_fails_closed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "registry.json"
+            payload = {"records": [{"id": i, "payload": "compress-me-" * 100} for i in range(4)]}
+            store.write_document(
+                path, payload, "records", force_sharded=True,
+                max_file_bytes=4096, shard_target_bytes=3000,
+                compress_shards=True,
+            )
+            manifest = json.loads(store.manifest_path(path).read_text(encoding="utf-8"))
+            shard_path = path.parent / manifest["shard_directory"] / manifest["shards"][0]["file"]
+            shard_path.write_bytes(shard_path.read_bytes() + b"tamper")
+            with self.assertRaisesRegex(ValueError, "checksum mismatch"):
+                store.read_document(path, "records")
+
     def test_total_document_limit_rejects_sharded_update_before_manifest_swap(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "ledger.json"
