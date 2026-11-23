@@ -250,7 +250,7 @@
         "15-minute scheduled reconciliation",
         "manual recovery dispatch"
       ],
-      "authorization": "Explicit user authorization permits automatic registration of the latest stable main-branch modules/uu.conf Blob SHA, formal approved SHA and Release baseline SHA regardless of commit author attribution. Only the five metadata allowlist paths may be written; modules/uu.conf bytes remain read-only.",
+      "authorization": "Explicit user authorization permits automatic registration of the latest stable main-branch modules/uu.conf Blob SHA, formal approved SHA and Release baseline SHA regardless of commit author attribution. Only the five metadata allowlist paths may be written; modules/uu.conf bytes remain read-only. Owner manual edits and specific user-authorized AI edits are permitted; that content-edit permission is separate from and does not expand the metadata-only writer's authority.",
       "write_allowlist": [
         "sources/policy.json",
         "automation/release_manifest.json",
@@ -258,7 +258,7 @@
         "automation/resource_write_sets.json",
         "reports/config-drift-audit.json"
       ],
-      "protected_config": "modules/uu.conf content is read-only to autonomous production automation and File Management baseline registration. Owner manual edits and specifically user-authorized AI edits are permitted; the resulting main revision is then followed through metadata-only SHA registration.",
+      "protected_config": "modules/uu.conf is byte-for-byte read-only to automation.",
       "stale_main_guard": "Re-fetch latest main and config immediately before registration; abort and retry if main or uu.conf changes during the metadata transaction."
     },
     "independent_python_dispatch": "disabled",
