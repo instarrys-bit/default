@@ -739,5 +739,46 @@ class ProductionIntentTests(unittest.TestCase):
         self.assertIn("rulesets/**", entry["classification_basis"])
 
 
+
+    def test_file_management_scripts_are_non_production_paths(self):
+        manifest = load_manifest(ROOT / "automation" / "production_inputs.json")
+        paths = [
+            "scripts/register_config_baseline.py",
+            "scripts/validate_automation_write_boundary.py",
+            "scripts/publish_config_baseline_metadata.sh",
+        ]
+        for path in paths:
+            with self.subTest(path=path):
+                self.assertNotIn(path, manifest["production_input_paths"])
+                result = classify_paths([path], manifest)
+                self.assertEqual(result["status"], "NO_INPUT_CHANGE")
+                self.assertEqual(result["non_production_changes"], [path])
+                self.assertEqual(result["unknown_changes"], [])
+
+    def test_managed_config_guard_metadata_does_not_change_ruleset_fingerprint(self):
+        policy_path = self.root / "sources" / "policy.json"
+        policy = {
+            "dns_invariants": {"direct-dns-server": "https://doh.pub/dns-query"},
+            "managed_config_guard": {
+                "path": "modules/uu.conf",
+                "approved_git_blob_sha": "a" * 40,
+                "last_user_approved_baseline_update": {"commit_sha": "b" * 40},
+                "content_protection": {"automation_may_modify_content": False},
+                "baseline_metadata_policy": {"automation_may_update_registered_blob_sha": True},
+            },
+        }
+        policy_path.write_text(json.dumps(policy), encoding="utf-8")
+        before = compute_fingerprint(self.root, self.manifest)
+        policy["managed_config_guard"]["approved_git_blob_sha"] = "c" * 40
+        policy["managed_config_guard"]["last_user_approved_baseline_update"] = {"commit_sha": "d" * 40}
+        policy["managed_config_guard"]["content_protection"]["automation_may_modify_content"] = True
+        policy["managed_config_guard"]["baseline_metadata_policy"]["automation_may_update_registered_blob_sha"] = False
+        policy_path.write_text(json.dumps(policy), encoding="utf-8")
+        after = compute_fingerprint(self.root, self.manifest)
+        self.assertEqual(before, after)
+        policy["dns_invariants"]["direct-dns-server"] = "https://example.invalid/dns-query"
+        policy_path.write_text(json.dumps(policy), encoding="utf-8")
+        self.assertNotEqual(after, compute_fingerprint(self.root, self.manifest))
+
 if __name__ == "__main__":
     unittest.main()
