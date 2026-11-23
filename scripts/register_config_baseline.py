@@ -11,6 +11,8 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+from audit_config_drift import build_report
+
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG_PATH = "modules/uu.conf"
 ALLOWLIST = (
@@ -106,12 +108,8 @@ def prepare_metadata(actual: str, previous: str, commits: list[str]) -> dict[str
     write_sets["review_context"]["release_manifest_blob_sha"] = release_sha
 
     report_path = ROOT / "reports/config-drift-audit.json"
-    report = json.loads(report_path.read_text(encoding="utf-8"))
     config_bytes = (ROOT / CONFIG_PATH).read_bytes()
-    report["baseline_sha256"] = hashlib.sha256(config_bytes).hexdigest()
-    report["baseline_git_blob_sha"] = actual
-    report["registered_baseline_git_blob_sha"] = actual
-    report["baseline_matches_registered_blob"] = True
+    report = build_report(config_bytes, actual, CONFIG_PATH, policy.get("dns_invariants", {}))
     report["owner_approved_change_pending_registration"] = False
     report["registration"] = {
         "status": "registered",
@@ -144,31 +142,29 @@ def main() -> int:
     previous = str(guard["approved_git_blob_sha"])
     if actual == previous:
         report_path = ROOT / "reports/config-drift-audit.json"
-        report = json.loads(report_path.read_text(encoding="utf-8"))
-        expected_report = {
-            "baseline_sha256": hashlib.sha256(original).hexdigest(),
-            "baseline_git_blob_sha": actual,
-            "registered_baseline_git_blob_sha": actual,
-            "baseline_matches_registered_blob": True,
-            "owner_approved_change_pending_registration": False,
+        report = build_report(original, previous, CONFIG_PATH, policy.get("dns_invariants", {}))
+        report["owner_approved_change_pending_registration"] = False
+        update = guard.get("last_user_approved_baseline_update", {})
+        report["registration"] = {
+            "status": "registered",
+            "registered_at": update.get("registered_at"),
+            "verified_owner_commits": update.get("config_change_commits", []),
+            "writer": "Storage Management / File Management",
+            "config_content_modified": False,
         }
-        changed_report = any(report.get(key) != value for key, value in expected_report.items())
+        changed_report = report != json.loads(report_path.read_text(encoding="utf-8"))
         if changed_report and args.apply:
-            report.update(expected_report)
             report_path.write_text(json_text(report), encoding="utf-8")
-        print(json.dumps({"status": "audit_metadata_refreshed" if changed_report and args.apply else "no_change", "blob_sha": actual, "audit_report_refresh_needed": changed_report, "config_content_modified": False}, sort_keys=True))
+        print(json.dumps({"status": "audit_report_refreshed" if changed_report and args.apply else "no_change", "blob_sha": actual, "audit_report_refresh_needed": changed_report, "config_content_modified": False}, sort_keys=True))
         return 0
 
     commits = owner_approved_config_history(guard)
     if not commits:
         report_path = ROOT / "reports/config-drift-audit.json"
-        report = json.loads(report_path.read_text(encoding="utf-8"))
-        report["baseline_sha256"] = hashlib.sha256(original).hexdigest()
-        report["baseline_git_blob_sha"] = actual
-        report["registered_baseline_git_blob_sha"] = previous
-        report["baseline_matches_registered_blob"] = False
+        report = build_report(original, previous, CONFIG_PATH, policy.get("dns_invariants", {}))
         report["owner_approved_change_pending_registration"] = True
-        old_observation = report.get("observation", {})
+        old_report = json.loads(report_path.read_text(encoding="utf-8"))
+        old_observation = old_report.get("observation", {})
         observed_at = old_observation.get("observed_at") if old_observation.get("observed_git_blob_sha") == actual else None
         report["observation"] = {
             "status": "observed_pending_owner_attribution",
