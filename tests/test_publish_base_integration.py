@@ -225,7 +225,14 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         parent = self.base
         for index in range(25):
             sha = f"{index + 1:040x}"
-            commits.append({"sha": sha})
+            commits.append({
+                "sha": sha,
+                "commit": {
+                    "message": f"chore(storage): update automation/task_queue.json revision {index + 1}",
+                    "author": {"email": "41898282+github-actions[bot]@users.noreply.github.com"},
+                },
+                "parents": [{"sha": parent}],
+            })
             details[sha] = {
                 "commit": {
                     "message": f"chore(storage): update automation/task_queue.json revision {index + 1}",
