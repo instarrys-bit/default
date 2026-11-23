@@ -101,7 +101,7 @@
   "managed_config_guard": {
     "path": "modules/uu.conf",
     "approved_git_blob_sha": "a24d8c526394ebf28f0c74043d93d4f736272679",
-    "description": "Authoritative owner-managed Shadowrocket config. File Management may automatically register a new baseline SHA after verifying that every intervening uu.conf-changing commit is authored by the repository owner. Automation may read, identify, hash and diff the file, but must never rewrite its contents.",
+    "description": "Authoritative owner-managed Shadowrocket config. After the user's explicit authorization, File Management automatically follows the latest stable main-branch Blob SHA and updates approved/release baseline metadata regardless of commit author attribution. Automation must never rewrite uu.conf contents.",
     "last_user_approved_baseline_update": {
       "previous_blob_sha": "86b87a33b07e881ff3bb1a32e852001b52708e97",
       "new_blob_sha": "a24d8c526394ebf28f0c74043d93d4f736272679",
@@ -119,7 +119,7 @@
       "owner_may_edit": true,
       "automation_may_modify_content": false,
       "protected_scope": "All bytes in modules/uu.conf, including user-authored rules, section contents, DNS settings, and existing code or feature behavior.",
-      "reaction_model": "On every modules/uu.conf change, record the observed Git blob SHA and commit context, reacquire the latest main-branch file, verify all intervening uu.conf-changing commits are authored by the repository owner, and automatically update the registered baseline SHA and derived metadata pins when authorized. If attribution is unavailable or any commit is not owner-authored, mark pending and keep tracking; never reject the observation or modify config bytes. If attribution is unavailable or any commit is not owner-authored, keep the change pending and continue read-only audit and scheduling.",
+      "reaction_model": "On every modules/uu.conf change, record the observed Git blob SHA and commit context, reacquire the latest main-branch file, verify the file is stable during the metadata transaction, and automatically update the registered baseline SHA and derived metadata pins under the user's authorization. Commit author attribution is recorded as evidence but does not block SHA registration. Never reject an observation or modify config bytes.",
       "watchdog_near_real_time_reconciliation": true
     },
     "baseline_metadata_policy": {
@@ -128,8 +128,10 @@
       "automation_may_hash_file": true,
       "automation_may_diff_file": true,
       "automation_may_update_registered_blob_sha": true,
-      "update_authorization": "User-authorized automatic baseline registration by File Management only. File Management is the sole authorized writer of baseline metadata, independently of owner-attribution status for observation. It may update only the five approved metadata paths after verifying every intervening uu.conf-changing commit is authored by the repository owner. Production automation, Watchdog and ruleset publishers cannot update baseline metadata. Storage Management records every observed SHA independently. It must never write config content; never write modules/uu.conf.",
-      "registration_must_not_write_config_content": true
+      "update_authorization": "The user explicitly authorizes File Management to automatically update the observed Blob SHA, managed_config_guard.approved_git_blob_sha, Release config_baseline.git_blob_sha, and all derived SHA metadata for the latest stable main revision, regardless of commit author attribution. File Management is the sole writer of the five approved metadata paths. Production automation, Watchdog and ruleset publishers cannot write baseline metadata. Storage Management records every observed SHA. It must never write modules/uu.conf content.",
+      "registration_must_not_write_config_content": true,
+      "automation_may_update_release_baseline_sha": true,
+      "automation_may_update_approved_baseline_sha": true
     }
   }
 }
