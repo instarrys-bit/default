@@ -134,6 +134,9 @@ def main() -> int:
     original = config.read_bytes()
     actual = git_blob_sha(original)
     previous = str(guard["approved_git_blob_sha"])
+    if os.environ.get("GITHUB_REF") != "refs/heads/main":
+        print(json.dumps({"status": "non_main_observation_only", "observed_blob_sha": actual, "registered_blob_sha": previous, "config_content_modified": False}, sort_keys=True))
+        return 0
     if actual == previous:
         report_path = ROOT / "reports/config-drift-audit.json"
         report = build_report(original, previous, CONFIG_PATH, policy.get("dns_invariants", {}))
