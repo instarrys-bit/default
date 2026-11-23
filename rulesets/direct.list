@@ -1,8 +1,10 @@
 DOMAIN,dl.steam.clngaa.com
+DOMAIN,qyd6j2d1.ovslegodl.sched.ovscdns.com
 DOMAIN,st.dl.bscstorage.net
 DOMAIN,st.dl.eccdnx.com
 DOMAIN,st.dl.pinyuncloud.com
 DOMAIN,wmsjsteam.com
+DOMAIN,wzqcloud.ciccwm.com
 DOMAIN,xz.pphimalayanrt.com
 DOMAIN-SUFFIX,00cdn.com
 DOMAIN-SUFFIX,10010.com
@@ -135,5 +137,3 @@ DOMAIN-SUFFIX,xmcdn.com
 DOMAIN-SUFFIX,yeepay.com
 DOMAIN-SUFFIX,yuewen.com
 DOMAIN-SUFFIX,zjcdn.com
-DOMAIN,qyd6j2d1.ovslegodl.sched.ovscdns.com
-DOMAIN,wzqcloud.ciccwm.com
