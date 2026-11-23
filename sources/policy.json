@@ -119,8 +119,8 @@
       "owner_may_edit": true,
       "automation_may_modify_content": false,
       "protected_scope": "All bytes in modules/uu.conf, including user-authored rules, section contents, DNS settings, and existing code or feature behavior.",
-      "watchdog_near_realtime_reconciliation": false,
-      "reaction_model": "File Management records the observed Git blob SHA in its own control-plane inventory; production automation only reads and hashes the config."
+      "reaction_model": "On every modules/uu.conf change, immediately record the observed Git blob SHA and commit context, reacquire the latest main-branch file, then continue read-only audit and scheduling. If attribution is unavailable, mark it pending and keep tracking; never reject the observation or modify config bytes.",
+      "watchdog_near_real_time_reconciliation": true
     },
     "baseline_metadata_policy": {
       "automation_may_read_file": true,
@@ -128,7 +128,7 @@
       "automation_may_hash_file": true,
       "automation_may_diff_file": true,
       "automation_may_update_registered_blob_sha": true,
-      "update_authorization": "File Management is the sole authorized writer of repository SHA inventory and registered baseline blob metadata. It must read modules/uu.conf before and after the same snapshot, confirm both blob SHAs match, and may update only the File Management SHA inventory. Production automation, Watchdog and ruleset publishers cannot update baseline metadata or config content.",
+      "update_authorization": "Storage Management records every observed modules/uu.conf Git blob SHA in its durable integrity inventory, independently of owner-attribution status. The registered approval baseline remains a separate historical control and is not silently advanced. On change, reacquire the latest file and continue read-only audit and scheduling. Automation must never write config content.",
       "registration_must_not_write_config_content": true
     }
   }
