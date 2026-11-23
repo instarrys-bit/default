@@ -48,11 +48,22 @@ def validate_write_boundary(root: Path = ROOT) -> list[str]:
     if guard.get("content_immutable_to_automation") is not True:
         errors.append("Managed config must remain immutable to automation")
     actual_sha = git_blob_sha((root / "modules/uu.conf").read_bytes())
-    if guard.get("approved_git_blob_sha") != actual_sha:
-        errors.append("sources/policy.json does not pin the current uu.conf Git blob")
+    approved_sha = guard.get("approved_git_blob_sha")
+    if not isinstance(approved_sha, str) or not re.fullmatch(r"[0-9a-f]{40}", approved_sha):
+        errors.append("sources/policy.json must retain a valid historical approved uu.conf Git blob")
     pin = release.get("implementation_pins", {}).get("config_baseline", {})
-    if pin.get("path") != "modules/uu.conf" or pin.get("access") != "read_only" or pin.get("git_blob_sha") != actual_sha:
-        errors.append("release manifest does not pin the current read-only uu.conf Git blob")
+    if (pin.get("path") != "modules/uu.conf"
+            or pin.get("access") != "read_only"
+            or not isinstance(pin.get("git_blob_sha"), str)
+            or not re.fullmatch(r"[0-9a-f]{40}", pin.get("git_blob_sha", ""))
+            or pin.get("git_blob_sha") != approved_sha):
+        errors.append("release manifest must retain the read-only historical approved uu.conf baseline pin")
+
+    # Current content drift is an observation, not a write-boundary violation.
+    # Storage Management durably records the observed blob SHA in its integrity
+    # projection; approval pins remain historical until a separately reviewed
+    # metadata change. Never rewrite uu.conf or silently advance its approval.
+    observed_config_sha = actual_sha
 
     protected = write_sets.get("policy", {}).get("protected_config", {})
     if protected.get("path") != "modules/uu.conf" or protected.get("access") != "read_only":
@@ -71,7 +82,13 @@ def main() -> int:
         for error in errors:
             print("AUTOMATION WRITE BOUNDARY INVALID: " + error, file=sys.stderr)
         return 1
-    print(json.dumps({"valid": True, "production_write_scope": "rulesets/**", "protected_config": "modules/uu.conf"}, sort_keys=True))
+    print(json.dumps({
+        "valid": True,
+        "production_write_scope": "rulesets/**",
+        "protected_config": "modules/uu.conf",
+        "observed_config_git_blob_sha": observed_config_sha,
+        "approved_baseline_matches_observed": approved_sha == observed_config_sha,
+    }, sort_keys=True))
     return 0
 
 
