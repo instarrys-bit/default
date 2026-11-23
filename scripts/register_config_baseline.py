@@ -142,7 +142,7 @@ def main() -> int:
         report["registration"] = {
             "status": "registered",
             "registered_at": update.get("registered_at"),
-            "verified_owner_commits": update.get("config_change_commits", []),
+            "config_change_commits": update.get("config_change_commits", []),
             "writer": "Storage Management / File Management",
             "config_content_modified": False,
         }
