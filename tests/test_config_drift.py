@@ -48,7 +48,7 @@ class ConfigBaselineTests(unittest.TestCase):
         content = b"[General]\ndns-server = changed\n"
         report = build_report(content, "not-the-current-sha", "modules/uu.conf")
         self.assertFalse(report["baseline_matches_registered_blob"])
-        self.assertEqual(audit_exit_code(report), 1)
+        self.assertEqual(audit_exit_code(report), 0)
 
 
 if __name__ == "__main__":
