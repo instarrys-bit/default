@@ -195,7 +195,7 @@
     },
     "baseline_proposal_tool": {
       "path": "scripts/register_config_baseline.py",
-      "git_blob_sha": "178a0e7d481941e9d914ebb9a2c89af90d26c04d"
+      "git_blob_sha": "54de3dfbfd701b8a18fe62b55d2df7bd8b542868"
     },
     "repository_integrity_tracker": {
       "path": "storage/v2/snapshot_repository_integrity.py",
@@ -223,7 +223,7 @@
     },
     "baseline_registration_runtime": {
       "path": "scripts/register_config_baseline.py",
-      "git_blob_sha": "178a0e7d481941e9d914ebb9a2c89af90d26c04d"
+      "git_blob_sha": "54de3dfbfd701b8a18fe62b55d2df7bd8b542868"
     }
   },
   "compatibility": {
