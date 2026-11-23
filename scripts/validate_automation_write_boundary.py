@@ -82,6 +82,9 @@ def main() -> int:
         for error in errors:
             print("AUTOMATION WRITE BOUNDARY INVALID: " + error, file=sys.stderr)
         return 1
+    policy = json.loads((ROOT / "sources" / "policy.json").read_text(encoding="utf-8"))
+    approved_sha = policy["managed_config_guard"]["approved_git_blob_sha"]
+    observed_config_sha = git_blob_sha((ROOT / "modules" / "uu.conf").read_bytes())
     print(json.dumps({
         "valid": True,
         "production_write_scope": "rulesets/**",
