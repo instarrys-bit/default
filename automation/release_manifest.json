@@ -182,7 +182,7 @@
     },
     "config_drift_audit": {
       "path": "scripts/audit_config_drift.py",
-      "git_blob_sha": "78a687ef9ef750eba8f8f20b9bb5fef9dcf30fa9"
+      "git_blob_sha": "96b2df57b997b27dda0d0b6c73fc151bc991c644"
     },
     "preflight_runner": {
       "path": "scripts/run_preflight_tests.py",
