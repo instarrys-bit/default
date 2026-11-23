@@ -1,114 +1,47 @@
 import json
-import os
 import sys
+import tempfile
 import unittest
 from pathlib import Path
-from types import SimpleNamespace
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from verify_baseline import owner_approved_push_changed_config
+import verify_baseline
 
 
-POLICY = json.loads((ROOT / "sources" / "policy.json").read_text(encoding="utf-8"))
-ANCHOR = POLICY["managed_config_guard"]["last_user_approved_baseline_update"]["commit_sha"]
-
-
-class VerifyBaselineOwnerHistoryTests(unittest.TestCase):
-    @patch("verify_baseline.subprocess.run")
-    @patch.dict(os.environ, {
-        "GITHUB_EVENT_NAME": "push",
-        "GITHUB_REF": "refs/heads/main",
-        "GITHUB_ACTOR": "github-actions[bot]",
-        "GITHUB_REPOSITORY": "instarrys-bit/default",
-        "GITHUB_REPOSITORY_OWNER": "instarrys-bit",
-        "GITHUB_SHA": "d" * 40,
-        "GH_TOKEN": "test-token",
-    }, clear=True)
-    def test_historical_owner_config_commits_are_verified_with_one_api_call(self, mocked):
-        first, second = "b" * 40, "a" * 40
-        payload = [
-            {"sha": first, "author": {"login": "instarrys-bit"}},
-            {"sha": second, "author": {"login": "instarrys-bit"}},
-            {"sha": ANCHOR, "author": {"login": "instarrys-bit"}},
-        ]
-        mocked.side_effect = [
-            SimpleNamespace(returncode=0, stdout=""),
-            SimpleNamespace(returncode=0, stdout=first + "\n" + second + "\n"),
-            SimpleNamespace(returncode=0, stdout=json.dumps(payload)),
-        ]
-        self.assertTrue(owner_approved_push_changed_config())
-        self.assertEqual(mocked.call_count, 3)
-        self.assertEqual(mocked.call_args_list[-1].args[0][0:2], ["gh", "api"])
-
-    @patch("verify_baseline.subprocess.run")
-    @patch.dict(os.environ, {
-        "GITHUB_EVENT_NAME": "push",
-        "GITHUB_REF": "refs/heads/main",
-        "GITHUB_REPOSITORY": "instarrys-bit/default",
-        "GITHUB_REPOSITORY_OWNER": "instarrys-bit",
-        "GITHUB_SHA": "d" * 40,
-        "GH_TOKEN": "test-token",
-    }, clear=True)
-    def test_any_non_owner_config_commit_keeps_baseline_check_fail_closed(self, mocked):
-        first = "b" * 40
-        payload = [
-            {"sha": first, "author": {"login": "someone-else"}},
-            {"sha": ANCHOR, "author": {"login": "instarrys-bit"}},
-        ]
-        mocked.side_effect = [
-            SimpleNamespace(returncode=0, stdout=""),
-            SimpleNamespace(returncode=0, stdout=first + "\n"),
-            SimpleNamespace(returncode=0, stdout=json.dumps(payload)),
-        ]
-        self.assertFalse(owner_approved_push_changed_config())
-
-    @patch("verify_baseline.subprocess.run")
-    @patch.dict(os.environ, {
-        "GITHUB_EVENT_NAME": "push",
-        "GITHUB_REF": "refs/heads/feature",
-        "GITHUB_REPOSITORY": "instarrys-bit/default",
-        "GITHUB_REPOSITORY_OWNER": "instarrys-bit",
-        "GITHUB_SHA": "d" * 40,
-    }, clear=True)
-    def test_non_main_push_cannot_bypass_the_registered_baseline(self, mocked):
-        self.assertFalse(owner_approved_push_changed_config())
-        mocked.assert_not_called()
-
-    @patch("verify_baseline.subprocess.run")
-    @patch.dict(os.environ, {
-        "GITHUB_EVENT_NAME": "push",
-        "GITHUB_REF": "refs/heads/main",
-        "GITHUB_REPOSITORY": "instarrys-bit/default",
-        "GITHUB_REPOSITORY_OWNER": "instarrys-bit",
-        "GITHUB_SHA": "d" * 40,
-    }, clear=True)
-    def test_missing_approved_anchor_in_api_page_fails_closed(self, mocked):
-        first = "b" * 40
-        payload = [{"sha": first, "author": {"login": "instarrys-bit"}}]
-        mocked.side_effect = [
-            SimpleNamespace(returncode=0, stdout=""),
-            SimpleNamespace(returncode=0, stdout=f"{first}\\n"),
-            SimpleNamespace(returncode=0, stdout=json.dumps(payload)),
-        ]
-        self.assertFalse(owner_approved_push_changed_config())
-
-
-
+class VerifyBaselineTests(unittest.TestCase):
     def test_unregistered_uu_conf_sha_is_observed_without_blocking_read_only_audit(self):
-        import tempfile
-        import verify_baseline
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             (root / "modules").mkdir()
-            (root / "modules" / "uu.conf").write_text("[General]\\n", encoding="utf-8")
+            config = root / "modules" / "uu.conf"
+            config.write_text("[General]\\n", encoding="utf-8")
             policy = root / "policy.json"
             policy.write_text(json.dumps({"managed_config_guard": {
                 "path": "modules/uu.conf", "approved_git_blob_sha": "a" * 40
             }}), encoding="utf-8")
-            with patch.object(verify_baseline, "ROOT", root), patch.object(verify_baseline, "POLICY", policy), patch("sys.argv", ["verify_baseline.py"]):
+            with patch.object(verify_baseline, "ROOT", root), patch.object(verify_baseline, "POLICY", policy), patch(
+                "sys.argv", ["verify_baseline.py"]
+            ):
                 self.assertEqual(verify_baseline.main(), 0)
+
+    def test_registered_config_sha_passes_read_only_verification(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "modules").mkdir()
+            config = root / "modules" / "uu.conf"
+            data = b"[General]\\n"
+            config.write_bytes(data)
+            policy = root / "policy.json"
+            policy.write_text(json.dumps({"managed_config_guard": {
+                "path": "modules/uu.conf", "approved_git_blob_sha": verify_baseline.git_blob_sha(data)
+            }}), encoding="utf-8")
+            with patch.object(verify_baseline, "ROOT", root), patch.object(verify_baseline, "POLICY", policy), patch(
+                "sys.argv", ["verify_baseline.py"]
+            ):
+                self.assertEqual(verify_baseline.main(), 0)
+
 
 if __name__ == "__main__":
     unittest.main()

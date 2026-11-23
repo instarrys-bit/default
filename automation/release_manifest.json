@@ -28,7 +28,7 @@
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "58a56ea55fc9ce50d2f2e2270532ff1001f02ea8"
+      "git_blob_sha": "9580ad141542fdbc7c74b60b924c17e4909b910a"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -182,7 +182,7 @@
     },
     "config_drift_audit": {
       "path": "scripts/audit_config_drift.py",
-      "git_blob_sha": "78a687ef9ef750eba8f8f20b9bb5fef9dcf30fa9"
+      "git_blob_sha": "96b2df57b997b27dda0d0b6c73fc151bc991c644"
     },
     "preflight_runner": {
       "path": "scripts/run_preflight_tests.py",
@@ -203,7 +203,7 @@
     },
     "storage_management_workflow": {
       "path": ".github/workflows/storage-management.yml",
-      "git_blob_sha": "c765b3a12cf046be07cdb3f6f3e765a69725cac7"
+      "git_blob_sha": "baa2499299b03c97e4c4326b91bd5a7aa3e6d109"
     },
     "repository_integrity_tests": {
       "path": "tests/v2/test_repository_integrity.py",
@@ -224,6 +224,10 @@
     "baseline_metadata_publisher": {
       "path": "scripts/publish_config_baseline_metadata.sh",
       "git_blob_sha": "fc07fa5c1e90a399283fd9ffb19d0e70a84d3335"
+    },
+    "baseline_verifier": {
+      "path": "scripts/verify_baseline.py",
+      "git_blob_sha": "3ec42948743859f7532109e0c32adfd4e7d51b09"
     }
   },
   "compatibility": {

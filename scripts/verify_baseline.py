@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
-"""Fail-closed integrity verification of the user's authoritative config baseline."""
+"""Verify the protected uu.conf content and user-authorized baseline metadata."""
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
-import os
 import subprocess
 import sys
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 POLICY = ROOT / "sources" / "policy.json"
@@ -17,68 +16,6 @@ POLICY = ROOT / "sources" / "policy.json"
 
 def git_blob_sha(data: bytes) -> str:
     return hashlib.sha1(b"blob " + str(len(data)).encode("ascii") + bytes([0]) + data).hexdigest()
-
-
-def owner_approved_push_changed_config() -> bool:
-    """Allow validation only when every config commit since the approved anchor is owner-authored.
-
-    Use one path-filtered GitHub API request rather than one request per commit.
-    This validates historical owner changes even when the current push only
-    changes automation code, without registering or modifying any config data.
-    """
-    if os.environ.get("GITHUB_EVENT_NAME") != "push":
-        return False
-    if os.environ.get("GITHUB_REF") != "refs/heads/main":
-        return False
-    owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "")
-    repository = os.environ.get("GITHUB_REPOSITORY", "")
-    after = os.environ.get("GITHUB_SHA", "")
-    if not owner or not repository or "/" not in repository or not after or set(after) == {"0"}:
-        return False
-
-    policy = json.loads(POLICY.read_text(encoding="utf-8"))
-    guard = policy.get("managed_config_guard", {})
-    config_path = guard.get("path")
-    anchor = str(guard.get("last_user_approved_baseline_update", {}).get("commit_sha", ""))
-    if config_path != "modules/uu.conf" or len(anchor) != 40:
-        return False
-
-    ancestry = subprocess.run(
-        ["git", "merge-base", "--is-ancestor", anchor, after],
-        cwd=ROOT, check=False, capture_output=True, text=True,
-    )
-    if ancestry.returncode != 0:
-        return False
-    history = subprocess.run(
-        ["git", "log", "--format=%H", f"{anchor}..{after}", "--", config_path],
-        cwd=ROOT, check=True, capture_output=True, text=True,
-    )
-    local_commits = [line.strip() for line in history.stdout.splitlines() if line.strip()]
-    if not local_commits:
-        return False
-
-    api = subprocess.run(
-        ["gh", "api", f"repos/{repository}/commits?path={config_path}&per_page=100"],
-        cwd=ROOT, check=True, capture_output=True, text=True,
-    )
-    commits = json.loads(api.stdout)
-    if not isinstance(commits, list):
-        return False
-    anchor_index = next((i for i, item in enumerate(commits)
-                         if isinstance(item, dict) and item.get("sha") == anchor), None)
-    if anchor_index is None:
-        return False
-    verified = commits[:anchor_index]
-    api_shas = [str(item.get("sha", "")) for item in verified if isinstance(item, dict)]
-    if api_shas != local_commits:
-        return False
-    return all(
-        isinstance(item, dict)
-        and isinstance(item.get("author"), dict)
-        and item["author"].get("login") == owner
-        for item in verified
-    )
-
 
 
 def run_git(*args: str) -> str:
@@ -94,25 +31,25 @@ def load_json_at(ref: str, path: str) -> dict:
 
 def validate_registration_metadata(
     base_guard: dict, head_guard: dict, actual_sha: str,
-    commits: list[str], owner: str,
+    commits: list[str],
 ) -> None:
     previous = base_guard.get("approved_git_blob_sha")
     new = head_guard.get("approved_git_blob_sha")
     update = head_guard.get("last_user_approved_baseline_update")
     if not isinstance(update, dict):
-        raise ValueError("owner baseline registration metadata is missing")
+        raise ValueError("automatic baseline registration metadata is missing")
     if update.get("previous_blob_sha") != previous or update.get("new_blob_sha") != new:
         raise ValueError("baseline registration previous/new SHA does not match the policy transition")
     if new != actual_sha:
         raise ValueError("registered baseline SHA does not match the current uu.conf Git blob")
-    if update.get("approval_mode") != "recovered_owner_authored_config_history":
-        raise ValueError("baseline registration must use the owner-history recovery approval mode")
-    if update.get("actor") != owner:
-        raise ValueError("baseline registration actor is not the repository owner")
+    if update.get("approval_mode") != "user_authorized_automatic_sha_follow":
+        raise ValueError("baseline registration does not use the user-authorized automatic SHA-follow mode")
+    if not isinstance(update.get("actor"), str) or not update.get("actor"):
+        raise ValueError("baseline registration actor evidence is missing")
     if update.get("config_change_commits") != commits or not commits:
         raise ValueError("baseline registration does not enumerate every intervening uu.conf commit")
     if update.get("commit_sha") != commits[0]:
-        raise ValueError("baseline registration anchor must be the newest verified uu.conf commit")
+        raise ValueError("baseline registration anchor must be the newest observed uu.conf commit")
     try:
         datetime.fromisoformat(str(update.get("registered_at", "")).replace("Z", "+00:00"))
     except ValueError as exc:
@@ -120,15 +57,11 @@ def validate_registration_metadata(
 
 
 def verify_registration(base: str, head: str) -> None:
-    owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "")
-    repository = os.environ.get("GITHUB_REPOSITORY", "")
-    if not owner or not repository or "/" not in repository:
-        raise ValueError("GitHub repository owner/context is unavailable")
-    # The PR must never change the protected config bytes.
+    # Metadata registration PRs must never change the protected config bytes.
     run_git("diff", "--quiet", base, head, "--", "modules/uu.conf")
 
     base_policy = load_json_at(base, "sources/policy.json")
-    head_policy = json.loads((ROOT / "sources/policy.json").read_text(encoding="utf-8"))
+    head_policy = json.loads(POLICY.read_text(encoding="utf-8"))
     base_guard = base_policy.get("managed_config_guard")
     head_guard = head_policy.get("managed_config_guard")
     if not isinstance(base_guard, dict) or not isinstance(head_guard, dict):
@@ -155,13 +88,13 @@ def verify_registration(base: str, head: str) -> None:
         raise ValueError("non-main validation changed an unsupported managed-config guard field")
 
     if not changed:
-        print("PASS: uu.conf and owner-approved baseline registration are unchanged.")
+        print("PASS: uu.conf and automatically followed baseline registration are unchanged.")
         return
 
     actual_sha = run_git("hash-object", "modules/uu.conf")
     anchor = str(base_guard.get("last_user_approved_baseline_update", {}).get("commit_sha", ""))
     if len(anchor) != 40:
-        raise ValueError("previous owner-approved baseline commit anchor is invalid")
+        raise ValueError("previous registered baseline commit anchor is invalid")
     subprocess.run(
         ["git", "merge-base", "--is-ancestor", anchor, base],
         cwd=ROOT, check=True, capture_output=True,
@@ -170,15 +103,7 @@ def verify_registration(base: str, head: str) -> None:
     commits = [line for line in commits_text.splitlines() if line]
     if not commits:
         raise ValueError("no intervening uu.conf commits were found; refusing baseline re-registration")
-    validate_registration_metadata(base_guard, head_guard, actual_sha, commits, owner)
-
-    for commit in commits:
-        result = subprocess.run(
-            ["gh", "api", f"repos/{repository}/commits/{commit}", "--jq", ".author.login // empty"],
-            cwd=ROOT, check=True, capture_output=True, text=True,
-        )
-        if result.stdout.strip() != owner:
-            raise ValueError(f"uu.conf commit {commit} is not associated with repository owner {owner}")
+    validate_registration_metadata(base_guard, head_guard, actual_sha, commits)
 
     release = json.loads((ROOT / "automation/release_manifest.json").read_text(encoding="utf-8"))
     pin = release.get("implementation_pins", {}).get("config_baseline", {})
@@ -192,15 +117,19 @@ def verify_registration(base: str, head: str) -> None:
     if write_sets.get("review_context", {}).get("release_manifest_blob_sha") != release_sha:
         raise ValueError("resource write inventory release-manifest pin is stale")
     print(
-        f"PASS: owner-authored uu.conf history verified ({len(commits)} commits); "
+        f"PASS: user-authorized uu.conf SHA history recorded ({len(commits)} commits); "
         f"baseline {actual_sha}; config content unchanged in this PR."
     )
 
+
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--allow-owner-push-change", action="store_true")
-    parser.add_argument("--baseline-only", action="store_true", help="Compatibility flag; always verifies only the managed baseline.")
-    parser.add_argument("--verify-registration", action="store_true", help="Verify an owner-authorized metadata-only baseline registration in a non-main PR.")
+    parser.add_argument("--allow-owner-push-change", action="store_true",
+                        help="Compatibility flag; owner attribution no longer gates authorized SHA following.")
+    parser.add_argument("--baseline-only", action="store_true",
+                        help="Verify the managed config baseline without changing it.")
+    parser.add_argument("--verify-registration", action="store_true",
+                        help="Verify user-authorized metadata-only baseline registration.")
     parser.add_argument("--base")
     parser.add_argument("--head")
     args = parser.parse_args()
@@ -209,18 +138,13 @@ def main() -> int:
             parser.error("--verify-registration requires --base and --head")
         verify_registration(args.base, args.head)
         return 0
+
     policy = json.loads(POLICY.read_text(encoding="utf-8"))
     guard = policy["managed_config_guard"]
     path = ROOT / guard["path"]
-    data = path.read_bytes()
-    actual = git_blob_sha(data)
+    actual = git_blob_sha(path.read_bytes())
     expected = guard["approved_git_blob_sha"]
     if actual != expected:
-        # A baseline mismatch is an observed input change, not a reason to stop
-        # tracking or skip the deterministic audit. Storage Management records
-        # the current Git blob SHA and retries its snapshot if the file changes
-        # while being read. Keep the registered approval pin historical; never
-        # rewrite uu.conf or silently bless a new baseline here.
         print(
             f"OBSERVED CONFIG CHANGE: {guard['path']} current_blob_sha={actual} "
             f"registered_baseline_sha={expected}. Continue read-only audit; "

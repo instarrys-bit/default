@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "58a56ea55fc9ce50d2f2e2270532ff1001f02ea8",
+  "workflow_blob_sha": "9580ad141542fdbc7c74b60b924c17e4909b910a",
   "registry_blob_sha": "300c5ee0697e0c4483e6546c312cedb889b5ea22",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
@@ -355,7 +355,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
-    "release_manifest_blob_sha": "da15a411d512ffb23c8c7b44342d27166c764d95",
+    "release_manifest_blob_sha": "d234baa4529dbf7c4209848ce5ad2c07f2e6335b",
     "program_registry_blob_sha": "300c5ee0697e0c4483e6546c312cedb889b5ea22",
     "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
     "note": "Current workflow map. Descriptive only; no additional write/dispatch authorization. Production publication is rulesets/** only; modules/uu.conf is read-only and its Blob SHA is automatically followed by File Management under explicit user authorization.",

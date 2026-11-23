@@ -24,6 +24,7 @@ EXPECTED_PINS = {
     "watchdog_workflow": ".github/workflows/automation-watchdog.yml",
     "production_workflow": ".github/workflows/auto_sync.yml",
     "config_baseline": "modules/uu.conf",
+    "baseline_verifier": "scripts/verify_baseline.py",
 }
 
 

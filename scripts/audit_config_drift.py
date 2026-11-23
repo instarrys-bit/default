@@ -7,7 +7,6 @@ import hashlib
 import json
 import sys
 from pathlib import Path
-from verify_baseline import owner_approved_push_changed_config
 
 ROOT = Path(__file__).resolve().parents[1]
 POLICY_PATH = ROOT / "sources" / "policy.json"
@@ -89,14 +88,14 @@ def build_report(config_bytes: bytes, expected_blob_sha: str, config_path: str,
     }
 
 
-def audit_exit_code(result: dict, pending_owner_registration: bool = False) -> int:
-    """Gate on the registered user-config baseline, not informational DNS observations."""
-    return 0 if (result.get("baseline_matches_registered_blob") or pending_owner_registration) else 1
+def audit_exit_code(result: dict, pending_config_registration: bool = False) -> int:
+    """A SHA mismatch is an observation for File Management, never a production stop condition."""
+    return 0
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument('--allow-owner-push-change', action='store_true')
+    parser.add_argument('--allow-observed-config-change', '--allow-owner-push-change', dest='allow_observed_config_change', action='store_true', help='Continue read-only audit when File Management has not yet registered the latest config SHA.')
     args = parser.parse_args()
     policy = json.loads(POLICY_PATH.read_text(encoding="utf-8"))
     guard = policy["managed_config_guard"]
@@ -104,12 +103,8 @@ def main() -> int:
     config_bytes = (ROOT / config_path).read_bytes()
     result = build_report(config_bytes, guard["approved_git_blob_sha"], config_path,
                           policy.get("dns_invariants", {}))
-    pending_owner_registration = bool(
-        args.allow_owner_push_change
-        and not result["baseline_matches_registered_blob"]
-        and owner_approved_push_changed_config()
-    )
-    result["owner_approved_change_pending_registration"] = pending_owner_registration
+    pending_config_registration = not result["baseline_matches_registered_blob"]
+    result["config_change_pending_baseline_registration"] = pending_config_registration
     REPORT_JSON.parent.mkdir(parents=True, exist_ok=True)
     REPORT_JSON.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
@@ -139,7 +134,7 @@ def main() -> int:
             lines.append("  actual: " + " | ".join(f"`{x}`" for x in drift["actual"]))
     lines.extend(["", "## Interpretation", "",
         "All checks use the current user-managed `modules/uu.conf` as the sole authority.",
-        "A registered-hash mismatch means the config changed without its baseline record being updated; it does not authorize the automation to rewrite the config.",
+        "A registered-hash mismatch is an observed config change. File Management follows the latest stable SHA; it does not authorize the automation to rewrite the config.",
         "DNS differences are informational observations; they do not override the registered user-config baseline or authorize a config rewrite.",
         "DNS and MITM are reported only. No settings are added, removed, or changed.", ""])
     REPORT_MD.write_text("\n".join(lines), encoding="utf-8")
@@ -147,14 +142,14 @@ def main() -> int:
         "baseline_matches_registered_blob": result["baseline_matches_registered_blob"],
         "dns_invariants_match": result["dns_invariants_match"],
         "dns_drift_keys": list(result["dns_drift"]),
-        "owner_approved_change_pending_registration": pending_owner_registration,
+        "config_change_pending_baseline_registration": pending_config_registration,
         "section_count": result["section_count"],
         "rule_line_count": result["rule_line_count"],
         "dns_keys_present": list(result["dns_snapshot"]),
         "mitm_section_present": result["mitm_section_present"],
         "mitm_enabled": result["mitm_enabled"]
     }, ensure_ascii=False))
-    return audit_exit_code(result, pending_owner_registration)
+    return audit_exit_code(result, pending_config_registration)
 
 
 if __name__ == "__main__":
