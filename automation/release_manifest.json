@@ -246,7 +246,7 @@
         "15-minute scheduled reconciliation",
         "manual recovery dispatch"
       ],
-      "authorization": "User-authorized automatic registration only after GitHub confirms every uu.conf-changing commit since the registered anchor is authored by the repository owner.",
+      "authorization": "Explicit user authorization permits automatic registration of the latest stable main-branch modules/uu.conf Blob SHA, formal approved SHA and Release baseline SHA regardless of commit author attribution. Only the five metadata allowlist paths may be written; modules/uu.conf bytes remain read-only.",
       "write_allowlist": [
         "sources/policy.json",
         "automation/release_manifest.json",
