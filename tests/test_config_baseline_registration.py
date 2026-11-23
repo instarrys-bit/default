@@ -10,9 +10,30 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import register_config_baseline as baseline
+import verify_baseline as baseline_verifier
 
 
 class ConfigBaselineRegistrationTests(unittest.TestCase):
+
+    def test_registration_verifier_accepts_user_authorized_non_owner_actor(self):
+        base_guard = {"approved_git_blob_sha": "a" * 40}
+        head_guard = {
+            "approved_git_blob_sha": "b" * 40,
+            "last_user_approved_baseline_update": {
+                "previous_blob_sha": "a" * 40,
+                "new_blob_sha": "b" * 40,
+                "approval_mode": "user_authorized_automatic_sha_follow",
+                "actor": "github-actions[bot]",
+                "config_change_commits": ["c" * 40, "d" * 40],
+                "commit_sha": "c" * 40,
+                "registered_at": "2026-11-23T14:00:00Z",
+            },
+        }
+        baseline_verifier.validate_registration_metadata(
+            base_guard, head_guard, "b" * 40, ["c" * 40, "d" * 40]
+        )
+
+
     def test_any_commit_author_is_recorded_but_never_blocks_sha_follow(self):
         commits = ["b" * 40, "a" * 40]
         with patch.dict(os.environ, {"GITHUB_REF": "refs/heads/main"}, clear=True), patch.object(
