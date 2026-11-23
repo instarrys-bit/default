@@ -143,7 +143,7 @@ class AssessSourcesTaskInputTests(unittest.TestCase):
 
     def test_legacy_workflow_defaults_are_bounded_to_one_resumable_batch(self):
         self.assertEqual(assess_sources.load_task_options(None), {
-            "max_urls": 20,
+            "max_urls": 100,
             "max_file_bytes": 1_000_000,
             "max_total_bytes": 10_000_000,
         })
