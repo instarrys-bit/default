@@ -19,6 +19,7 @@ on:
       - "automation/release_manifest.json"
       - "automation/resource_ownership_audit.json"
       - "automation/resource_write_sets.json"
+      - "automation/maintenance_backlog.json"
       - "scripts/validate_program_registry.py"
       - "scripts/validate_automation_write_boundary.py"
       - "scripts/validate_execution_adapters.py"
@@ -36,6 +37,7 @@ on:
       - "automation/release_manifest.json"
       - "automation/resource_ownership_audit.json"
       - "automation/resource_write_sets.json"
+      - "automation/maintenance_backlog.json"
       - "scripts/**"
       - "scripts/register_config_baseline.py"
       - "scripts/verify_baseline.py"
@@ -241,6 +243,29 @@ jobs:
         run: python3 scripts/validate_automation_write_boundary.py
       - name: Validate execution adapter contracts
         run: python3 scripts/validate_execution_adapters.py
+      - name: Validate file-based maintenance backlog
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path("automation/maintenance_backlog.json")
+          document = json.loads(path.read_text(encoding="utf-8"))
+          if document.get("schema_version") != 1:
+              raise SystemExit("maintenance backlog schema_version must be 1")
+          items = document.get("items")
+          if not isinstance(items, list) or not items:
+              raise SystemExit("maintenance backlog items must be a non-empty array")
+          ids = [item.get("id") for item in items if isinstance(item, dict)]
+          if len(ids) != len(items) or len(ids) != len(set(ids)) or any(not isinstance(x, str) or not x for x in ids):
+              raise SystemExit("maintenance backlog item IDs must be unique non-empty strings")
+          allowed = {"open", "in_progress", "blocked_pending_live_run", "blocked_pending_supported_lifecycle", "complete"}
+          for item in items:
+              if item.get("status") not in allowed:
+                  raise SystemExit(f"unsupported maintenance status for {item.get('id')}: {item.get('status')}")
+              if not isinstance(item.get("acceptance"), list) or not item["acceptance"]:
+                  raise SystemExit(f"missing acceptance criteria for {item.get('id')}")
+          print(f"Validated {len(items)} file-managed maintenance items; executable work remains in the registered task queue.")
+          PY
       - name: Run maintained production preflight suite
         env:
           PYTHONPATH: scripts
