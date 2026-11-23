@@ -33,6 +33,35 @@ class AssessmentQueueTests(unittest.TestCase):
         self.assertEqual(assessor.rotate_assessment_urls(items, "missing", 2), items[:2])
 
 
+    def test_monolithic_fallback_uses_larger_bounded_batch_without_changing_task_cap(self):
+        assessor = load_assessor()
+        self.assertEqual(assessor.MAX_URLS, 20)
+        self.assertEqual(assessor.MONOLITHIC_MAX_URLS, 100)
+        self.assertEqual(assessor.load_task_options(None)["max_urls"], 100)
+
+    def test_monolithic_rotation_prioritizes_eligible_stability_rechecks(self):
+        assessor = load_assessor()
+        items = [
+            {"repository": f"org/r{n}", "url": f"https://raw.githubusercontent.com/org/r{n}/main/rules.list"}
+            for n in range(6)
+        ]
+        fingerprints = [f"{n:032x}" for n in range(100)]
+        previous = {}
+        for item in items[:2]:
+            previous[item["url"]] = {
+                "parser_candidate": "domain-only",
+                "policy_evidence": "README_policy_reference",
+                "exact_domain_count": 100,
+                "domain_fingerprints": fingerprints,
+                "drift": {"status": "baseline_initialized"},
+            }
+        batch = assessor.rotate_assessment_urls(
+            items, items[-1]["url"], 3, previous_by_url=previous
+        )
+        self.assertEqual({item["url"] for item in batch[:2]}, {item["url"] for item in items[:2]})
+        self.assertEqual(len(batch), 3)
+        self.assertEqual(len({item["url"] for item in batch}), 3)
+
     def test_task_retry_reuses_the_same_bounded_batch_for_same_predecessor(self):
         assessor = load_assessor()
         items = [{"url": f"https://raw.githubusercontent.com/o/r/main/{n}.list"} for n in range(23)]
