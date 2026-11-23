@@ -90,7 +90,7 @@
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
-      "git_blob_sha": "52de4a9be3b2c0c4c094cf1159786b44f9909f20"
+      "git_blob_sha": "006167e2762ce9264cb3232eba91277ff54707e1"
     },
     "github_workflow_adapter": {
       "path": "scripts/github_workflow_adapter.py",
@@ -102,7 +102,7 @@
     },
     "production_input_manifest": {
       "path": "automation/production_inputs.json",
-      "git_blob_sha": "203b3f7997b8768100a19d36b504969b3ee08739"
+      "git_blob_sha": "2a47dbeda0acab2139a93ae8366c88d312b7631b"
     },
     "task_queue_store": {
       "path": "scripts/github_queue_store.py",
