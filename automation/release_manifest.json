@@ -28,7 +28,7 @@
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "01d21639cae939819852efb3bbfba3b9bb44afcf"
+      "git_blob_sha": "58a56ea55fc9ce50d2f2e2270532ff1001f02ea8"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -192,10 +192,6 @@
     "automation_write_boundary_validator": {
       "path": "scripts/validate_automation_write_boundary.py",
       "git_blob_sha": "f5f5f13c83adc4746dc804f4b8ccc31d99f5ed0f"
-    },
-    "baseline_proposal_tool": {
-      "path": "scripts/register_config_baseline.py",
-      "git_blob_sha": "54de3dfbfd701b8a18fe62b55d2df7bd8b542868"
     },
     "repository_integrity_tracker": {
       "path": "storage/v2/snapshot_repository_integrity.py",
