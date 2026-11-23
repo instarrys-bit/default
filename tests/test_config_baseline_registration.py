@@ -81,7 +81,7 @@ class ConfigBaselineRegistrationTests(unittest.TestCase):
             (root / "reports" / "config-drift-audit.json").write_text("{}", encoding="utf-8")
             with patch.object(baseline, "ROOT", root), patch.object(baseline, "config_change_history", return_value=["c" * 40]), patch.object(
                 baseline, "prepare_metadata", return_value={"sources/policy.json": json.dumps(policy)}
-            ), patch.dict(os.environ, {"GITHUB_ACTOR": "some-contributor"}, clear=True), patch(
+            ), patch.object(baseline, "run", return_value=""), patch.dict(os.environ, {"GITHUB_REF": "refs/heads/main", "GITHUB_ACTOR": "some-contributor"}, clear=True), patch(
                 "sys.argv", ["register_config_baseline.py", "--apply"]
             ):
                 self.assertEqual(baseline.main(), 0)
