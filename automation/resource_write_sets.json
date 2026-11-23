@@ -19,8 +19,8 @@
           "automation/resource_write_sets.json",
           "reports/config-drift-audit.json"
         ],
-        "authorization": "User-authorized automatic baseline registration only after GitHub verifies every intervening uu.conf-changing commit is authored by the repository owner.",
-        "fence": "Dedicated reconcile-config-baseline job; full-history verification; stale-main and byte-integrity checks; no production publisher access.",
+        "authorization": "Explicit user authorization: automatically follow the latest stable main-branch uu.conf Blob SHA and update approved/release baseline metadata regardless of commit author attribution.",
+        "fence": "Dedicated reconcile-config-baseline job; latest-main reacquisition; stable-SHA and byte-integrity checks; metadata-only five-path allowlist; no production publisher access.",
         "never_write": [
           "modules/uu.conf"
         ]
