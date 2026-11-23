@@ -25,11 +25,21 @@ from runtime import assert_automation_write_allowed
 
 API = "https://api.github.com"
 MAX_ARCHIVE_BYTES = 250 * 1024 * 1024
-MAX_SEGMENT_BYTES = 48 * 1024 * 1024
+MAX_SEGMENT_BYTES = 40_000_000
 MAX_RUNS_PER_SCAN = 2
 PER_RUN_INGEST_TIMEOUT_SECONDS = 600
 MAX_HTTP_RETRIES = 3
 
+
+
+def iter_archive_segments(archive: bytes, max_segment_bytes: int = MAX_SEGMENT_BYTES):
+    """Yield indexed, bounded byte segments for an immutable artifact archive."""
+    if not isinstance(archive, bytes):
+        raise TypeError("artifact archive must be bytes")
+    if isinstance(max_segment_bytes, bool) or not isinstance(max_segment_bytes, int) or max_segment_bytes <= 0:
+        raise ValueError("max_segment_bytes must be a positive integer")
+    for index, offset in enumerate(range(0, len(archive), max_segment_bytes)):
+        yield index, archive[offset:offset + max_segment_bytes]
 
 def _urlopen_with_retries(request_obj, timeout: int, opener=None):
     """Retry bounded transient GitHub/blob-storage failures without leaking auth."""
@@ -341,8 +351,7 @@ def main() -> int:
         }
         segment_records = []
         segment_count = (len(archive) + MAX_SEGMENT_BYTES - 1) // MAX_SEGMENT_BYTES
-        for segment_index in range(segment_count):
-            segment = archive[segment_index * MAX_SEGMENT_BYTES:(segment_index + 1) * MAX_SEGMENT_BYTES]
+        for segment_index, segment in iter_archive_segments(archive):
             segment_provenance = {
                 **provenance,
                 "source_id": f"{run_id}:{artifact_id}:{segment_index}",
