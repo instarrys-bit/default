@@ -440,6 +440,21 @@
       "source_sha": "efa08497e4e7dc7695773cf00433ce3adc1181f7",
       "summary": "The deterministic pipeline ended with audit=success and publish=failure.",
       "workflow": "auto_sync"
+    },
+    {
+      "before_run_id": "45200642792",
+      "classifications": [
+        "PIPELINE_FAILURE"
+      ],
+      "event_id": "auto-sync-recovery-45200642792",
+      "operation": "resolve",
+      "resolved_incident_ids": [
+        "d7b11c38d873c4a9a7bb-45188798466",
+        "7e56d46e9fbbddd9dd6d-45192571238",
+        "9f2a1d9635b06a2d02a0-45195533473"
+      ],
+      "verification_url": "https://github.com/instarrys-bit/default/actions/runs/45200642792",
+      "workflow": "auto_sync"
     }
   ],
   "incidents": [
@@ -4566,12 +4581,14 @@
       "workflow": "auto_sync"
     },
     {
-      "body": "The deterministic pipeline ended with audit=success and publish=failure.\n\n<!-- shadowrocket-incident-state:v1\n{\"classification\": \"PIPELINE_FAILURE\", \"history\": [\"DETECTED\", \"DIAGNOSING\", \"MANUAL_INTERVENTION\"], \"incident_id\": \"d7b11c38d873c4a9a7bb\", \"processed_events\": [\"auto-sync-failure-45188798466\"], \"revision\": 2, \"schema_version\": 1, \"source_sha\": \"40231d2260c7168208b8970ff87305ef06a686c4\", \"state\": \"MANUAL_INTERVENTION\", \"verification\": null, \"workflow\": \"auto_sync\"}\n-->\n",
+      "body": "The deterministic pipeline ended with audit=success and publish=failure.\n\n<!-- shadowrocket-incident-state:v1\n{\"classification\": \"PIPELINE_FAILURE\", \"history\": [\"DETECTED\", \"DIAGNOSING\", \"MANUAL_INTERVENTION\", \"VERIFYING\", \"RECOVERED\"], \"incident_id\": \"d7b11c38d873c4a9a7bb\", \"processed_events\": [\"auto-sync-failure-45188798466\", \"auto-sync-recovery-45200642792:verify:d7b11c38d873c4a9a7bb-45188798466\", \"auto-sync-recovery-45200642792:recovered:d7b11c38d873c4a9a7bb-45188798466\"], \"revision\": 4, \"schema_version\": 1, \"source_sha\": \"40231d2260c7168208b8970ff87305ef06a686c4\", \"state\": \"RECOVERED\", \"verification\": {\"event_id\": \"auto-sync-recovery-45200642792:recovered:d7b11c38d873c4a9a7bb-45188798466\", \"url\": \"https://github.com/instarrys-bit/default/actions/runs/45200642792\"}, \"workflow\": \"auto_sync\"}\n-->\n",
       "classification": "PIPELINE_FAILURE",
       "created_at": "auto-sync-failure-45188798466",
       "diagnosis": null,
       "events": [
-        "auto-sync-failure-45188798466"
+        "auto-sync-failure-45188798466",
+        "auto-sync-recovery-45200642792:verify:d7b11c38d873c4a9a7bb-45188798466",
+        "auto-sync-recovery-45200642792:recovered:d7b11c38d873c4a9a7bb-45188798466"
       ],
       "identity_key": "d7b11c38d873c4a9a7bb",
       "incident_id": "d7b11c38d873c4a9a7bb-45188798466",
@@ -4580,35 +4597,45 @@
         "history": [
           "DETECTED",
           "DIAGNOSING",
-          "MANUAL_INTERVENTION"
+          "MANUAL_INTERVENTION",
+          "VERIFYING",
+          "RECOVERED"
         ],
         "incident_id": "d7b11c38d873c4a9a7bb",
         "processed_events": [
-          "auto-sync-failure-45188798466"
+          "auto-sync-failure-45188798466",
+          "auto-sync-recovery-45200642792:verify:d7b11c38d873c4a9a7bb-45188798466",
+          "auto-sync-recovery-45200642792:recovered:d7b11c38d873c4a9a7bb-45188798466"
         ],
-        "revision": 2,
+        "revision": 4,
         "schema_version": 1,
         "source_sha": "40231d2260c7168208b8970ff87305ef06a686c4",
-        "state": "MANUAL_INTERVENTION",
-        "verification": null,
+        "state": "RECOVERED",
+        "verification": {
+          "event_id": "auto-sync-recovery-45200642792:recovered:d7b11c38d873c4a9a7bb-45188798466",
+          "url": "https://github.com/instarrys-bit/default/actions/runs/45200642792"
+        },
         "workflow": "auto_sync"
       },
       "legacy_sources": [],
-      "lifecycle_status": "MANUAL_INTERVENTION",
+      "lifecycle_status": "RECOVERED",
       "run_id": "45188798466",
       "run_url": "https://github.com/instarrys-bit/default/actions/runs/45188798466",
       "source_sha": "40231d2260c7168208b8970ff87305ef06a686c4",
       "summary": "The deterministic pipeline ended with audit=success and publish=failure.",
-      "updated_at": "auto-sync-failure-45188798466",
+      "updated_at": "auto-sync-recovery-45200642792",
+      "verification_url": "https://github.com/instarrys-bit/default/actions/runs/45200642792",
       "workflow": "auto_sync"
     },
     {
-      "body": "The deterministic pipeline ended with audit=failure and publish=skipped.\n\n<!-- shadowrocket-incident-state:v1\n{\"classification\": \"PIPELINE_FAILURE\", \"history\": [\"DETECTED\", \"DIAGNOSING\", \"MANUAL_INTERVENTION\"], \"incident_id\": \"7e56d46e9fbbddd9dd6d\", \"processed_events\": [\"auto-sync-failure-45192571238\"], \"revision\": 2, \"schema_version\": 1, \"source_sha\": \"34cb8a40f954128fc835d7d1a63ef48f30ff3341\", \"state\": \"MANUAL_INTERVENTION\", \"verification\": null, \"workflow\": \"auto_sync\"}\n-->\n",
+      "body": "The deterministic pipeline ended with audit=failure and publish=skipped.\n\n<!-- shadowrocket-incident-state:v1\n{\"classification\": \"PIPELINE_FAILURE\", \"history\": [\"DETECTED\", \"DIAGNOSING\", \"MANUAL_INTERVENTION\", \"VERIFYING\", \"RECOVERED\"], \"incident_id\": \"7e56d46e9fbbddd9dd6d\", \"processed_events\": [\"auto-sync-failure-45192571238\", \"auto-sync-recovery-45200642792:verify:7e56d46e9fbbddd9dd6d-45192571238\", \"auto-sync-recovery-45200642792:recovered:7e56d46e9fbbddd9dd6d-45192571238\"], \"revision\": 4, \"schema_version\": 1, \"source_sha\": \"34cb8a40f954128fc835d7d1a63ef48f30ff3341\", \"state\": \"RECOVERED\", \"verification\": {\"event_id\": \"auto-sync-recovery-45200642792:recovered:7e56d46e9fbbddd9dd6d-45192571238\", \"url\": \"https://github.com/instarrys-bit/default/actions/runs/45200642792\"}, \"workflow\": \"auto_sync\"}\n-->\n",
       "classification": "PIPELINE_FAILURE",
       "created_at": "auto-sync-failure-45192571238",
       "diagnosis": null,
       "events": [
-        "auto-sync-failure-45192571238"
+        "auto-sync-failure-45192571238",
+        "auto-sync-recovery-45200642792:verify:7e56d46e9fbbddd9dd6d-45192571238",
+        "auto-sync-recovery-45200642792:recovered:7e56d46e9fbbddd9dd6d-45192571238"
       ],
       "identity_key": "7e56d46e9fbbddd9dd6d",
       "incident_id": "7e56d46e9fbbddd9dd6d-45192571238",
@@ -4617,35 +4644,45 @@
         "history": [
           "DETECTED",
           "DIAGNOSING",
-          "MANUAL_INTERVENTION"
+          "MANUAL_INTERVENTION",
+          "VERIFYING",
+          "RECOVERED"
         ],
         "incident_id": "7e56d46e9fbbddd9dd6d",
         "processed_events": [
-          "auto-sync-failure-45192571238"
+          "auto-sync-failure-45192571238",
+          "auto-sync-recovery-45200642792:verify:7e56d46e9fbbddd9dd6d-45192571238",
+          "auto-sync-recovery-45200642792:recovered:7e56d46e9fbbddd9dd6d-45192571238"
         ],
-        "revision": 2,
+        "revision": 4,
         "schema_version": 1,
         "source_sha": "34cb8a40f954128fc835d7d1a63ef48f30ff3341",
-        "state": "MANUAL_INTERVENTION",
-        "verification": null,
+        "state": "RECOVERED",
+        "verification": {
+          "event_id": "auto-sync-recovery-45200642792:recovered:7e56d46e9fbbddd9dd6d-45192571238",
+          "url": "https://github.com/instarrys-bit/default/actions/runs/45200642792"
+        },
         "workflow": "auto_sync"
       },
       "legacy_sources": [],
-      "lifecycle_status": "MANUAL_INTERVENTION",
+      "lifecycle_status": "RECOVERED",
       "run_id": "45192571238",
       "run_url": "https://github.com/instarrys-bit/default/actions/runs/45192571238",
       "source_sha": "34cb8a40f954128fc835d7d1a63ef48f30ff3341",
       "summary": "The deterministic pipeline ended with audit=failure and publish=skipped.",
-      "updated_at": "auto-sync-failure-45192571238",
+      "updated_at": "auto-sync-recovery-45200642792",
+      "verification_url": "https://github.com/instarrys-bit/default/actions/runs/45200642792",
       "workflow": "auto_sync"
     },
     {
-      "body": "The deterministic pipeline ended with audit=success and publish=failure.\n\n<!-- shadowrocket-incident-state:v1\n{\"classification\": \"PIPELINE_FAILURE\", \"history\": [\"DETECTED\", \"DIAGNOSING\", \"MANUAL_INTERVENTION\"], \"incident_id\": \"9f2a1d9635b06a2d02a0\", \"processed_events\": [\"auto-sync-failure-45195533473\"], \"revision\": 2, \"schema_version\": 1, \"source_sha\": \"efa08497e4e7dc7695773cf00433ce3adc1181f7\", \"state\": \"MANUAL_INTERVENTION\", \"verification\": null, \"workflow\": \"auto_sync\"}\n-->\n",
+      "body": "The deterministic pipeline ended with audit=success and publish=failure.\n\n<!-- shadowrocket-incident-state:v1\n{\"classification\": \"PIPELINE_FAILURE\", \"history\": [\"DETECTED\", \"DIAGNOSING\", \"MANUAL_INTERVENTION\", \"VERIFYING\", \"RECOVERED\"], \"incident_id\": \"9f2a1d9635b06a2d02a0\", \"processed_events\": [\"auto-sync-failure-45195533473\", \"auto-sync-recovery-45200642792:verify:9f2a1d9635b06a2d02a0-45195533473\", \"auto-sync-recovery-45200642792:recovered:9f2a1d9635b06a2d02a0-45195533473\"], \"revision\": 4, \"schema_version\": 1, \"source_sha\": \"efa08497e4e7dc7695773cf00433ce3adc1181f7\", \"state\": \"RECOVERED\", \"verification\": {\"event_id\": \"auto-sync-recovery-45200642792:recovered:9f2a1d9635b06a2d02a0-45195533473\", \"url\": \"https://github.com/instarrys-bit/default/actions/runs/45200642792\"}, \"workflow\": \"auto_sync\"}\n-->\n",
       "classification": "PIPELINE_FAILURE",
       "created_at": "auto-sync-failure-45195533473",
       "diagnosis": null,
       "events": [
-        "auto-sync-failure-45195533473"
+        "auto-sync-failure-45195533473",
+        "auto-sync-recovery-45200642792:verify:9f2a1d9635b06a2d02a0-45195533473",
+        "auto-sync-recovery-45200642792:recovered:9f2a1d9635b06a2d02a0-45195533473"
       ],
       "identity_key": "9f2a1d9635b06a2d02a0",
       "incident_id": "9f2a1d9635b06a2d02a0-45195533473",
@@ -4654,26 +4691,34 @@
         "history": [
           "DETECTED",
           "DIAGNOSING",
-          "MANUAL_INTERVENTION"
+          "MANUAL_INTERVENTION",
+          "VERIFYING",
+          "RECOVERED"
         ],
         "incident_id": "9f2a1d9635b06a2d02a0",
         "processed_events": [
-          "auto-sync-failure-45195533473"
+          "auto-sync-failure-45195533473",
+          "auto-sync-recovery-45200642792:verify:9f2a1d9635b06a2d02a0-45195533473",
+          "auto-sync-recovery-45200642792:recovered:9f2a1d9635b06a2d02a0-45195533473"
         ],
-        "revision": 2,
+        "revision": 4,
         "schema_version": 1,
         "source_sha": "efa08497e4e7dc7695773cf00433ce3adc1181f7",
-        "state": "MANUAL_INTERVENTION",
-        "verification": null,
+        "state": "RECOVERED",
+        "verification": {
+          "event_id": "auto-sync-recovery-45200642792:recovered:9f2a1d9635b06a2d02a0-45195533473",
+          "url": "https://github.com/instarrys-bit/default/actions/runs/45200642792"
+        },
         "workflow": "auto_sync"
       },
       "legacy_sources": [],
-      "lifecycle_status": "MANUAL_INTERVENTION",
+      "lifecycle_status": "RECOVERED",
       "run_id": "45195533473",
       "run_url": "https://github.com/instarrys-bit/default/actions/runs/45195533473",
       "source_sha": "efa08497e4e7dc7695773cf00433ce3adc1181f7",
       "summary": "The deterministic pipeline ended with audit=success and publish=failure.",
-      "updated_at": "auto-sync-failure-45195533473",
+      "updated_at": "auto-sync-recovery-45200642792",
+      "verification_url": "https://github.com/instarrys-bit/default/actions/runs/45200642792",
       "workflow": "auto_sync"
     }
   ],
@@ -4683,6 +4728,6 @@
     "records_imported": 85,
     "source": "GitHub Issues"
   },
-  "revision": 37,
+  "revision": 38,
   "schema_version": 1
 }
