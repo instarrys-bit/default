@@ -89,17 +89,17 @@ def classify_paths(paths: Iterable[str], manifest: dict) -> dict:
 
 
 def _fingerprint_input_bytes(relative: str, data: bytes) -> bytes:
-    """Exclude only owner-baseline bookkeeping; the config blob remains a separate input."""
+    """Exclude File Management guard metadata; routing policy and uu.conf remain production inputs."""
     if relative != "sources/policy.json":
         return data
     try:
         policy = json.loads(data.decode("utf-8"))
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
         raise ValueError("sources/policy.json must be valid UTF-8 JSON for fingerprinting") from exc
-    guard = policy.get("managed_config_guard") if isinstance(policy, dict) else None
-    if isinstance(guard, dict):
-        guard.pop("approved_git_blob_sha", None)
-        guard.pop("last_user_approved_baseline_update", None)
+    if isinstance(policy, dict):
+        # This subtree governs ownership, SHA tracking and metadata-only
+        # registration. It cannot alter DIRECT/PROXY/REJECT decisions.
+        policy.pop("managed_config_guard", None)
     return json.dumps(
         policy, sort_keys=True, separators=(",", ":"), ensure_ascii=False
     ).encode("utf-8")
