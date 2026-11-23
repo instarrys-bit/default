@@ -203,7 +203,7 @@
     },
     "storage_management_workflow": {
       "path": ".github/workflows/storage-management.yml",
-      "git_blob_sha": "36399f1b249241c467426e132e2a35d5968123eb"
+      "git_blob_sha": "c765b3a12cf046be07cdb3f6f3e765a69725cac7"
     },
     "repository_integrity_tests": {
       "path": "tests/v2/test_repository_integrity.py",
@@ -219,7 +219,7 @@
     },
     "baseline_registration_runtime": {
       "path": "scripts/register_config_baseline.py",
-      "git_blob_sha": "0b9fb2c95cdef5d985686d22ad66a11844e2725d"
+      "git_blob_sha": "a63db641fa95723fd7a4a2d1bdfc6acf536f03b9"
     },
     "baseline_metadata_publisher": {
       "path": "scripts/publish_config_baseline_metadata.sh",
