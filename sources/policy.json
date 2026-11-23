@@ -100,26 +100,26 @@
   },
   "managed_config_guard": {
     "path": "modules/uu.conf",
-    "approved_git_blob_sha": "86b87a33b07e881ff3bb1a32e852001b52708e97",
-    "description": "Authoritative owner-managed Shadowrocket config. Automation may read, identify, hash and diff the file, and may emit a runner-local baseline proposal. It must never rewrite file contents or automatically update repository baseline metadata; any metadata change requires a separately reviewed pull request.",
+    "approved_git_blob_sha": "a24d8c526394ebf28f0c74043d93d4f736272679",
+    "description": "Authoritative owner-managed Shadowrocket config. File Management may automatically register a new baseline SHA after verifying that every intervening uu.conf-changing commit is authored by the repository owner. Automation may read, identify, hash and diff the file, but must never rewrite its contents.",
     "last_user_approved_baseline_update": {
-      "previous_blob_sha": "17ae3efffd0bc0e961e555130f95234696a59531",
-      "new_blob_sha": "86b87a33b07e881ff3bb1a32e852001b52708e97",
-      "reason": "Storage Management synchronized the exact main-branch uu.conf Git blob after verifying every intervening config-changing commit is associated with the repository owner. Only baseline metadata and derived release pins are updated; uu.conf bytes are immutable to automation.",
-      "approval_mode": "recovered_owner_authored_config_history",
+      "previous_blob_sha": "86b87a33b07e881ff3bb1a32e852001b52708e97",
+      "new_blob_sha": "a24d8c526394ebf28f0c74043d93d4f736272679",
+      "reason": "Repository owner authorized automatic registration after GitHub verified the uu.conf change history. Only baseline metadata and derived release pins are updated; uu.conf bytes remain immutable to automation.",
+      "approval_mode": "owner_authored_config_history_with_user_authorization",
       "config_change_commits": [
-        "51ea7f8dd306cefac1aabbc0fc32d9510b7c7e76"
+        "3d67f0bdb63321b1512c47d58db7d40407e7c4d7"
       ],
       "actor": "instarrys-bit",
-      "commit_sha": "51ea7f8dd306cefac1aabbc0fc32d9510b7c7e76",
-      "registered_at": "2026-11-21T14:12:58.102872+00:00"
+      "commit_sha": "3d67f0bdb63321b1512c47d58db7d40407e7c4d7",
+      "registered_at": "2026-11-23T10:14:07.785Z"
     },
     "content_immutable_to_automation": true,
     "content_protection": {
       "owner_may_edit": true,
       "automation_may_modify_content": false,
       "protected_scope": "All bytes in modules/uu.conf, including user-authored rules, section contents, DNS settings, and existing code or feature behavior.",
-      "reaction_model": "On every modules/uu.conf change, immediately record the observed Git blob SHA and commit context, reacquire the latest main-branch file, then continue read-only audit and scheduling. If attribution is unavailable, mark it pending and keep tracking; never reject the observation or modify config bytes.",
+      "reaction_model": "On every modules/uu.conf change, record the observed Git blob SHA and commit context, reacquire the latest main-branch file, verify all intervening uu.conf-changing commits are authored by the repository owner, and automatically update the registered baseline SHA and derived metadata pins when authorized. If attribution is unavailable or any commit is not owner-authored, mark pending and keep tracking; never reject the observation or modify config bytes.",
       "watchdog_near_real_time_reconciliation": true
     },
     "baseline_metadata_policy": {
@@ -128,7 +128,7 @@
       "automation_may_hash_file": true,
       "automation_may_diff_file": true,
       "automation_may_update_registered_blob_sha": true,
-      "update_authorization": "File Management is the sole authorized writer of repository SHA inventory and registered baseline metadata. Production automation, Watchdog and ruleset publishers cannot update baseline metadata. Storage Management records every observed modules/uu.conf Git blob SHA in its durable integrity inventory, independently of owner-attribution status. The registered approval baseline remains a separate historical control and is not silently advanced. On change, reacquire the latest file and continue read-only audit and scheduling. Automation must never write config content.",
+      "update_authorization": "User-authorized automatic baseline registration by File Management only, after verifying every intervening uu.conf-changing commit is authored by the repository owner. Production automation, Watchdog and ruleset publishers cannot update baseline metadata. Storage Management records every observed SHA independently. Never write modules/uu.conf.",
       "registration_must_not_write_config_content": true
     }
   }
