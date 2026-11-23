@@ -1,3 +1,4 @@
+import hashlib
 import json
 import tempfile
 import unittest
@@ -66,7 +67,7 @@ class RejectManualApprovalTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             build_rulesets.manual_approved_reject_rule_lines({"manual_approved_reject_rules": [invalid]})
 
-    def test_reject_review_queue_has_a_hard_50mb_file_limit(self):
+    def test_reject_review_queue_has_a_hard_40mb_file_limit(self):
         payload = {"schema_version": 1, "items": [{"rule": "DOMAIN,one.example"}]}
         self.assertTrue(build_rulesets.serialize_reject_review_queue(payload).endswith(b"\n"))
         original_limit = build_rulesets.MAX_REJECT_REVIEW_QUEUE_BYTES
@@ -86,7 +87,7 @@ class RejectManualApprovalTests(unittest.TestCase):
                 "schema_version": 1,
                 "policy": "REJECT",
                 "items": [
-                    {"rule": f"DOMAIN,ad-{index}.example", "reason": "evidence-" * 18}
+                    {"rule": f"DOMAIN,ad-{index}.example", "reason": hashlib.sha512(str(index).encode()).hexdigest() * 8}
                     for index in range(24)
                 ],
             }
@@ -102,7 +103,10 @@ class RejectManualApprovalTests(unittest.TestCase):
                 self.assertEqual(manifest["record_count"], len(payload["items"]))
                 self.assertTrue(all(0 < shard["bytes"] <= 4096 for shard in manifest["shards"]))
                 self.assertTrue(all(shard["file"].endswith(".jsonl.gz") for shard in manifest["shards"]))
-                self.assertLessEqual(manifest["total_document_bytes"], 4096)
+                self.assertGreater(len(manifest["shards"]), 1)
+                self.assertEqual(manifest["max_file_bytes"], 4096)
+                self.assertEqual(manifest["max_uncompressed_file_bytes"], 16384)
+                self.assertIsNone(manifest["max_total_bytes"])
                 self.assertLessEqual(manifest_file.stat().st_size, 4096)
                 self.assertEqual(read_document(path, "items"), payload)
             finally:
