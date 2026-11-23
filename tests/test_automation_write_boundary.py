@@ -24,6 +24,7 @@ class AutomationWriteBoundaryTests(unittest.TestCase):
                 "sources/policy.json",
                 "automation/release_manifest.json",
                 "automation/resource_write_sets.json",
+                "reports/config-drift-audit.json",
                 "modules/uu.conf",
             ):
                 source = ROOT / relative
@@ -34,10 +35,12 @@ class AutomationWriteBoundaryTests(unittest.TestCase):
             config.write_bytes(config.read_bytes() + b"\\n# owner-approved change\\n")
             self.assertEqual(validate_write_boundary(root), [])
 
-    def test_storage_management_has_no_baseline_writer(self):
+    def test_storage_management_has_guarded_baseline_metadata_writer(self):
         content = (ROOT / ".github/workflows/storage-management.yml").read_text(encoding="utf-8")
-        self.assertNotIn("reconcile-config-baseline:", content)
-        self.assertNotIn("register_config_baseline.py --apply", content)
+        self.assertIn("reconcile-config-baseline:", content)
+        self.assertIn("register_config_baseline.py --apply", content)
+        self.assertIn("git push origin HEAD:main", content)
+        self.assertIn("BASELINE_METADATA_ALLOWLIST", content)
 
     def test_production_publisher_has_rulesets_only_fence(self):
         content = (ROOT / ".github/workflows/auto_sync.yml").read_text(encoding="utf-8")
@@ -45,10 +48,11 @@ class AutomationWriteBoundaryTests(unittest.TestCase):
         self.assertIn("Refusing non-ruleset repository write", content)
         self.assertIn("Protected config modules/uu.conf is staged; refusing to commit.", content)
 
-    def test_baseline_tool_is_proposal_only(self):
+    def test_baseline_tool_writes_metadata_only_and_protects_config_bytes(self):
         content = (ROOT / "scripts/register_config_baseline.py").read_text(encoding="utf-8")
-        self.assertNotIn("--apply", content)
-        self.assertNotIn("def apply_baseline_updates(", content)
+        self.assertIn("--apply", content)
+        self.assertIn("config.read_bytes() != original", content)
+        self.assertIn("ALLOWLIST", content)
 
 
 if __name__ == "__main__":
