@@ -293,7 +293,7 @@ jobs:
           test -n "${AUTOMATION_TASK_ID_BASE:-}"
           printf '%s' "$GH_TOKEN" | python3 scripts/resource_lease_runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token-stdin assert-workflow --task-id "$AUTOMATION_TASK_ID_BASE" --proof-json "$RESOURCE_LEASE_PROOF"
 
-      - name: Observe owner-authored uu.conf history (read-only; File Management owns registration)
+      - name: Observe latest uu.conf SHA (read-only; File Management owns registration)
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         env:
           GH_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
