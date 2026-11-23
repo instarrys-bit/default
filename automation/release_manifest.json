@@ -28,7 +28,7 @@
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "01d21639cae939819852efb3bbfba3b9bb44afcf"
+      "git_blob_sha": "58a56ea55fc9ce50d2f2e2270532ff1001f02ea8"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -191,11 +191,7 @@
     },
     "automation_write_boundary_validator": {
       "path": "scripts/validate_automation_write_boundary.py",
-      "git_blob_sha": "0b8c390c0532f5a4d86b8fa7dae368e0940ec9cb"
-    },
-    "baseline_proposal_tool": {
-      "path": "scripts/register_config_baseline.py",
-      "git_blob_sha": "0eddc9f869dbe130f8788ddcc6c14c6bdcaf420d"
+      "git_blob_sha": "f5f5f13c83adc4746dc804f4b8ccc31d99f5ed0f"
     },
     "repository_integrity_tracker": {
       "path": "storage/v2/snapshot_repository_integrity.py",
@@ -207,7 +203,7 @@
     },
     "storage_management_workflow": {
       "path": ".github/workflows/storage-management.yml",
-      "git_blob_sha": "bca8ff61ab84fdec1f44eb3c882c62801a6cd83f"
+      "git_blob_sha": "67070cb0558fdcad4468f589739ebd3d58b66739"
     },
     "repository_integrity_tests": {
       "path": "tests/v2/test_repository_integrity.py",
@@ -220,6 +216,10 @@
     "dashboard_snapshot": {
       "path": "scripts/build_dashboard_snapshot.py",
       "git_blob_sha": "6d8dcdd5294d958e26fe88de13a3a273d16640f1"
+    },
+    "baseline_registration_runtime": {
+      "path": "scripts/register_config_baseline.py",
+      "git_blob_sha": "d097e9bcea10da4f736dd760f92e512513496e8b"
     }
   },
   "compatibility": {
@@ -271,7 +271,7 @@
     "The deterministic review-engine source revision is not yet pinned to a verified commit.",
     "The post-Assessment production dispatcher is newly wired and still requires a live Watchdog → auto_sync → ruleset publication run to establish end-to-end unattended production evidence.",
     "The historical independent Source Discovery → Assessment handoff is not the current production topology. Production runs discovery and assessment in the bounded auto_sync workflow; independent Python adapter dispatch remains deny-by-default.",
-    "A future owner-approved uu.conf change produces a runner-local baseline proposal; metadata pin updates require a reviewed PR. No automated repository baseline writer is enabled."
+    "Owner-authored uu.conf changes are automatically registered by Storage Management / File Management after GitHub author-history verification; metadata-only writes are allowlisted and modules/uu.conf remains byte-for-byte immutable."
   ],
   "next_migration_gate": {
     "required_before_independent_python_dispatch": [
