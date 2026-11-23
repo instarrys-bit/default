@@ -132,9 +132,10 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertTrue(guard["baseline_metadata_policy"]["automation_may_update_registered_blob_sha"])
         self.assertIn("File Management", guard["baseline_metadata_policy"]["update_authorization"])
         script = (ROOT / "scripts/register_config_baseline.py").read_text(encoding="utf-8")
-        self.assertNotIn("--apply", script)
+        self.assertIn("config.read_bytes() != original", script)
+        self.assertIn("ALLOWLIST", script)
         workflow = (ROOT / ".github/workflows/storage-management.yml").read_text(encoding="utf-8")
-        self.assertNotIn("reconcile-config-baseline:", workflow)
+        self.assertIn("reconcile-config-baseline:", workflow)
 
     def test_durable_queue_writers_are_classified_as_control_plane_not_production_publishers(self):
         writes = read_json("automation/resource_write_sets.json")
