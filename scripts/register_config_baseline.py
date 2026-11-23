@@ -163,18 +163,21 @@ def main() -> int:
     if not commits:
         report_path = ROOT / "reports/config-drift-audit.json"
         report = json.loads(report_path.read_text(encoding="utf-8"))
+        report["baseline_sha256"] = hashlib.sha256(original).hexdigest()
         report["baseline_git_blob_sha"] = actual
         report["registered_baseline_git_blob_sha"] = previous
         report["baseline_matches_registered_blob"] = False
         report["owner_approved_change_pending_registration"] = True
+        old_observation = report.get("observation", {})
+        observed_at = old_observation.get("observed_at") if old_observation.get("observed_git_blob_sha") == actual else None
         report["observation"] = {
             "status": "observed_pending_owner_attribution",
             "observed_git_blob_sha": actual,
             "observed_sha256": hashlib.sha256(original).hexdigest(),
-            "observed_at": datetime.now(timezone.utc).isoformat(),
+            "observed_at": observed_at or datetime.now(timezone.utc).isoformat(),
             "next_action": "Keep tracking and continue read-only audit; do not advance the approved baseline until all intervening config commits are verified owner-authored.",
         }
-        if args.apply:
+        if args.apply and report != json.loads(report_path.read_text(encoding="utf-8")):
             report_path.write_text(json_text(report), encoding="utf-8")
         print(json.dumps({"status": "observed_pending_owner_attribution", "observed_blob_sha": actual, "registered_blob_sha": previous, "config_content_modified": False}, sort_keys=True))
         return 0
