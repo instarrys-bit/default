@@ -128,7 +128,7 @@
       "automation_may_hash_file": true,
       "automation_may_diff_file": true,
       "automation_may_update_registered_blob_sha": true,
-      "update_authorization": "Storage Management records every observed modules/uu.conf Git blob SHA in its durable integrity inventory, independently of owner-attribution status. The registered approval baseline remains a separate historical control and is not silently advanced. On change, reacquire the latest file and continue read-only audit and scheduling. Automation must never write config content.",
+      "update_authorization": "File Management is the sole authorized writer of repository SHA inventory and registered baseline metadata. Storage Management records every observed modules/uu.conf Git blob SHA in its durable integrity inventory, independently of owner-attribution status. The registered approval baseline remains a separate historical control and is not silently advanced. On change, reacquire the latest file and continue read-only audit and scheduling. Automation must never write config content.",
       "registration_must_not_write_config_content": true
     }
   }
