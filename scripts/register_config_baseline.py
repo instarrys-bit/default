@@ -42,11 +42,9 @@ def owner_approved_config_history(guard: dict) -> list[str]:
     if len(anchor) != 40:
         return []
     head = run(["git", "rev-parse", "HEAD"])
-    if run(["git", "merge-base", "--is-ancestor", anchor, head], check=False) == "":
-        # merge-base --is-ancestor has no stdout; inspect its return code below instead.
-        ancestry = subprocess.run(["git", "merge-base", "--is-ancestor", anchor, head], cwd=ROOT)
-        if ancestry.returncode != 0:
-            return []
+    ancestry = subprocess.run(["git", "merge-base", "--is-ancestor", anchor, head], cwd=ROOT)
+    if ancestry.returncode != 0:
+        return []
     commits = run(["git", "rev-list", "--reverse", f"{anchor}..{head}", "--", CONFIG_PATH]).splitlines()
     commits = [item for item in commits if item]
     if not commits:
@@ -89,6 +87,13 @@ def prepare_metadata(actual: str, previous: str, commits: list[str]) -> dict[str
     if pin.get("path") != CONFIG_PATH or pin.get("access") != "read_only":
         raise ValueError("release manifest config pin is not read-only modules/uu.conf")
     pin["git_blob_sha"] = actual
+    for key, path in (
+        ("baseline_registration_runtime", "scripts/register_config_baseline.py"),
+        ("automation_write_boundary_validator", "scripts/validate_automation_write_boundary.py"),
+        ("storage_management_workflow", ".github/workflows/storage-management.yml"),
+    ):
+        if key in release.get("implementation_pins", {}):
+            release["implementation_pins"][key]["git_blob_sha"] = run(["git", "rev-parse", f"HEAD:{path}"])
     release_text = json_text(release)
     release_sha = git_blob_sha(release_text.encode("utf-8"))
 
@@ -138,7 +143,20 @@ def main() -> int:
     actual = git_blob_sha(original)
     previous = str(guard["approved_git_blob_sha"])
     if actual == previous:
-        print(json.dumps({"status": "no_change", "blob_sha": actual, "config_content_modified": False}, sort_keys=True))
+        report_path = ROOT / "reports/config-drift-audit.json"
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+        expected_report = {
+            "baseline_sha256": hashlib.sha256(original).hexdigest(),
+            "baseline_git_blob_sha": actual,
+            "registered_baseline_git_blob_sha": actual,
+            "baseline_matches_registered_blob": True,
+            "owner_approved_change_pending_registration": False,
+        }
+        changed_report = any(report.get(key) != value for key, value in expected_report.items())
+        if changed_report and args.apply:
+            report.update(expected_report)
+            report_path.write_text(json_text(report), encoding="utf-8")
+        print(json.dumps({"status": "audit_metadata_refreshed" if changed_report and args.apply else "no_change", "blob_sha": actual, "audit_report_refresh_needed": changed_report, "config_content_modified": False}, sort_keys=True))
         return 0
 
     commits = owner_approved_config_history(guard)
