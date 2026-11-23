@@ -42,3 +42,24 @@ class WatchdogV2ControlPlaneTests(unittest.TestCase):
         self.assertIn('gh api --method POST "repos/$REPO/actions/workflows/$WATCHDOG_WORKFLOW_ID/dispatches"', text)
         self.assertLess(text.index(reconcile), text.index(re_wake))
         self.assertLess(text.index(re_wake), text.index(scheduler))
+
+
+class LargeCASCheckoutScopeTests(unittest.TestCase):
+    def test_all_workflow_checkouts_exclude_content_addressed_payload_blobs(self):
+        workflow_paths = (
+            ".github/workflows/auto_sync.yml",
+            ".github/workflows/automation-watchdog.yml",
+            ".github/workflows/storage-management.yml",
+            ".github/workflows/dashboard-pages.yml",
+        )
+        for relative_path in workflow_paths:
+            with self.subTest(workflow=relative_path):
+                content = (ROOT / relative_path).read_text(encoding="utf-8")
+                checkout_count = content.count("uses: actions/checkout")
+                self.assertGreater(checkout_count, 0)
+                self.assertEqual(content.count("filter: blob:none"), checkout_count)
+                self.assertEqual(content.count("sparse-checkout-cone-mode: false"), checkout_count)
+                self.assertEqual(
+                    content.count("!/storage/v2/artifacts/sha256/"),
+                    checkout_count,
+                )
