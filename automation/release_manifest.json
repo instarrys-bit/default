@@ -42,7 +42,7 @@
     },
     "source_assessor": {
       "path": "scripts/assess_sources.py",
-      "git_blob_sha": "915b7b30ed08a0916bdd26773e2af74d9a1a1944"
+      "git_blob_sha": "ea5be30d79569e93e441e853b7f74451d2f8d9f6"
     },
     "task_queue_validator": {
       "path": "scripts/task_queue.py",
@@ -203,7 +203,7 @@
     },
     "storage_management_workflow": {
       "path": ".github/workflows/storage-management.yml",
-      "git_blob_sha": "baa2499299b03c97e4c4326b91bd5a7aa3e6d109"
+      "git_blob_sha": "39d75e1bb0cd1ee90359404f66e68cc50b010aed"
     },
     "repository_integrity_tests": {
       "path": "tests/v2/test_repository_integrity.py",
