@@ -227,7 +227,7 @@
     },
     "baseline_verifier": {
       "path": "scripts/verify_baseline.py",
-      "git_blob_sha": "b9b38fbc648a070ff50dcc984eecd298ea5fd8fc"
+      "git_blob_sha": "3ec42948743859f7532109e0c32adfd4e7d51b09"
     }
   },
   "compatibility": {
