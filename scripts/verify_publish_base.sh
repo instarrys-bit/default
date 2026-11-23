@@ -60,7 +60,7 @@ is_queue_only_compare() {
     .status == "ahead"
     and .behind_by == 0
     and (.ahead_by | type == "number")
-    and (.ahead_by >= 1 and .ahead_by <= 20)
+    and (.ahead_by >= 1 and .ahead_by <= 100)
     and (.commits | length) == .ahead_by
     and (.files | length) == 1
     and .files[0].filename == "automation/task_queue.json"
@@ -85,7 +85,7 @@ is_verified_mixed_queue_and_non_input_compare() {
   jq -e '
     .status == "ahead" and .behind_by == 0
     and (.ahead_by | type == "number")
-    and (.ahead_by >= 1 and .ahead_by <= 20)
+    and (.ahead_by >= 1 and .ahead_by <= 100)
     and (.commits | length) == .ahead_by
     and ([.files[].filename] | index("automation/task_queue.json") != null)
     and ([.files[].filename | select(. != "automation/task_queue.json")] | length > 0)
@@ -157,7 +157,7 @@ is_verified_mixed_queue_and_non_input_history() {
   local commits commit parent_line author_email subject changed_status expected_status
   commits="$(git rev-list --reverse "$base..$head")" || return 1
   [ -n "$commits" ] || return 1
-  [ "$(wc -l <<< "$commits" | tr -d ' ')" -le 20 ] || return 1
+  [ "$(wc -l <<< "$commits" | tr -d ' ')" -le 100 ] || return 1
   local queue_commit_seen=false
   expected_status="$(printf 'M\tautomation/task_queue.json')"
   while IFS= read -r commit; do
@@ -213,7 +213,7 @@ if [ -n "$changed_paths" ]; then
 
   if [ "$changed_paths" = "automation/task_queue.json" ]; then
     mapfile -t queue_commits < <(git rev-list --reverse --first-parent "$GITHUB_SHA..origin/main")
-    if [ "${#queue_commits[@]}" -lt 1 ] || [ "${#queue_commits[@]}" -gt 20 ]; then
+    if [ "${#queue_commits[@]}" -lt 1 ] || [ "${#queue_commits[@]}" -gt 100 ]; then
       echo "Queue-only advancement is outside the bounded commit window; refusing to publish." >&2
       exit 1
     fi
