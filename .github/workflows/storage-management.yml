@@ -146,20 +146,9 @@ jobs:
           filter: blob:none
           persist-credentials: false
           sparse-checkout: |
-            .github/workflows
-            .github/workflow_helpers
-            automation
-            dashboard
-            data
-            docs/v2
-            modules
-            reports
-            rulesets
-            scripts
-            sources
-            storage/v2
-            tests
-          sparse-checkout-cone-mode: true
+            /*
+            !/storage/v2/artifacts/sha256/
+          sparse-checkout-cone-mode: false
       - name: Validate all retained workflow YAML files and reject duplicate keys
         run: |
           ruby <<'RUBY'
@@ -234,6 +223,12 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: main
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /*
+            !/storage/v2/artifacts/sha256/
+          sparse-checkout-cone-mode: false
           persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
@@ -279,6 +274,11 @@ jobs:
         with:
           ref: main
           fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /*
+            !/storage/v2/artifacts/sha256/
+          sparse-checkout-cone-mode: false
           persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
@@ -346,6 +346,11 @@ jobs:
         with:
           ref: main
           fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /*
+            !/storage/v2/artifacts/sha256/
+          sparse-checkout-cone-mode: false
           persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
@@ -372,6 +377,12 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: main
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /*
+            !/storage/v2/artifacts/sha256/
+          sparse-checkout-cone-mode: false
           persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
@@ -399,6 +410,12 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: main
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            /*
+            !/storage/v2/artifacts/sha256/
+          sparse-checkout-cone-mode: false
           persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
