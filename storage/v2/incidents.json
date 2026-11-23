@@ -301,6 +301,17 @@
       ],
       "verification_url": "https://github.com/instarrys-bit/default/actions/runs/45067494050",
       "workflow": "auto_sync"
+    },
+    {
+      "before_run_id": "45092354089",
+      "classifications": [
+        "PIPELINE_FAILURE"
+      ],
+      "event_id": "auto-sync-recovery-45092354089",
+      "operation": "resolve",
+      "resolved_incident_ids": [],
+      "verification_url": "https://github.com/instarrys-bit/default/actions/runs/45092354089",
+      "workflow": "auto_sync"
     }
   ],
   "incidents": [
@@ -4198,6 +4209,6 @@
     "records_imported": 85,
     "source": "GitHub Issues"
   },
-  "revision": 25,
+  "revision": 26,
   "schema_version": 1
 }
