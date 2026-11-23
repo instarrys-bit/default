@@ -87,7 +87,7 @@ class RejectManualApprovalTests(unittest.TestCase):
                 "schema_version": 1,
                 "policy": "REJECT",
                 "items": [
-                    {"rule": f"DOMAIN,ad-{index}.example", "reason": hashlib.sha512(str(index).encode()).hexdigest() * 8}
+                    {"rule": f"DOMAIN,ad-{index}.example", "reason": "".join(hashlib.sha512(f"{index}-{part}".encode()).hexdigest() for part in range(12))}
                     for index in range(24)
                 ],
             }
