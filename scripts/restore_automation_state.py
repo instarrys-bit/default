@@ -2,9 +2,10 @@
 """Safely restore only allowlisted automation state, including JSONL shard sets."""
 from __future__ import annotations
 
-import argparse, hashlib, json, tarfile
+import argparse, hashlib, json, shutil, tarfile
 from pathlib import Path, PurePosixPath
 from resource_lease_runtime import assert_resource_lease_from_environment
+from json_document_store import iter_document_records
 
 ALLOWED_FILES = {
     "data/domain_candidates.json", "data/domain_candidates.json.manifest.json",
@@ -132,6 +133,77 @@ def publish_allowed(name: str) -> bool:
     return normalized in PUBLISH_FILES or any(normalized.startswith(prefix) for prefix in PUBLISH_DIR_PREFIXES)
 
 
+
+def cleanup_orphaned_sharded_documents(root: Path) -> dict:
+    """Prune stale monoliths and old shard directories only after every live manifest verifies."""
+    ruleset_root = root / "rulesets"
+    if not ruleset_root.is_dir():
+        return {"verified_documents": [], "removed_legacy_files": [], "removed_orphan_shard_dirs": []}
+
+    documents = []
+    for manifest_file in sorted(ruleset_root.glob("*.manifest.json")):
+        if manifest_file.is_symlink() or not manifest_file.is_file():
+            raise ValueError(f"unsafe ruleset document manifest: {manifest_file}")
+        manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
+        if manifest.get("format") not in {"jsonl-shards-v1", "jsonl-gzip-shards-v1"}:
+            continue
+
+        logical = manifest.get("logical_path")
+        collection_key = manifest.get("collection_key")
+        directory = manifest.get("shard_directory")
+        if (not isinstance(logical, str) or not logical or Path(logical).name != logical
+                or logical in {".", ".."} or manifest_file.name != logical + ".manifest.json"):
+            raise ValueError(f"unsafe logical document identity in {manifest_file}")
+        if not isinstance(collection_key, str) or not collection_key:
+            raise ValueError(f"invalid collection key in {manifest_file}")
+        if (not isinstance(directory, str) or Path(directory).name != directory
+                or not directory.startswith(logical + ".parts-")):
+            raise ValueError(f"unsafe shard directory in {manifest_file}")
+
+        document_path = ruleset_root / logical
+        if document_path.is_symlink():
+            raise ValueError(f"refusing symlinked legacy document: {document_path}")
+        # Exhaust the iterator before any cleanup. It validates each shard's
+        # stored bytes, SHA-256, decompressed bytes, and aggregate record count.
+        verified_count = sum(1 for _ in iter_document_records(document_path, collection_key))
+        expected_count = manifest.get("record_count")
+        if isinstance(expected_count, bool) or not isinstance(expected_count, int) or verified_count != expected_count:
+            raise ValueError(f"ruleset document record count failed verification: {manifest_file}")
+
+        stale_directories = []
+        for candidate in sorted(ruleset_root.glob(logical + ".parts-*")):
+            if candidate.name == directory:
+                continue
+            if candidate.is_symlink() or not candidate.is_dir():
+                raise ValueError(f"unsafe stale shard path: {candidate}")
+            stale_directories.append(candidate)
+        if document_path.exists() and not document_path.is_file():
+            raise ValueError(f"legacy document path is not a regular file: {document_path}")
+        documents.append((logical, document_path, directory, stale_directories, verified_count))
+
+    # All manifests and their currently referenced shard sets have been checked
+    # before the first deletion. The live production lease fences every cleanup.
+    removed_legacy_files = []
+    removed_orphan_shard_dirs = []
+    verified_documents = []
+    for logical, document_path, current_directory, stale_directories, verified_count in documents:
+        resource_path = f"rulesets/{logical}"
+        if document_path.exists():
+            assert_resource_lease_from_environment(resource_path)
+            document_path.unlink()
+            removed_legacy_files.append(logical)
+        for stale in stale_directories:
+            assert_resource_lease_from_environment(resource_path)
+            shutil.rmtree(stale)
+            removed_orphan_shard_dirs.append(stale.name)
+        verified_documents.append({"logical_path": logical, "shard_directory": current_directory, "records": verified_count})
+
+    return {
+        "verified_documents": verified_documents,
+        "removed_legacy_files": sorted(removed_legacy_files),
+        "removed_orphan_shard_dirs": sorted(removed_orphan_shard_dirs),
+    }
+
 def restore_publish_outputs(archive: Path, root: Path) -> dict:
     """Restore only explicitly publishable outputs, under the caller's live write fence."""
     root = root.resolve()
@@ -187,10 +259,11 @@ def restore_publish_outputs(archive: Path, root: Path) -> dict:
     for base in ("sources/discovered_sources.json", "sources/source_assessments.json", "sources/source_candidates.json"):
         if base + ".manifest.json" in seen and base not in seen:
             (root / base).unlink(missing_ok=True)
+    cleanup = cleanup_orphaned_sharded_documents(root)
     baseline_after = verify_managed_config_baseline(root)
     if baseline_after != baseline_before:
         raise ValueError("managed uu.conf baseline changed during ruleset publication restore")
-    return {"restored_files": len(restored), "restored_bytes": total_bytes, "paths": sorted(restored), "config_baseline": baseline_after}
+    return {"restored_files": len(restored), "restored_bytes": total_bytes, "paths": sorted(restored), "config_baseline": baseline_after, "shard_cleanup": cleanup}
 
 
 def main() -> int:
