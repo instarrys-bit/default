@@ -3,295 +3,80 @@ import os
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-import register_config_baseline
-from types import SimpleNamespace
-from register_config_baseline import (
-    build_release_pin_updates, git_blob_sha, owner_approved_push_changed_config, owner_approved_config_history, write_baseline_proposal,
-)
+
+import register_config_baseline as baseline
 
 
 class ConfigBaselineRegistrationTests(unittest.TestCase):
-    @patch("register_config_baseline.subprocess.run")
-    @patch.dict(os.environ, {
-        "GITHUB_EVENT_NAME": "push",
-        "GITHUB_ACTOR": "instarrys-bit",
-        "GITHUB_REPOSITORY_OWNER": "instarrys-bit",
-        "GITHUB_BEFORE": "a" * 40,
-        "GITHUB_SHA": "b" * 40,
-    }, clear=True)
-    def test_owner_push_changing_uu_conf_is_approved(self, mocked):
-        mocked.return_value.stdout = "modules/uu.conf\n"
-        self.assertTrue(owner_approved_push_changed_config())
+    def test_owner_history_requires_main_and_verifies_every_config_commit(self):
+        commits = ["b" * 40, "a" * 40]
+        with patch.dict(os.environ, {
+            "GITHUB_REPOSITORY_OWNER": "instarrys-bit",
+            "GITHUB_REPOSITORY": "instarrys-bit/default",
+            "GITHUB_REF": "refs/heads/main",
+        }, clear=True), patch.object(baseline, "run", side_effect=["c" * 40, "\n".join(commits), "instarrys-bit", "instarrys-bit"]), patch(
+            "register_config_baseline.subprocess.run", return_value=SimpleNamespace(returncode=0)
+        ):
+            guard = {"path": "modules/uu.conf", "last_user_approved_baseline_update": {"commit_sha": "d" * 40}}
+            self.assertEqual(baseline.owner_approved_config_history(guard), commits)
 
-    @patch("register_config_baseline.subprocess.run")
-    @patch.dict(os.environ, {
-        "GITHUB_EVENT_NAME": "push",
-        "GITHUB_ACTOR": "other-user",
-        "GITHUB_REPOSITORY_OWNER": "instarrys-bit",
-        "GITHUB_BEFORE": "a" * 40,
-        "GITHUB_SHA": "b" * 40,
-    }, clear=True)
-    def test_non_owner_push_is_not_approved(self, mocked):
-        self.assertFalse(owner_approved_push_changed_config())
-        mocked.assert_not_called()
+    def test_non_owner_commit_keeps_baseline_pending(self):
+        with patch.dict(os.environ, {
+            "GITHUB_REPOSITORY_OWNER": "instarrys-bit",
+            "GITHUB_REPOSITORY": "instarrys-bit/default",
+            "GITHUB_REF": "refs/heads/main",
+        }, clear=True), patch.object(baseline, "run", side_effect=["c" * 40, "b" * 40, "someone-else"]), patch(
+            "register_config_baseline.subprocess.run", return_value=SimpleNamespace(returncode=0)
+        ):
+            guard = {"path": "modules/uu.conf", "last_user_approved_baseline_update": {"commit_sha": "d" * 40}}
+            self.assertEqual(baseline.owner_approved_config_history(guard), [])
 
-    @patch("register_config_baseline.subprocess.run")
-    @patch.dict(os.environ, {
-        "GITHUB_EVENT_NAME": "schedule",
-        "GITHUB_ACTOR": "instarrys-bit",
-        "GITHUB_REPOSITORY_OWNER": "instarrys-bit",
-        "GITHUB_BEFORE": "a" * 40,
-        "GITHUB_SHA": "b" * 40,
-    }, clear=True)
-    def test_scheduled_run_cannot_approve_config_change(self, mocked):
-        self.assertFalse(owner_approved_push_changed_config())
-        mocked.assert_not_called()
+    def test_non_main_ref_cannot_advance_baseline(self):
+        with patch.dict(os.environ, {
+            "GITHUB_REPOSITORY_OWNER": "instarrys-bit",
+            "GITHUB_REPOSITORY": "instarrys-bit/default",
+            "GITHUB_REF": "refs/heads/feature",
+        }, clear=True), patch.object(baseline, "run") as mocked:
+            guard = {"path": "modules/uu.conf", "last_user_approved_baseline_update": {"commit_sha": "d" * 40}}
+            self.assertEqual(baseline.owner_approved_config_history(guard), [])
+            mocked.assert_not_called()
 
-
-    @patch("register_config_baseline.subprocess.run")
-    @patch.dict(os.environ, {
-        "GITHUB_EVENT_NAME": "push",
-        "GITHUB_ACTOR": "instarrys-bit",
-        "GITHUB_REPOSITORY_OWNER": "instarrys-bit",
-        "GITHUB_REPOSITORY": "instarrys-bit/default",
-        "GITHUB_REF": "refs/heads/main",
-        "GITHUB_BEFORE": "d" * 40,
-        "GITHUB_SHA": "e" * 40,
-    }, clear=True)
-    def test_recovers_interrupted_registration_from_owner_verified_config_history(self, mocked):
-        mocked.side_effect = [
-            SimpleNamespace(returncode=0, stdout=""),
-            SimpleNamespace(returncode=0, stdout=("a" * 40) + "\n" + ("b" * 40) + "\n"),
-            SimpleNamespace(returncode=0, stdout="instarrys-bit\n"),
-            SimpleNamespace(returncode=0, stdout="instarrys-bit\n"),
-        ]
-        guard = {"path": "modules/uu.conf", "last_user_approved_baseline_update": {"commit_sha": "c" * 40}}
-        self.assertEqual(owner_approved_config_history(guard), ["a" * 40, "b" * 40])
-
-    @patch("register_config_baseline.subprocess.run")
-    @patch.dict(os.environ, {
-        "GITHUB_EVENT_NAME": "push",
-        "GITHUB_ACTOR": "instarrys-bit",
-        "GITHUB_REPOSITORY_OWNER": "instarrys-bit",
-        "GITHUB_REPOSITORY": "instarrys-bit/default",
-        "GITHUB_REF": "refs/heads/main",
-        "GITHUB_BEFORE": "d" * 40,
-        "GITHUB_SHA": "e" * 40,
-    }, clear=True)
-    def test_rejects_history_containing_non_owner_config_commit(self, mocked):
-        mocked.side_effect = [
-            SimpleNamespace(returncode=0, stdout=""),
-            SimpleNamespace(returncode=0, stdout=("a" * 40) + "\n"),
-            SimpleNamespace(returncode=0, stdout="someone-else\n"),
-        ]
-        guard = {"path": "modules/uu.conf", "last_user_approved_baseline_update": {"commit_sha": "c" * 40}}
-        self.assertEqual(owner_approved_config_history(guard), [])
-
-    @patch("register_config_baseline.subprocess.run")
-    @patch.dict(os.environ, {
-        "GITHUB_EVENT_NAME": "schedule",
-        "GITHUB_ACTOR": "instarrys-bit",
-        "GITHUB_REPOSITORY_OWNER": "instarrys-bit",
-        "GITHUB_REPOSITORY": "instarrys-bit/default",
-        "GITHUB_REF": "refs/heads/main",
-        "GITHUB_SHA": "e" * 40,
-    }, clear=True)
-    def test_scheduled_run_recovers_only_github_owner_verified_config_history(self, mocked):
-        mocked.side_effect = [
-            SimpleNamespace(returncode=0, stdout=""),
-            SimpleNamespace(returncode=0, stdout=("a" * 40) + "\n" + ("b" * 40) + "\n"),
-            SimpleNamespace(returncode=0, stdout="instarrys-bit\n"),
-            SimpleNamespace(returncode=0, stdout="instarrys-bit\n"),
-        ]
-        guard = {"path": "modules/uu.conf", "last_user_approved_baseline_update": {"commit_sha": "c" * 40}}
-        self.assertEqual(owner_approved_config_history(guard), ["a" * 40, "b" * 40])
-        self.assertEqual(mocked.call_count, 4)
-
-    @patch("register_config_baseline.subprocess.run")
-    @patch.dict(os.environ, {
-        "GITHUB_EVENT_NAME": "schedule",
-        "GITHUB_ACTOR": "instarrys-bit",
-        "GITHUB_REPOSITORY_OWNER": "instarrys-bit",
-        "GITHUB_REPOSITORY": "instarrys-bit/default",
-        "GITHUB_REF": "refs/heads/feature",
-        "GITHUB_SHA": "e" * 40,
-    }, clear=True)
-    def test_scheduled_run_on_non_main_ref_cannot_recover_config_history(self, mocked):
-        guard = {"path": "modules/uu.conf", "last_user_approved_baseline_update": {"commit_sha": "c" * 40}}
-        self.assertEqual(owner_approved_config_history(guard), [])
-        mocked.assert_not_called()
-
-
-
-    def test_owner_approved_config_proposal_contains_consistent_release_and_inventory_pins(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            (root / "automation").mkdir()
-            release = {"schema_version": 1, "implementation_pins": {
-                "config_baseline": {
-                    "path": "modules/uu.conf", "git_blob_sha": "a" * 40, "access": "read_only"
-                }
-            }}
-            workflow_map = {"review_context": {"release_manifest_blob_sha": "b" * 40}}
-            write_sets = {"review_context": {"release_manifest_blob_sha": "b" * 40}}
-            (root / "automation" / "release_manifest.json").write_text(
-                json.dumps(release), encoding="utf-8"
-            )
-            (root / "automation" / "production_workflow_map.json").write_text(
-                json.dumps(workflow_map), encoding="utf-8"
-            )
-            (root / "automation" / "resource_write_sets.json").write_text(
-                json.dumps(write_sets), encoding="utf-8"
-            )
-
-            release_text, map_text, write_sets_text = build_release_pin_updates(
-                root, "modules/uu.conf", "c" * 40
-            )
-            release_sha = git_blob_sha(release_text.encode("utf-8"))
-            self.assertEqual(
-                json.loads(release_text)["implementation_pins"]["config_baseline"]["git_blob_sha"],
-                "c" * 40,
-            )
-            self.assertEqual(
-                json.loads(map_text)["review_context"]["release_manifest_blob_sha"], release_sha
-            )
-            self.assertEqual(
-                json.loads(write_sets_text)["review_context"]["release_manifest_blob_sha"], release_sha
-            )
-
-    def test_release_pin_update_rejects_non_owner_config_path(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            (root / "automation").mkdir()
-            (root / "automation" / "release_manifest.json").write_text(
-                json.dumps({"implementation_pins": {"config_baseline": {
-                    "path": "shadowrocket/ss.conf", "git_blob_sha": "a" * 40,
-                    "access": "read_only",
-                }}}),
-                encoding="utf-8",
-            )
-            for name in ("production_workflow_map.json", "resource_write_sets.json"):
-                (root / "automation" / name).write_text(
-                    json.dumps({"review_context": {"release_manifest_blob_sha": "b" * 40}}),
-                    encoding="utf-8",
-                )
-            with self.assertRaisesRegex(ValueError, "same read-only owner config path"):
-                build_release_pin_updates(root, "modules/uu.conf", "c" * 40)
-
-
-    def test_baseline_proposal_is_runner_local_and_does_not_touch_repository_files(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            repo = root / "repo"
-            runner = root / "runner-temp"
-            repo.mkdir()
-            runner.mkdir()
-            protected = repo / "sources" / "policy.json"
-            protected.parent.mkdir()
-            protected.write_text('{"approved": "old"}', encoding="utf-8")
-            before = protected.read_bytes()
-            proposal = {"status": "requires_manual_repository_review", "proposed_updates": {"sources/policy.json": {"approved": "new"}}}
-            with patch.dict(os.environ, {"RUNNER_TEMP": str(runner)}, clear=True):
-                destination = write_baseline_proposal(proposal)
-            self.assertEqual(destination.parent, runner)
-            self.assertTrue(destination.is_file())
-            self.assertEqual(json.loads(destination.read_text(encoding="utf-8")), proposal)
-            self.assertEqual(protected.read_bytes(), before)
-
-    def test_baseline_proposal_rejects_repository_destination(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            runner = root / "runner-temp"
-            repo = root / "repo"
-            runner.mkdir()
-            repo.mkdir()
-            with patch.dict(os.environ, {"RUNNER_TEMP": str(runner), "CONFIG_BASELINE_PROPOSAL_PATH": str(repo / "proposal.json")}, clear=True):
-                with self.assertRaisesRegex(ValueError, "under RUNNER_TEMP"):
-                    write_baseline_proposal({"status": "test"})
-
-
-    def test_apply_mode_updates_only_baseline_metadata_and_preserves_config_bytes(self):
-        self.assertFalse(hasattr(register_config_baseline, "apply_baseline_updates"))
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            (root / "modules").mkdir()
-            config_path = root / "modules" / "uu.conf"
-            config_path.write_bytes(b"[General]\\n# owner content\\n")
-            original = config_path.read_bytes()
-            sha = git_blob_sha(original)
-            (root / "sources").mkdir()
-            policy_path = root / "sources" / "policy.json"
-            policy_path.write_text(json.dumps({"managed_config_guard": {
-                "path": "modules/uu.conf", "approved_git_blob_sha": "a" * 40}}), encoding="utf-8")
-            (root / "automation").mkdir()
-            release_path = root / "automation" / "release_manifest.json"
-            map_path = root / "automation" / "production_workflow_map.json"
-            sets_path = root / "automation" / "resource_write_sets.json"
-            release_path.write_text(json.dumps({"implementation_pins": {"config_baseline": {
-                "path": "modules/uu.conf", "git_blob_sha": "a" * 40, "access": "read_only"}}}), encoding="utf-8")
-            map_path.write_text(json.dumps({"review_context": {"release_manifest_blob_sha": "b" * 40}}), encoding="utf-8")
-            sets_path.write_text(json.dumps({"review_context": {"release_manifest_blob_sha": "b" * 40}}), encoding="utf-8")
-            before = {path: path.read_bytes() for path in (policy_path, release_path, map_path, sets_path)}
-            release_text, map_text, sets_text = build_release_pin_updates(root, "modules/uu.conf", sha)
-            self.assertEqual(json.loads(release_text)["implementation_pins"]["config_baseline"]["git_blob_sha"], sha)
-            release_sha = git_blob_sha(release_text.encode("utf-8"))
-            self.assertEqual(json.loads(map_text)["review_context"]["release_manifest_blob_sha"], release_sha)
-            self.assertEqual(json.loads(sets_text)["review_context"]["release_manifest_blob_sha"], release_sha)
-            self.assertEqual(config_path.read_bytes(), original)
-            self.assertEqual({path: path.read_bytes() for path in before}, before)
-
-    def test_apply_mode_refuses_if_config_sha_changed_after_verification(self):
-        self.assertFalse(hasattr(register_config_baseline, "apply_baseline_updates"))
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            repo = root / "repo"
-            runner = root / "runner-temp"
-            (repo / "modules").mkdir(parents=True)
-            runner.mkdir()
-            config_path = repo / "modules" / "uu.conf"
-            config_path.write_bytes(b"changed after verification")
-            original = config_path.read_bytes()
-            with patch.dict(os.environ, {"RUNNER_TEMP": str(runner)}, clear=True):
-                destination = write_baseline_proposal({
-                    "status": "requires_manual_repository_review",
-                    "config_blob_sha": git_blob_sha(original),
-                    "repository_files_modified": False,
-                    "config_file_modified": False,
-                })
-            self.assertEqual(destination.parent, runner)
-            self.assertEqual(config_path.read_bytes(), original)
-            self.assertFalse(hasattr(register_config_baseline, "apply_baseline_updates"))
-
-
-
-    def test_unattributed_uu_conf_change_creates_pending_observation_instead_of_failing(self):
+    def test_unattributed_change_is_durably_observed_without_config_or_proposal_write(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             (root / "sources").mkdir()
             (root / "modules").mkdir()
-            runner = root / "runner-temp"
-            runner.mkdir()
+            (root / "reports").mkdir()
             config = root / "modules" / "uu.conf"
-            config.write_text("[General]\\n# changed\\n", encoding="utf-8")
-            policy = root / "sources" / "policy.json"
-            policy.write_text(json.dumps({"managed_config_guard": {
-                "path": "modules/uu.conf", "approved_git_blob_sha": "a" * 40,
-                "last_user_approved_baseline_update": {"commit_sha": "b" * 40}
-            }}), encoding="utf-8")
-            with patch.object(register_config_baseline, "ROOT", root), patch.object(register_config_baseline, "POLICY", policy), patch.object(register_config_baseline, "owner_approved_config_history", return_value=[]), patch.dict(os.environ, {"RUNNER_TEMP": str(runner), "GITHUB_ACTOR": "some-actor"}, clear=True), patch("sys.argv", ["register_config_baseline.py"]):
-                self.assertEqual(register_config_baseline.main(), 0)
-            proposals = list(runner.glob("config-baseline-proposal.json"))
-            self.assertEqual(len(proposals), 1)
-            proposal = json.loads(proposals[0].read_text(encoding="utf-8"))
-            self.assertEqual(proposal["status"], "observed_change_pending_attribution")
-            self.assertEqual(proposal["new_blob_sha"], git_blob_sha(config.read_bytes()))
-            self.assertFalse(proposal["config_file_modified"])
-            self.assertEqual(config.read_text(encoding="utf-8"), "[General]\\n# changed\\n")
+            config.write_bytes(b"[General]\\n# owner-managed\\n")
+            original = config.read_bytes()
+            policy = {
+                "managed_config_guard": {
+                    "path": "modules/uu.conf",
+                    "approved_git_blob_sha": "a" * 40,
+                    "content_immutable_to_automation": True,
+                    "last_user_approved_baseline_update": {"commit_sha": "b" * 40},
+                },
+                "dns_invariants": {},
+            }
+            (root / "sources" / "policy.json").write_text(json.dumps(policy), encoding="utf-8")
+            (root / "reports" / "config-drift-audit.json").write_text("{}", encoding="utf-8")
+            with patch.object(baseline, "ROOT", root), patch.object(baseline, "owner_approved_config_history", return_value=[]), patch.dict(
+                os.environ, {"GITHUB_ACTOR": "someone-else"}, clear=True
+            ), patch("sys.argv", ["register_config_baseline.py", "--apply"]):
+                self.assertEqual(baseline.main(), 0)
+            report = json.loads((root / "reports" / "config-drift-audit.json").read_text(encoding="utf-8"))
+            self.assertTrue(report["owner_approved_change_pending_registration"])
+            self.assertEqual(report["registered_baseline_git_blob_sha"], "a" * 40)
+            self.assertEqual(config.read_bytes(), original)
+            self.assertFalse((root / "config-baseline-proposal.json").exists())
+
 
 if __name__ == "__main__":
     unittest.main()

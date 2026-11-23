@@ -33,8 +33,15 @@ def validate_write_boundary(root: Path = ROOT) -> list[str]:
 
     if "register_config_baseline.py --apply" not in storage:
         errors.append("Storage Management does not execute the baseline metadata registration writer")
-    if "fetch-depth: 0" not in storage or "git push origin HEAD:main" not in storage:
-        errors.append("Storage Management lacks full-history checkout or guarded metadata publication")
+    publisher_path = root / "scripts/publish_config_baseline_metadata.sh"
+    if "fetch-depth: 0" not in storage or "bash scripts/publish_config_baseline_metadata.sh" not in storage:
+        errors.append("Storage Management lacks full-history checkout or the guarded metadata publisher")
+    if not publisher_path.exists():
+        errors.append("the dedicated baseline metadata publisher is missing")
+    else:
+        publisher = publisher_path.read_text(encoding="utf-8")
+        if "git push origin HEAD:main" not in publisher or "modules/uu.conf" not in publisher:
+            errors.append("baseline metadata publisher lacks guarded publication or protected-config checks")
     if "BASELINE_METADATA_ALLOWLIST" not in storage:
         errors.append("Storage Management does not declare the explicit metadata-only write allowlist")
     if "--apply" not in baseline_script or "CONFIG_PATH = \"modules/uu.conf\"" not in baseline_script:

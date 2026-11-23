@@ -21,6 +21,7 @@ class AutomationWriteBoundaryTests(unittest.TestCase):
                 ".github/workflows/storage-management.yml",
                 ".github/workflows/auto_sync.yml",
                 "scripts/register_config_baseline.py",
+                "scripts/publish_config_baseline_metadata.sh",
                 "sources/policy.json",
                 "automation/release_manifest.json",
                 "automation/resource_write_sets.json",
@@ -39,8 +40,10 @@ class AutomationWriteBoundaryTests(unittest.TestCase):
         content = (ROOT / ".github/workflows/storage-management.yml").read_text(encoding="utf-8")
         self.assertIn("reconcile-config-baseline:", content)
         self.assertIn("register_config_baseline.py --apply", content)
-        self.assertIn("git push origin HEAD:main", content)
+        self.assertIn("bash scripts/publish_config_baseline_metadata.sh", content)
         self.assertIn("BASELINE_METADATA_ALLOWLIST", content)
+        publisher = (ROOT / "scripts/publish_config_baseline_metadata.sh").read_text(encoding="utf-8")
+        self.assertIn("git push origin HEAD:main", publisher)
 
     def test_production_publisher_has_rulesets_only_fence(self):
         content = (ROOT / ".github/workflows/auto_sync.yml").read_text(encoding="utf-8")

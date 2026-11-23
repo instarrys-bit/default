@@ -93,6 +93,7 @@ def prepare_metadata(actual: str, previous: str, commits: list[str]) -> dict[str
         ("baseline_registration_runtime", "scripts/register_config_baseline.py"),
         ("automation_write_boundary_validator", "scripts/validate_automation_write_boundary.py"),
         ("storage_management_workflow", ".github/workflows/storage-management.yml"),
+        ("baseline_metadata_publisher", "scripts/publish_config_baseline_metadata.sh"),
     ):
         if key in release.get("implementation_pins", {}):
             release["implementation_pins"][key]["git_blob_sha"] = run(["git", "rev-parse", f"HEAD:{path}"])
