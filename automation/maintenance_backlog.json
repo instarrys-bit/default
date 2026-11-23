@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "title": "Repository maintenance backlog",
+  "purpose": "File-based tracking for engineering and automation closure work. This is not the executable task queue; runnable work must still enter automation/task_queue.json through its registered scheduler and CAS lifecycle.",
+  "policy": {
+    "issue_tracker_is_authoritative": false,
+    "source_issue_references_are_provenance_only": true,
+    "executable_tasks_must_use_registered_scheduler": true,
+    "preserve_historical_task_events": true,
+    "uu_conf_content_automation_write": false,
+    "production_write_scope": "rulesets/**"
+  },
+  "items": [
+    {
+      "id": "source-assessment-live-e2e",
+      "title": "Complete independent Source Discovery → Assessment live end-to-end validation",
+      "status": "blocked_pending_live_run",
+      "source_reference": "https://github.com/instarrys-bit/default/issues/719",
+      "current_evidence": {
+        "capability_contract_status": "reviewed_scoped_source_dag_enabled_pending_live_e2e",
+        "dispatch_status": "enabled",
+        "latest_production_run_id": 45205570613,
+        "latest_production_run_conclusion": "success",
+        "assessment_run_evidence": "not_yet_verified"
+      },
+      "acceptance": [
+        "Run at least two distinct batches with no more than 20 URLs and 10 MB per batch",
+        "Verify immutable artifact digests and predecessor linkage",
+        "Verify durable cursor advancement and interruption/resume",
+        "Verify no automatic source activation or assessment-artifact publication",
+        "Verify exact discovery fingerprint backlog is zero or partitioned into a new verified generation"
+      ],
+      "next_action": "Use the registered Watchdog scheduler to dispatch and independently verify the exact Discovery → Assessment chain; do not bypass queue CAS or task/resource leases."
+    },
+    {
+      "id": "legacy-failed-task-reconciliation",
+      "title": "Reconcile three historical FAILED task records without rewriting history",
+      "status": "blocked_pending_supported_lifecycle",
+      "source_reference": "https://github.com/instarrys-bit/default/issues/719",
+      "task_ids": [
+        "task_7e54db304f154fd98de74397",
+        "task_1e6be7d7a3b5461fb0ceaa4f",
+        "task_d768a8dc3785408ea3bb00a8"
+      ],
+      "current_evidence": {
+        "queue_revision": 273,
+        "active_task_count": 0,
+        "historical_failed_count": 3,
+        "latest_verified_successful_production_task": "task_023287316a4e4baea1162a1e",
+        "latest_verified_successful_run_id": 45205570613
+      },
+      "acceptance": [
+        "Use supported queue CAS/scheduler lifecycle only",
+        "Record verified supersession or cancellation disposition for each applicable task",
+        "Never relabel an actually failed production run as SUCCEEDED",
+        "Preserve event history and ensure no stale active lease remains"
+      ],
+      "next_action": "Add or use a schema-supported terminal resolution path for FAILED historical tasks, then reconcile using current successful-run evidence."
+    },
+    {
+      "id": "storage-validation-and-file-management",
+      "title": "Complete file-based maintenance management and fresh Storage Management validation",
+      "status": "in_progress",
+      "source_reference": "https://github.com/instarrys-bit/default/issues/719",
+      "acceptance": [
+        "Keep engineering maintenance records in this file, not GitHub Issues",
+        "Keep executable work in the registered task queue",
+        "Run full Storage Management validation on the latest main revision",
+        "Record run ID, tested commit SHA and complete successful job evidence"
+      ],
+      "next_action": "Validate this backlog file in Storage Management and obtain a fresh successful validation run."
+    }
+  ],
+  "closure_rule": "Do not mark an item complete without its stated evidence. Do not declare the overall automation closed until every item is complete and a fresh production audit, publish, remote verification and uu.conf SHA check all pass."
+}
