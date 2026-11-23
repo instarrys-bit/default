@@ -280,7 +280,7 @@ jobs:
           echo "$result"
           echo "superseded_stale_production_task_ids=$(jq -c '.superseded_stale_production_task_ids // []' <<< "$result")" >> "$GITHUB_OUTPUT"
       - name: Re-wake Watchdog after stale production task release
-        if: ${{ needs.health-check.outputs.queue_task_json == '' && steps.superseded.outputs.superseded_stale_production_task_ids != '' && steps.superseded.outputs.superseded_stale_production_task_ids != '[]' }}
+        if: ${{ needs['health-check'].outputs.queue_task_json == '' && steps.superseded.outputs.superseded_stale_production_task_ids != '' && steps.superseded.outputs.superseded_stale_production_task_ids != '[]' }}
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
