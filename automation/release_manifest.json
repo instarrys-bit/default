@@ -219,7 +219,7 @@
     },
     "baseline_registration_runtime": {
       "path": "scripts/register_config_baseline.py",
-      "git_blob_sha": "a63db641fa95723fd7a4a2d1bdfc6acf536f03b9"
+      "git_blob_sha": "b0910633f5349325fd2a89118ec155c02a85ffdb"
     },
     "baseline_metadata_publisher": {
       "path": "scripts/publish_config_baseline_metadata.sh",
