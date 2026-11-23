@@ -119,7 +119,7 @@
       "owner_may_edit": true,
       "automation_may_modify_content": false,
       "protected_scope": "All bytes in modules/uu.conf, including user-authored rules, section contents, DNS settings, and existing code or feature behavior.",
-      "reaction_model": "On every modules/uu.conf change, record the observed Git blob SHA and commit context, reacquire the latest main-branch file, verify the file is stable during the metadata transaction, and automatically update the registered baseline SHA and derived metadata pins under the user's authorization. Commit author attribution is recorded as evidence but does not block SHA registration. Never reject an observation or modify config bytes.",
+      "reaction_model": "On every modules/uu.conf change, record the observed Git blob SHA and commit context, reacquire the latest main-branch file, verify the file is stable during the metadata transaction, and automatically update the registered baseline SHA and derived metadata pins under the user's authorization. Commit author attribution is recorded as evidence but does not block SHA registration. Never reject an observation or modify config bytes. If a later fetch or metadata publication is temporarily unavailable, preserve the observed SHA and continue read-only audit and scheduling while retrying.",
       "watchdog_near_real_time_reconciliation": true
     },
     "baseline_metadata_policy": {
@@ -128,7 +128,7 @@
       "automation_may_hash_file": true,
       "automation_may_diff_file": true,
       "automation_may_update_registered_blob_sha": true,
-      "update_authorization": "The user explicitly authorizes File Management to automatically update the observed Blob SHA, managed_config_guard.approved_git_blob_sha, Release config_baseline.git_blob_sha, and all derived SHA metadata for the latest stable main revision, regardless of commit author attribution. File Management is the sole writer of the five approved metadata paths. Production automation, Watchdog and ruleset publishers cannot write baseline metadata. Storage Management records every observed SHA. It must never write modules/uu.conf content.",
+      "update_authorization": "The user explicitly authorizes File Management to automatically update the observed Blob SHA, managed_config_guard.approved_git_blob_sha, Release config_baseline.git_blob_sha, and all derived SHA metadata for the latest stable main revision, independently of owner-attribution status. File Management is the sole authorized writer of the five approved metadata paths. Production automation, Watchdog and ruleset publishers cannot update baseline metadata. Storage Management records every observed SHA. It must never write config content.",
       "registration_must_not_write_config_content": true,
       "automation_may_update_release_baseline_sha": true,
       "automation_may_update_approved_baseline_sha": true
