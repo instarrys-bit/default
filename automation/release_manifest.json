@@ -219,7 +219,7 @@
     },
     "baseline_registration_runtime": {
       "path": "scripts/register_config_baseline.py",
-      "git_blob_sha": "54de3dfbfd701b8a18fe62b55d2df7bd8b542868"
+      "git_blob_sha": "d097e9bcea10da4f736dd760f92e512513496e8b"
     }
   },
   "compatibility": {
