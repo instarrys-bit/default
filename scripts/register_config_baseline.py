@@ -179,12 +179,44 @@ def main() -> int:
     previous = str(guard["approved_git_blob_sha"])
     changed = actual != previous
 
-    # Require GitHub owner attribution for every intervening config-changing commit.
-    commits = owner_approved_config_history(guard)
+    # Attribution is useful audit metadata, but missing or unavailable
+    # attribution must never discard an observed config change or block the
+    # read-only production audit. The durable Storage Management inventory is
+    # responsible for recording the observed SHA independently.
+    attribution_error = None
+    try:
+        commits = owner_approved_config_history(guard)
+    except Exception as exc:
+        commits = []
+        attribution_error = str(exc)
     if not commits:
         if changed:
-            raise ValueError("uu.conf differs from the approved baseline, but every intervening owner-authored config commit could not be verified; refusing automatic approval.")
-        print(json.dumps({"registered": False, "reason": "no owner-verified uu.conf baseline drift",
+            proposal = {
+                "schema_version": 1,
+                "status": "observed_change_pending_attribution",
+                "path": guard["path"],
+                "previous_blob_sha": previous,
+                "new_blob_sha": actual,
+                "actor": os.environ.get("GITHUB_ACTOR", ""),
+                "approval_mode": None,
+                "config_change_commits": [],
+                "attribution_status": "pending",
+                "attribution_error": attribution_error,
+                "proposed_updates": {},
+                "repository_files_modified": False,
+                "config_file_modified": False,
+                "next_action": "Persist the observed SHA in Storage Management, reacquire the latest uu.conf, and continue read-only audit and scheduling.",
+            }
+            proposal_path = write_baseline_proposal(proposal)
+            print(json.dumps({
+                "registered": False, "proposal_created": True,
+                "proposal_path": str(proposal_path), "status": proposal["status"],
+                "path": guard["path"], "previous_blob_sha": previous,
+                "new_blob_sha": actual, "attribution_status": "pending",
+                "repository_files_modified": False, "config_file_modified": False,
+            }, ensure_ascii=False, sort_keys=True))
+            return 0
+        print(json.dumps({"registered": False, "reason": "no uu.conf baseline drift",
                           "blob_sha": actual, "config_file_modified": False}, sort_keys=True))
         return 0
     if not changed:
