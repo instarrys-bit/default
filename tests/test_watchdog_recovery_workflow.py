@@ -38,7 +38,7 @@ class WatchdogV2ControlPlaneTests(unittest.TestCase):
         scheduler = "Recover leases and run scheduler once"
         self.assertIn("id: superseded", text)
         self.assertIn("superseded_stale_production_task_ids", text)
-        self.assertIn("needs.health-check.outputs.queue_task_json == ''", text)
+        self.assertIn("needs['health-check'].outputs.queue_task_json == ''", text)
         self.assertIn('gh api --method POST "repos/$REPO/actions/workflows/$WATCHDOG_WORKFLOW_ID/dispatches"', text)
         self.assertLess(text.index(reconcile), text.index(re_wake))
         self.assertLess(text.index(re_wake), text.index(scheduler))
