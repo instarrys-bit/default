@@ -27,7 +27,7 @@ POLICIES={"DIRECT","PROXY","REJECT"}
 DOMAIN_RE=re.compile(r"^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?:\.(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?))+$")
 
 
-MAX_REJECT_REVIEW_QUEUE_BYTES=50_000_000
+MAX_REJECT_REVIEW_QUEUE_BYTES=40_000_000
 
 
 def manual_approved_reject_rule_lines(policy_control):
@@ -76,7 +76,7 @@ def serialize_reject_review_queue(payload):
     """Serialize the manual-review queue without exceeding the repository's per-file cap."""
     raw=(json.dumps(payload,ensure_ascii=False,indent=2)+"\n").encode("utf-8")
     if len(raw)>MAX_REJECT_REVIEW_QUEUE_BYTES:
-        raise ValueError("REJECT manual-review queue exceeds the 50 MB per-file limit")
+        raise ValueError("REJECT manual-review queue exceeds the 40 MB per-file limit")
     return raw
 
 
@@ -88,9 +88,10 @@ def write_reject_review_queue(path, payload):
         "items",
         force_sharded=True,
         max_file_bytes=MAX_REJECT_REVIEW_QUEUE_BYTES,
-        max_total_bytes=MAX_REJECT_REVIEW_QUEUE_BYTES,
-        shard_target_bytes=min(45_000_000, MAX_REJECT_REVIEW_QUEUE_BYTES),
+        max_total_bytes=None,
+        shard_target_bytes=MAX_REJECT_REVIEW_QUEUE_BYTES,
         compress_shards=True,
+        max_uncompressed_file_bytes=MAX_REJECT_REVIEW_QUEUE_BYTES * 4,
     )
 
 

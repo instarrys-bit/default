@@ -7,10 +7,19 @@ import urllib.error
 import subprocess
 from unittest.mock import MagicMock, patch
 
-from ingest_actions_artifacts import download_artifact_zip, scan_recent_runs
+from ingest_actions_artifacts import MAX_SEGMENT_BYTES, download_artifact_zip, iter_archive_segments, scan_recent_runs
 
 
 class ArtifactIngestionPollingTests(unittest.TestCase):
+
+    def test_artifact_archive_segments_stay_within_40mb_storage_cap(self):
+        self.assertEqual(MAX_SEGMENT_BYTES, 40_000_000)
+        segments = list(iter_archive_segments(b"0123456789", max_segment_bytes=4))
+        self.assertEqual(segments, [(0, b"0123"), (1, b"4567"), (2, b"89")])
+        self.assertTrue(all(len(segment) <= MAX_SEGMENT_BYTES for _, segment in segments))
+        with self.assertRaises(ValueError):
+            list(iter_archive_segments(b"data", max_segment_bytes=0))
+
     def test_artifact_redirect_does_not_forward_github_bearer_token(self):
         class RedirectOpener:
             def __init__(self):
