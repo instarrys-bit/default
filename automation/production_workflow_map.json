@@ -74,7 +74,7 @@
           "order": 7
         },
         {
-          "name": "Observe owner-authored uu.conf history (read-only; File Management owns registration)",
+          "name": "Observe latest uu.conf Blob SHA (read-only; File Management owns metadata registration)",
           "order": 8
         },
         {
@@ -355,10 +355,10 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
-    "release_manifest_blob_sha": "354afc7ae3975a7fa3d3974ae92c878668f00ef5",
+    "release_manifest_blob_sha": "ee020464b83cbd3ea2e8e9b25e8d1d1cfabcc496",
     "program_registry_blob_sha": "300c5ee0697e0c4483e6546c312cedb889b5ea22",
     "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
-    "note": "Current four-workflow static map. Descriptive only; no additional write/dispatch authorization. Production publication is rulesets/** only; modules/uu.conf is read-only and its SHA is tracked by File Management.",
+    "note": "Current workflow map. Descriptive only; no additional write/dispatch authorization. Production publication is rulesets/** only; modules/uu.conf is read-only and its Blob SHA is automatically followed by File Management under explicit user authorization.",
     "registry_blob_sha": "3be98b3a1d090f4f18351e96e11f265a7d965c7c"
   },
   "independent_dags": [],
