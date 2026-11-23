@@ -20,7 +20,7 @@ class ConfigBaselineRegistrationTests(unittest.TestCase):
             "GITHUB_REPOSITORY_OWNER": "instarrys-bit",
             "GITHUB_REPOSITORY": "instarrys-bit/default",
             "GITHUB_REF": "refs/heads/main",
-        }, clear=True), patch.object(baseline, "run", side_effect=["c" * 40, "\\n".join(commits), "instarrys-bit", "instarrys-bit"]), patch(
+        }, clear=True), patch.object(baseline, "run", side_effect=["c" * 40, "\n".join(commits), "instarrys-bit", "instarrys-bit"]), patch(
             "register_config_baseline.subprocess.run", return_value=SimpleNamespace(returncode=0)
         ):
             guard = {"path": "modules/uu.conf", "last_user_approved_baseline_update": {"commit_sha": "d" * 40}}
