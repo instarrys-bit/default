@@ -19,8 +19,8 @@
           "automation/resource_write_sets.json",
           "reports/config-drift-audit.json"
         ],
-        "authorization": "User-authorized automatic baseline registration only after GitHub verifies every intervening uu.conf-changing commit is authored by the repository owner.",
-        "fence": "Dedicated reconcile-config-baseline job; full-history verification; stale-main and byte-integrity checks; no production publisher access.",
+        "authorization": "Explicit user authorization: automatically follow the latest stable main-branch uu.conf Blob SHA and update approved/release baseline metadata regardless of commit author attribution.",
+        "fence": "Dedicated reconcile-config-baseline job; latest-main reacquisition; stable-SHA and byte-integrity checks; metadata-only five-path allowlist; no production publisher access.",
         "never_write": [
           "modules/uu.conf"
         ]
@@ -1361,7 +1361,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
-    "release_manifest_blob_sha": "354afc7ae3975a7fa3d3974ae92c878668f00ef5",
+    "release_manifest_blob_sha": "da15a411d512ffb23c8c7b44342d27166c764d95",
     "program_registry_blob_sha": "300c5ee0697e0c4483e6546c312cedb889b5ea22",
     "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
     "note": "Static inventory of all registered Python components and workflow-native write sites. File Management is the sole repository SHA inventory writer; production publisher write scope remains rulesets/**. The REJECT manual-approval ledger in production_control.json is read-only input; modules/uu.conf remains read-only."
