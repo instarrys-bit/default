@@ -242,7 +242,7 @@
       "worker_id": "45195338766"
     }
   },
-  "revision": 261,
+  "revision": 262,
   "schema_version": 1,
   "tasks": [
     {
@@ -4854,6 +4854,20 @@
       "not_before": "2026-11-23T14:33:40Z",
       "priority": 100,
       "requester_program_id": "workflow_automation_watchdog",
+      "resolution": {
+        "disposition": "superseded",
+        "evidence": {
+          "original_source_sha": "0800b7ec05ede69961bd73e59048695deda99e2f",
+          "requested_head_sha": "b1af25567250b76d1f900604eb6241c9fabdd503",
+          "workflow_conclusion": "failure",
+          "workflow_run_id": 45195533473
+        },
+        "reason": "completed production workflow belongs to an older main input; current Watchdog reconciliation owns the replacement decision",
+        "replacement_task_id": "task_410573e4a61241339dee3de3",
+        "resolved_at": "2026-11-23T15:01:53Z",
+        "schema_version": 1,
+        "superseded_by_main_sha": "4646cd9bb327f02eb2df8a2a8fa37310d796ec04"
+      },
       "resource_lease": {
         "acquired_at": "2026-11-23T14:33:42Z",
         "expires_at": "2026-11-23T20:50:26Z",
@@ -4974,9 +4988,10 @@
         "CLAIMED",
         "VERIFYING",
         "FAILED",
-        "DEAD_LETTER"
+        "DEAD_LETTER",
+        "CANCELLED"
       ],
-      "status": "DEAD_LETTER",
+      "status": "CANCELLED",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_98699921cc514d00a1de18e1",
       "trace_id": "8a73f9f673fa42c882c84664e8417c1f",
