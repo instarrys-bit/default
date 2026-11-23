@@ -268,5 +268,30 @@ class ConfigBaselineRegistrationTests(unittest.TestCase):
             self.assertFalse(hasattr(register_config_baseline, "apply_baseline_updates"))
 
 
+
+    def test_unattributed_uu_conf_change_creates_pending_observation_instead_of_failing(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "sources").mkdir()
+            (root / "modules").mkdir()
+            runner = root / "runner-temp"
+            runner.mkdir()
+            config = root / "modules" / "uu.conf"
+            config.write_text("[General]\\n# changed\\n", encoding="utf-8")
+            policy = root / "sources" / "policy.json"
+            policy.write_text(json.dumps({"managed_config_guard": {
+                "path": "modules/uu.conf", "approved_git_blob_sha": "a" * 40,
+                "last_user_approved_baseline_update": {"commit_sha": "b" * 40}
+            }}), encoding="utf-8")
+            with patch.object(register_config_baseline, "ROOT", root), patch.object(register_config_baseline, "POLICY", policy), patch.object(register_config_baseline, "owner_approved_config_history", return_value=[]), patch.dict(os.environ, {"RUNNER_TEMP": str(runner), "GITHUB_ACTOR": "some-actor"}, clear=True), patch("sys.argv", ["register_config_baseline.py"]):
+                self.assertEqual(register_config_baseline.main(), 0)
+            proposals = list(runner.glob("config-baseline-proposal.json"))
+            self.assertEqual(len(proposals), 1)
+            proposal = json.loads(proposals[0].read_text(encoding="utf-8"))
+            self.assertEqual(proposal["status"], "observed_change_pending_attribution")
+            self.assertEqual(proposal["new_blob_sha"], git_blob_sha(config.read_bytes()))
+            self.assertFalse(proposal["config_file_modified"])
+            self.assertEqual(config.read_text(encoding="utf-8"), "[General]\\n# changed\\n")
+
 if __name__ == "__main__":
     unittest.main()
