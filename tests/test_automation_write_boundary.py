@@ -21,6 +21,7 @@ class AutomationWriteBoundaryTests(unittest.TestCase):
                 ".github/workflows/storage-management.yml",
                 ".github/workflows/auto_sync.yml",
                 "scripts/register_config_baseline.py",
+                "scripts/publish_config_baseline_metadata.sh",
                 "sources/policy.json",
                 "automation/release_manifest.json",
                 "automation/resource_write_sets.json",
