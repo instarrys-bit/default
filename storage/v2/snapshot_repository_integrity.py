@@ -406,6 +406,8 @@ MAX_SNAPSHOT_ATTEMPTS = 3
 SNAPSHOT_DRIFT_RETRY_MARKERS = (
     "source tree changed",
     "PR heads, changed files or review metadata changed",
+    "uu.conf Git blob SHA changed",
+    "uu.conf changed",
 )
 
 
@@ -414,8 +416,10 @@ def run(repository: str, token: str) -> dict:
 
     The captured source commit is immutable. A concurrent main-branch update can
     invalidate the final freshness check without making the captured snapshot
-    corrupt. Re-capture a fresh point-in-time snapshot a bounded number of times;
-    never retry protected-config drift or unrelated integrity failures.
+    corrupt. This includes uu.conf: retry from the latest main commit so the
+    observed SHA is persisted instead of treating an ordinary owner edit as a
+    terminal integrity failure. Re-capture a fresh point-in-time snapshot a
+    bounded number of times; unrelated integrity failures remain fail-closed.
     """
     for attempt in range(1, MAX_SNAPSHOT_ATTEMPTS + 1):
         try:
