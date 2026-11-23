@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "01d21639cae939819852efb3bbfba3b9bb44afcf",
+  "workflow_blob_sha": "58a56ea55fc9ce50d2f2e2270532ff1001f02ea8",
   "registry_blob_sha": "300c5ee0697e0c4483e6546c312cedb889b5ea22",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 7,
-    "step_count": 61,
+    "step_count": 59,
     "independent_python_dispatch_enabled": false,
     "independent_workflow_count": 0,
     "workflow_count": 4,
@@ -74,160 +74,152 @@
           "order": 7
         },
         {
-          "name": "Register repository-owner-approved uu.conf changes (never edit the config)",
+          "name": "Observe owner-authored uu.conf history (read-only; File Management owns registration)",
           "order": 8
         },
         {
-          "name": "Detect runner-local config baseline proposal",
+          "name": "Verify registered user config baseline",
           "order": 9
         },
         {
-          "name": "Preserve config baseline proposal as immutable run artifact",
+          "name": "Capture and verify the exact production input fingerprint",
           "order": 10
         },
         {
-          "name": "Verify registered user config baseline",
+          "name": "Stop stale audit before discovery and source downloads",
           "order": 11
         },
         {
-          "name": "Capture and verify the exact production input fingerprint",
+          "name": "Discover candidate source repositories (non-activating)",
           "order": 12
         },
         {
-          "name": "Stop stale audit before discovery and source downloads",
+          "name": "Assess discovered rule-list syntax and policy claims",
           "order": 13
         },
         {
-          "name": "Discover candidate source repositories (non-activating)",
+          "name": "Preserve complete source assessment report",
           "order": 14
         },
         {
-          "name": "Assess discovered rule-list syntax and policy claims",
+          "name": "Restore prior high-volume automation state",
           "order": 15
         },
         {
-          "name": "Preserve complete source assessment report",
+          "name": "Remove published and queued rules that conflict with uu.conf",
           "order": 16
         },
         {
-          "name": "Restore prior high-volume automation state",
+          "name": "Import observed request hostnames as unclassified candidates",
           "order": 17
         },
         {
-          "name": "Remove published and queued rules that conflict with uu.conf",
+          "name": "Audit public source lineage and shared upstreams",
           "order": 18
         },
         {
-          "name": "Import observed request hostnames as unclassified candidates",
+          "name": "Audit domain-level policy-source overlap and contradictions",
           "order": 19
         },
         {
-          "name": "Audit public source lineage and shared upstreams",
+          "name": "Build automated source candidate and lineage matrix",
           "order": 20
         },
         {
-          "name": "Audit domain-level policy-source overlap and contradictions",
+          "name": "Merge qualified discovered sources into the run-local production registry",
           "order": 21
         },
         {
-          "name": "Build automated source candidate and lineage matrix",
+          "name": "Collect and cross-check all enabled domain sources",
           "order": 22
         },
         {
-          "name": "Merge qualified discovered sources into the run-local production registry",
+          "name": "Stop stale audit before expensive deterministic review",
           "order": 23
         },
         {
-          "name": "Collect and cross-check all enabled domain sources",
+          "name": "Restore latest failed-run review checkpoint and delta journal",
           "order": 24
         },
         {
-          "name": "Stop stale audit before expensive deterministic review",
+          "name": "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services",
           "order": 25
         },
         {
-          "name": "Restore latest failed-run review checkpoint and delta journal",
+          "name": "Preserve resumable review cursor checkpoint",
           "order": 26
         },
         {
-          "name": "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services",
+          "name": "Build standalone DIRECT, PROXY and REJECT rule sets",
           "order": 27
         },
         {
-          "name": "Preserve resumable review cursor checkpoint",
+          "name": "Summarize REJECT secondary screening",
           "order": 28
         },
         {
-          "name": "Build standalone DIRECT, PROXY and REJECT rule sets",
+          "name": "Evaluate lifecycle milestones and monthly capacity review",
           "order": 29
         },
         {
-          "name": "Summarize REJECT secondary screening",
+          "name": "Run conservative lifecycle audit and selectable restoration",
           "order": 30
         },
         {
-          "name": "Evaluate lifecycle milestones and monthly capacity review",
+          "name": "Reconcile final uu.conf scope coverage after all rule mutations",
           "order": 31
         },
         {
-          "name": "Run conservative lifecycle audit and selectable restoration",
+          "name": "Reconcile final RULE-SET manifest counts",
           "order": 32
         },
         {
-          "name": "Reconcile final uu.conf scope coverage after all rule mutations",
+          "name": "Build append-only rule-level provenance ledger",
           "order": 33
         },
         {
-          "name": "Reconcile final RULE-SET manifest counts",
+          "name": "Validate Shadowrocket config structure",
           "order": 34
         },
         {
-          "name": "Build append-only rule-level provenance ledger",
+          "name": "Audit RULE-SET references against generated outputs (read-only)",
           "order": 35
         },
         {
-          "name": "Validate Shadowrocket config structure",
+          "name": "Audit candidate scope coverage against user config (read-only)",
           "order": 36
         },
         {
-          "name": "Audit RULE-SET references against generated outputs (read-only)",
+          "name": "Audit managed config drift (read-only)",
           "order": 37
         },
         {
-          "name": "Audit candidate scope coverage against user config (read-only)",
+          "name": "Run read-only full-source regression audit",
           "order": 38
         },
         {
-          "name": "Audit managed config drift (read-only)",
+          "name": "Build consolidated project status",
           "order": 39
         },
         {
-          "name": "Run read-only full-source regression audit",
+          "name": "Persist discovered source candidate registry (non-activating)",
           "order": 40
         },
         {
-          "name": "Build consolidated project status",
+          "name": "Write successful audit heartbeat",
           "order": 41
         },
         {
-          "name": "Persist discovered source candidate registry (non-activating)",
+          "name": "Record durable automation state pointer",
           "order": 42
         },
         {
-          "name": "Write successful audit heartbeat",
+          "name": "Package allowlisted audit outputs",
           "order": 43
         },
         {
-          "name": "Record durable automation state pointer",
-          "order": 44
-        },
-        {
-          "name": "Package allowlisted audit outputs",
-          "order": 45
-        },
-        {
           "name": "Upload allowlisted audit outputs",
-          "order": 46
+          "order": 44
         }
       ]
     },
@@ -363,7 +355,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
-    "release_manifest_blob_sha": "9ab199a5a792b7dc486360e7ffffc65eb7d597bd",
+    "release_manifest_blob_sha": "edcdc90897c0223855ed7bff75f4d42fd48700e1",
     "program_registry_blob_sha": "300c5ee0697e0c4483e6546c312cedb889b5ea22",
     "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
     "note": "Current four-workflow static map. Descriptive only; no additional write/dispatch authorization. Production publication is rulesets/** only; modules/uu.conf is read-only and its SHA is tracked by File Management.",
