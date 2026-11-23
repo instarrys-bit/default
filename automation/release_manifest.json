@@ -258,7 +258,7 @@
         "automation/resource_write_sets.json",
         "reports/config-drift-audit.json"
       ],
-      "protected_config": "modules/uu.conf is byte-for-byte read-only to automation.",
+      "protected_config": "modules/uu.conf content is read-only to autonomous production automation and File Management baseline registration. Owner manual edits and specifically user-authorized AI edits are permitted; the resulting main revision is then followed through metadata-only SHA registration.",
       "stale_main_guard": "Re-fetch latest main and config immediately before registration; abort and retry if main or uu.conf changes during the metadata transaction."
     },
     "independent_python_dispatch": "disabled",
@@ -270,7 +270,15 @@
     ],
     "disabled_python_adapters": [
       "script_assess_sources"
-    ]
+    ],
+    "user_content_edit_authority": {
+      "user_may_edit_content": true,
+      "user_authorized_ai_may_edit_content": true,
+      "ai_edit_requires_specific_explicit_user_authorization": true,
+      "production_automation_may_edit_content": false,
+      "baseline_metadata_registration_may_edit_content": false,
+      "rule": "The owner may edit modules/uu.conf manually. AI may edit its contents only for a specific change explicitly authorized by the user. This is separate from unattended production automation and File Management baseline registration, neither of which may write config bytes. Standing authorization for SHA/baseline metadata updates is not content-edit authorization."
+    }
   },
   "known_gaps": [
     "Historical duplicate Assessment tasks exist for Discovery run 42373818238 (legacy and parser-v2 keys); the new resolver recognizes both by predecessor identity and suppresses future duplicate enqueue. A fresh post-merge Discovery → Assessment run is still required to prove the corrected one-to-one path.",
