@@ -4,16 +4,16 @@
   "logical_path": "reject_review_queue.json",
   "collection_key": "items",
   "record_count": 101797,
-  "total_shard_bytes": 1619398,
-  "total_document_bytes": 1619873,
+  "total_shard_bytes": 1619397,
+  "total_document_bytes": 1619872,
   "max_file_bytes": 40000000,
   "max_uncompressed_file_bytes": 160000000,
   "max_total_bytes": null,
-  "shard_directory": "reject_review_queue.json.parts-af07b8d8bda3aa6a",
+  "shard_directory": "reject_review_queue.json.parts-8214797cb5e93df1",
   "metadata": {
     "schema_version": 1,
     "policy": "REJECT",
-    "updated_at": "2026-11-23T08:37:52.501944+00:00",
+    "updated_at": "2026-11-23T13:34:41.360032+00:00",
     "criteria": {
       "minimum_current_sources": 3,
       "minimum_independent_publishers": 2,
@@ -33,8 +33,8 @@
     {
       "file": "part-000000.jsonl.gz",
       "records": 101797,
-      "bytes": 1619398,
-      "sha256": "1a3f7039512ce2da6ad0bfbfb0179ab299b6b086747825137ce3091b2343100e",
+      "bytes": 1619397,
+      "sha256": "bae4732d30b8fd8d38e02303967701630b79a30f0dda816e0b72e39e7d93ba14",
       "uncompressed_bytes": 42816014
     }
   ]
