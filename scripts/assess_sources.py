@@ -28,9 +28,11 @@ OUTPUT = ARTIFACT_ROOT / "sources/source_assessments.json" if INDEPENDENT_ARTIFA
 RUNTIME_OUTPUT = ARTIFACT_ROOT / "data/source_assessments_runtime.json" if INDEPENDENT_ARTIFACT_MODE else ROOT / "data/source_assessments_runtime.json"
 REPORT = ARTIFACT_ROOT / "reports/source-assessment.md" if INDEPENDENT_ARTIFACT_MODE else ROOT / "reports/source-assessment.md"
 MAX_BYTES = 1_000_000
-# Keep the monolithic fallback bounded; repeated runs rotate through the full source inventory.
+# Monolithic fallback processes a bounded larger batch; the independent task contract
+# remains capped at 20 URLs per task. The 10 MB aggregate byte budget remains authoritative.
 MAX_TOTAL_BYTES = 10_000_000
 MAX_URLS = 20
+MONOLITHIC_MAX_URLS = 100
 PARSER_VERSION = 2
 SUPPORTED_RULE_LIST_SUFFIXES = {".txt", ".list", ".conf", ".yaml", ".yml", ".dat", ".rules", ".hosts", ".adblock", ".filter", ".domains", ".json", ".ipset"}
 RULE_LIST_PATH_RE = re.compile(r"(?:adblock|blocklist|allowlist|denylist|domain|host|rules?|ruleset|clash|surge|shadowrocket|geosite|geoip|filter|dns)", re.I)
@@ -393,16 +395,59 @@ def flatten_candidate_urls(candidates: list[dict]) -> list[dict]:
                 flattened.append(group[depth])
     return flattened
 
-def rotate_assessment_urls(items: list[dict], cursor_url: str | None, limit: int = MAX_URLS) -> list[dict]:
+def rotate_assessment_urls(
+    items: list[dict], cursor_url: str | None, limit: int = MAX_URLS,
+    *, previous_by_url: dict | None = None,
+) -> list[dict]:
+    """Rotate fresh files while prioritizing eligible files needing a stability recheck.
+
+    A first observation is not enough for source admission. Rechecking those same
+    eligible files on the next runs prevents a huge discovery inventory from
+    delaying every second observation until a full cursor cycle has elapsed.
+    """
     if not items:
+        return []
+    limit = max(0, int(limit))
+    if not limit:
         return []
     start = 0
     if cursor_url:
         for index, item in enumerate(items):
-            if item.get('url') == cursor_url:
+            if item.get("url") == cursor_url:
                 start = (index + 1) % len(items)
                 break
-    return (items[start:] + items[:start])[:max(0, int(limit))]
+    rotated = items[start:] + items[:start]
+    previous = previous_by_url or {}
+    supported = {"domain-only", "adblock-domain-rules", "shadowrocket-domain-rules", "quantumult-domain-rules"}
+    strong_evidence = {"explicit_third_field", "README_RULE-SET_reference", "README_policy_reference"}
+    pending = []
+    for item in rotated:
+        prior = previous.get(item.get("url"))
+        if not isinstance(prior, dict) or prior.get("error"):
+            continue
+        drift_status = (prior.get("drift") or {}).get("status")
+        if drift_status not in {
+            "baseline_initialized", "domain_set_changed",
+            "content_changed_no_domain_change", "policy_metadata_changed",
+            "domain_set_changed_and_policy_changed",
+            "content_changed_no_domain_change_and_policy_changed",
+        }:
+            continue
+        if (prior.get("parser_candidate") not in supported
+                or prior.get("policy_evidence") not in strong_evidence
+                or not has_valid_domain_fingerprints(prior)):
+            continue
+        pending.append(item)
+    pending_limit = min(limit, (limit * 3 + 4) // 5)
+    selected = _select_diverse_items(pending, pending_limit) if pending else []
+    selected_urls = {item.get("url") for item in selected}
+    fresh = [item for item in rotated if item.get("url") not in previous and item.get("url") not in selected_urls]
+    selected.extend(_select_diverse_items(fresh, limit - len(selected)))
+    if len(selected) < limit:
+        selected_urls = {item.get("url") for item in selected}
+        remaining = [item for item in rotated if item.get("url") not in selected_urls]
+        selected.extend(_select_diverse_items(remaining, limit - len(selected)))
+    return selected[:limit]
 
 
 def _select_diverse_items(items: list[dict], limit: int) -> list[dict]:
@@ -509,7 +554,7 @@ def assessment_cache_hit(previous: dict | None, content_sha256: str, policy_clai
     )
 
 def load_task_options(path: Path | None) -> dict:
-    defaults = {"max_urls": MAX_URLS, "max_file_bytes": MAX_BYTES, "max_total_bytes": MAX_TOTAL_BYTES}
+    defaults = {"max_urls": MONOLITHIC_MAX_URLS, "max_file_bytes": MAX_BYTES, "max_total_bytes": MAX_TOTAL_BYTES}
     if path is None:
         return defaults
     try:
@@ -797,7 +842,9 @@ def main(argv: list[str] | None = None) -> int:
         )
         batch_id = "discovery-run:" + predecessor["workflow_run_id"] + ":" + predecessor["artifact_sha256"][:12]
     else:
-        batch = rotate_assessment_urls(candidate_urls, previous_cursor, max_urls)
+        batch = rotate_assessment_urls(
+            candidate_urls, previous_cursor, max_urls, previous_by_url=previous_by_url
+        )
         batch_id = datetime.now(timezone.utc).isoformat()
     completed_checkpoint = (
         load_assessment_checkpoint(batch_id, predecessor)
