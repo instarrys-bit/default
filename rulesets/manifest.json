@@ -106,7 +106,7 @@
       "lineage_status": "unverified",
       "upstream_repositories": [],
       "status": "STALE_QUARANTINED",
-      "error": "auto-johnshall-shadowrocket-adblock-rules-forever-4d665bed source drift exceeds automatic safety limit: 5204 added + 4529 removed = 9733; limit 5312",
+      "error": "auto-johnshall-shadowrocket-adblock-rules-forever-4d665bed source drift exceeds automatic safety limit: 5570 added + 4529 removed = 10099; limit 5312",
       "pending_confirmations": 1,
       "new_entries": 0,
       "removed_entries": 0,
@@ -115,7 +115,7 @@
     },
     {
       "id": "auto-johnshall-shadowrocket-adblock-rules-forever-68903a21",
-      "sha256": "c6ad6a34507b488c4330fd8fd819ff4681103a5de4c7bca39aa57b07ad9a8bf9",
+      "sha256": "ae985fffe9522c41f8fbe5a9cb355b3823038c632ad5df591f00ffd8c349dbc4",
       "entries": 30192,
       "classification": "PROXY",
       "role": "primary_candidate_source",
@@ -255,7 +255,7 @@
         "zakird/crux-top-lists"
       ],
       "status": "STALE_QUARANTINED",
-      "error": "hagezi-domains-pro source drift exceeds automatic safety limit: 51260 added + 31832 removed = 83092; limit 22263",
+      "error": "hagezi-domains-pro source drift exceeds automatic safety limit: 48878 added + 37395 removed = 86273; limit 22263",
       "pending_confirmations": 1,
       "new_entries": 0,
       "removed_entries": 0,
@@ -821,7 +821,7 @@
     "queue_storage_manifest": "rulesets/reject_review_queue.json.manifest.json",
     "queue_shard_count": 1,
     "queue_record_count": 101797,
-    "queue_max_file_bytes": 50000000
+    "queue_max_file_bytes": 40000000
   },
   "status_count": {
     "ALREADY_COVERED": 9629,
