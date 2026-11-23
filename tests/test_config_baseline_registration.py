@@ -34,6 +34,31 @@ class ConfigBaselineRegistrationTests(unittest.TestCase):
         ), patch("register_config_baseline.subprocess.run", return_value=type("R", (), {"returncode": 1})()):
             self.assertEqual(baseline.config_change_history({"last_user_approved_baseline_update": {"commit_sha": "d" * 40}}), ["e" * 40])
 
+
+    def test_non_main_ref_never_advances_approved_baseline(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "sources").mkdir()
+            (root / "modules").mkdir()
+            config = root / "modules" / "uu.conf"
+            config.write_bytes(b"[General]\\n")
+            policy = {
+                "managed_config_guard": {
+                    "path": "modules/uu.conf",
+                    "approved_git_blob_sha": "a" * 40,
+                    "content_immutable_to_automation": True,
+                },
+                "dns_invariants": {},
+            }
+            policy_path = root / "sources" / "policy.json"
+            policy_path.write_text(json.dumps(policy), encoding="utf-8")
+            with patch.object(baseline, "ROOT", root), patch.dict(os.environ, {"GITHUB_REF": "refs/heads/feature"}, clear=True), patch(
+                "sys.argv", ["register_config_baseline.py", "--apply"]
+            ):
+                self.assertEqual(baseline.main(), 0)
+            after = json.loads(policy_path.read_text(encoding="utf-8"))
+            self.assertEqual(after["managed_config_guard"]["approved_git_blob_sha"], "a" * 40)
+
     def test_unattributed_change_is_automatically_registered_without_config_write(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
