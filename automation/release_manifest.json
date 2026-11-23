@@ -250,7 +250,7 @@
         "15-minute scheduled reconciliation",
         "manual recovery dispatch"
       ],
-      "authorization": "Explicit user authorization permits automatic registration of the latest stable main-branch modules/uu.conf Blob SHA, formal approved SHA and Release baseline SHA regardless of commit author attribution. Only the five metadata allowlist paths may be written; modules/uu.conf bytes remain read-only.",
+      "authorization": "Explicit user authorization permits automatic registration of the latest stable main-branch modules/uu.conf Blob SHA, formal approved SHA and Release baseline SHA regardless of commit author attribution. Only the five metadata allowlist paths may be written; modules/uu.conf bytes remain read-only. Owner manual edits and specific user-authorized AI edits are permitted; that content-edit permission is separate from and does not expand the metadata-only writer's authority.",
       "write_allowlist": [
         "sources/policy.json",
         "automation/release_manifest.json",
@@ -270,7 +270,15 @@
     ],
     "disabled_python_adapters": [
       "script_assess_sources"
-    ]
+    ],
+    "user_content_edit_authority": {
+      "user_may_edit_content": true,
+      "user_authorized_ai_may_edit_content": true,
+      "ai_edit_requires_specific_explicit_user_authorization": true,
+      "production_automation_may_edit_content": false,
+      "baseline_metadata_registration_may_edit_content": false,
+      "rule": "The owner may edit modules/uu.conf manually. AI may edit its contents only for a specific change explicitly authorized by the user. This is separate from unattended production automation and File Management baseline registration, neither of which may write config bytes. Standing authorization for SHA/baseline metadata updates is not content-edit authorization."
+    }
   },
   "known_gaps": [
     "Historical duplicate Assessment tasks exist for Discovery run 42373818238 (legacy and parser-v2 keys); the new resolver recognizes both by predecessor identity and suppresses future duplicate enqueue. A fresh post-merge Discovery → Assessment run is still required to prove the corrected one-to-one path.",

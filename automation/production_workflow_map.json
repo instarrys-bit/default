@@ -355,10 +355,10 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
-    "release_manifest_blob_sha": "415d92c835ada465c27e71b3856a88726a54dd5e",
+    "release_manifest_blob_sha": "f78e23dcddbb49487db662fffc2389d5489b596e",
     "program_registry_blob_sha": "300c5ee0697e0c4483e6546c312cedb889b5ea22",
     "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
-    "note": "Current workflow map. Descriptive only; no additional write/dispatch authorization. Production publication is rulesets/** only; modules/uu.conf is read-only and its Blob SHA is automatically followed by File Management under explicit user authorization.",
+    "note": "Descriptive only; no additional write/dispatch authorization. Production publication is rulesets/** only. modules/uu.conf may be edited manually by its owner or by AI for a specific explicitly user-authorized change; autonomous production automation and baseline metadata registration cannot write its content. File Management follows approved content changes through metadata-only SHA registration.",
     "registry_blob_sha": "3be98b3a1d090f4f18351e96e11f265a7d965c7c"
   },
   "independent_dags": [],
