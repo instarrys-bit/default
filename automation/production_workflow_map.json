@@ -363,7 +363,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
-    "release_manifest_blob_sha": "4f59f2714d7eaf5843cc64aeca38de9f052933bc",
+    "release_manifest_blob_sha": "a3d0208a7288d4ab72628dd5bb9fa9b7b19574b5",
     "program_registry_blob_sha": "300c5ee0697e0c4483e6546c312cedb889b5ea22",
     "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
     "note": "Current four-workflow static map. Descriptive only; no additional write/dispatch authorization. Production publication is rulesets/** only; modules/uu.conf is read-only and its SHA is tracked by File Management.",
