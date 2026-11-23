@@ -45,7 +45,7 @@ def owner_approved_config_history(guard: dict) -> list[str]:
     ancestry = subprocess.run(["git", "merge-base", "--is-ancestor", anchor, head], cwd=ROOT)
     if ancestry.returncode != 0:
         return []
-    commits = run(["git", "rev-list", "--reverse", f"{anchor}..{head}", "--", CONFIG_PATH]).splitlines()
+    commits = run(["git", "rev-list", f"{anchor}..{head}", "--", CONFIG_PATH]).splitlines()
     commits = [item for item in commits if item]
     if not commits:
         return []
@@ -74,10 +74,10 @@ def prepare_metadata(actual: str, previous: str, commits: list[str]) -> dict[str
         "previous_blob_sha": previous,
         "new_blob_sha": actual,
         "reason": "User-authorized automatic baseline registration after GitHub verified every intervening uu.conf-changing commit is authored by the repository owner. Only metadata is updated; uu.conf bytes are immutable to automation.",
-        "approval_mode": "owner_authored_config_history_with_user_authorization",
+        "approval_mode": "recovered_owner_authored_config_history",
         "config_change_commits": commits,
         "actor": owner,
-        "commit_sha": commits[-1],
+        "commit_sha": commits[0],
         "registered_at": now,
     }
 
