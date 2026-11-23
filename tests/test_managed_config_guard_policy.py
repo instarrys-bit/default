@@ -27,6 +27,19 @@ class ManagedConfigGuardPolicyTests(unittest.TestCase):
         self.assertIn("File Management is the sole authorized writer", metadata["update_authorization"])
         self.assertIn("Production automation, Watchdog and ruleset publishers cannot update baseline metadata", metadata["update_authorization"])
 
+    def test_config_change_policy_requires_follow_through_without_auto_approval(self):
+        policy = json.loads((ROOT / "sources" / "policy.json").read_text(encoding="utf-8"))
+        guard = policy["managed_config_guard"]
+        content = guard["content_protection"]
+        metadata = guard["baseline_metadata_policy"]
+
+        self.assertTrue(content["watchdog_near_real_time_reconciliation"])
+        self.assertIn("record the observed Git blob SHA", content["reaction_model"])
+        self.assertIn("reacquire the latest main-branch file", content["reaction_model"])
+        self.assertIn("continue read-only audit and scheduling", content["reaction_model"])
+        self.assertIn("independently of owner-attribution status", metadata["update_authorization"])
+        self.assertIn("must never write config content", metadata["update_authorization"])
+
     def test_old_ambiguous_immutable_field_is_not_used(self):
         policy = json.loads((ROOT / "sources" / "policy.json").read_text(encoding="utf-8"))
         self.assertNotIn("immutable", policy["managed_config_guard"])
