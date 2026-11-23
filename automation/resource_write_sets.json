@@ -19,12 +19,17 @@
           "automation/resource_write_sets.json",
           "reports/config-drift-audit.json"
         ],
-        "authorization": "Explicit user authorization: automatically follow the latest stable main-branch uu.conf Blob SHA and update approved/release baseline metadata regardless of commit author attribution.",
+        "authorization": "Standing user authorization allows File Management to follow the latest stable main-branch uu.conf Blob SHA and update approved/release baseline metadata regardless of commit author attribution. It does not authorize config-content edits. Owner manual edits and specific user-authorized AI edits are allowed; production automation and baseline registration remain content-read-only.",
         "fence": "Dedicated reconcile-config-baseline job; latest-main reacquisition; stable-SHA and byte-integrity checks; metadata-only five-path allowlist; no production publisher access.",
         "never_write": [
           "modules/uu.conf"
         ]
-      }
+      },
+      "owner_may_edit_content": true,
+      "user_authorized_ai_may_edit_content": true,
+      "ai_content_edits_require_specific_explicit_user_authorization": true,
+      "production_automation_may_edit_content": false,
+      "baseline_metadata_registration_may_edit_content": false
     },
     "dispatch": "Evidence is not an execution grant. The reviewed independent Source Discovery → Assessment DAG and production workflow are Watchdog-owned and release-allowlisted; all unrelated Python capabilities remain deny-by-default."
   },
