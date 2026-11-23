@@ -24,11 +24,11 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "9cb5fced46055e5b9f4cf895e2904fb1a7d3b09c"
+      "git_blob_sha": "b0d5b7f124cb479a1dc177d618a2aa495dddcef3"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "e4ad9c2a9ba9b0059e5995d7105c3870823c0d28"
+      "git_blob_sha": "01d21639cae939819852efb3bbfba3b9bb44afcf"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -207,7 +207,7 @@
     },
     "storage_management_workflow": {
       "path": ".github/workflows/storage-management.yml",
-      "git_blob_sha": "495c00eef3f0707dc81172b7e4706b7d4a132d00"
+      "git_blob_sha": "bca8ff61ab84fdec1f44eb3c882c62801a6cd83f"
     },
     "repository_integrity_tests": {
       "path": "tests/v2/test_repository_integrity.py",
