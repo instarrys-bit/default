@@ -95,5 +95,20 @@ class VerifyBaselineOwnerHistoryTests(unittest.TestCase):
         self.assertFalse(owner_approved_push_changed_config())
 
 
+
+    def test_unregistered_uu_conf_sha_is_observed_without_blocking_read_only_audit(self):
+        import tempfile
+        import verify_baseline
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "modules").mkdir()
+            (root / "modules" / "uu.conf").write_text("[General]\\n", encoding="utf-8")
+            policy = root / "policy.json"
+            policy.write_text(json.dumps({"managed_config_guard": {
+                "path": "modules/uu.conf", "approved_git_blob_sha": "a" * 40
+            }}), encoding="utf-8")
+            with patch.object(verify_baseline, "ROOT", root), patch.object(verify_baseline, "POLICY", policy), patch("sys.argv", ["verify_baseline.py"]):
+                self.assertEqual(verify_baseline.main(), 0)
+
 if __name__ == "__main__":
     unittest.main()

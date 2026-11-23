@@ -151,16 +151,19 @@ class RepositoryIntegrityTests(unittest.TestCase):
         self.assertEqual(attempt.call_count, 2)
         sleep.assert_called_once_with(1)
 
-    def test_snapshot_does_not_retry_protected_config_drift(self):
+    def test_snapshot_retries_protected_config_drift_and_reacquires_latest_file(self):
         with mock.patch.object(
             integrity,
             "_run_once",
-            side_effect=integrity.IntegritySnapshotError("uu.conf changed after snapshot"),
+            side_effect=[
+                integrity.IntegritySnapshotError("uu.conf changed after snapshot"),
+                {"status": "updated", "uu_conf_blob_sha": "c" * 40},
+            ],
         ) as attempt, mock.patch.object(integrity.time, "sleep") as sleep:
-            with self.assertRaisesRegex(integrity.IntegritySnapshotError, "uu.conf changed"):
-                integrity.run("owner/repo", "token")
-        attempt.assert_called_once()
-        sleep.assert_not_called()
+            result = integrity.run("owner/repo", "token")
+        self.assertEqual(result["uu_conf_blob_sha"], "c" * 40)
+        self.assertEqual(attempt.call_count, 2)
+        sleep.assert_called_once_with(1)
 
     def test_snapshot_drift_retry_budget_is_bounded(self):
         with mock.patch.object(
