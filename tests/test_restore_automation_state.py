@@ -4,6 +4,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from restore_automation_state import PUBLISH_FILES, restore_state, restore_publish_outputs
+from json_document_store import manifest_path, write_document
 
 class RestoreAutomationStateTests(unittest.TestCase):
     def setup_publish_baseline(self, repo):
@@ -177,6 +178,55 @@ class RestoreAutomationStateTests(unittest.TestCase):
             restore_publish_outputs(archive, repo)
             self.assertTrue((repo/"sources/discovered_sources.json").exists())
             self.assertFalse((repo/"sources/discovered_sources.json.manifest.json").exists())
+
+
+    def test_publish_restore_prunes_legacy_monolith_and_unreferenced_shard_directories(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            repo = root / "repo"
+            archive = root / "audit.tar.gz"
+            self.setup_publish_baseline(repo)
+            config_before = (repo / "modules" / "uu.conf").read_bytes()
+
+            ruleset_root = repo / "rulesets"
+            ruleset_root.mkdir(parents=True)
+            legacy = ruleset_root / "source_candidate_registry.json"
+            legacy.write_text('{"records":[{"legacy":true}]}', encoding="utf-8")
+            stale_dir = ruleset_root / "source_candidate_registry.json.parts-old"
+            stale_dir.mkdir()
+            (stale_dir / "part-000000.jsonl").write_text('{"legacy":true}\\n', encoding="utf-8")
+
+            source_root = root / "source"
+            document = source_root / "source_candidate_registry.json"
+            payload = {"records": [{"record_type": "repository", "repository": "example/project"}]}
+            write_document(
+                document, payload, "records", lease_required=False, force_sharded=True,
+                max_file_bytes=4096, shard_target_bytes=4096,
+                compress_shards=True, max_uncompressed_file_bytes=16384,
+            )
+            manifest = json.loads(manifest_path(document).read_text(encoding="utf-8"))
+            shard_path = source_root / manifest["shard_directory"] / manifest["shards"][0]["file"]
+
+            with tarfile.open(archive, "w:gz") as tar:
+                tar.add(manifest_path(document), arcname="rulesets/source_candidate_registry.json.manifest.json")
+                tar.add(shard_path, arcname=f"rulesets/{manifest['shard_directory']}/{shard_path.name}")
+
+            with patch("restore_automation_state.assert_resource_lease_from_environment") as lease:
+                result = restore_publish_outputs(archive, repo)
+
+            self.assertFalse(legacy.exists())
+            self.assertFalse(stale_dir.exists())
+            self.assertTrue((ruleset_root / manifest["shard_directory"] / shard_path.name).is_file())
+            self.assertEqual(
+                result["shard_cleanup"]["removed_legacy_files"],
+                ["source_candidate_registry.json"],
+            )
+            self.assertEqual(
+                result["shard_cleanup"]["removed_orphan_shard_dirs"],
+                ["source_candidate_registry.json.parts-old"],
+            )
+            self.assertEqual((repo / "modules" / "uu.conf").read_bytes(), config_before)
+            self.assertIn("rulesets/source_candidate_registry.json", [call.args[0] for call in lease.call_args_list])
 
 
 
