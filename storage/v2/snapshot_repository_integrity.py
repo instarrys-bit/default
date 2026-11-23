@@ -258,7 +258,7 @@ def pointer_store(repository: str, token: str, bootstrap: Path) -> GitHubContent
     )
 
 
-def run(repository: str, token: str) -> dict:
+def _run_once(repository: str, token: str) -> dict:
     client = GitHub(repository, token)
     source_main_sha = client.main_ref()
     entries = client.tree_entries(source_main_sha)
@@ -399,6 +399,42 @@ def run(repository: str, token: str) -> dict:
             "file_count": snapshot["file_count"],
             "pull_request_count": len(pulls),
         }
+
+
+
+MAX_SNAPSHOT_ATTEMPTS = 3
+SNAPSHOT_DRIFT_RETRY_MARKERS = (
+    "source tree changed",
+    "PR heads, changed files or review metadata changed",
+)
+
+
+def run(repository: str, token: str) -> dict:
+    """Retry bounded snapshots when concurrent repository writes invalidate one.
+
+    The captured source commit is immutable. A concurrent main-branch update can
+    invalidate the final freshness check without making the captured snapshot
+    corrupt. Re-capture a fresh point-in-time snapshot a bounded number of times;
+    never retry protected-config drift or unrelated integrity failures.
+    """
+    for attempt in range(1, MAX_SNAPSHOT_ATTEMPTS + 1):
+        try:
+            return _run_once(repository, token)
+        except IntegritySnapshotError as exc:
+            message = str(exc)
+            retryable = any(marker in message for marker in SNAPSHOT_DRIFT_RETRY_MARKERS)
+            if not retryable or attempt >= MAX_SNAPSHOT_ATTEMPTS:
+                raise
+            delay = min(4, 2 ** (attempt - 1))
+            print(json.dumps({
+                "status": "retrying",
+                "attempt": attempt,
+                "max_attempts": MAX_SNAPSHOT_ATTEMPTS,
+                "retry_in_seconds": delay,
+                "reason": message,
+            }, ensure_ascii=False, sort_keys=True), flush=True)
+            time.sleep(delay)
+    raise IntegritySnapshotError("repository integrity snapshot retry budget exhausted")
 
 
 def main() -> int:

@@ -4,6 +4,7 @@ import hashlib
 import json
 import sys
 import unittest
+from unittest import mock
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -132,6 +133,45 @@ class RepositoryIntegrityTests(unittest.TestCase):
         source = (ROOT / "storage" / "v2" / "queue_store.py").read_text(encoding="utf-8")
         self.assertIn(integrity.PROJECTION, source)
         self.assertIn('d.setdefault("latest_snapshot", None)', source)
+
+    def test_snapshot_retries_transient_source_tree_drift(self):
+        with (
+            mock.patch.object(
+                integrity,
+                "_run_once",
+                side_effect=[
+                    integrity.IntegritySnapshotError("source tree changed after snapshot"),
+                    {"status": "updated"},
+                ],
+            ) as attempt,
+            mock.patch.object(integrity.time, "sleep") as sleep,
+        ):
+            result = integrity.run("owner/repo", "token")
+        self.assertEqual(result, {"status": "updated"})
+        self.assertEqual(attempt.call_count, 2)
+        sleep.assert_called_once_with(1)
+
+    def test_snapshot_does_not_retry_protected_config_drift(self):
+        with mock.patch.object(
+            integrity,
+            "_run_once",
+            side_effect=integrity.IntegritySnapshotError("uu.conf changed after snapshot"),
+        ) as attempt, mock.patch.object(integrity.time, "sleep") as sleep:
+            with self.assertRaisesRegex(integrity.IntegritySnapshotError, "uu.conf changed"):
+                integrity.run("owner/repo", "token")
+        attempt.assert_called_once()
+        sleep.assert_not_called()
+
+    def test_snapshot_drift_retry_budget_is_bounded(self):
+        with mock.patch.object(
+            integrity,
+            "_run_once",
+            side_effect=integrity.IntegritySnapshotError("source tree changed after snapshot"),
+        ) as attempt, mock.patch.object(integrity.time, "sleep") as sleep:
+            with self.assertRaisesRegex(integrity.IntegritySnapshotError, "source tree changed"):
+                integrity.run("owner/repo", "token")
+        self.assertEqual(attempt.call_count, integrity.MAX_SNAPSHOT_ATTEMPTS)
+        self.assertEqual(sleep.call_count, integrity.MAX_SNAPSHOT_ATTEMPTS - 1)
 
 
 if __name__ == "__main__":
