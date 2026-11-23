@@ -132,7 +132,7 @@ jobs:
           echo "Watchdog workflow enabled and verified." >> "$GITHUB_STEP_SUMMARY"
 
   reconcile-config-baseline:
-    name: Register owner-authored uu.conf baseline changes (metadata only)
+    name: Register user-authorized uu.conf SHA changes (metadata only)
     needs: repository-integrity-snapshot
     if: ${{ always() && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'schedule') }}
     runs-on: ubuntu-24.04
