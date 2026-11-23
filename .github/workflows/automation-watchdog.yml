@@ -85,14 +85,14 @@ jobs:
           fetch-depth: 1
           filter: blob:none
           sparse-checkout: |
-             .github/workflows
-             .github/workflow_helpers
-             scripts
-             storage
-             automation
-             sources
-             modules
-            ! storagev2/artifacts/sha256/
+            .github/workflows
+            .github/workflow_helpers
+            scripts
+            storage
+            automation
+            sources
+            modules
+            !/storage/v2/artifacts/sha256/
           sparse-checkout-cone-mode: false
           persist-credentials: false
       - name: Set up Python
@@ -231,14 +231,14 @@ jobs:
           fetch-depth: 1
           filter: blob:none
           sparse-checkout: |
-             .github/workflows
-             .github/workflow_helpers
-             scripts
-             storage
-             automation
-             sources
-             modules
-            ! storagev2/artifacts/sha256/
+            .github/workflows
+            .github/workflow_helpers
+            scripts
+            storage
+            automation
+            sources
+            modules
+            !/storage/v2/artifacts/sha256/
           sparse-checkout-cone-mode: false
           persist-credentials: false
       - name: Set up Python
