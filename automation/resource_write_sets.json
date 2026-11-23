@@ -11,11 +11,16 @@
       "access": "read_only",
       "writers_allowed": [],
       "metadata_only_sync": {
-        "writer": null,
-        "allowed_paths": [],
-        "authorization": "No automated repository metadata synchronization is authorized.",
-        "fence": "No Watchdog job has contents:write permission for baseline metadata.",
-        "proposal_only": "scripts/register_config_baseline.py may emit a runner-local proposal artifact; it cannot write repository files.",
+        "writer": "Storage Management / File Management",
+        "allowed_paths": [
+          "sources/policy.json",
+          "automation/release_manifest.json",
+          "automation/production_workflow_map.json",
+          "automation/resource_write_sets.json",
+          "reports/config-drift-audit.json"
+        ],
+        "authorization": "User-authorized automatic baseline registration only after GitHub verifies every intervening uu.conf-changing commit is authored by the repository owner.",
+        "fence": "Dedicated reconcile-config-baseline job; full-history verification; stale-main and byte-integrity checks; no production publisher access.",
         "never_write": [
           "modules/uu.conf"
         ]
