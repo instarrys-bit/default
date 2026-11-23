@@ -373,7 +373,8 @@ jobs:
 
   repository-integrity-snapshot:
     name: Inventory repository and pull-request SHAs through File Management
-    if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'schedule' || github.event_name == 'push') }}
+    needs: ingest-actions-artifacts
+    if: ${{ always() && ((github.ref == 'refs/heads/main' && github.event_name == 'schedule') || (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.path == '.github/workflows/auto_sync.yml')) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
