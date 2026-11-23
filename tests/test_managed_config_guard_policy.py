@@ -23,7 +23,7 @@ class ManagedConfigGuardPolicyTests(unittest.TestCase):
         self.assertTrue(content["user_authorized_ai_may_edit_content"])
         self.assertFalse(content["production_automation_may_edit_content"])
         self.assertFalse(content["baseline_metadata_registration_may_edit_content"])
-        self.assertIn("specific change explicitly authorizes", content["protected_scope"])
+        self.assertIn("explicitly authorize a specific content change", content["protected_scope"])
         self.assertFalse(content["automation_may_modify_content"])
         self.assertIn("user-authored rules", content["protected_scope"])
         self.assertTrue(metadata["automation_may_read_file"])
