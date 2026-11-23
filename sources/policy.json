@@ -101,7 +101,7 @@
   "managed_config_guard": {
     "path": "modules/uu.conf",
     "approved_git_blob_sha": "a24d8c526394ebf28f0c74043d93d4f736272679",
-    "description": "Authoritative owner-managed Shadowrocket config. After the user's explicit authorization, File Management automatically follows the latest stable main-branch Blob SHA and updates approved/release baseline metadata regardless of commit author attribution. Automation must never rewrite uu.conf contents.",
+    "description": "Authoritative owner-managed Shadowrocket config. The owner may edit manually or explicitly authorize an AI to edit. Unattended automation may only follow Blob SHA and baseline metadata; it must never rewrite uu.conf contents.",
     "last_user_approved_baseline_update": {
       "previous_blob_sha": "86b87a33b07e881ff3bb1a32e852001b52708e97",
       "new_blob_sha": "a24d8c526394ebf28f0c74043d93d4f736272679",
@@ -118,9 +118,12 @@
     "content_protection": {
       "owner_may_edit": true,
       "automation_may_modify_content": false,
-      "protected_scope": "All bytes in modules/uu.conf, including user-authored rules, section contents, DNS settings, and existing code or feature behavior.",
+      "protected_scope": "All bytes in modules/uu.conf are protected from unattended automation. The repository owner may edit manually or explicitly authorize an AI to edit; no AI edit is authorized by default. This includes user rules, section contents, DNS settings, and existing code or feature behavior.",
       "reaction_model": "On every modules/uu.conf change, record the observed Git blob SHA and commit context, reacquire the latest main-branch file, verify the file is stable during the metadata transaction, and automatically update the registered baseline SHA and derived metadata pins under the user's authorization. Commit author attribution is recorded as evidence but does not block SHA registration. Never reject an observation or modify config bytes. If a later fetch or metadata publication is temporarily unavailable, preserve the observed SHA and continue read-only audit and scheduling while retrying.",
-      "watchdog_near_real_time_reconciliation": true
+      "watchdog_near_real_time_reconciliation": true,
+      "owner_manual_edits_allowed": true,
+      "explicitly_user_authorized_ai_edits_allowed": true,
+      "ai_edits_require_explicit_user_authorization": true
     },
     "baseline_metadata_policy": {
       "automation_may_read_file": true,
