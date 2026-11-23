@@ -133,7 +133,8 @@ jobs:
 
   reconcile-config-baseline:
     name: Register owner-authored uu.conf baseline changes (metadata only)
-    if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'schedule') }}
+    needs: repository-integrity-snapshot
+    if: ${{ always() && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'schedule') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 8
     permissions:
