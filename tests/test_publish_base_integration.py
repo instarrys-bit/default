@@ -219,6 +219,33 @@ class PublishBaseIntegrationTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0, result.stdout)
         self.assertIn("A declared production input changed", result.stdout)
 
+    def test_api_check_accepts_25_verified_queue_commits(self):
+        commits = []
+        details = {}
+        parent = self.base
+        for index in range(25):
+            sha = f"{index + 1:040x}"
+            commits.append({"sha": sha})
+            details[sha] = {
+                "commit": {
+                    "message": f"chore(storage): update automation/task_queue.json revision {index + 1}",
+                    "author": {"email": "41898282+github-actions[bot]@users.noreply.github.com"},
+                },
+                "parents": [{"sha": parent}],
+                "files": [{"filename": "automation/task_queue.json", "status": "modified"}],
+            }
+            parent = sha
+        compare = {
+            "status": "ahead",
+            "ahead_by": 25,
+            "behind_by": 0,
+            "files": [{"filename": "automation/task_queue.json", "status": "modified"}],
+            "commits": commits,
+        }
+        result = self.run_check_only_with_commit_details(compare, details)
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn("strictly verified durable queue-state commits", result.stdout)
+
     def test_api_check_accepts_verified_queue_commit_mixed_with_storage_artifacts(self):
         queue_sha = "a" * 40
         storage_sha = "b" * 40
