@@ -68,7 +68,7 @@
   "registration": {
     "status": "registered",
     "registered_at": "2026-11-23T10:14:07.785Z",
-    "verified_owner_commits": [
+    "config_change_commits": [
       "3d67f0bdb63321b1512c47d58db7d40407e7c4d7"
     ],
     "writer": "Storage Management / File Management",
