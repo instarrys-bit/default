@@ -289,6 +289,7 @@ jobs:
           set -euo pipefail
           gh api --method POST "repos/$REPO/actions/workflows/$WATCHDOG_WORKFLOW_ID/dispatches" -f ref=main
       - name: Recover leases and run scheduler once (bounded retry wake)
+        id: scheduler
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_TOKEN: ${{ github.token }}
@@ -296,10 +297,14 @@ jobs:
           PYTHONPATH: scripts:.
         run: |
           set -euo pipefail
+          released_task_ids='[]'
           for cycle in 1 2 3; do
             echo "Watchdog scheduler pass $cycle/3."
-            printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py \
-              --repository "$REPO" --branch main --token-stdin --max-tasks 1 run-once
+            result="$(printf '%s' "$GH_TOKEN" | python3 scripts/task_scheduler.py \
+              --repository "$REPO" --branch main --token-stdin --max-tasks 1 run-once)"
+            echo "$result"
+            newly_released="$(jq -c '([(.superseded_stale_production_task_ids // []), (.initial_verification.rejected // [])] | add | unique)' <<< "$result")"
+            released_task_ids="$(jq -cn --argjson old "$released_task_ids" --argjson new "$newly_released" '$old + $new | unique')"
 
             python3 scripts/remote_task_queue_runtime.py \
               --repository "$REPO" --branch main snapshot \
@@ -335,3 +340,14 @@ jobs:
             echo "A durable task retry becomes eligible in ${retry_delay}s; waiting inside the bounded Watchdog wake."
             sleep "$retry_delay"
           done
+          echo "released_task_ids=$released_task_ids" >> "$GITHUB_OUTPUT"
+      - name: Re-wake Watchdog after scheduler releases an orphaned claim
+        if: ${{ steps.scheduler.outputs.released_task_ids != '' && steps.scheduler.outputs.released_task_ids != '[]' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          WATCHDOG_WORKFLOW_ID: ${{ env.WATCHDOG_WORKFLOW_ID }}
+        run: |
+          set -euo pipefail
+          gh api --method POST "repos/$REPO/actions/workflows/$WATCHDOG_WORKFLOW_ID/dispatches" -f ref=main
+          echo "released_task_ids=$released_task_ids" >> "$GITHUB_OUTPUT"
