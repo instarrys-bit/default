@@ -218,6 +218,129 @@ def build_registry(existing: dict, discovery: dict, provenance: dict, now: str) 
 
 
 
+
+def merge_assessment_results(registry: dict, runtime: dict, now: str, run_id: str) -> dict:
+    """Persist verified assessment state alongside each discovered source-file record.
+
+    Only hashes, parser/policy metadata and truncated domain fingerprints are stored;
+    raw domain names and untrusted source payloads never enter this registry.
+    """
+    if not isinstance(registry, dict) or not isinstance(runtime, dict):
+        raise ValueError("source registry and assessment runtime must be objects")
+    records = registry.get("source_files")
+    assessments = runtime.get("assessments")
+    if not isinstance(records, list) or not isinstance(assessments, list):
+        raise ValueError("source registry files and runtime assessments must be arrays")
+    by_url = {}
+    for record in records:
+        if not isinstance(record, dict) or not isinstance(record.get("url"), str):
+            raise ValueError("source registry contains a malformed source-file record")
+        if record["url"] in by_url:
+            raise ValueError("source registry contains duplicate source URLs")
+        by_url[record["url"]] = record
+
+    parser_types = {
+        "domain-only", "adblock-domain-rules", "shadowrocket-domain-rules",
+        "quantumult-domain-rules",
+    }
+    persisted_fields = (
+        "url", "repository", "sha256", "bytes", "substantive_lines",
+        "parser_candidate", "parser_version", "clash_yaml_rule_lines",
+        "exact_domain_count", "suffix_domain_count", "adblock_domain_count",
+        "domain_only_count", "leading_dot_domain_count", "domain_fingerprints",
+        "duplicate_domain_lines", "domain_keyword_rules_ignored",
+        "ip_asn_rules_ignored", "explicit_action_counts", "readme_policy_claims",
+        "policy_candidate", "policy_evidence", "assessed_at", "drift",
+    )
+    merged = 0
+    for item in assessments:
+        if not isinstance(item, dict) or not isinstance(item.get("url"), str):
+            raise ValueError("runtime assessment contains a malformed source URL")
+        record = by_url.get(item["url"])
+        if record is None:
+            raise ValueError("assessment URL is absent from the discovered source registry: " + item["url"])
+        attempt_at = str(item.get("assessed_at") or now)
+        if item.get("error"):
+            record["last_assessment_attempt"] = {
+                "at": attempt_at,
+                "status": "FETCH_ERROR",
+                "error": str(item["error"])[:500],
+            }
+            if not isinstance(record.get("assessment"), dict):
+                record["assessment_status"] = "FETCH_ERROR"
+            continue
+
+        digest = item.get("sha256")
+        if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
+            raise ValueError("successful assessment is missing a full content SHA-256")
+        parser = item.get("parser_candidate")
+        fingerprints = item.get("domain_fingerprints", [])
+        if not isinstance(fingerprints, list) or len(fingerprints) != len(set(fingerprints)):
+            raise ValueError("assessment domain fingerprints must be a unique array")
+        if any(not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{32}", value) for value in fingerprints):
+            raise ValueError("assessment contains an invalid domain fingerprint")
+        domain_count = sum(int(item.get(key, 0) or 0) for key in (
+            "exact_domain_count", "suffix_domain_count",
+            "adblock_domain_count", "domain_only_count",
+        ))
+        if parser in parser_types and domain_count > 0 and not fingerprints:
+            raise ValueError("supported parser assessment is missing domain fingerprints")
+
+        saved = {key: item[key] for key in persisted_fields if key in item}
+        saved["domain_fingerprints"] = list(fingerprints)
+        saved["url"] = item["url"]
+        saved["assessed_at"] = attempt_at
+        record["assessment"] = saved
+        record["assessment_status"] = "ASSESSED"
+        record["last_assessment_attempt"] = {
+            "at": attempt_at,
+            "status": "ASSESSED",
+            "sha256": digest,
+        }
+        merged += 1
+
+    latest = {
+        "workflow_run_id": str(run_id),
+        "updated_at": now,
+        "assessed_this_run_count": len(assessments),
+        "persisted_success_count": merged,
+        "next_cursor_url": runtime.get("next_cursor_url"),
+        "batch_id": runtime.get("batch_id"),
+        "candidate_url_count": runtime.get("candidate_url_count"),
+    }
+    if not str(run_id).isdigit():
+        raise ValueError("assessment registry update requires a numeric workflow run ID")
+    registry["latest_assessment"] = latest
+    registry["pending_assessment_count"] = sum(
+        1 for record in records
+        if record.get("assessment_status") in {"PENDING", "FETCH_ERROR"}
+    )
+    registry["updated_at"] = now
+    registry["policy_boundary"] = (
+        "This is a discovery and non-activating assessment evidence registry. It stores "
+        "content hashes, parser/policy metadata and truncated domain fingerprints only; "
+        "it does not activate sources, authorize routing policy or replace rule-level review."
+    )
+    return registry
+
+
+def load_assessment_runtime() -> dict:
+    """Load the current run's assessment output from its isolated workspace."""
+    supplied_root = os.environ.get("AUTOMATION_SOURCE_ASSESSMENT_ROOT", "").strip()
+    if supplied_root:
+        root = Path(supplied_root).resolve()
+        runner_temp = Path(os.environ.get("RUNNER_TEMP", "/tmp")).resolve()
+        if not root.is_relative_to(runner_temp) or root == runner_temp:
+            raise ValueError("verified Assessment artifact root must remain beneath RUNNER_TEMP")
+        path = root / "data/source_assessments_runtime.json"
+        if not path.exists() and not path.with_name(path.name + ".manifest.json").exists():
+            raise FileNotFoundError("verified Assessment artifact is missing runtime assessment output")
+        return read_document(path, "assessments", {"assessments": []})
+    path = ROOT / "data/source_assessments_runtime.json"
+    if not path.exists() and not path.with_name(path.name + ".manifest.json").exists():
+        return {"assessments": []}
+    return read_document(path, "assessments", {"assessments": []})
+
 def decode_registry_storage(payload: dict) -> dict:
     """Read schema-v1 inline JSON or schema-v2 typed JSONL-shard storage."""
     if payload.get("schema_version") != 2 or payload.get("storage_format") != "typed-jsonl-shards-v1":
@@ -360,6 +483,10 @@ def main() -> int:
         existing = decode_registry_storage(stored)
         now = datetime.now(timezone.utc).isoformat()
         logical_registry = build_registry(existing, discovery, provenance, now)
+        assessment_runtime = load_assessment_runtime()
+        logical_registry = merge_assessment_results(
+            logical_registry, assessment_runtime, now, os.environ.get("GITHUB_RUN_ID", "")
+        ) if assessment_runtime.get("assessments") else logical_registry
         storage = persist_registry(logical_registry)
         print(json.dumps({
             "registered_repositories": logical_registry["repository_count"],
