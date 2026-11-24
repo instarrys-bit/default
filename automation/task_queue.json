@@ -242,7 +242,7 @@
       "worker_id": "45321307563"
     }
   },
-  "revision": 312,
+  "revision": 313,
   "schema_version": 1,
   "tasks": [
     {
@@ -5812,17 +5812,9 @@
         "production_reason": "current production input fingerprint differs from the last successful audit"
       },
       "last_error": {
-        "evidence": {
-          "conclusion": "failure",
-          "head_sha": "e101981894ee6a609dac70c094041f9f8332061e",
-          "head_sha_relationship": "queue_intent_commit_only",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/45321397804",
-          "requested_head_sha": "18197c3b8b0f09e2d2d1067b6bd36f5233ab22a7",
-          "run_id": 45321397804,
-          "status": "completed"
-        },
-        "message": "workflow completed with conclusion 'failure'",
-        "type": "workflow_run_failed"
+        "current_production_fingerprint": "fd80e847321823101ff27a98ea42556d5df700d9ee787c7fe366e54970badffc",
+        "message": "Queued production task was cancelled before claim because its input fingerprint no longer matches current main.",
+        "type": "stale_production_input_superseded"
       },
       "lease": null,
       "max_attempts": 2,
@@ -5945,9 +5937,10 @@
         "CLAIMED",
         "VERIFYING",
         "FAILED",
-        "QUEUED"
+        "QUEUED",
+        "CANCELLED"
       ],
-      "status": "QUEUED",
+      "status": "CANCELLED",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_0a5a4d0d05f14390bc5ea0bf",
       "trace_id": "009a5985788f449183b914e489462543",
