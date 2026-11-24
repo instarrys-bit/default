@@ -9,6 +9,7 @@ from html.parser import HTMLParser
 import json
 import os
 import re
+import shutil
 import sys
 import time
 import urllib.error
@@ -833,6 +834,32 @@ def readme_snapshot(repo_data: dict, previous: dict | None = None) -> tuple[str,
     claims = extract_readme_policy_claims(readme, urls)
     return readme, digest, urls, claims, False
 
+
+def preserve_current_discovery_snapshot(source_path: Path, runner_temp: Path, github_env: Path) -> Path:
+    """Keep the just-discovered inventory outside the later historical-state restore."""
+    runner_temp = Path(runner_temp).resolve()
+    root = runner_temp / "source-discovery-current"
+    if root.exists():
+        shutil.rmtree(root)
+    destination = root / "sources"
+    destination.mkdir(parents=True, exist_ok=True)
+    copied = 0
+    for item in sorted(source_path.parent.glob(source_path.name + "*")):
+        target = destination / item.name
+        if item.is_dir():
+            shutil.copytree(item, target)
+        elif item.is_file():
+            shutil.copy2(item, target)
+        else:
+            continue
+        copied += 1
+    if copied == 0:
+        raise FileNotFoundError("current discovery document and its storage files could not be snapshotted")
+    with Path(github_env).open("a", encoding="utf-8") as stream:
+        stream.write(f"AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT={root}\\n")
+    return root
+
+
 def persist_discovery_outputs(merged: dict) -> None:
     """Persist the discovery inventory and report under their exact live leases."""
     if INDEPENDENT_ARTIFACT_MODE:
@@ -845,6 +872,10 @@ def persist_discovery_outputs(merged: dict) -> None:
         write_document(OUTPUT, merged, "candidates", lease_required=True)
         assert_resource_lease_from_environment("reports/source-discovery.md")
         REPORT.write_text(render_report(merged), encoding="utf-8")
+        runner_temp = os.environ.get("RUNNER_TEMP", "").strip()
+        github_env = os.environ.get("GITHUB_ENV", "").strip()
+        if runner_temp and github_env:
+            preserve_current_discovery_snapshot(OUTPUT, Path(runner_temp), Path(github_env))
 
 
 def main() -> int:
