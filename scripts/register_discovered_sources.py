@@ -456,7 +456,17 @@ def load_discovery() -> tuple[dict, dict]:
             "mode": "independent",
         }
 
-    path = ROOT / "sources/discovered_sources.json"
+    current_root = os.environ.get("AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT", "").strip()
+    if current_root:
+        root = Path(current_root).resolve()
+        runner_temp = Path(os.environ.get("RUNNER_TEMP", "/tmp")).resolve()
+        if not root.is_relative_to(runner_temp) or root == runner_temp:
+            raise ValueError("current monolithic Discovery snapshot must remain beneath RUNNER_TEMP")
+        path = root / "sources/discovered_sources.json"
+        if not path.exists() and not path.with_name(path.name + ".manifest.json").exists():
+            raise FileNotFoundError("current monolithic Discovery snapshot is missing discovered_sources.json")
+    else:
+        path = ROOT / "sources/discovered_sources.json"
     discovery = read_document(path, "candidates", {"candidates": []})
     run_id = os.environ.get("GITHUB_RUN_ID", "")
     head_sha = os.environ.get("GITHUB_SHA", "")
