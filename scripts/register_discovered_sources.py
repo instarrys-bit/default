@@ -495,9 +495,26 @@ def main() -> int:
         now = datetime.now(timezone.utc).isoformat()
         logical_registry = build_registry(existing, discovery, provenance, now)
         assessment_runtime = load_assessment_runtime()
-        logical_registry = merge_assessment_results(
-            logical_registry, assessment_runtime, now, os.environ.get("GITHUB_RUN_ID", "")
-        ) if assessment_runtime.get("assessments") else logical_registry
+        assessment_items = assessment_runtime.get("assessments")
+        require_assessment_merge = os.environ.get("AUTOMATION_REQUIRE_ASSESSMENT_MERGE") == "1"
+        if require_assessment_merge and (
+            not isinstance(assessment_items, list) or not assessment_items
+        ):
+            raise ValueError("verified current-run assessment runtime is missing; refusing to publish an empty assessment registry")
+        if assessment_items:
+            logical_registry = merge_assessment_results(
+                logical_registry, assessment_runtime, now, os.environ.get("GITHUB_RUN_ID", "")
+            )
+            if require_assessment_merge:
+                expected_successes = sum(
+                    1 for item in assessment_items
+                    if isinstance(item, dict) and not item.get("error")
+                )
+                latest = logical_registry.get("latest_assessment", {})
+                if (latest.get("workflow_run_id") != os.environ.get("GITHUB_RUN_ID", "")
+                        or latest.get("assessed_this_run_count") != len(assessment_items)
+                        or latest.get("persisted_success_count") != expected_successes):
+                    raise ValueError("durable source registry did not merge every successful current-run assessment")
         storage = persist_registry(logical_registry)
         print(json.dumps({
             "registered_repositories": logical_registry["repository_count"],
