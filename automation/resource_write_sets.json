@@ -94,14 +94,15 @@
       ],
       "read_resources": [
         "verified external $AUTOMATION_PREDECESSOR_ARTIFACT_ROOT/sources/discovered_sources.json",
-        "sources/source_assessments.json (read-only main baseline)"
+        "sources/source_assessments.json (read-only main baseline)",
+        "rulesets/source_candidate_registry.json (read-only cross-run assessment fingerprints and cursor)"
       ],
       "side_effects": [
         "HTTPS reads restricted to raw.githubusercontent.com with repository binding and same-host redirect validation.",
         "Per-URL results are CAS-appended to automation/task_queue.json task.assessment_checkpoint under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences.",
-        "All assessment documents are isolated beneath RUNNER_TEMP and uploaded as immutable Actions artifacts; no repository checkout file is modified."
+        "Reads prior per-URL content SHA, parser/policy metadata, domain fingerprints and assessment cursor from rulesets/source_candidate_registry.json; it never writes that registry."
       ],
-      "evidence": "Independent task mode resolves the discovery predecessor from AUTOMATION_PREDECESSOR_ARTIFACT_ROOT and writes runtime/history/report documents only beneath AUTOMATION_ARTIFACT_ROOT. write_document uses no repository resource lease because the workspace is per-run isolated. Shared progress is written only through the fenced automation/task_queue.json queue CAS.",
+      "evidence": "Independent task mode resolves the discovery predecessor from AUTOMATION_PREDECESSOR_ARTIFACT_ROOT and writes runtime/history/report documents only beneath AUTOMATION_ARTIFACT_ROOT. Monolithic mode reads the same durable, read-only per-source assessment fingerprints and cursor from rulesets/source_candidate_registry.json. write_document uses no repository resource lease because the assessment output is runner-local. Shared independent-task progress is written only through the fenced automation/task_queue.json CAS.",
       "lease_keys": [
         "logical/production-pipeline",
         "sources/source_assessments.json",
@@ -121,7 +122,7 @@
       ],
       "lease_seconds": 3600,
       "publication": "No repository publication for assessment artifacts; monolithic report is retained only as a run artifact, independent mode uploads immutable runner-local outputs. Production Git commits remain restricted to rulesets/**.",
-      "write_boundary_fencing": "All shared checkpoint mutations are live-fenced; checkout workspace writes are exact-path lease checked in the monolithic pipeline; independent artifacts are isolated per run. Neither mode publishes source assessment documents to the repository. The production publisher stages rulesets/** only.",
+      "write_boundary_fencing": "Assessment output documents remain isolated per-run artifacts; the durable rulesets/source_candidate_registry.json is read-only to this component and is updated only by script_register_discovered_sources under the existing production-pipeline and logical-document lease. Neither mode publishes assessment documents directly; the single production publisher stages rulesets/** only.",
       "additional_serialized_writers": [],
       "additional_writer_boundary": "Restore/publish paths do not publish source assessment history or reports to the repository; only the ruleset publisher may commit rulesets/**."
     },
@@ -1058,14 +1059,16 @@
       ],
       "read_resources": [
         "verified AUTOMATION_SOURCE_DISCOVERY_ROOT/sources/discovered_sources.json",
-        "rulesets/source_candidate_registry.json (prior durable registry)"
+        "rulesets/source_candidate_registry.json (prior durable registry)",
+        "data/source_assessments_runtime.json (current-run verified assessment output)"
       ],
       "side_effects": [
         "Merges every discovered candidate repository and each supported rule-list URL into a durable non-activating registry.",
         "External-intelligence observations are excluded; no DIRECT/PROXY/REJECT classification or source activation is performed.",
-        "Writes only beneath rulesets/** and is published only by the existing single auto_sync publisher."
+        "Writes only beneath rulesets/** and is published only by the existing single auto_sync publisher.",
+        "Merges successful assessment content SHA, parser/policy metadata and truncated domain fingerprints into the matching discovered source-file records; preserves prior valid evidence on transient fetch errors and advances the assessment cursor."
       ],
-      "evidence": "main() reads schema-v1 legacy JSON or verifies the schema-v2 JSONL shard manifest and every shard SHA-256/count, merges stable repository/file identities, then writes the canonical logical document through json_document_store.write_document(force_sharded=True, compress_shards=True) with a 40,000,000-byte stored per-file and total cap and a 35,000,000-byte uncompressed shard target. The adjacent manifest is the atomic commit point; all base/manifest/shard/staging mutations are checked against the live resource lease.",
+      "evidence": "main() reads schema-v1 legacy JSON or verifies the schema-v2 JSONL shard manifest and every shard SHA-256/count, merges stable repository/file identities, then merges current-run source assessment evidence from data/source_assessments_runtime.json. Per-source assessment records retain content SHA, parser/policy metadata and truncated domain fingerprints so the next production run can perform a true second observation. It writes the canonical logical document through json_document_store.write_document(force_sharded=True, compress_shards=True) with a 40,000,000-byte stored per-file and total cap and a 35,000,000-byte uncompressed shard target. The adjacent manifest is the atomic commit point; all base/manifest/shard/staging mutations are checked against the live resource lease.",
       "write_boundary_fencing": "The script re-reads the durable queue and asserts the exact rulesets path; the existing Watchdog logical/production-pipeline resource fence is the covering lease. The auto_sync publisher stages rulesets/** only.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
@@ -1366,7 +1369,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
-    "release_manifest_blob_sha": "07f9fb99cf929b59acb5c9379f4a333aac7710f1",
+    "release_manifest_blob_sha": "18500d39de9d0bc84131ffb381696f0c4ab2a008",
     "program_registry_blob_sha": "300c5ee0697e0c4483e6546c312cedb889b5ea22",
     "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
     "note": "Static inventory of all registered Python components and workflow-native write sites. File Management is the sole repository SHA inventory writer; production publisher write scope remains rulesets/**. The REJECT manual-approval ledger in production_control.json is read-only input; modules/uu.conf remains read-only."
