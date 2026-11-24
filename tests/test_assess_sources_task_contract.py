@@ -31,6 +31,36 @@ class CheckpointMemoryStore:
 
 
 class DurableSourceAssessmentRegistryTests(unittest.TestCase):
+
+    def test_registry_writer_reads_preserved_current_discovery_after_restore(self):
+        from datetime import datetime
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "source-discovery-current"
+            source_dir = root / "sources"
+            source_dir.mkdir(parents=True)
+            payload = {
+                "candidates": [{
+                    "repository": "example/repo",
+                    "rule_list_urls": ["https://raw.githubusercontent.com/example/repo/main/clash-rules/domains.list"],
+                }]
+            }
+            (source_dir / "discovered_sources.json").write_text(
+                json.dumps(payload), encoding="utf-8"
+            )
+            with patch.dict("os.environ", {
+                "AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT": str(root),
+                "RUNNER_TEMP": temporary,
+                "GITHUB_RUN_ID": "123456789",
+                "GITHUB_SHA": "a" * 40,
+                "GITHUB_WORKFLOW": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
+            }, clear=True):
+                discovery, provenance = register_discovered_sources.load_discovery()
+        self.assertEqual(discovery["candidates"][0]["repository"], "example/repo")
+        self.assertEqual(provenance["workflow_run_id"], "123456789")
+        self.assertEqual(provenance["mode"], "monolithic_fallback")
+        self.assertEqual(len(provenance["artifact_sha256"]), 64)
+
+
     def test_registry_persists_fingerprints_and_second_observation_metadata(self):
         url = "https://raw.githubusercontent.com/example/repo/main/clash-rules/domains.list"
         registry = {
