@@ -233,6 +233,16 @@ def main():
         discovery_path = root / "sources/discovered_sources.json"
         if not discovery_path.exists() and not discovery_path.with_name(discovery_path.name + ".manifest.json").exists():
             raise FileNotFoundError("verified Discovery artifact is missing discovered_sources.json")
+    else:
+        current_root = os.environ.get("AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT", "").strip()
+        if current_root:
+            root = Path(current_root).resolve()
+            runner_temp = Path(os.environ.get("RUNNER_TEMP", "/tmp")).resolve()
+            if not root.is_relative_to(runner_temp) or root == runner_temp:
+                raise ValueError("current monolithic Discovery snapshot must remain beneath RUNNER_TEMP")
+            discovery_path = root / "sources/discovered_sources.json"
+            if not discovery_path.exists() and not discovery_path.with_name(discovery_path.name + ".manifest.json").exists():
+                raise FileNotFoundError("current monolithic Discovery snapshot is missing discovered_sources.json")
     candidates = read_document(discovery_path, "candidates", {"candidates": []}).get("candidates", [])
     previous_report = json.loads(OUTPUT.read_text(encoding="utf-8")) if OUTPUT.exists() else {}
     report = audit_registry(config, candidates=candidates, previous_report=previous_report)
