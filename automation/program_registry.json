@@ -258,13 +258,14 @@
       "id": "script_audit_source_lineage",
       "path": "scripts/audit_source_lineage.py",
       "kind": "python_component",
-      "responsibility": "inspect source lineage and upstream relationships",
+      "responsibility": "Audit source lineage and shared upstream relationships against the current run's preserved discovery inventory.",
       "capabilities": [
         "source_lineage_audit"
       ],
       "invocation": "python_module_or_workflow_step",
       "inputs": [
-        "CLI arguments and/or imported Python inputs as defined by the implementation"
+        "CLI arguments and/or imported Python inputs as defined by the implementation",
+        "AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT/sources/discovered_sources.json preserved before historical-state restore"
       ],
       "outputs": [
         "Return values and/or repository artifacts as defined by the implementation"
@@ -284,13 +285,14 @@
       "id": "script_auto_activate_sources",
       "path": "scripts/auto_activate_sources.py",
       "kind": "python_component",
-      "responsibility": "apply deterministic activation gates to eligible sources",
+      "responsibility": "Apply deterministic activation gates to eligible source candidates using the preserved current discovery inventory and live content-SHA rechecks.",
       "capabilities": [
         "source_activation_gate"
       ],
       "invocation": "python_module_or_workflow_step",
       "inputs": [
-        "CLI arguments and/or imported Python inputs as defined by the implementation"
+        "CLI arguments and/or imported Python inputs as defined by the implementation",
+        "AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT/sources/discovered_sources.json current-run publisher inventory"
       ],
       "outputs": [
         "Return values and/or repository artifacts as defined by the implementation"
@@ -351,7 +353,8 @@
       ],
       "invocation": "python_module_or_workflow_step",
       "inputs": [
-        "CLI arguments and/or imported Python inputs as defined by the implementation"
+        "CLI arguments and/or imported Python inputs as defined by the implementation",
+        "AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT/sources/discovered_sources.json current-run discovery inventory"
       ],
       "outputs": [
         "Return values and/or repository artifacts as defined by the implementation"
@@ -430,7 +433,7 @@
       "invocation": "python_module_or_workflow_step",
       "inputs": [
         "Current-run data/source_assessments_runtime.json or verified Assessment artifact",
-        "Current sources/discovered_sources.json inventory",
+        "AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT/sources/discovered_sources.json current-run discovery inventory (preserved before historical-state restore)",
         "Read-only rulesets/source_candidate_registry.json per-source stable assessment evidence",
         "reports/source-lineage-audit.json"
       ],
@@ -545,11 +548,12 @@
       ],
       "outputs": [
         "Return values and/or repository artifacts as defined by the implementation",
-        "sources/discovered_sources.json external_intelligence section with typed observations, provider status, retrieval timestamps and SHA-256 provenance; no routing policy inference"
+        "sources/discovered_sources.json external_intelligence section with typed observations, provider status, retrieval timestamps and SHA-256 provenance; no routing policy inference",
+        "Runner-local RUNNER_TEMP/source-discovery-current snapshot exported as AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT before the later historical-state restore"
       ],
       "depends_on": [],
       "dispatches": [],
-      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "permission_boundary": "Runs only inside the existing Watchdog-owned Production audit. Reads the previous discovery inventory and bounded public sources; writes the current discovery document/report in the leased audit workspace and preserves an immutable runner-local copy for downstream stages before historical-state restoration. No source activation or modules/uu.conf write.",
       "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
       "orchestration": {
         "enabled": false,
@@ -905,7 +909,7 @@
       ],
       "invocation": "python_module_or_workflow_step",
       "inputs": [
-        "Exact verified source-discovery-output artifact (or explicit monolithic fallback inventory)",
+        "Current monolithic discovery inventory from AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT, or exact verified independent source-discovery artifact",
         "Prior rulesets/source_candidate_registry.json schema-v1 file or schema-v2 manifest and shards",
         "Current-run data/source_assessments_runtime.json output from the non-activating source assessor"
       ],
@@ -917,7 +921,7 @@
         "script_resource_lease_runtime"
       ],
       "dispatches": [],
-      "permission_boundary": "Runs only inside the existing Watchdog-owned auto_sync audit. Reads current-run assessment output and writes only the canonical source-candidate registry and its adjacent manifest/content-addressed shards beneath rulesets/** through the existing JSON document store and live logical/production-pipeline fence. It cannot modify modules/uu.conf, sources/domain_sources.json, or DIRECT/PROXY/REJECT rules.",
+      "permission_boundary": "Runs only inside the existing Watchdog-owned auto_sync audit. Reads the preserved current discovery inventory and current-run assessment output; writes only the canonical source-candidate registry and its adjacent manifest/content-addressed shards beneath rulesets/** through the existing JSON document store and live logical/production-pipeline fence. It cannot modify modules/uu.conf, sources/domain_sources.json, or DIRECT/PROXY/REJECT rules.",
       "health_check": "Deterministic migration/idempotency/storage tests, verified Discovery provenance, stable repository+URL identity, per-file 40 MB shard bound, SHA-256/count verification, and successful auto_sync artifact/publication validation.",
       "orchestration": {
         "enabled": false,
