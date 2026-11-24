@@ -62,6 +62,35 @@ class AssessmentQueueTests(unittest.TestCase):
         self.assertEqual(len(batch), 3)
         self.assertEqual(len({item["url"] for item in batch}), 3)
 
+
+    def test_durable_registry_history_restores_fingerprints_and_cursor(self):
+        assessor = load_assessor()
+        url = "https://raw.githubusercontent.com/o/r/main/clash-rules/domains.list"
+        fingerprints = [f"{n:032x}" for n in range(100)]
+        history, cursor = assessor.assessment_history_from_registry({
+            "source_files": [{
+                "url": url,
+                "assessment": {
+                    "url": url,
+                    "sha256": "a" * 64,
+                    "parser_candidate": "domain-only",
+                    "domain_fingerprints": fingerprints,
+                    "policy_candidate": "DIRECT",
+                    "policy_evidence": "README_policy_reference",
+                    "drift": {"status": "baseline_initialized"},
+                },
+            }],
+            "latest_assessment": {"next_cursor_url": url},
+        })
+        self.assertEqual(cursor, url)
+        self.assertEqual(history[url]["domain_fingerprints"], fingerprints)
+        batch = assessor.rotate_assessment_urls(
+            [{"url": url, "repository": "o/r"}],
+            None, 1, previous_by_url=history,
+        )
+        self.assertEqual(batch[0]["url"], url)
+
+
     def test_task_retry_reuses_the_same_bounded_batch_for_same_predecessor(self):
         assessor = load_assessor()
         items = [{"url": f"https://raw.githubusercontent.com/o/r/main/{n}.list"} for n in range(23)]
