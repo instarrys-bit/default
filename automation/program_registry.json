@@ -423,20 +423,23 @@
       "id": "script_build_source_candidates",
       "path": "scripts/build_source_candidates.py",
       "kind": "python_component",
-      "responsibility": "build candidate source inventory from discovered repositories",
+      "responsibility": "Build a non-activating source candidate matrix by combining current-run assessment results with durable cross-run assessment evidence for source URLs present in the current discovery inventory.",
       "capabilities": [
         "candidate_generation"
       ],
       "invocation": "python_module_or_workflow_step",
       "inputs": [
-        "CLI arguments and/or imported Python inputs as defined by the implementation"
+        "Current-run data/source_assessments_runtime.json or verified Assessment artifact",
+        "Current sources/discovered_sources.json inventory",
+        "Read-only rulesets/source_candidate_registry.json per-source stable assessment evidence",
+        "reports/source-lineage-audit.json"
       ],
       "outputs": [
         "Return values and/or repository artifacts as defined by the implementation"
       ],
       "depends_on": [],
       "dispatches": [],
-      "permission_boundary": "No independent GitHub token grant. Filesystem and network authority is inherited from the invoking workflow/job and must be reviewed there.",
+      "permission_boundary": "Runs only as a same-run Production stage. Reads current Discovery, current Assessment output, read-only durable assessment evidence from rulesets/source_candidate_registry.json and lineage report; writes only the source candidate matrix under sources/ and a runner-local report. It cannot update the durable registry, activate sources, or modify modules/uu.conf.",
       "health_check": "Covered by the repository deterministic test suite and any caller-specific workflow checks.",
       "orchestration": {
         "enabled": false,
