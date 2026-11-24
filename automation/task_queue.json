@@ -242,7 +242,7 @@
       "worker_id": "45320889257"
     }
   },
-  "revision": 303,
+  "revision": 304,
   "schema_version": 1,
   "tasks": [
     {
@@ -5657,18 +5657,9 @@
         "production_reason": "a registered production input changed; prior success for the same fingerprint does not prove current state is reconciled"
       },
       "last_error": {
-        "evidence": {
-          "conclusion": "cancelled",
-          "head_sha": "4aaf2fcbfc73d0b3d35e40f86418375953244695",
-          "head_sha_relationship": "rejected",
-          "html_url": "https://github.com/instarrys-bit/default/actions/runs/45320975575",
-          "reason": "correlated workflow run does not match the persisted workflow/ref/SHA identity; only the exact single-parent queue-intent commit is permitted",
-          "requested_head_sha": "475cf884bffb60795a19bbfc0b6dbeabe02dd52a",
-          "run_id": 45320975575,
-          "status": "completed"
-        },
-        "message": "The correlated workflow ran on a main revision outside the exact authorized queue-intent SHA relationship; it was rejected and cannot publish.",
-        "type": "workflow_dispatch_stale_ref"
+        "current_production_fingerprint": "0e02724c6fd17f55fcdbf138fa40ba20e2920b6ed68140a01af74fefa0fee563",
+        "message": "Queued production task was cancelled before claim because its input fingerprint no longer matches current main.",
+        "type": "stale_production_input_superseded"
       },
       "lease": null,
       "max_attempts": 2,
@@ -5791,9 +5782,10 @@
         "CLAIMED",
         "VERIFYING",
         "FAILED",
-        "QUEUED"
+        "QUEUED",
+        "CANCELLED"
       ],
-      "status": "QUEUED",
+      "status": "CANCELLED",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_118bbd691ba942d6b1da8db9",
       "trace_id": "fc77f4b92aca4fd6a53ffc016e514bcb",
