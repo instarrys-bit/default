@@ -61,6 +61,41 @@ class DurableSourceAssessmentRegistryTests(unittest.TestCase):
         self.assertEqual(len(provenance["artifact_sha256"]), 64)
 
 
+    def test_registry_runtime_loader_reads_preserved_runner_temp_snapshot(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "source-assessment-runtime"
+            data = root / "data"
+            data.mkdir(parents=True)
+            runtime = {
+                "assessment_count": 1,
+                "assessed_this_run_count": 1,
+                "assessments": [{
+                    "url": "https://raw.githubusercontent.com/example/repo/main/rules.list",
+                    "sha256": "a" * 64,
+                    "domain_fingerprints": ["b" * 32],
+                }],
+            }
+            (data / "source_assessments_runtime.json").write_text(
+                json.dumps(runtime), encoding="utf-8"
+            )
+            with patch.dict("os.environ", {
+                "AUTOMATION_SOURCE_ASSESSMENT_ROOT": str(root),
+                "RUNNER_TEMP": temporary,
+            }, clear=True):
+                loaded = register_discovered_sources.load_assessment_runtime()
+        self.assertEqual(loaded, runtime)
+
+    def test_registry_runtime_loader_fails_closed_when_preserved_snapshot_is_missing(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "source-assessment-runtime"
+            root.mkdir()
+            with patch.dict("os.environ", {
+                "AUTOMATION_SOURCE_ASSESSMENT_ROOT": str(root),
+                "RUNNER_TEMP": temporary,
+            }, clear=True):
+                with self.assertRaisesRegex(FileNotFoundError, "verified Assessment artifact"):
+                    register_discovered_sources.load_assessment_runtime()
+
     def test_registry_persists_fingerprints_and_second_observation_metadata(self):
         url = "https://raw.githubusercontent.com/example/repo/main/clash-rules/domains.list"
         registry = {
