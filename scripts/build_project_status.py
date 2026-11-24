@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 from datetime import datetime, timezone
 from pathlib import Path
@@ -70,7 +71,20 @@ def build_status(root: Path = ROOT, now: str | None = None) -> dict:
     registry = read_json(root / "sources/domain_sources.json", {"sources": []})
     snapshot = read_document(root / "data/candidates.json", "candidates", {"candidates": [], "sources": {}})
     activation = read_json(root / "sources/source_activation_log.json", {"activations": [], "last_decisions": []})
-    discovered = read_document(root / "sources/discovered_sources.json", "candidates", {"candidates": []})
+    discovery_path = root / "sources/discovered_sources.json"
+    supplied_discovery_root = (
+        os.environ.get("AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT", "").strip()
+        or os.environ.get("AUTOMATION_SOURCE_DISCOVERY_ROOT", "").strip()
+    )
+    if supplied_discovery_root:
+        discovery_root = Path(supplied_discovery_root).resolve()
+        runner_temp = Path(os.environ.get("RUNNER_TEMP", "/tmp")).resolve()
+        if not discovery_root.is_relative_to(runner_temp) or discovery_root == runner_temp:
+            raise ValueError("verified current Discovery snapshot must remain beneath RUNNER_TEMP")
+        discovery_path = discovery_root / "sources/discovered_sources.json"
+        if not discovery_path.exists() and not discovery_path.with_name(discovery_path.name + ".manifest.json").exists():
+            raise FileNotFoundError("current Discovery snapshot is missing discovered_sources.json")
+    discovered = read_document(discovery_path, "candidates", {"candidates": []})
     assessments = read_document(root / "sources/source_assessments.json", "assessments", {"assessments": []})
     source_matrix = read_document(root / "sources/source_candidates.json", "candidates", {"candidates": []})
     review_ledger = read_document(root / "sources/domain_reviews.json", "reviews", {"reviews": []})
