@@ -1372,8 +1372,8 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
-    "release_manifest_blob_sha": "16f880a4f55e52387564df97a3b5cd05543ae831",
-    "program_registry_blob_sha": "a4d5afcb93a183cae5f75a4709d61b686a9f6bfd",
+    "release_manifest_blob_sha": "e36ff52c722dc151516f74e8e5a91773b9aa19ce",
+    "program_registry_blob_sha": "90bc51e71e7d050f79582e09429fee2b694b144c",
     "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
     "note": "Static inventory of all registered Python components and workflow-native write sites. File Management is the sole repository SHA inventory writer; production publisher write scope remains rulesets/**. The REJECT manual-approval ledger in production_control.json is read-only input; modules/uu.conf remains read-only."
   },
