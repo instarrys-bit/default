@@ -388,7 +388,7 @@ jobs:
           if copied != runtime:
               raise SystemExit("Preserved assessment runtime failed read-after-copy verification.")
           with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as stream:
-              stream.write(f"AUTOMATION_SOURCE_ASSESSMENT_ROOT={root}\\n")
+              stream.write(f"AUTOMATION_SOURCE_ASSESSMENT_ROOT={root}\n")
           print(json.dumps({
               "assessment_records_preserved": len(assessments),
               "assessment_run_id": os.environ.get("GITHUB_RUN_ID", ""),
