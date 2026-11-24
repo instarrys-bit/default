@@ -514,6 +514,36 @@ def rotate_assessment_urls_for_task(
         selected.extend(_select_diverse_items(remaining, limit - len(selected)))
     return selected
 
+
+def assessment_history_from_registry(registry: dict) -> tuple[dict, str | None]:
+    """Return durable per-URL assessment evidence and the latest assessment cursor."""
+    if not isinstance(registry, dict):
+        raise ValueError("durable source candidate registry must be an object")
+    history = {}
+    for record in registry.get("source_files", []):
+        if not isinstance(record, dict):
+            raise ValueError("durable source registry contains a malformed file record")
+        url = record.get("url")
+        assessment = record.get("assessment")
+        if isinstance(url, str) and isinstance(assessment, dict):
+            if assessment.get("url") != url:
+                raise ValueError("durable source assessment URL does not match its registry record")
+            history[url] = dict(assessment)
+    latest = registry.get("latest_assessment")
+    cursor = latest.get("next_cursor_url") if isinstance(latest, dict) else None
+    return history, cursor if isinstance(cursor, str) else None
+
+
+def load_durable_assessment_history() -> tuple[dict, str | None]:
+    """Read cross-run assessment history from the ruleset-scoped file registry."""
+    path = ROOT / "rulesets/source_candidate_registry.json"
+    if not path.exists() and not path.with_name(path.name + ".manifest.json").exists():
+        return {}, None
+    from register_discovered_sources import decode_registry_storage
+    payload = read_document(path, "records", {"records": []})
+    registry = decode_registry_storage(payload)
+    return assessment_history_from_registry(registry)
+
 def compact_assessment_result(result: dict) -> dict:
     """Persist metadata only; keep per-domain fingerprints ephemeral for same-run analysis."""
     compact = dict(result)
@@ -830,7 +860,9 @@ def main(argv: list[str] | None = None) -> int:
     discovery = read_document(INPUT, "candidates", {"candidates": []})
     previous_data = read_document(BASELINE_OUTPUT, "assessments", {"assessments": []})
     previous_by_url = {x.get("url"): x for x in previous_data.get("assessments", []) if x.get("url")}
-    previous_cursor = previous_data.get("next_cursor_url")
+    durable_history, durable_cursor = load_durable_assessment_history()
+    previous_by_url.update(durable_history)
+    previous_cursor = durable_cursor or previous_data.get("next_cursor_url")
     candidate_urls = flatten_candidate_urls(discovery.get("candidates", []))
     predecessor = options.get("predecessor") if args.task_input is not None else None
     if predecessor is not None:
@@ -838,7 +870,7 @@ def main(argv: list[str] | None = None) -> int:
         previous_by_url.update(prior_results)
         batch = rotate_assessment_urls_for_task(
             candidate_urls, predecessor, max_urls,
-            cursor_url=prior_cursor or previous_cursor, previous_by_url=previous_by_url,
+            cursor_url=prior_cursor or durable_cursor or previous_cursor, previous_by_url=previous_by_url,
         )
         batch_id = "discovery-run:" + predecessor["workflow_run_id"] + ":" + predecessor["artifact_sha256"][:12]
     else:
