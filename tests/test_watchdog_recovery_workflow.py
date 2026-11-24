@@ -31,6 +31,17 @@ class WatchdogV2ControlPlaneTests(unittest.TestCase):
         self.assertIn('--current-main-sha "$GITHUB_SHA" resolve-superseded-dead-letters', text)
         self.assertLess(text.index(reconcile), text.index(scheduler))
 
+    def test_scheduler_reawakens_watchdog_after_releasing_orphaned_claims(self):
+        text = WATCHDOG.read_text(encoding="utf-8")
+        scheduler = "Recover leases and run scheduler once"
+        re_wake = "Re-wake Watchdog after scheduler releases an orphaned claim"
+        self.assertIn("id: scheduler", text)
+        self.assertIn(".initial_verification.rejected", text)
+        self.assertIn("released_task_ids=$released_task_ids", text)
+        self.assertIn(re_wake, text)
+        self.assertLess(text.index(scheduler), text.index(re_wake))
+        self.assertIn('gh api --method POST "repos/$REPO/actions/workflows/$WATCHDOG_WORKFLOW_ID/dispatches"', text)
+
     def test_stale_task_release_reawakens_production_intent_evaluation(self):
         text = WATCHDOG.read_text(encoding="utf-8")
         reconcile = "Reconcile superseded terminal production tasks"
