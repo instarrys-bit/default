@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from build_source_candidates import assessment_input_path, build_matrix, merge_assessment_inventory
+from discover_sources import preserve_current_discovery_snapshot
 
 
 class SourceCandidateLineagePolicyTests(unittest.TestCase):
@@ -106,6 +107,31 @@ class SourceCandidateLineagePolicyTests(unittest.TestCase):
         self.assertEqual(result["policy_summary"]["DIRECT"]["candidate_publishers"], 2)
         self.assertEqual(result["policy_summary"]["DIRECT"]["independent_eligible_groups"], 2)
         self.assertTrue(result["policy_summary"]["DIRECT"]["activation_ready"])
+
+
+
+    def test_current_discovery_snapshot_preserves_manifest_and_shards_before_restore(self):
+        with TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source_dir = root / "workspace" / "sources"
+            source_dir.mkdir(parents=True)
+            source = source_dir / "discovered_sources.json"
+            source.write_text('{"candidates": []}', encoding="utf-8")
+            (source_dir / "discovered_sources.json.manifest.json").write_text(
+                '{"schema_version": 2}', encoding="utf-8"
+            )
+            parts = source_dir / "discovered_sources.json.parts-test"
+            parts.mkdir()
+            (parts / "part-000000.jsonl").write_text('{"record": 1}\\n', encoding="utf-8")
+            env_file = root / "github_env"
+            snapshot = preserve_current_discovery_snapshot(source, root / "runner-temp", env_file)
+            self.assertTrue((snapshot / "sources/discovered_sources.json").is_file())
+            self.assertTrue((snapshot / "sources/discovered_sources.json.manifest.json").is_file())
+            self.assertTrue((snapshot / "sources/discovered_sources.json.parts-test/part-000000.jsonl").is_file())
+            self.assertIn(
+                "AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT=" + str(snapshot),
+                env_file.read_text(encoding="utf-8"),
+            )
 
 
     def test_assessment_input_path_reads_verified_artifact_environment(self):
