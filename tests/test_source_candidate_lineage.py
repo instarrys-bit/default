@@ -6,7 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from build_source_candidates import assessment_input_path, build_matrix
+from build_source_candidates import assessment_input_path, build_matrix, merge_assessment_inventory
 
 
 class SourceCandidateLineagePolicyTests(unittest.TestCase):
@@ -49,6 +49,63 @@ class SourceCandidateLineagePolicyTests(unittest.TestCase):
         self.assertEqual(candidate["domain_fingerprint_count"], 100)
         self.assertTrue(candidate["fingerprints_complete"])
         self.assertEqual(candidate["lineage_warning"], "possible_shared_readme_references; correlation signal only")
+
+
+
+    def test_candidate_matrix_combines_stable_sources_from_separate_batches(self):
+        url_a = "https://raw.githubusercontent.com/publisher/a/main/clash-rules/list.list"
+        url_b = "https://raw.githubusercontent.com/publisher/b/main/clash-rules/list.list"
+        url_stale = "https://raw.githubusercontent.com/publisher/old/main/clash-rules/list.list"
+        fingerprints_a = [f"{i:032x}" for i in range(100)]
+        fingerprints_b = [f"{i + 1000:032x}" for i in range(100)]
+
+        def saved(repo, url, digest, fingerprints):
+            return {
+                "repository": repo,
+                "url": url,
+                "sha256": digest,
+                "parser_candidate": "shadowrocket-domain-rules",
+                "parser_version": 2,
+                "policy_candidate": "DIRECT",
+                "policy_evidence": "explicit_third_field",
+                "exact_domain_count": 100,
+                "suffix_domain_count": 0,
+                "adblock_domain_count": 0,
+                "domain_only_count": 0,
+                "domain_fingerprints": fingerprints,
+                "drift": {"status": "unchanged"},
+                "assessed_at": "2026-11-24T00:00:00Z",
+            }
+
+        registry = {
+            "repositories": [
+                {"repository": "publisher/a", "archived": False, "stars": 20},
+                {"repository": "publisher/b", "archived": False, "stars": 30},
+                {"repository": "publisher/old", "archived": False, "stars": 5},
+            ],
+            "source_files": [
+                {"repository": "publisher/a", "url": url_a, "assessment": saved("publisher/a", url_a, "a" * 64, fingerprints_a)},
+                {"repository": "publisher/b", "url": url_b, "assessment": saved("publisher/b", url_b, "b" * 64, fingerprints_b)},
+                {"repository": "publisher/old", "url": url_stale, "assessment": saved("publisher/old", url_stale, "c" * 64, [f"{i + 2000:032x}" for i in range(100)])},
+            ],
+        }
+        current = {"assessments": [{
+            **saved("publisher/b", url_b, "d" * 64, fingerprints_b),
+            "drift": {"status": "unchanged"},
+        }]}
+        merged = merge_assessment_inventory(current, registry, {url_a, url_b})
+        self.assertEqual(len(merged["assessments"]), 2)
+        self.assertEqual(
+            next(item for item in merged["assessments"] if item["url"] == url_b)["sha256"],
+            "d" * 64,
+        )
+        result = build_matrix(
+            merged,
+            {"candidate_sources": [], "candidate_shared_reference_pairs": []},
+        )
+        self.assertEqual(result["policy_summary"]["DIRECT"]["candidate_publishers"], 2)
+        self.assertEqual(result["policy_summary"]["DIRECT"]["independent_eligible_groups"], 2)
+        self.assertTrue(result["policy_summary"]["DIRECT"]["activation_ready"])
 
 
     def test_assessment_input_path_reads_verified_artifact_environment(self):
