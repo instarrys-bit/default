@@ -8,7 +8,7 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "300c5ee0697e0c4483e6546c312cedb889b5ea22"
+      "git_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
@@ -70,7 +70,7 @@
     },
     "source_discovery_implementation": {
       "path": "scripts/discover_sources.py",
-      "git_blob_sha": "14432d73198b149bbf007b8d3c3ba3ac6da667b6"
+      "git_blob_sha": "38f7d3304d909f730e6ca9430e50afecfd0fced9"
     },
     "program_registry": {
       "path": "automation/program_registry.json",
