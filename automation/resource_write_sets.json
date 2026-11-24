@@ -95,7 +95,8 @@
       "read_resources": [
         "verified external $AUTOMATION_PREDECESSOR_ARTIFACT_ROOT/sources/discovered_sources.json",
         "sources/source_assessments.json (read-only main baseline)",
-        "rulesets/source_candidate_registry.json (read-only cross-run assessment fingerprints and cursor)"
+        "rulesets/source_candidate_registry.json (read-only cross-run assessment fingerprints and cursor)",
+        "AUTOMATION_SOURCE_ASSESSMENT_ROOT/data/source_assessments_runtime.json (verified runner-temp snapshot consumed after state restoration)"
       ],
       "side_effects": [
         "HTTPS reads restricted to raw.githubusercontent.com with repository binding and same-host redirect validation.",
@@ -122,7 +123,7 @@
       ],
       "lease_seconds": 3600,
       "publication": "No repository publication for assessment artifacts; monolithic report is retained only as a run artifact, independent mode uploads immutable runner-local outputs. Production Git commits remain restricted to rulesets/**.",
-      "write_boundary_fencing": "Assessment output documents remain isolated per-run artifacts; the durable rulesets/source_candidate_registry.json is read-only to this component and is updated only by script_register_discovered_sources under the existing production-pipeline and logical-document lease. Neither mode publishes assessment documents directly; the single production publisher stages rulesets/** only.",
+      "write_boundary_fencing": "Assessment output documents remain isolated per-run artifacts. The monolithic workflow copies the verified runtime document, manifest and shard set into RUNNER_TEMP before historical-state restoration; script_register_discovered_sources consumes that exact snapshot and must fail closed if it is missing. The durable rulesets/source_candidate_registry.json is read-only to this component and is updated only by script_register_discovered_sources under the existing production-pipeline and logical-document lease.",
       "additional_serialized_writers": [],
       "additional_writer_boundary": "Restore/publish paths do not publish source assessment history or reports to the repository; only the ruleset publisher may commit rulesets/**."
     },
@@ -1069,8 +1070,8 @@
       "read_resources": [
         "verified AUTOMATION_SOURCE_DISCOVERY_ROOT/sources/discovered_sources.json",
         "rulesets/source_candidate_registry.json (prior durable registry)",
-        "data/source_assessments_runtime.json (current-run verified assessment output)",
-        "AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT/sources/discovered_sources.json (current inventory preserved before historical-state restore)"
+        "AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT/sources/discovered_sources.json (current inventory preserved before historical-state restore)",
+        "AUTOMATION_SOURCE_ASSESSMENT_ROOT/data/source_assessments_runtime.json (verified current-run snapshot, including manifest and shards)"
       ],
       "side_effects": [
         "Merges every discovered candidate repository and each supported rule-list URL into a durable non-activating registry.",
@@ -1079,7 +1080,7 @@
         "Merges successful assessment content SHA, parser/policy metadata and truncated domain fingerprints into the matching discovered source-file records; preserves prior valid evidence on transient fetch errors and advances the assessment cursor."
       ],
       "evidence": "main() reads schema-v1 legacy JSON or verifies the schema-v2 JSONL shard manifest and every shard SHA-256/count, merges stable repository/file identities, then merges current-run source assessment evidence from data/source_assessments_runtime.json. Per-source assessment records retain content SHA, parser/policy metadata and truncated domain fingerprints so the next production run can perform a true second observation. It writes the canonical logical document through json_document_store.write_document(force_sharded=True, compress_shards=True) with a 40,000,000-byte stored per-file and total cap and a 35,000,000-byte uncompressed shard target. The adjacent manifest is the atomic commit point; all base/manifest/shard/staging mutations are checked against the live resource lease. Monolithic mode reads the exact runner-local current discovery snapshot exported by discover_sources.py, not the historical inventory restored later in the audit.",
-      "write_boundary_fencing": "The script re-reads the durable queue and asserts the exact rulesets path; the existing Watchdog logical/production-pipeline resource fence is the covering lease. The auto_sync publisher stages rulesets/** only.",
+      "write_boundary_fencing": "The script re-reads the durable queue and asserts the exact rulesets path; it consumes the current-run assessment snapshot preserved under RUNNER_TEMP before historical-state restoration, verifies that every successful assessment record was merged, and fails closed on missing or incomplete evidence. The existing Watchdog logical/production-pipeline resource fence is the covering lease. The auto_sync publisher stages rulesets/** only.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
       ],
