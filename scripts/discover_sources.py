@@ -856,7 +856,7 @@ def preserve_current_discovery_snapshot(source_path: Path, runner_temp: Path, gi
     if copied == 0:
         raise FileNotFoundError("current discovery document and its storage files could not be snapshotted")
     with Path(github_env).open("a", encoding="utf-8") as stream:
-        stream.write(f"AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT={root}\\n")
+        stream.write(f"AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT={root}\n")
     return root
 
 
