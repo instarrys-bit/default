@@ -28,7 +28,7 @@
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
-      "git_blob_sha": "9580ad141542fdbc7c74b60b924c17e4909b910a"
+      "git_blob_sha": "54ee73a0abfcd72e2aa9453dd68ba7c51fd2b599"
     },
     "review_engine": {
       "declared_version": "deterministic-domain-audit/4.1",
@@ -178,7 +178,7 @@
     },
     "discovered_source_registry": {
       "path": "scripts/register_discovered_sources.py",
-      "git_blob_sha": "84847235c58e4e2bef4b169ee432c6aa92be6e19"
+      "git_blob_sha": "ec8b6a23f439f4598c43aa93c4b6e1d133feaa34"
     },
     "config_drift_audit": {
       "path": "scripts/audit_config_drift.py",
