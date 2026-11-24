@@ -42,7 +42,7 @@
     },
     "source_assessor": {
       "path": "scripts/assess_sources.py",
-      "git_blob_sha": "ea5be30d79569e93e441e853b7f74451d2f8d9f6"
+      "git_blob_sha": "1d7cdcc4cb1501818526c37d1ccce5b15450425a"
     },
     "task_queue_validator": {
       "path": "scripts/task_queue.py",
@@ -178,7 +178,7 @@
     },
     "discovered_source_registry": {
       "path": "scripts/register_discovered_sources.py",
-      "git_blob_sha": "6f18ce43ec40cff524f31346ea397b6bb13fb282"
+      "git_blob_sha": "16e12bd71a6ed01c5d043b18b9c90c170433f75b"
     },
     "config_drift_audit": {
       "path": "scripts/audit_config_drift.py",
