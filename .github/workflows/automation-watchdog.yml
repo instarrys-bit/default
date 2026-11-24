@@ -350,4 +350,3 @@ jobs:
         run: |
           set -euo pipefail
           gh api --method POST "repos/$REPO/actions/workflows/$WATCHDOG_WORKFLOW_ID/dispatches" -f ref=main
-          echo "released_task_ids=$released_task_ids" >> "$GITHUB_OUTPUT"
