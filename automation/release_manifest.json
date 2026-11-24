@@ -54,7 +54,7 @@
     },
     "assessment_checkpoint_contract": {
       "path": "automation/capability_contracts/assess_sources.json",
-      "git_blob_sha": "791befb591be3c626e21930a848feda25b19b0a0"
+      "git_blob_sha": "e419753eda134a8513e37dd3d799e585f9b779c3"
     },
     "remote_task_queue_runtime": {
       "path": "scripts/remote_task_queue_runtime.py",
@@ -74,7 +74,7 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "300c5ee0697e0c4483e6546c312cedb889b5ea22"
+      "git_blob_sha": "a4d5afcb93a183cae5f75a4709d61b686a9f6bfd"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
