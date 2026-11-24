@@ -74,7 +74,7 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "a4d5afcb93a183cae5f75a4709d61b686a9f6bfd"
+      "git_blob_sha": "90bc51e71e7d050f79582e09429fee2b694b144c"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
@@ -166,7 +166,7 @@
     },
     "source_candidate_builder": {
       "path": "scripts/build_source_candidates.py",
-      "git_blob_sha": "84215b7d5ac9ed72e89436d97785c55269686753"
+      "git_blob_sha": "09751c982af51629e416f2f99abc6f03f5360b19"
     },
     "source_lineage_audit": {
       "path": "scripts/audit_source_lineage.py",
