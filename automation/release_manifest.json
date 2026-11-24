@@ -70,11 +70,11 @@
     },
     "source_discovery_implementation": {
       "path": "scripts/discover_sources.py",
-      "git_blob_sha": "93b7c8001c34ee76576874694d71a27dd632c16d"
+      "git_blob_sha": "14432d73198b149bbf007b8d3c3ba3ac6da667b6"
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "90bc51e71e7d050f79582e09429fee2b694b144c"
+      "git_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
@@ -166,19 +166,19 @@
     },
     "source_candidate_builder": {
       "path": "scripts/build_source_candidates.py",
-      "git_blob_sha": "09751c982af51629e416f2f99abc6f03f5360b19"
+      "git_blob_sha": "61ac04341e959ce62e9c5120a244da6ae8290aef"
     },
     "source_lineage_audit": {
       "path": "scripts/audit_source_lineage.py",
-      "git_blob_sha": "e21c734bb63f22815114f6d2d4ca6454136cfce3"
+      "git_blob_sha": "64d476cb2cfd866233880d81cc185a2801168a5d"
     },
     "source_activation": {
       "path": "scripts/auto_activate_sources.py",
-      "git_blob_sha": "da0fa1957347b5322e3bf23d75eaed303fa4b657"
+      "git_blob_sha": "99dc6b1fe068cb7e8647ecd44b585ffb292d3893"
     },
     "discovered_source_registry": {
       "path": "scripts/register_discovered_sources.py",
-      "git_blob_sha": "16e12bd71a6ed01c5d043b18b9c90c170433f75b"
+      "git_blob_sha": "84847235c58e4e2bef4b169ee432c6aa92be6e19"
     },
     "config_drift_audit": {
       "path": "scripts/audit_config_drift.py",
