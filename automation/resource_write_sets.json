@@ -306,12 +306,13 @@
       "read_resources": [
         "sources/domain_sources.json",
         "sources/discovered_sources.json",
-        "$RUNNER_TEMP/source-handoff/<discovery-run>/sources/discovered_sources.json (exact verified predecessor artifact)"
+        "$RUNNER_TEMP/source-handoff/<discovery-run>/sources/discovered_sources.json (exact verified predecessor artifact)",
+        "AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT/sources/discovered_sources.json (current inventory preserved before historical-state restore)"
       ],
       "side_effects": [
         "Read-only lineage/reference audit; output is an audit report and does not promote source lineage to verified."
       ],
-      "evidence": "main() reads the active source registry and the exact verified Discovery artifact selected by resolve_source_artifacts.py when independent mode is enabled; otherwise it uses the repository baseline. It writes only reports/source-lineage-audit.json.",
+      "evidence": "main() reads the active source registry and the exact verified Discovery artifact selected by resolve_source_artifacts.py when independent mode is enabled; otherwise it uses the repository baseline. It writes only reports/source-lineage-audit.json. When monolithic Discovery has already been followed by historical-state restore, main() reads the current inventory from AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT instead of the restored baseline.",
       "lease_keys": [
         "logical/production-pipeline",
         "reports/source-lineage-audit.json"
@@ -354,12 +355,13 @@
         "reports/ruleset-config-conflict-sync.json",
         "rulesets/deletion_archive.json",
         "reports/lifecycle/latest.json",
-        "modules/uu.conf"
+        "modules/uu.conf",
+        "AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT/sources/discovered_sources.json (current inventory preserved before historical-state restore)"
       ],
       "side_effects": [
         "Read-only aggregation of production state; writes two dashboard/status report artifacts."
       ],
-      "evidence": "build_status() creates reports/ and directly writes project-status.json and project-status.md with Path.write_text.",
+      "evidence": "build_status() creates reports/ and directly writes project-status.json and project-status.md with Path.write_text. The discovery summary reads AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT when the current run's snapshot is available, avoiding a stale restored inventory.",
       "write_boundary_fencing": "The production audit job is read-only (contents:read). The publisher revalidates the exact Watchdog task and live resource lease, stages only the explicit ruleset publication allowlist, and is followed by independent remote ruleset verification. Repository-local filesystem mutations are not intercepted by a filesystem hook. Independent writers require separate ownership and lease proof.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
@@ -486,13 +488,14 @@
         "reports/source-lineage-audit.json",
         "$RUNNER_TEMP/source-handoff/<assessment-run>/data/source_assessments_runtime.json (exact verified Assessment artifact; preferred in independent mode)",
         "sources/discovered_sources.json (current run discovery inventory)",
-        "rulesets/source_candidate_registry.json (read-only durable cross-run assessment evidence)"
+        "rulesets/source_candidate_registry.json (read-only durable cross-run assessment evidence)",
+        "AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT/sources/discovered_sources.json (current inventory preserved before historical-state restore)"
       ],
       "side_effects": [
         "Builds non-activating source candidate matrix; no active source registry write.",
         "Merges current-run assessments with durable per-source assessment evidence from the ruleset candidate registry, restricted to URLs present in the current discovery inventory; it never writes the durable registry."
       ],
-      "evidence": "assessment_input_path() reads the current runner-local runtime assessment document or exact verified Assessment artifact. The builder also reads the current discovery inventory and the read-only rulesets/source_candidate_registry.json; it combines current successful results with prior per-source assessment evidence only for URLs still present in current discovery, with current results taking precedence. This allows independent publishers assessed in separate bounded batches to coexist in one candidate matrix while the activation stage rechecks current content SHA. It reads lineage and writes the candidate matrix.",
+      "evidence": "assessment_input_path() reads the current runner-local runtime assessment document or exact verified Assessment artifact. The builder also reads the current discovery inventory and the read-only rulesets/source_candidate_registry.json; it combines current successful results with prior per-source assessment evidence only for URLs still present in current discovery, with current results taking precedence. This allows independent publishers assessed in separate bounded batches to coexist in one candidate matrix while the activation stage rechecks current content SHA. It reads lineage and writes the candidate matrix. Current Discovery is read from AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT after historical-state restore, so new source URLs are not filtered against the prior run's inventory.",
       "write_boundary_fencing": "Exact source-candidate document lease and logical/production-pipeline serialize the shared logical document; report is run-local. Repository commits remain rulesets/** only.",
       "additional_serialized_writers": [],
       "additional_writer_boundary": "restore_automation_state may restore this file into the isolated audit workspace only; it is not published to the repository.",
@@ -611,7 +614,8 @@
         "sources/discovered_sources.json (monolithic checkout workspace only)",
         "reports/source-discovery.md (monolithic checkout workspace only)",
         "$AUTOMATION_ARTIFACT_ROOT/sources/discovered_sources.json",
-        "$AUTOMATION_ARTIFACT_ROOT/reports/source-discovery.md"
+        "$AUTOMATION_ARTIFACT_ROOT/reports/source-discovery.md",
+        "$RUNNER_TEMP/source-discovery-current/sources/discovered_sources.json and its adjacent manifest/shard set"
       ],
       "document_store": [
         "sources/discovered_sources.json",
@@ -619,7 +623,8 @@
       ],
       "dynamic_children": [
         "checkout workspace manifest/shards/staging under sources/discovered_sources.json",
-        "runner-local manifest/shards/staging under AUTOMATION_ARTIFACT_ROOT"
+        "runner-local manifest/shards/staging under AUTOMATION_ARTIFACT_ROOT",
+        "runner-local source-discovery-current manifest and content-addressed shards beneath RUNNER_TEMP"
       ],
       "read_resources": [
         "sources/external_intelligence_catalog.json",
@@ -627,9 +632,10 @@
       ],
       "side_effects": [
         "Bounded external discovery reads; no source activation.",
-        "Discovery inventory and report are written only under isolated RUNNER_TEMP and uploaded as an immutable Actions artifact; no repository file is modified."
+        "Discovery inventory and report are written only under isolated RUNNER_TEMP and uploaded as an immutable Actions artifact; no repository file is modified.",
+        "Before the later historical-state restore, preserves the exact current discovery document, manifest and shards beneath RUNNER_TEMP and exports AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT for downstream stages."
       ],
-      "evidence": "Independent workflow seeds the current main discovery document into an isolated RUNNER_TEMP workspace, runs discover_sources.py with AUTOMATION_ARTIFACT_ROOT, verifies producer identity and complete logical-document digest, then uploads the workspace as an immutable artifact.",
+      "evidence": "Independent workflow seeds the current main discovery document into an isolated RUNNER_TEMP workspace, runs discover_sources.py with AUTOMATION_ARTIFACT_ROOT, verifies producer identity and complete logical-document digest, then uploads the workspace as an immutable artifact. In monolithic mode, after the leased checkout write it copies the complete logical document (base/manifest/shards) into RUNNER_TEMP/source-discovery-current and exports AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT, so historical-state restore cannot replace the current discovery inventory used by later stages.",
       "write_boundary_fencing": "The monolithic workflow's exact resource leases cover checkout workspace outputs; independent discovery writes are confined to RUNNER_TEMP and verified before immutable artifact upload. Neither mode publishes discovery documents to the repository.",
       "ephemeral_outputs": [
         "GITHUB_STEP_SUMMARY (runner-local; warning path overwrites and success path appends)"
@@ -1063,7 +1069,8 @@
       "read_resources": [
         "verified AUTOMATION_SOURCE_DISCOVERY_ROOT/sources/discovered_sources.json",
         "rulesets/source_candidate_registry.json (prior durable registry)",
-        "data/source_assessments_runtime.json (current-run verified assessment output)"
+        "data/source_assessments_runtime.json (current-run verified assessment output)",
+        "AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT/sources/discovered_sources.json (current inventory preserved before historical-state restore)"
       ],
       "side_effects": [
         "Merges every discovered candidate repository and each supported rule-list URL into a durable non-activating registry.",
@@ -1071,7 +1078,7 @@
         "Writes only beneath rulesets/** and is published only by the existing single auto_sync publisher.",
         "Merges successful assessment content SHA, parser/policy metadata and truncated domain fingerprints into the matching discovered source-file records; preserves prior valid evidence on transient fetch errors and advances the assessment cursor."
       ],
-      "evidence": "main() reads schema-v1 legacy JSON or verifies the schema-v2 JSONL shard manifest and every shard SHA-256/count, merges stable repository/file identities, then merges current-run source assessment evidence from data/source_assessments_runtime.json. Per-source assessment records retain content SHA, parser/policy metadata and truncated domain fingerprints so the next production run can perform a true second observation. It writes the canonical logical document through json_document_store.write_document(force_sharded=True, compress_shards=True) with a 40,000,000-byte stored per-file and total cap and a 35,000,000-byte uncompressed shard target. The adjacent manifest is the atomic commit point; all base/manifest/shard/staging mutations are checked against the live resource lease.",
+      "evidence": "main() reads schema-v1 legacy JSON or verifies the schema-v2 JSONL shard manifest and every shard SHA-256/count, merges stable repository/file identities, then merges current-run source assessment evidence from data/source_assessments_runtime.json. Per-source assessment records retain content SHA, parser/policy metadata and truncated domain fingerprints so the next production run can perform a true second observation. It writes the canonical logical document through json_document_store.write_document(force_sharded=True, compress_shards=True) with a 40,000,000-byte stored per-file and total cap and a 35,000,000-byte uncompressed shard target. The adjacent manifest is the atomic commit point; all base/manifest/shard/staging mutations are checked against the live resource lease. Monolithic mode reads the exact runner-local current discovery snapshot exported by discover_sources.py, not the historical inventory restored later in the audit.",
       "write_boundary_fencing": "The script re-reads the durable queue and asserts the exact rulesets path; the existing Watchdog logical/production-pipeline resource fence is the covering lease. The auto_sync publisher stages rulesets/** only.",
       "additional_serialized_writers": [
         "script_restore_automation_state"
