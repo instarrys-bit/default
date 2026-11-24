@@ -78,6 +78,16 @@ def activate(registry: dict, matrix: dict, now: str | None = None) -> tuple[dict
         discovered_path = root / "sources/discovered_sources.json"
         if not discovered_path.exists() and not discovered_path.with_name(discovered_path.name + ".manifest.json").exists():
             raise FileNotFoundError("verified Discovery artifact is missing discovered_sources.json")
+    else:
+        current_root = os.environ.get("AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT", "").strip()
+        if current_root:
+            root = Path(current_root).resolve()
+            runner_temp = Path(os.environ.get("RUNNER_TEMP", tempfile.gettempdir())).resolve()
+            if not root.is_relative_to(runner_temp) or root == runner_temp:
+                raise ValueError("current monolithic Discovery snapshot must remain beneath RUNNER_TEMP")
+            discovered_path = root / "sources/discovered_sources.json"
+            if not discovered_path.exists() and not discovered_path.with_name(discovered_path.name + ".manifest.json").exists():
+                raise FileNotFoundError("current monolithic Discovery snapshot is missing discovered_sources.json")
     discovered_data = read_document(discovered_path, "candidates", {"candidates": []})
     discovered_by_repo = {str(x.get("repository", "")).lower(): x for x in discovered_data.get("candidates", [])}
     existing_publishers = {
