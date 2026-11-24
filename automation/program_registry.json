@@ -66,14 +66,15 @@
       "id": "script_assess_sources",
       "path": "scripts/assess_sources.py",
       "kind": "python_component",
-      "responsibility": "Bounded, non-activating assessment of discovered rule-list sources; progress is checkpointed through the durable task queue and all output documents remain runner-local immutable artifacts.",
+      "responsibility": "Bounded, non-activating assessment of discovered rule-list sources; reads durable cross-run fingerprints and cursor from the ruleset candidate registry, checkpoints independent-task progress through the durable queue, and keeps assessment outputs runner-local.",
       "capabilities": [
         "source_assessment"
       ],
       "invocation": "python_module_or_workflow_step",
       "inputs": [
         "sources/discovered_sources.json produced by script_discover_sources earlier in the same Production run",
-        "read-only sources/source_assessments.json baseline history"
+        "read-only sources/source_assessments.json baseline history",
+        "read-only rulesets/source_candidate_registry.json per-source assessment fingerprints, content SHA and cursor for cross-run stability checks"
       ],
       "outputs": [
         "stdout JSON: assessed, bytes_read, parser_candidates, policy_candidates, activated=0",
@@ -84,7 +85,7 @@
         "script_discover_sources"
       ],
       "dispatches": [],
-      "permission_boundary": "Runs as a same-run Production stage after source discovery. Reads the runner-local discovered source document and baseline; writes assessment outputs only in the isolated Production runner workspace. No independent workflow dispatch, source activation, or write to modules/uu.conf.",
+      "permission_boundary": "Runs as a same-run Production stage after source discovery. Reads the runner-local discovered source document, compact baseline and durable rulesets/source_candidate_registry.json assessment evidence; writes assessment outputs only in the isolated Production runner workspace. No independent workflow dispatch, source activation, registry write, or write to modules/uu.conf.",
       "health_check": "Invoked only as a same-run Production stage in monolithic_fallback mode; Production checks the assessor exit status and deterministic output report. No standalone Watchdog dispatch is authorized.",
       "orchestration": {
         "enabled": false,
@@ -895,24 +896,25 @@
       "id": "script_register_discovered_sources",
       "path": "scripts/register_discovered_sources.py",
       "kind": "python_component",
-      "responsibility": "Persist every discovered repository and each supported rule-list file as a durable non-activating candidate record.",
+      "responsibility": "Persist every discovered repository and supported rule-list file as a durable non-activating candidate record, including current assessment hashes, parser/policy metadata, domain fingerprints and the assessment cursor for the next run.",
       "capabilities": [
         "source_candidate_registration"
       ],
       "invocation": "python_module_or_workflow_step",
       "inputs": [
         "Exact verified source-discovery-output artifact (or explicit monolithic fallback inventory)",
-        "Prior rulesets/source_candidate_registry.json schema-v1 file or schema-v2 manifest and shards"
+        "Prior rulesets/source_candidate_registry.json schema-v1 file or schema-v2 manifest and shards",
+        "Current-run data/source_assessments_runtime.json output from the non-activating source assessor"
       ],
       "outputs": [
-        "rulesets/source_candidate_registry.json.manifest.json plus content-addressed JSONL shard files; no active source registry or policy rule set mutation"
+        "rulesets/source_candidate_registry.json.manifest.json plus content-addressed JSONL shard files containing discovery records and validated non-activating assessment evidence; no active source registry or policy rule set mutation"
       ],
       "depends_on": [
         "script_json_document_store",
         "script_resource_lease_runtime"
       ],
       "dispatches": [],
-      "permission_boundary": "Runs only inside the existing Watchdog-owned auto_sync audit. Writes only the canonical source-candidate registry and its adjacent manifest/content-addressed shards beneath rulesets/** through the existing JSON document store and live logical/production-pipeline fence. It cannot modify modules/uu.conf, sources/domain_sources.json, or DIRECT/PROXY/REJECT rules.",
+      "permission_boundary": "Runs only inside the existing Watchdog-owned auto_sync audit. Reads current-run assessment output and writes only the canonical source-candidate registry and its adjacent manifest/content-addressed shards beneath rulesets/** through the existing JSON document store and live logical/production-pipeline fence. It cannot modify modules/uu.conf, sources/domain_sources.json, or DIRECT/PROXY/REJECT rules.",
       "health_check": "Deterministic migration/idempotency/storage tests, verified Discovery provenance, stable repository+URL identity, per-file 40 MB shard bound, SHA-256/count verification, and successful auto_sync artifact/publication validation.",
       "orchestration": {
         "enabled": false,
