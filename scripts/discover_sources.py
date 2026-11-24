@@ -874,7 +874,9 @@ def persist_discovery_outputs(merged: dict) -> None:
         REPORT.write_text(render_report(merged), encoding="utf-8")
         runner_temp = os.environ.get("RUNNER_TEMP", "").strip()
         github_env = os.environ.get("GITHUB_ENV", "").strip()
-        if runner_temp and github_env:
+        if runner_temp and github_env and (
+            OUTPUT.exists() or OUTPUT.with_name(OUTPUT.name + ".manifest.json").exists()
+        ):
             preserve_current_discovery_snapshot(OUTPUT, Path(runner_temp), Path(github_env))
 
 
