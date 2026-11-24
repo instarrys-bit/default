@@ -244,9 +244,90 @@ def assessment_input_path() -> Path:
         raise FileNotFoundError("verified Assessment artifact is missing runtime assessment output")
     return runtime
 
+
+def merge_assessment_inventory(
+    current_assessments: dict, registry: dict, discovered_urls: set[str]
+) -> dict:
+    """Combine this run's assessments with durable evidence for current discovery URLs.
+
+    Stable observations from different production batches must coexist in the
+    candidate matrix; otherwise independent publishers assessed in separate runs
+    can never corroborate one another in the same activation decision.
+    """
+    if not isinstance(current_assessments, dict) or not isinstance(registry, dict):
+        raise ValueError("assessment inventory and source registry must be objects")
+    current = current_assessments.get("assessments", [])
+    source_files = registry.get("source_files", [])
+    repositories = registry.get("repositories", [])
+    if not isinstance(current, list) or not isinstance(source_files, list) or not isinstance(repositories, list):
+        raise ValueError("assessment inventory registry collections must be arrays")
+    repo_by_name = {
+        str(item.get("repository", "")).casefold(): item
+        for item in repositories if isinstance(item, dict) and item.get("repository")
+    }
+    merged = {}
+    for item in current:
+        if not isinstance(item, dict) or not isinstance(item.get("url"), str):
+            raise ValueError("current assessment contains a malformed source record")
+        if item.get("error") or item["url"] not in discovered_urls:
+            continue
+        merged[item["url"]] = dict(item)
+
+    for record in source_files:
+        if not isinstance(record, dict):
+            raise ValueError("durable source registry contains a malformed file record")
+        url = record.get("url")
+        if not isinstance(url, str) or url not in discovered_urls or url in merged:
+            continue
+        saved = record.get("assessment")
+        if not isinstance(saved, dict) or saved.get("url") != url:
+            continue
+        item = dict(saved)
+        repository = str(record.get("repository", item.get("repository", "")))
+        if not repository:
+            raise ValueError("durable source assessment is missing its publisher identity")
+        publisher = repo_by_name.get(repository.casefold(), {})
+        item["repository"] = repository
+        item["archived"] = bool(publisher.get("archived", False))
+        item["stars"] = max(0, int(publisher.get("stars", 0) or 0))
+        merged[url] = item
+
+    return {"assessments": [merged[url] for url in sorted(merged)]}
+
+
+def load_assessment_inventory() -> dict:
+    """Load current-run results plus durable stable assessments for this discovery."""
+    current = read_document(assessment_input_path(), "assessments", {"assessments": []})
+    supplied_discovery_root = os.environ.get("AUTOMATION_SOURCE_DISCOVERY_ROOT", "").strip()
+    if supplied_discovery_root:
+        discovery_root = Path(supplied_discovery_root).resolve()
+        runner_temp = Path(os.environ.get("RUNNER_TEMP", "/tmp")).resolve()
+        if not discovery_root.is_relative_to(runner_temp) or discovery_root == runner_temp:
+            raise ValueError("verified Discovery artifact root must remain beneath RUNNER_TEMP")
+        discovery_path = discovery_root / "sources/discovered_sources.json"
+    else:
+        discovery_path = ROOT / "sources/discovered_sources.json"
+    if not discovery_path.exists() and not discovery_path.with_name(discovery_path.name + ".manifest.json").exists():
+        raise FileNotFoundError("current Discovery document is missing while building the source candidate matrix")
+    discovery = read_document(discovery_path, "candidates", {"candidates": []})
+    discovered_urls = {
+        str(url)
+        for candidate in discovery.get("candidates", [])
+        if isinstance(candidate, dict)
+        for url in candidate.get("rule_list_urls", [])
+        if isinstance(url, str)
+    }
+
+    registry_path = ROOT / "rulesets/source_candidate_registry.json"
+    if not registry_path.exists() and not registry_path.with_name(registry_path.name + ".manifest.json").exists():
+        return merge_assessment_inventory(current, {}, discovered_urls)
+    from register_discovered_sources import decode_registry_storage
+    registry_payload = read_document(registry_path, "records", {"records": []})
+    registry = decode_registry_storage(registry_payload)
+    return merge_assessment_inventory(current, registry, discovered_urls)
+
 def main() -> int:
-    assessment_path = assessment_input_path()
-    assessments = read_document(assessment_path, "assessments", {"assessments": []})
+    assessments = load_assessment_inventory()
     lineage = json.loads(LINEAGE.read_text(encoding="utf-8"))
     result = build_matrix(assessments, lineage)
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
