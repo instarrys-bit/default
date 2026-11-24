@@ -205,8 +205,9 @@ def build_registry(existing: dict, discovery: dict, provenance: dict, now: str) 
         "latest_discovery": latest,
         "repository_count": len(ordered_repositories),
         "source_file_count": len(ordered_sources),
-        "pending_assessment_count": sum(1 for item in ordered_sources if item.get("assessment_status") == "PENDING"),
+        "pending_assessment_count": sum(1 for item in ordered_sources if item.get("assessment_status") in {"PENDING", "FETCH_ERROR"}),
         "discovery_fingerprint": fingerprint,
+        "latest_assessment": existing.get("latest_assessment"),
         "repositories": ordered_repositories,
         "source_files": ordered_sources,
         "policy_boundary": (
