@@ -3,7 +3,7 @@
   "contract_id": "capability-script-assess-sources-v1",
   "program_id": "script_assess_sources",
   "implementation_path": "scripts/assess_sources.py",
-  "implementation_blob_sha": "915b7b30ed08a0916bdd26773e2af74d9a1a1944",
+  "implementation_blob_sha": "1d7cdcc4cb1501818526c37d1ccce5b15450425a",
   "review_status": "reviewed_scoped_source_dag_enabled_pending_live_e2e",
   "dispatch_status": "enabled",
   "entrypoint": {
@@ -37,6 +37,13 @@
         "format": "JSON document or json_document_store sharded document",
         "collection_key": "assessments",
         "purpose": "read-only historical baseline for drift comparison"
+      },
+      {
+        "path": "rulesets/source_candidate_registry.json",
+        "mode": "read_only_durable_cross_run_assessment_history",
+        "format": "typed JSONL shards verified by adjacent manifest and per-shard SHA-256",
+        "collection_key": "records",
+        "purpose": "restore each source URL's previous content SHA, parser/policy metadata, domain fingerprints and assessment cursor for second-observation stability checks; assessor does not write this registry"
       }
     ],
     "remote_inputs": {
@@ -154,7 +161,8 @@
   "resource_contract": {
     "read_resources": [
       "sources/discovered_sources.json",
-      "sources/source_assessments.json"
+      "sources/source_assessments.json",
+      "rulesets/source_candidate_registry.json"
     ],
     "exclusive_write_resources": [],
     "lease_keys": [
@@ -162,7 +170,7 @@
       "logical/source-assessment-checkpoints"
     ],
     "dynamic_children_share_parent_lease": true,
-    "lock_scope_note": "The only shared mutation is the bounded per-URL assessment_checkpoint in automation/task_queue.json, updated through append-only snapshot CAS under the active task lease and both logical resource fences. The three assessment documents are isolated runner-local artifacts; no repository filesystem write or Contents API publication occurs. The exact discovered_sources predecessor digest is read from the verified external artifact root before and after execution.",
+    "lock_scope_note": "The only shared mutation is the bounded per-URL assessment_checkpoint in automation/task_queue.json, updated through append-only snapshot CAS under the active task lease and both logical resource fences. The three assessment documents are isolated runner-local artifacts; no repository filesystem write or Contents API publication occurs. The exact discovered_sources predecessor digest is read from the verified external artifact root before and after execution. The source candidate registry is read-only to the assessor; its assessment evidence is updated by the existing register_discovered_sources production stage under the same outer production fence.",
     "required_predecessor_artifacts": [
       "sources/discovered_sources.json"
     ],
