@@ -50,7 +50,7 @@
     },
     "task_result_verifier": {
       "path": "scripts/task_result_verifier.py",
-      "git_blob_sha": "a054209c30d5aeaa1bdb399b6f6782c926bf1b92"
+      "git_blob_sha": "5b16b99d57e013d4387a43de17efb1871206f3ce"
     },
     "assessment_checkpoint_contract": {
       "path": "automation/capability_contracts/assess_sources.json",
