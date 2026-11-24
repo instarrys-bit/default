@@ -242,7 +242,7 @@
       "worker_id": "45335536197"
     }
   },
-  "revision": 316,
+  "revision": 317,
   "schema_version": 1,
   "tasks": [
     {
@@ -5967,14 +5967,9 @@
         "production_reason": "current production input fingerprint differs from the last successful audit"
       },
       "last_error": {
-        "evidence": {
-          "dispatch_intent_persisted": false,
-          "owner_conclusion": "success",
-          "owner_run_id": 45335536197,
-          "owner_updated_at": "2026-11-24T05:46:14Z"
-        },
-        "message": "owning Watchdog run is terminal and no dispatch intent was persisted; no child workflow could have been submitted",
-        "type": "abandoned_watchdog_claim_before_dispatch"
+        "current_production_fingerprint": "046f6a01a5ce3bf24329f1e9964a9b3b00b7af4181ddd195922cada358196cf9",
+        "message": "Queued production task was cancelled before claim because its input fingerprint no longer matches current main.",
+        "type": "stale_production_input_superseded"
       },
       "lease": null,
       "max_attempts": 2,
@@ -6075,9 +6070,10 @@
         "QUEUED",
         "CLAIMED",
         "FAILED",
-        "QUEUED"
+        "QUEUED",
+        "CANCELLED"
       ],
-      "status": "QUEUED",
+      "status": "CANCELLED",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_489a8cabeeeb4e838f7e220c",
       "trace_id": "592c3abeee324540ae5132c40639f972"
