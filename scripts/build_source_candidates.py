@@ -298,7 +298,8 @@ def merge_assessment_inventory(
 def load_assessment_inventory() -> dict:
     """Load current-run results plus durable stable assessments for this discovery."""
     current = read_document(assessment_input_path(), "assessments", {"assessments": []})
-    supplied_discovery_root = os.environ.get("AUTOMATION_SOURCE_DISCOVERY_ROOT", "").strip()
+    supplied_discovery_root = (os.environ.get("AUTOMATION_CURRENT_SOURCE_DISCOVERY_ROOT", "").strip()
+                               or os.environ.get("AUTOMATION_SOURCE_DISCOVERY_ROOT", "").strip())
     if supplied_discovery_root:
         discovery_root = Path(supplied_discovery_root).resolve()
         runner_temp = Path(os.environ.get("RUNNER_TEMP", "/tmp")).resolve()
