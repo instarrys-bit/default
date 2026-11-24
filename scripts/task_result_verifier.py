@@ -197,6 +197,12 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
                 and isinstance(task.get("dispatch_intent"), dict)
                 and not isinstance(task.get("verification"), dict)
             )
+            or (
+                task.get("status") == "CLAIMED"
+                and task.get("dispatch_intent") is None
+                and task.get("result") is None
+                and not isinstance(task.get("verification"), dict)
+            )
         )
         and by_target.get(task.get("target_program_id"), {}).get("adapter_type") == "github_actions_workflow"
     ]
@@ -215,10 +221,59 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
                 intent = task.get("dispatch_intent") or task.get("result")
                 if (adapter.get("enabled") is not True
                         or adapter.get("interface_status") != "workflow_dispatch_reviewed"
-                        or not isinstance(adapter.get("workflow"), dict)
-                        or not isinstance(intent, dict)):
+                        or not isinstance(adapter.get("workflow"), dict)):
                     workflow_observations[task["task_id"]] = {
-                        "state": "error", "reason": "workflow adapter or persisted dispatch intent is not reviewable"
+                        "state": "error", "reason": "workflow adapter is not reviewable"
+                    }
+                    continue
+                if (task.get("status") == "CLAIMED"
+                        and task.get("dispatch_intent") is None
+                        and task.get("result") is None):
+                    # Dispatch intent is persisted before the GitHub API call. A
+                    # claimed task without one cannot have dispatched a child run.
+                    # Once its exact owning Watchdog run is terminal, release the
+                    # orphaned claim instead of holding the production fence for
+                    # the full six-hour lease.
+                    try:
+                        lease = task.get("lease") if isinstance(task.get("lease"), dict) else {}
+                        owner = lease.get("owner")
+                        if not isinstance(owner, str) or not owner.isdigit():
+                            raise ValueError("claimed task has no numeric owning Watchdog run")
+                        owner_run = workflow_client.get_run(int(owner))
+                        owner_updated = owner_run.get("updated_at")
+                        owner_terminal = (
+                            owner_run.get("status") == "completed"
+                            and owner_run.get("conclusion") in {"success", "failure", "cancelled", "timed_out"}
+                            and owner_run.get("head_branch") == "main"
+                            and owner_run.get("path") == ".github/workflows/automation-watchdog.yml"
+                            and isinstance(owner_updated, str)
+                        )
+                        if owner_terminal:
+                            completed_at = datetime.fromisoformat(owner_updated.replace("Z", "+00:00"))
+                            if (now - completed_at).total_seconds() >= 120:
+                                workflow_observations[task["task_id"]] = {
+                                    "state": "abandoned_before_dispatch",
+                                    "reason": "owning Watchdog run is terminal and no dispatch intent was persisted; no child workflow could have been submitted",
+                                    "owner_run_id": int(owner),
+                                    "owner_conclusion": owner_run.get("conclusion"),
+                                    "owner_updated_at": owner_updated,
+                                }
+                            else:
+                                workflow_observations[task["task_id"]] = {
+                                    "state": "pending", "reason": "owning Watchdog run is terminal but the two-minute reconciliation grace period has not elapsed"
+                                }
+                        else:
+                            workflow_observations[task["task_id"]] = {
+                                "state": "pending", "reason": "owning Watchdog run is not yet terminal"
+                            }
+                    except (WorkflowAPIError, ValueError, KeyError) as exc:
+                        workflow_observations[task["task_id"]] = {
+                            "state": "error", "reason": str(exc)[:1000]
+                        }
+                    continue
+                if not isinstance(intent, dict):
+                    workflow_observations[task["task_id"]] = {
+                        "state": "error", "reason": "workflow task has no persisted dispatch intent"
                     }
                     continue
                 try:
@@ -316,7 +371,15 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
                 and isinstance(task.get("dispatch_intent"), dict)
                 and not isinstance(task.get("verification"), dict)
             )
-            if status != "VERIFYING" and not has_recoverable_intent:
+            observation = workflow_observations.get(task.get("task_id"))
+            abandoned_before_dispatch = (
+                status == "CLAIMED"
+                and task.get("dispatch_intent") is None
+                and task.get("result") is None
+                and isinstance(observation, dict)
+                and observation.get("state") == "abandoned_before_dispatch"
+            )
+            if status != "VERIFYING" and not has_recoverable_intent and not abandoned_before_dispatch:
                 continue
             target = task.get("target_program_id")
             adapter = by_target.get(target)
@@ -326,6 +389,37 @@ def verify_pending_remote(store, registry: dict, adapters: dict,
 
             if adapter.get("adapter_type") == "github_actions_workflow":
                 observation = workflow_observations.get(task["task_id"])
+                if abandoned_before_dispatch:
+                    task["last_error"] = {
+                        "type": "abandoned_watchdog_claim_before_dispatch",
+                        "message": observation.get("reason"),
+                        "evidence": {
+                            "owner_run_id": observation.get("owner_run_id"),
+                            "owner_conclusion": observation.get("owner_conclusion"),
+                            "owner_updated_at": observation.get("owner_updated_at"),
+                            "dispatch_intent_persisted": False,
+                        },
+                    }
+                    if task.get("resource_lease", {}).get("status") == "ACTIVE":
+                        try:
+                            release_resource_leases_in_queue(queue, task, now)
+                        except ValueError:
+                            task["resource_lease"]["status"] = "LOST"
+                            task["resource_lease"]["lost_at"] = stamp(now)
+                    task["lease"] = None
+                    task["state_history"].append("FAILED")
+                    if task["attempts"] < task["max_attempts"]:
+                        task["status"] = "QUEUED"
+                        task["state_history"].append("QUEUED")
+                        task["not_before"] = stamp(now + timedelta(
+                            seconds=min(900, 30 * (2 ** max(0, task["attempts"] - 1)))
+                        ))
+                    else:
+                        task["status"] = "DEAD_LETTER"
+                        task["state_history"].append("DEAD_LETTER")
+                    rejected.append(task["task_id"])
+                    changed = True
+                    continue
                 if isinstance(observation, dict) and observation.get("state") == "stale":
                     workflow_contract = adapter.get("workflow", {})
                     contract_sha = hashlib.sha256(
