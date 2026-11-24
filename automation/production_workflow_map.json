@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
-  "workflow_blob_sha": "9580ad141542fdbc7c74b60b924c17e4909b910a",
+  "workflow_blob_sha": "54ee73a0abfcd72e2aa9453dd68ba7c51fd2b599",
   "registry_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 7,
-    "step_count": 59,
+    "step_count": 60,
     "independent_python_dispatch_enabled": false,
     "independent_workflow_count": 0,
     "workflow_count": 4,
@@ -98,128 +98,132 @@
           "order": 13
         },
         {
-          "name": "Preserve complete source assessment report",
+          "name": "Preserve verified assessment runtime for durable registry merge",
           "order": 14
         },
         {
-          "name": "Restore prior high-volume automation state",
+          "name": "Preserve complete source assessment report",
           "order": 15
         },
         {
-          "name": "Remove published and queued rules that conflict with uu.conf",
+          "name": "Restore prior high-volume automation state",
           "order": 16
         },
         {
-          "name": "Import observed request hostnames as unclassified candidates",
+          "name": "Remove published and queued rules that conflict with uu.conf",
           "order": 17
         },
         {
-          "name": "Audit public source lineage and shared upstreams",
+          "name": "Import observed request hostnames as unclassified candidates",
           "order": 18
         },
         {
-          "name": "Audit domain-level policy-source overlap and contradictions",
+          "name": "Audit public source lineage and shared upstreams",
           "order": 19
         },
         {
-          "name": "Build automated source candidate and lineage matrix",
+          "name": "Audit domain-level policy-source overlap and contradictions",
           "order": 20
         },
         {
-          "name": "Merge qualified discovered sources into the run-local production registry",
+          "name": "Build automated source candidate and lineage matrix",
           "order": 21
         },
         {
-          "name": "Collect and cross-check all enabled domain sources",
+          "name": "Merge qualified discovered sources into the run-local production registry",
           "order": 22
         },
         {
-          "name": "Stop stale audit before expensive deterministic review",
+          "name": "Collect and cross-check all enabled domain sources",
           "order": 23
         },
         {
-          "name": "Restore latest failed-run review checkpoint and delta journal",
+          "name": "Stop stale audit before expensive deterministic review",
           "order": 24
         },
         {
-          "name": "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services",
+          "name": "Restore latest failed-run review checkpoint and delta journal",
           "order": 25
         },
         {
-          "name": "Preserve resumable review cursor checkpoint",
+          "name": "Audit each domain: deduplicate, resolve conflicts, grade evidence and protect critical services",
           "order": 26
         },
         {
-          "name": "Build standalone DIRECT, PROXY and REJECT rule sets",
+          "name": "Preserve resumable review cursor checkpoint",
           "order": 27
         },
         {
-          "name": "Summarize REJECT secondary screening",
+          "name": "Build standalone DIRECT, PROXY and REJECT rule sets",
           "order": 28
         },
         {
-          "name": "Evaluate lifecycle milestones and monthly capacity review",
+          "name": "Summarize REJECT secondary screening",
           "order": 29
         },
         {
-          "name": "Run conservative lifecycle audit and selectable restoration",
+          "name": "Evaluate lifecycle milestones and monthly capacity review",
           "order": 30
         },
         {
-          "name": "Reconcile final uu.conf scope coverage after all rule mutations",
+          "name": "Run conservative lifecycle audit and selectable restoration",
           "order": 31
         },
         {
-          "name": "Reconcile final RULE-SET manifest counts",
+          "name": "Reconcile final uu.conf scope coverage after all rule mutations",
           "order": 32
         },
         {
-          "name": "Build append-only rule-level provenance ledger",
+          "name": "Reconcile final RULE-SET manifest counts",
           "order": 33
         },
         {
-          "name": "Validate Shadowrocket config structure",
+          "name": "Build append-only rule-level provenance ledger",
           "order": 34
         },
         {
-          "name": "Audit RULE-SET references against generated outputs (read-only)",
+          "name": "Validate Shadowrocket config structure",
           "order": 35
         },
         {
-          "name": "Audit candidate scope coverage against user config (read-only)",
+          "name": "Audit RULE-SET references against generated outputs (read-only)",
           "order": 36
         },
         {
-          "name": "Audit managed config drift (read-only)",
+          "name": "Audit candidate scope coverage against user config (read-only)",
           "order": 37
         },
         {
-          "name": "Run read-only full-source regression audit",
+          "name": "Audit managed config drift (read-only)",
           "order": 38
         },
         {
-          "name": "Build consolidated project status",
+          "name": "Run read-only full-source regression audit",
           "order": 39
         },
         {
-          "name": "Persist discovered source candidate registry (non-activating)",
+          "name": "Build consolidated project status",
           "order": 40
         },
         {
-          "name": "Write successful audit heartbeat",
+          "name": "Persist discovered source candidate registry (non-activating)",
           "order": 41
         },
         {
-          "name": "Record durable automation state pointer",
+          "name": "Write successful audit heartbeat",
           "order": 42
         },
         {
-          "name": "Package allowlisted audit outputs",
+          "name": "Record durable automation state pointer",
           "order": 43
         },
         {
-          "name": "Upload allowlisted audit outputs",
+          "name": "Package allowlisted audit outputs",
           "order": 44
+        },
+        {
+          "name": "Upload allowlisted audit outputs",
+          "order": 45
         }
       ]
     },
@@ -339,7 +343,7 @@
   ],
   "architecture_findings": [
     "The independent Source Discovery → Source Assessment DAG is active: both adapters are enabled and restricted to the Watchdog caller. Watchdog resolves the exact producer run, head SHA and immutable artifact digest, then deduplicates Assessment by exact predecessor run ID. The latest reconciliation verified Discovery run 42373818238 and its artifact; it found two historical Assessment tasks (one duplicate) and correctly suppressed a third enqueue because a verified Assessment already exists. A fresh one-to-one post-merge Assessment execution is still required.",
-    "Both source capabilities write only to isolated RUNNER_TEMP artifact roots; the main-branch source documents are read-only baselines.",
+    "The monolithic production workflow preserves the verified per-URL Assessment runtime, including its manifest and shard files, under RUNNER_TEMP before historical-state restoration. The registry writer consumes that exact snapshot, verifies every successful record was merged into rulesets/source_candidate_registry.json, and fails closed on missing or incomplete evidence.",
     "Assessment's only shared mutation is the per-URL task checkpoint in automation/task_queue.json, guarded by task lease and logical resource fences.",
     "The production publisher is the single controlled writer for the three policy outputs rulesets/direct.list, rulesets/proxy.list and rulesets/reject.list, together with their required manifest/lifecycle/queue metadata. This is a production-output boundary, not a system-wide automation write restriction. Watchdog queue/checkpoint state, immutable Actions artifacts and runner-local workspaces are inventoried separately; modules/uu.conf and user-managed module/JavaScript assets remain unwritable.",
     "Other non-dispatchable Python capabilities retain default-deny status until their own complete transitive side-effect and resource contracts are reviewed.",
@@ -355,7 +359,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
-    "release_manifest_blob_sha": "c573168174de6af8b1b461075bda3cb41990d871",
+    "release_manifest_blob_sha": "2bd7e717c06d1ed5336c08bd204c97cf8b7fcd11",
     "program_registry_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6",
     "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
     "note": "Descriptive only; no additional write/dispatch authorization. Production publication is rulesets/** only. modules/uu.conf may be edited manually by its owner or by AI for a specific explicitly user-authorized change; autonomous production automation and baseline metadata registration cannot write its content. File Management follows approved content changes through metadata-only SHA registration.",
