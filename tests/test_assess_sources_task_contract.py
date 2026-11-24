@@ -10,6 +10,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import assess_sources
 import task_scheduler
 import verify_assess_sources_artifacts
+import register_discovered_sources
 
 
 class CheckpointMemoryStore:
@@ -26,6 +27,80 @@ class CheckpointMemoryStore:
         if candidate != self.document:
             self.document = candidate
         return result
+
+
+
+class DurableSourceAssessmentRegistryTests(unittest.TestCase):
+    def test_registry_persists_fingerprints_and_second_observation_metadata(self):
+        url = "https://raw.githubusercontent.com/example/repo/main/clash-rules/domains.list"
+        registry = {
+            "schema_version": 1,
+            "repositories": [],
+            "source_files": [{
+                "source_id": "src_example",
+                "_registry_sequence": 0,
+                "repository": "example/repo",
+                "url": url,
+                "assessment_status": "PENDING",
+            }],
+        }
+        fingerprints = [f"{n:032x}" for n in range(100)]
+        runtime = {
+            "assessments": [{
+                "url": url,
+                "repository": "example/repo",
+                "sha256": "a" * 64,
+                "parser_candidate": "domain-only",
+                "parser_version": 2,
+                "exact_domain_count": 100,
+                "suffix_domain_count": 0,
+                "adblock_domain_count": 0,
+                "domain_only_count": 0,
+                "domain_fingerprints": fingerprints,
+                "policy_candidate": "DIRECT",
+                "policy_evidence": "README_policy_reference",
+                "readme_policy_claims": ["DIRECT"],
+                "drift": {"status": "baseline_initialized"},
+                "assessed_at": "2026-11-24T00:00:00Z",
+            }],
+            "next_cursor_url": url,
+            "batch_id": "2026-11-24T00:00:00Z",
+            "candidate_url_count": 1,
+        }
+        merged = register_discovered_sources.merge_assessment_results(
+            registry, runtime, "2026-11-24T00:01:00Z", "123456789"
+        )
+        record = merged["source_files"][0]
+        self.assertEqual(record["assessment_status"], "ASSESSED")
+        self.assertEqual(record["assessment"]["domain_fingerprints"], fingerprints)
+        self.assertEqual(record["assessment"]["sha256"], "a" * 64)
+        self.assertEqual(merged["latest_assessment"]["next_cursor_url"], url)
+        self.assertEqual(merged["pending_assessment_count"], 0)
+
+    def test_fetch_error_does_not_overwrite_last_valid_assessment(self):
+        url = "https://raw.githubusercontent.com/example/repo/main/rules.list"
+        previous = {
+            "url": url, "sha256": "b" * 64, "parser_candidate": "domain-only",
+            "domain_fingerprints": ["a" * 32],
+        }
+        registry = {
+            "source_files": [{
+                "source_id": "src_example", "_registry_sequence": 0,
+                "repository": "example/repo", "url": url,
+                "assessment_status": "ASSESSED", "assessment": previous,
+            }],
+            "repositories": [],
+        }
+        merged = register_discovered_sources.merge_assessment_results(
+            registry,
+            {"assessments": [{"url": url, "error": "temporary timeout"}]},
+            "2026-11-24T00:01:00Z",
+            "123456789",
+        )
+        record = merged["source_files"][0]
+        self.assertEqual(record["assessment"], previous)
+        self.assertEqual(record["assessment_status"], "ASSESSED")
+        self.assertEqual(record["last_assessment_attempt"]["status"], "FETCH_ERROR")
 
 
 class AssessSourcesTaskInputTests(unittest.TestCase):
