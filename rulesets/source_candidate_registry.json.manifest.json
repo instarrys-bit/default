@@ -3,40 +3,49 @@
   "format": "jsonl-gzip-shards-v1",
   "logical_path": "source_candidate_registry.json",
   "collection_key": "records",
-  "record_count": 49115,
-  "total_shard_bytes": 2710557,
-  "total_document_bytes": 2711581,
+  "record_count": 49608,
+  "total_shard_bytes": 4216629,
+  "total_document_bytes": 4218001,
   "max_file_bytes": 40000000,
   "max_uncompressed_file_bytes": 160000000,
   "max_total_bytes": null,
-  "shard_directory": "source_candidate_registry.json.parts-ab7aee5a3f245ada",
+  "shard_directory": "source_candidate_registry.json.parts-7741f61c088a77d0",
   "metadata": {
     "registry_type": "discovered_source_candidates_non_activating",
-    "updated_at": "2026-11-23T22:01:31.642706+00:00",
+    "updated_at": "2026-11-24T09:09:19.165566+00:00",
     "latest_discovery": {
       "workflow_name": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
-      "workflow_run_id": "45273163769",
-      "workflow_head_sha": "7bb9c492148b793ad4b2a384e9dac86b412ba66a",
-      "artifact_sha256": "773c2a124d638d6098fb9bc438b76a70c228e0495e8f48b249468ed16fdab037",
+      "workflow_run_id": "45359028158",
+      "workflow_head_sha": "7bfeedefc7a58d8a382d316e19fced6c0a363ccf",
+      "artifact_sha256": "a50df92bbbaced262f9ce3f803df7a8c2f8ebf29bd50d6d8df04b321dc98a2c1",
       "mode": "monolithic_fallback",
-      "recorded_at": "2026-11-23T22:01:31.642706+00:00"
+      "recorded_at": "2026-11-24T09:09:19.165566+00:00"
     },
-    "repository_count": 1651,
-    "source_file_count": 47464,
-    "pending_assessment_count": 47464,
-    "discovery_fingerprint": "0af2505eedc16f0b3058dc82916aa799e59893103cd20db98cc438fd9a3a889a",
-    "policy_boundary": "This is a discovery registration ledger only. It does not assign DIRECT/PROXY/REJECT, does not activate sources, and does not replace source assessment or rule-level review. External-intelligence observations are excluded from policy rule-source records.",
+    "repository_count": 1751,
+    "source_file_count": 47857,
+    "pending_assessment_count": 47775,
+    "discovery_fingerprint": "edbebf67b0ff454899d5dc0eca1fd6318866e0c6aa62ad0785a40e2888674589",
+    "latest_assessment": {
+      "workflow_run_id": "45359028158",
+      "updated_at": "2026-11-24T09:09:19.165566+00:00",
+      "assessed_this_run_count": 100,
+      "persisted_success_count": 82,
+      "next_cursor_url": "https://raw.githubusercontent.com/ZaunEkko/ekko-rules/main/generated/reversed-profile/Ruleset/adobe.list",
+      "batch_id": "2026-11-24T08:59:24.525713+00:00",
+      "candidate_url_count": 36320
+    },
+    "policy_boundary": "This is a discovery and non-activating assessment evidence registry. It stores content hashes, parser/policy metadata and truncated domain fingerprints only; it does not activate sources, authorize routing policy or replace rule-level review.",
     "schema_version": 2,
     "storage_format": "typed-jsonl-shards-v1",
-    "record_count": 49115
+    "record_count": 49608
   },
   "shards": [
     {
       "file": "part-000000.jsonl.gz",
-      "records": 49115,
-      "bytes": 2710557,
-      "sha256": "6b97b8f93e5a15ca64601a0ff7d43542cca9a96ee1fe8109099e90e5ebedfcc9",
-      "uncompressed_bytes": 41231637
+      "records": 49608,
+      "bytes": 4216629,
+      "sha256": "c4bbada1ba450f1960a1a02de5a1942f4a65d451fc6008d79a04b03ccae97519",
+      "uncompressed_bytes": 44281746
     }
   ]
 }

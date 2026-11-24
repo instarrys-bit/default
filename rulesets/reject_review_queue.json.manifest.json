@@ -9,11 +9,11 @@
   "max_file_bytes": 40000000,
   "max_uncompressed_file_bytes": 160000000,
   "max_total_bytes": null,
-  "shard_directory": "reject_review_queue.json.parts-3e46c45733784d63",
+  "shard_directory": "reject_review_queue.json.parts-1b9f1d7e3de37655",
   "metadata": {
     "schema_version": 1,
     "policy": "REJECT",
-    "updated_at": "2026-11-23T21:58:43.145835+00:00",
+    "updated_at": "2026-11-24T09:06:13.159679+00:00",
     "criteria": {
       "minimum_current_sources": 3,
       "minimum_independent_publishers": 2,

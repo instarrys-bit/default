@@ -106,7 +106,7 @@
       "lineage_status": "unverified",
       "upstream_repositories": [],
       "status": "STALE_QUARANTINED",
-      "error": "auto-johnshall-shadowrocket-adblock-rules-forever-4d665bed source drift exceeds automatic safety limit: 4611 added + 5211 removed = 9822; limit 5312",
+      "error": "auto-johnshall-shadowrocket-adblock-rules-forever-4d665bed source drift exceeds automatic safety limit: 4842 added + 5211 removed = 10053; limit 5312",
       "pending_confirmations": 1,
       "new_entries": 0,
       "removed_entries": 0,
@@ -115,7 +115,7 @@
     },
     {
       "id": "auto-johnshall-shadowrocket-adblock-rules-forever-68903a21",
-      "sha256": "dcea9428cfc01c572563fe2c12d7a966822e534083ae0db920fd991ec189f61d",
+      "sha256": "5e49f9ce4dde7ca8011d165d14667917309f9afb876432a8f257a98bf81c7545",
       "entries": 30192,
       "classification": "PROXY",
       "role": "primary_candidate_source",
@@ -255,7 +255,7 @@
         "zakird/crux-top-lists"
       ],
       "status": "STALE_QUARANTINED",
-      "error": "hagezi-domains-pro source drift exceeds automatic safety limit: 51512 added + 37943 removed = 89455; limit 22263",
+      "error": "hagezi-domains-pro source drift exceeds automatic safety limit: 55799 added + 39040 removed = 94839; limit 22263",
       "pending_confirmations": 1,
       "new_entries": 0,
       "removed_entries": 0,
