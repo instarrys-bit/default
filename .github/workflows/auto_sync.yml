@@ -632,6 +632,8 @@ jobs:
           python3 scripts/append_step_summary.py --input reports/project-status.md
 
       - name: Persist discovered source candidate registry (non-activating)
+        env:
+          AUTOMATION_REQUIRE_ASSESSMENT_MERGE: "1"
         run: python3 scripts/register_discovered_sources.py
 
       - name: Write successful audit heartbeat
