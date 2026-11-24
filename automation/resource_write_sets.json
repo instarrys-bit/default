@@ -484,12 +484,15 @@
         "data/source_assessments_runtime.json (preferred when present)",
         "sources/source_assessments.json (fallback)",
         "reports/source-lineage-audit.json",
-        "$RUNNER_TEMP/source-handoff/<assessment-run>/data/source_assessments_runtime.json (exact verified Assessment artifact; preferred in independent mode)"
+        "$RUNNER_TEMP/source-handoff/<assessment-run>/data/source_assessments_runtime.json (exact verified Assessment artifact; preferred in independent mode)",
+        "sources/discovered_sources.json (current run discovery inventory)",
+        "rulesets/source_candidate_registry.json (read-only durable cross-run assessment evidence)"
       ],
       "side_effects": [
-        "Builds non-activating source candidate matrix; no active source registry write."
+        "Builds non-activating source candidate matrix; no active source registry write.",
+        "Merges current-run assessments with durable per-source assessment evidence from the ruleset candidate registry, restricted to URLs present in the current discovery inventory; it never writes the durable registry."
       ],
-      "evidence": "assessment_input_path() uses AUTOMATION_SOURCE_ASSESSMENT_ROOT only when it resolves beneath RUNNER_TEMP, then reads the verified runtime assessment document; fallback remains the committed assessment history in monolithic mode. It reads lineage and writes the candidate matrix.",
+      "evidence": "assessment_input_path() reads the current runner-local runtime assessment document or exact verified Assessment artifact. The builder also reads the current discovery inventory and the read-only rulesets/source_candidate_registry.json; it combines current successful results with prior per-source assessment evidence only for URLs still present in current discovery, with current results taking precedence. This allows independent publishers assessed in separate bounded batches to coexist in one candidate matrix while the activation stage rechecks current content SHA. It reads lineage and writes the candidate matrix.",
       "write_boundary_fencing": "Exact source-candidate document lease and logical/production-pipeline serialize the shared logical document; report is run-local. Repository commits remain rulesets/** only.",
       "additional_serialized_writers": [],
       "additional_writer_boundary": "restore_automation_state may restore this file into the isolated audit workspace only; it is not published to the repository.",
