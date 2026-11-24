@@ -214,6 +214,44 @@ class TaskResultVerifierTests(unittest.TestCase):
         self.assertEqual(saved["last_error"]["type"], "abandoned_scheduler_run_dispatch_outcome_unknown")
         client.get_run.assert_called_once_with(12345)
 
+    def test_completed_watchdog_claim_without_dispatch_intent_is_requeued(self):
+        enqueue_remote({
+            "idempotency_key": "watchdog-claim-before-dispatch:test",
+            "requester_program_id": "script_requester",
+            "target_program_id": "workflow_auto_sync",
+            "capability": "production_sync",
+            "input": {},
+        }, self.store, self.registry, self.now)
+        task_id = self.store.document["tasks"][0]["task_id"]
+        claim_remote("12345", self.store, self.registry, eligible_task_ids={task_id}, now=self.now)
+        task = self.store.document["tasks"][0]
+        self.assertEqual(task["status"], "CLAIMED")
+        self.assertIsNone(task.get("dispatch_intent"))
+
+        adapters = {"schema_version": 1, "adapters": [{
+            "target_program_id": "workflow_auto_sync",
+            "adapter_type": "github_actions_workflow", "enabled": True,
+            "interface_status": "workflow_dispatch_reviewed",
+            "workflow": {"path": ".github/workflows/auto_sync.yml", "dispatchable": True},
+        }]}
+        client = Mock()
+        client.get_run.return_value = {
+            "status": "completed", "conclusion": "success", "head_branch": "main",
+            "path": ".github/workflows/automation-watchdog.yml",
+            "updated_at": "2026-11-03T03:57:00Z",
+        }
+        report = verify_pending_remote(
+            self.store, self.registry, adapters, self.now, workflow_client=client
+        )
+        saved = self.store.document["tasks"][0]
+        self.assertEqual(report["rejected"], [task_id])
+        self.assertEqual(saved["status"], "QUEUED")
+        self.assertIsNone(saved["lease"])
+        self.assertNotIn("dispatch_intent", saved)
+        self.assertEqual(saved["last_error"]["type"], "abandoned_watchdog_claim_before_dispatch")
+        self.assertFalse(saved["last_error"]["evidence"]["dispatch_intent_persisted"])
+        client.get_run.assert_called_once_with(12345)
+
     def test_failed_correlated_workflow_clears_claim_lease_before_requeue(self):
         enqueue_remote({
             "idempotency_key": "workflow-failure-lease:test",
