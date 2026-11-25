@@ -32,6 +32,8 @@ def validate_write_boundary(root: Path = ROOT) -> list[str]:
         errors.append("Storage Management still invokes an automatic baseline metadata writer")
     if re.search(r"(?m)^\s*git\s+(?:commit|push)\b", storage):
         errors.append("Storage Management contains a direct Git repository writer")
+    if "python3 scripts/verify_baseline.py --verify-registration" not in storage:
+        errors.append("Storage Management CI does not verify reviewed baseline metadata PRs")
     if "--apply" in baseline_script or "def apply_baseline_updates(" in baseline_script:
         errors.append("Baseline proposal tool still exposes repository-write capability")
     if "RUNNER_TEMP" not in baseline_script or "write_baseline_proposal" not in baseline_script:
