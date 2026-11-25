@@ -53,52 +53,13 @@
       "max_file_bytes": 1000000
     },
     "environment": {
-      "github_token_required": true,
-      "other_environment_inputs": "GitHub Contents API credential for append-only queue snapshots supplied by the parent scheduler to re-read live task/resource lease state before each write; no GitHub API write capability is used by the assessor."
+      "github_token_required": false,
+      "other_environment_inputs": "RUNNER_TEMP artifact root and the same-run discovery workspace only; the active assessor has no GitHub Contents API write capability and does not update task-queue checkpoints."
     },
     "task_input": {
-      "required": [
-        "max_urls",
-        "max_file_bytes",
-        "max_total_bytes",
-        "predecessor"
-      ],
-      "predecessor_proof": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "program_id",
-          "workflow_name",
-          "workflow_run_id",
-          "workflow_head_sha",
-          "artifact_path",
-          "artifact_sha256"
-        ],
-        "properties": {
-          "program_id": {
-            "type": "string",
-            "const": "script_discover_sources"
-          },
-          "workflow_name": {
-            "type": "string",
-            "const": "Shadowrocket Source Discovery (Watchdog)"
-          },
-          "workflow_run_id": {
-            "type": "string"
-          },
-          "workflow_head_sha": {
-            "type": "string"
-          },
-          "artifact_path": {
-            "type": "string",
-            "const": "sources/discovered_sources.json"
-          },
-          "artifact_sha256": {
-            "type": "string"
-          }
-        }
-      },
-      "note": "The scheduler validates the predecessor proof. workflow_run_id plus artifact_sha256 deterministically selects the same bounded URL batch on every retry. Each completed URL result, including its domain fingerprints and SHA-256 digest, is persisted immediately in the claimed task's assessment_checkpoint using the durable task queue's append-only repository JSON SHA-CAS queue under the live task/resource fencing proof; a retry restores completed results and fetches only incomplete or failed URLs. Legacy manual execution continues to use the persisted rotation cursor."
+      "required": [],
+      "predecessor_proof": null,
+      "note": "No independent task input is accepted in the active monolithic fallback. The typed predecessor is script_discover_sources within the same Auto Sync run; its runner-local discovered_sources artifact is digest-verified before assessment. The legacy independent task-input branch is dormant and has no enabled adapter or allowed caller."
     }
   },
   "outputs": {
@@ -227,9 +188,9 @@
     "The global transitive writer inventory for unrelated non-dispatchable capabilities and dynamic aliases remains partial; those capabilities remain deny-by-default."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "program_registry_blob_sha": "5105f2c04affc964b5b6caf1de09561c5f8ab644",
-    "execution_adapters_blob_sha": "dc058e31c9959bda6ffed7a25c38207c9ab0dc50",
+    "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
+    "program_registry_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6",
+    "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
     "added_after_release_baseline": true,
     "note": "The release manifest pins this contract's current blob; the contract intentionally does not reverse-pin the manifest to avoid a circular hash dependency. This is review provenance only."
   },
@@ -266,10 +227,5 @@
     "resume": "The next Auto Sync run reads the persisted registry cursor after the previous verified run. The active monolithic path has no per-URL task-queue checkpoint; failed/unverified runs must not advance the durable registry cursor.",
     "remote_fetches_may_repeat": true,
     "repository_writes": "Assessment artifacts are runner-local. Only script_register_discovered_sources updates rulesets/source_candidate_registry.json under the active production lease."
-  },
-  "task_input": {
-    "required": [],
-    "predecessor_proof": null,
-    "note": "No independent task input is accepted in the active monolithic fallback. The typed predecessor is script_discover_sources within the same Auto Sync run; its runner-local discovered_sources artifact is digest-verified before assessment. The legacy independent task-input branch is dormant and has no enabled adapter or allowed caller."
   }
 }

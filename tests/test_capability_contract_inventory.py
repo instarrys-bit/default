@@ -110,7 +110,13 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertFalse(adapter["enabled"])
         self.assertEqual(adapter["allowed_callers"], [])
         self.assertNotIn("Shadowrocket Source Discovery (Watchdog)", json.dumps(contract))
-        self.assertIn("no per-URL task_checkpoint", json.dumps(contract).lower())
+        self.assertEqual(contract["inputs"]["task_input"]["required"], [])
+        self.assertIsNone(contract["inputs"]["task_input"]["predecessor_proof"])
+        self.assertIn("no per-url task.assessment_checkpoint", json.dumps(contract).lower())
+        release = read_json("automation/release_manifest.json")
+        self.assertEqual(contract["review_context"]["release_id"], release["release_id"])
+        self.assertEqual(contract["review_context"]["program_registry_blob_sha"], blob_sha("automation/program_registry.json"))
+        self.assertEqual(contract["review_context"]["execution_adapters_blob_sha"], blob_sha("automation/execution_adapters.json"))
 
     def test_capability_inventory_does_not_claim_active_assessment_queue_checkpoint(self):
         inventory = read_json("automation/capability_contract_inventory.json")
@@ -143,6 +149,11 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(release["implementation_pins"]["execution_adapters"]["git_blob_sha"], blob_sha("automation/execution_adapters.json"))
         self.assertEqual(release["implementation_pins"]["storage_management_workflow"]["git_blob_sha"], blob_sha(".github/workflows/storage-management.yml"))
         self.assertEqual(release["implementation_pins"]["storage_auto_sync_recovery_verifier"]["git_blob_sha"], blob_sha("storage/v2/verify_auto_sync_recovery.py"))
+        self.assertEqual(release["implementation_pins"]["assessment_checkpoint_contract"]["git_blob_sha"], blob_sha("automation/capability_contracts/assess_sources.json"))
+        self.assertEqual(release["implementation_pins"]["capability_contract_inventory"]["git_blob_sha"], blob_sha("automation/capability_contract_inventory.json"))
+        self.assertEqual(release["implementation_pins"]["resource_ownership_audit"]["git_blob_sha"], blob_sha("automation/resource_ownership_audit.json"))
+        self.assertEqual(read_json("automation/resource_write_sets.json")["review_context"]["release_manifest_blob_sha"], blob_sha("automation/release_manifest.json"))
+        self.assertEqual(read_json("automation/production_workflow_map.json")["review_context"]["release_manifest_blob_sha"], blob_sha("automation/release_manifest.json"))
         self.assertTrue(release["execution_policy"]["existing_adapter_enablement_unchanged"])
 
     def test_adapter_enablement_matches_registry_and_default_deny(self):
