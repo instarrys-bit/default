@@ -282,5 +282,40 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(writes["direct_mutation_scan"]["registered_component_count"], len(python_ids))
 
 
+    def test_active_write_inventories_match_monolithic_four_workflow_topology(self):
+        release = read_json("automation/release_manifest.json")
+        mapping = read_json("automation/production_workflow_map.json")
+        writes = read_json("automation/resource_write_sets.json")
+        audit = read_json("automation/resource_ownership_audit.json")
+
+        self.assertEqual(release["execution_policy"]["source_discovery_mode"], "monolithic_fallback")
+        self.assertEqual(release["execution_policy"]["independent_python_dispatch"], "disabled")
+        self.assertEqual(mapping["independent_dags"], [])
+        dispatch = writes["policy"]["dispatch"].lower()
+        self.assertIn("monolithic", dispatch)
+        self.assertIn("disabled", dispatch)
+        self.assertNotIn("reviewed independent source discovery", dispatch)
+
+        active_inventory = json.dumps({"writes": writes, "audit": audit}, sort_keys=True)
+        for retired_workflow in (
+            "workflow_source_discovery",
+            "workflow_queue_snapshot_artifact",
+            "workflow_storage_incident_management",
+            "workflow_self_healing_agent",
+        ):
+            self.assertNotIn(retired_workflow, active_inventory)
+
+        groups = {item["id"]: item for item in audit["resource_groups"]}
+        source = groups["monolithic_source_assessment_pipeline"]
+        self.assertEqual(source["status"], "same_run_stage_no_independent_dispatch")
+        self.assertIn("workflow_auto_sync", source["known_writers"])
+        self.assertIn("script_discover_sources", source["known_writers"])
+        self.assertIn("script_assess_sources", source["known_writers"])
+
+        incident = groups["storage_incident_ledger"]
+        self.assertIn("workflow_storage_management", incident["known_writers"])
+        self.assertNotIn("workflow_storage_incident_management", incident["known_writers"])
+
+
 if __name__ == "__main__":
     unittest.main()
