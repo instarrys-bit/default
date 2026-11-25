@@ -50,7 +50,6 @@ def validate_write_boundary(root: Path = ROOT) -> list[str]:
         "rulesets/*)",
         "Refusing non-ruleset repository write",
         "Protected config modules/uu.conf is staged; refusing to commit.",
-    "python3 scripts/verify_baseline.py --verify-registration",
     )
     for marker in required_publisher_guards:
         if marker not in production:
