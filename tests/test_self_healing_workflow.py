@@ -76,9 +76,11 @@ class UnifiedAutomationArchitectureTests(unittest.TestCase):
             self.assertNotIn("modules/uu.conf", entry.get("writes", []))
             self.assertNotIn("modules/uu.conf", entry.get("publish_resources", []))
         baseline = (ROOT / "scripts" / "register_config_baseline.py").read_text(encoding="utf-8")
-        self.assertIn("config.read_bytes() != original", baseline)
-        self.assertIn("ALLOWLIST", baseline)
-        self.assertIn("reconcile-config-baseline:", STORAGE.read_text(encoding="utf-8"))
+        self.assertIn("write_baseline_proposal", baseline)
+        self.assertIn("RUNNER_TEMP", baseline)
+        self.assertNotIn("--apply", baseline)
+        self.assertNotIn("reconcile-config-baseline:", STORAGE.read_text(encoding="utf-8"))
+        self.assertNotIn("publish_config_baseline_metadata.sh", STORAGE.read_text(encoding="utf-8"))
 
     def test_failed_review_cursor_is_retained_as_an_immutable_artifact(self):
         workflow = AUTO_SYNC.read_text(encoding="utf-8")
