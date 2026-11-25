@@ -1368,7 +1368,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
-    "release_manifest_blob_sha": "15bf5bef1987d615dee06d869d817d2179a8b688",
+    "release_manifest_blob_sha": "69aca21d7e9ca4861d5b1104315be4dd3f8c9c56",
     "program_registry_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6",
     "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
     "note": "Static entrypoint inventory for registered Python components and workflow-native write sites. It is not a complete transitive/runtime trace; remaining gaps are enumerated in not_yet_proven. No automated repository SHA inventory or baseline metadata writer is authorized. Production publisher write scope remains rulesets/**; modules/uu.conf remains read-only."
