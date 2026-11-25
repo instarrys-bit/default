@@ -105,20 +105,21 @@
         "script_discover_sources"
       ],
       "current_registry_inputs": [
-        "Verified runner-local sources/discovered_sources.json artifact from the exact successful discovery run",
+        "Same-run runner-local sources/discovered_sources.json output from script_discover_sources, verified by its exact logical-document SHA-256",
         "Read-only sources/source_assessments.json baseline history",
-        "validated bounded task input: max_urls (1-20), max_file_bytes (1-1000000), max_total_bytes (1-10000000)"
+        "Read-only rulesets/source_candidate_registry.json durable fingerprints and cursor",
+        "Bounded monolithic batch: max_urls 100, max_file_bytes 1000000, max_total_bytes 10000000"
       ],
       "current_registry_outputs": [
         "stdout JSON: assessed, bytes_read, parser_candidates, policy_candidates, activated=0, artifact_verification",
-        "runner-local source_assessment history/runtime/report uploaded as immutable Actions artifact; no repository publication",
-        "automation/task_queue.json task.assessment_checkpoint: per-URL result and fingerprint checkpoint (durable CAS state)"
+        "Runner-local assessment history/runtime/report uploaded as an immutable Actions artifact after independent artifact verification; no repository publication",
+        "No automation/task_queue.json task.assessment_checkpoint in monolithic fallback; script_register_discovered_sources merges verified runtime into rulesets/source_candidate_registry.json under the production lease"
       ],
-      "current_invocation": "python_module_or_workflow_step",
+      "current_invocation": "same_run_auto_sync_stage",
       "contract_status": "monolithic_fallback_non_dispatchable",
       "dispatch_status": "disabled",
       "missing_contract_fields": [],
-      "audit_note": "The current production topology is monolithic_fallback: Auto Sync performs discovery and assessment in one bounded workflow. The independent Assessment adapter and Watchdog task dispatch remain disabled until the durable multi-batch artifact/cursor chain is independently verified. Do not infer independent dispatch from the historical V1 contract.",
+      "audit_note": "The active production topology is monolithic_fallback: Auto Sync performs discovery and assessment in one bounded workflow. The independent Assessment adapter is disabled with no allowed callers; the legacy task-checkpoint branch is dormant. Cursor-driven continuation and multiple consecutive live batches remain unverified.",
       "contract_sample_path": "automation/capability_contracts/assess_sources.json"
     },
     {

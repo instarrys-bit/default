@@ -250,7 +250,7 @@
       ],
       "lease_key": "github-contents-cas:automation/task_queue.json",
       "status": "active_storage_management_json_sha_cas",
-      "note": "The live queue is the repository JSON file automation/task_queue.json. Storage Management uses Contents Blob SHA-CAS and read-after-write verification; task/resource leases and assessment checkpoints share this revisioned document. No Issue comment chain is used.",
+      "note": "The live queue is automation/task_queue.json. Storage Management uses Contents Blob SHA-CAS and read-after-write verification. Active clients are scheduler/Watchdog/resource-lease components; the legacy Assessment checkpoint path is dormant and non-dispatchable.",
       "known_writers": [
         "storage_queue_store"
       ],
@@ -260,8 +260,10 @@
         "script_remote_task_queue_runtime",
         "script_resource_lease_runtime",
         "script_task_scheduler",
-        "workflow_automation_watchdog",
-        "script_assess_sources"
+        "workflow_automation_watchdog"
+      ],
+      "dormant_clients": [
+        "script_assess_sources (legacy independent checkpoint branch; adapter disabled, no allowed callers)"
       ]
     },
     {
@@ -274,13 +276,9 @@
       ],
       "lock_key": "contents-cas:automation/task_queue.json + logical/production-pipeline + logical/source-assessment-checkpoints + logical/source-dag-supervision",
       "required_mode": "repository_json_contents_sha_cas_with_live_task_and_resource_fences",
-      "status": "bounded_task_checkpoint_fenced",
-      "note": "Per-URL results are stored only in the currently claimed task's assessment_checkpoint within automation/task_queue.json. Storage Management validates task identity, active task lease, exact predecessor run/digest and resource fencing tokens before SHA-CAS update.",
-      "clients": [
-        "script_assess_sources",
-        "script_remote_task_queue_runtime",
-        "workflow_automation_watchdog"
-      ]
+      "status": "dormant_non_dispatchable",
+      "note": "Potential legacy resource only. Current production_control.source_discovery_mode is monolithic_fallback, the script_assess_sources adapter is disabled with no allowed callers, and the Auto Sync workflow does not invoke the per-URL task checkpoint path. Do not count this as an active writer or dispatch edge.",
+      "clients": []
     },
     {
       "id": "independent_source_dag_supervision",
@@ -552,10 +550,10 @@
       "known_writers": [
         "script_assess_sources"
       ],
-      "lock_key": "logical/production-pipeline + logical/source-assessment-checkpoints + logical/source-dag-supervision + exact assessment output resource keys in monolithic mode; per-run RUNNER_TEMP isolation in independent mode",
+      "lock_key": "logical/production-pipeline + isolated per-run RUNNER_TEMP artifact workspace",
       "required_mode": "isolated_per_run_artifact_workspace",
-      "status": "active_runner_local_artifacts_and_fenced_repository_json_checkpoint",
-      "note": "Independent assessment JSON and report are per-run RUNNER_TEMP artifacts. Watchdog adds a provenance proof binding the exact Assessment task, verified Discovery predecessor, producer workflow run/head SHA and every artifact file digest before immutable upload. Production independently resolves and verifies that artifact; only the bounded task assessment_checkpoint is shared through automation/task_queue.json CAS. No assessment document is committed or published."
+      "status": "active_runner_local_artifacts_no_shared_queue_checkpoint",
+      "note": "In the active monolithic fallback, script_assess_sources writes only runner-local history/runtime/report artifacts. The exact same-run discovery artifact is digest-verified; script_register_discovered_sources later updates rulesets/source_candidate_registry.json under the production lease. No per-URL task checkpoint is written to automation/task_queue.json."
     },
     {
       "id": "source_candidate_artifacts",

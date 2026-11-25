@@ -94,18 +94,14 @@
       ],
       "side_effects": [
         "HTTPS reads restricted to raw.githubusercontent.com with repository binding and same-host redirect validation.",
-        "Per-URL results are CAS-appended to automation/task_queue.json task.assessment_checkpoint under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences.",
-        "Reads prior per-URL content SHA, parser/policy metadata, domain fingerprints and assessment cursor from rulesets/source_candidate_registry.json; it never writes that registry."
+        "Active monolithic mode writes only runner-local assessment history/runtime/report artifacts; it does not mutate automation/task_queue.json.",
+        "The legacy independent task-input branch can conditionally CAS-append per-URL assessment_checkpoint data to automation/task_queue.json, but this branch is dormant because the adapter is disabled and has no allowed callers."
       ],
-      "evidence": "Independent task mode resolves the discovery predecessor from AUTOMATION_PREDECESSOR_ARTIFACT_ROOT and writes runtime/history/report documents only beneath AUTOMATION_ARTIFACT_ROOT. Monolithic mode reads the same durable, read-only per-source assessment fingerprints and cursor from rulesets/source_candidate_registry.json. write_document uses no repository resource lease because the assessment output is runner-local. Shared independent-task progress is written only through the fenced automation/task_queue.json CAS.",
+      "evidence": "Current Auto Sync invokes the assessor as a same-run stage without --task-input; its active writes are runner-local artifacts. The separate task checkpoint implementation remains a dormant conditional code path with no enabled adapter or allowed caller. The registry writer, not the assessor, updates rulesets/source_candidate_registry.json under the outer production fence.",
       "lease_keys": [
-        "logical/production-pipeline",
-        "sources/source_assessments.json",
-        "data/source_assessments_runtime.json",
-        "reports/source-assessment.md",
-        "logical/source-assessment-checkpoints"
+        "logical/production-pipeline"
       ],
-      "lease_enforcement": "The durable per-URL checkpoint is updated via append-only automation/task_queue.json CAS under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences. The 3600-second resource lease exceeds four 15-minute Watchdog reconciliation intervals; pending verification renews it before expiry. All assessment JSON and reports remain per-run immutable artifacts.",
+      "lease_enforcement": "The active monolithic stage is covered by the enclosing production-pipeline lease and writes only runner-local artifacts. The legacy task-checkpoint branch would require the task lease plus logical/source-assessment-checkpoints and logical/production-pipeline fences, but it is not an active writer.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [
         "sources/source_assessments.json (monolithic checkout workspace only)",
@@ -119,7 +115,14 @@
       "publication": "No repository publication for assessment artifacts; monolithic report is retained only as a run artifact, independent mode uploads immutable runner-local outputs. Production Git commits remain restricted to rulesets/**.",
       "write_boundary_fencing": "Assessment output documents remain isolated per-run artifacts. The monolithic workflow copies the verified runtime document, manifest and shard set into RUNNER_TEMP before historical-state restoration; script_register_discovered_sources consumes that exact snapshot and must fail closed if it is missing. The durable rulesets/source_candidate_registry.json is read-only to this component and is updated only by script_register_discovered_sources under the existing production-pipeline and logical-document lease.",
       "additional_serialized_writers": [],
-      "additional_writer_boundary": "Restore/publish paths do not publish source assessment history or reports to the repository; only the ruleset publisher may commit rulesets/**."
+      "additional_writer_boundary": "Restore/publish paths do not publish source assessment history or reports to the repository; only the ruleset publisher may commit rulesets/**.",
+      "dormant_side_effects": [
+        "automation/task_queue.json task.assessment_checkpoint via Contents API SHA-CAS"
+      ],
+      "dormant_lease_keys": [
+        "logical/source-assessment-checkpoints",
+        "logical/source-dag-supervision"
+      ]
     },
     {
       "program_id": "script_audit_config_drift",
@@ -1138,13 +1141,15 @@
       "lock_key": "contents-cas:automation/task_queue.json",
       "mode": "compare_and_swap",
       "enforcement": "Storage Management reads the current Contents Blob SHA and logical revision, validates task/resource fencing, conditionally writes the next revision, then verifies the persisted document and new blob SHA. Stale SHA/409 conflicts fail closed and are retried only within the bounded store retry policy.",
-      "note": "automation/task_queue_rebuild_seed.json is the read-only bootstrap. The live queue, assessment checkpoints and resource leases are a single repository JSON document owned by Storage Management; no Issue comments or Issue API are used.",
+      "note": "automation/task_queue.json is owned by Storage Management Contents API SHA-CAS. Active clients are the scheduler, Watchdog and resource-lease runtime; the legacy independent Assessment checkpoint path is dormant and non-dispatchable.",
       "clients": [
         "script_remote_task_queue_runtime",
         "script_resource_lease_runtime",
         "script_task_scheduler",
-        "workflow_automation_watchdog",
-        "script_assess_sources"
+        "workflow_automation_watchdog"
+      ],
+      "dormant_clients": [
+        "script_assess_sources (legacy independent mode; adapter disabled, no allowed callers)"
       ]
     },
     {
@@ -1374,10 +1379,10 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
-    "release_manifest_blob_sha": "cccda6f57728b301908d03fd834e9e93f93f5ebe",
+    "release_manifest_blob_sha": "0de97a3ce30ad54b44085eefe2f904c8bd03ee78",
     "program_registry_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6",
     "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
-    "note": "Static inventory of all registered Python components and workflow-native write sites. File Management is the sole repository SHA inventory writer; production publisher write scope remains rulesets/**. The REJECT manual-approval ledger in production_control.json is read-only input; modules/uu.conf remains read-only."
+    "note": "Static inventory of all registered Python components and workflow-native write sites. No automated repository SHA inventory or baseline metadata writer is authorized; baseline observation produces a runner-local proposal only and approved Blob SHA/Release changes require a separately reviewed PR. Production publisher write scope remains rulesets/**; modules/uu.conf remains read-only."
   },
   "scheduler_lock_contract": {
     "logical_resource_key": "logical/production-pipeline",

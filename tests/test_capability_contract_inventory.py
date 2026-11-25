@@ -95,13 +95,45 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertIn("reports/project-status.md", entry["writes"])
         self.assertEqual(group["status"], "runner_local_artifacts_no_repository_publication")
 
-    def test_assessment_contract_declares_the_discovery_predecessor(self):
+    def test_assessment_contract_declares_same_run_predecessor_and_disabled_dispatch(self):
         registry = read_json("automation/program_registry.json")
+        adapters = read_json("automation/execution_adapters.json")
         contract = read_json("automation/capability_contracts/assess_sources.json")
         program = next(x for x in registry["programs"] if x["id"] == "script_assess_sources")
+        adapter = next(x for x in adapters["adapters"] if x["target_program_id"] == "script_assess_sources")
         self.assertIn("script_discover_sources", program["depends_on"])
         self.assertEqual(contract["dependency_edges"]["registry_dependency_program_id"], "script_discover_sources")
         self.assertEqual(contract["dependency_edges"]["required_predecessor_artifact"], "sources/discovered_sources.json")
+        self.assertEqual(contract["dependency_edges"]["edge_semantics"], "same_run_stage_with_verified_runner_local_artifact")
+        self.assertEqual(contract["dispatch_status"], "disabled")
+        self.assertFalse(contract["entrypoint"]["task_scheduler_compatible"])
+        self.assertFalse(adapter["enabled"])
+        self.assertEqual(adapter["allowed_callers"], [])
+        self.assertNotIn("Shadowrocket Source Discovery (Watchdog)", json.dumps(contract))
+        self.assertIn("no per-URL task_checkpoint", json.dumps(contract).lower())
+
+    def test_capability_inventory_does_not_claim_active_assessment_queue_checkpoint(self):
+        inventory = read_json("automation/capability_contract_inventory.json")
+        assessor = next(x for x in inventory["programs"] if x["id"] == "script_assess_sources")
+        outputs = " ".join(assessor["current_registry_outputs"]).lower()
+        self.assertIn("no automation/task_queue.json", outputs)
+        self.assertIn("monolithic_fallback_non_dispatchable", assessor["contract_status"])
+        self.assertEqual(assessor["dispatch_status"], "disabled")
+
+    def test_production_workflow_map_describes_monolithic_fallback_not_active_dag(self):
+        mapping = read_json("automation/production_workflow_map.json")
+        findings = " ".join(mapping["architecture_findings"]).lower()
+        self.assertIn("monolithic fallback", findings)
+        self.assertIn("independent", findings)
+        self.assertIn("disabled", findings)
+        self.assertNotIn("both adapters are enabled", findings)
+        self.assertEqual(mapping["independent_dags"], [])
+
+    def test_assessment_queue_checkpoint_is_dormant_in_resource_ownership_audit(self):
+        audit = read_json("automation/resource_ownership_audit.json")
+        group = next(x for x in audit["resource_groups"] if x["id"] == "independent_source_assessment_queue_checkpoint")
+        self.assertEqual(group["status"], "dormant_non_dispatchable")
+        self.assertEqual(group["clients"], [])
 
     def test_release_manifest_pins_current_registry_and_adapter_blobs(self):
         release = read_json("automation/release_manifest.json")

@@ -342,13 +342,13 @@
     }
   ],
   "architecture_findings": [
-    "The independent Source Discovery → Source Assessment DAG is active: both adapters are enabled and restricted to the Watchdog caller. Watchdog resolves the exact producer run, head SHA and immutable artifact digest, then deduplicates Assessment by exact predecessor run ID. The latest reconciliation verified Discovery run 42373818238 and its artifact; it found two historical Assessment tasks (one duplicate) and correctly suppressed a third enqueue because a verified Assessment already exists. A fresh one-to-one post-merge Assessment execution is still required.",
-    "The monolithic production workflow preserves the verified per-URL Assessment runtime, including its manifest and shard files, under RUNNER_TEMP before historical-state restoration. The registry writer consumes that exact snapshot, verifies every successful record was merged into rulesets/source_candidate_registry.json, and fails closed on missing or incomplete evidence.",
-    "Assessment's only shared mutation is the per-URL task checkpoint in automation/task_queue.json, guarded by task lease and logical resource fences.",
-    "The production publisher is the single controlled writer for the three policy outputs rulesets/direct.list, rulesets/proxy.list and rulesets/reject.list, together with their required manifest/lifecycle/queue metadata. This is a production-output boundary, not a system-wide automation write restriction. Watchdog queue/checkpoint state, immutable Actions artifacts and runner-local workspaces are inventoried separately; modules/uu.conf and user-managed module/JavaScript assets remain unwritable.",
-    "Other non-dispatchable Python capabilities retain default-deny status until their own complete transitive side-effect and resource contracts are reviewed.",
-    "Daily Discovery idempotency now fingerprints the producer, Watchdog handoff, durable queue, scheduler, fencing, Assessment, verifier and their active contracts; changes in the DAG receive a new same-day task key without weakening per-revision deduplication.",
-    "Watchdog queue reads and task supervision are serialized per main branch to reduce GitHub Contents API rate-limit pressure; the append-only queue remains authoritative, short retry backoffs receive a bounded in-run scheduler wake, and the 15-minute schedule remains the long-delay recovery fallback. Discovery and Assessment are also serialized by the shared logical/source-dag-supervision lease acquired atomically with task claim and held through verification."
+    "The active topology is a four-workflow monolithic fallback. Auto Sync runs source discovery and source assessment as ordered stages in one bounded workflow; the independent script_assess_sources adapter is disabled with no allowed callers.",
+    "script_discover_sources produces a same-run runner-local discovered_sources artifact. script_assess_sources consumes that exact artifact after digest verification, assesses at most 100 URLs per run with a 1 MB per-URL and 10 MB aggregate cap, and keeps activation_count at zero.",
+    "Assessment history, runtime and report are runner-local immutable artifacts. script_register_discovered_sources merges only verified assessment results into rulesets/source_candidate_registry.json under the enclosing production-pipeline lease; no per-URL automation/task_queue.json checkpoint is active.",
+    "The registry manifest preserves the assessment cursor and per-source fingerprints, but pending-assessment backlog is not yet an independent scheduler demand. Multiple consecutive cursor-advancing Auto Sync runs remain an open end-to-end acceptance gate.",
+    "The production publisher stages and publishes only rulesets/**. Watchdog/Storage Management queue and incident control-plane writes are separately fenced and do not expand the production publisher allowlist.",
+    "No automated config-baseline metadata writer exists in this proposal-only branch. Baseline observation produces a runner-local proposal; approved uu.conf Blob SHA and Release pin changes require a separate reviewed PR. modules/uu.conf remains byte-for-byte read-only to automation.",
+    "Other non-dispatchable Python capabilities remain default-deny until their complete transitive side-effect and resource contracts are reviewed."
   ],
   "decomposition_constraints": [
     "Preserve the audit -> publish dependency and the existing single-writer concurrency boundary.",
@@ -359,7 +359,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
-    "release_manifest_blob_sha": "cccda6f57728b301908d03fd834e9e93f93f5ebe",
+    "release_manifest_blob_sha": "0de97a3ce30ad54b44085eefe2f904c8bd03ee78",
     "program_registry_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6",
     "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
     "note": "Descriptive only; no additional write/dispatch authorization. Production publication is rulesets/** only. modules/uu.conf remains byte-for-byte read-only. Config baseline observation produces a runner-local proposal only; approved Blob SHA and derived Release metadata changes require a separate reviewed pull request. No automatic Storage Management baseline writer exists.",
