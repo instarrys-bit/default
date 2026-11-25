@@ -2,14 +2,14 @@
   "schema_version": 1,
   "audit_id": "capability-contract-inventory-source-dag-active-2026-11-07",
   "status": "retired_archival_snapshot",
-  "source_registry_blob_sha": "0c0ad14b1caf9d0622dde806439c6d278e4404ba",
+  "source_registry_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6",
   "summary": {
-    "registered_programs": 70,
-    "python_components": 59,
-    "python_components_with_concrete_io_contract": 1,
-    "python_components_with_declared_registry_dependencies": 14,
-    "independently_dispatchable_python_components": 1,
-    "note": "Counts reflect registry declarations, not runtime call-graph completeness."
+    "registered_programs": 73,
+    "python_components": 69,
+    "python_components_with_concrete_io_contract": 3,
+    "python_components_with_declared_registry_dependencies": 20,
+    "independently_dispatchable_python_components": 0,
+    "note": "Counts are reconciled to the current program registry. The repository has exactly four workflow entry points; independent Python dispatch remains disabled under the monolithic fallback."
   },
   "policy": {
     "watchdog_is_top_level_orchestrator": true,
@@ -115,10 +115,10 @@
         "automation/task_queue.json task.assessment_checkpoint: per-URL result and fingerprint checkpoint (durable CAS state)"
       ],
       "current_invocation": "python_module_or_workflow_step",
-      "contract_status": "reviewed_active_scoped_source_dag",
-      "dispatch_status": "enabled",
+      "contract_status": "monolithic_fallback_non_dispatchable",
+      "dispatch_status": "disabled",
       "missing_contract_fields": [],
-      "audit_note": "The non-activating assessor is enabled only for workflow_automation_watchdog under the exact release allowlist. It reads the verified immutable Discovery artifact, writes outputs only beneath RUNNER_TEMP, and mutates only its bounded fenced automation/task_queue.json checkpoint. Watchdog handoff deduplicates by exact predecessor workflow_run_id and a canonical source-assessment:<workflow_run_id> key.",
+      "audit_note": "The current production topology is monolithic_fallback: Auto Sync performs discovery and assessment in one bounded workflow. The independent Assessment adapter and Watchdog task dispatch remain disabled until the durable multi-batch artifact/cursor chain is independently verified. Do not infer independent dispatch from the historical V1 contract.",
       "contract_sample_path": "automation/capability_contracts/assess_sources.json"
     },
     {
@@ -688,7 +688,9 @@
       "declared_capabilities": [
         "github_queue_storage"
       ],
-      "registry_dependencies": [],
+      "registry_dependencies": [
+        "storage_queue_store"
+      ],
       "current_registry_inputs": [
         "repository identity",
         "queue document",
@@ -1015,10 +1017,11 @@
         "CLI arguments and/or imported Python inputs as defined by the implementation"
       ],
       "current_registry_outputs": [
-        "Return values and/or repository artifacts as defined by the implementation"
+        "RUNNER_TEMP/config-baseline-proposal.json when the observed config Blob SHA differs from the registered baseline",
+        "stdout JSON summary; repository_files_modified=false; config_file_modified=false"
       ],
       "current_invocation": "python_module_or_workflow_step",
-      "contract_status": "incomplete",
+      "contract_status": "reviewed_runner_local_proposal_only",
       "dispatch_status": "disabled",
       "missing_contract_fields": [
         "input_schema",
@@ -1032,7 +1035,7 @@
         "success_predicate",
         "independent_verifier"
       ],
-      "audit_note": "The default mode emits only a RUNNER_TEMP proposal. The explicit --apply mode is invoked solely by the serialized Watchdog baseline-sync job after verifying that every intervening modules/uu.conf-changing commit is associated with the repository owner. It updates only the four allowlisted baseline/release metadata documents, verifies the exact config Git blob before and after, and never writes modules/uu.conf. It is not independently dispatchable."
+      "audit_note": "Reads modules/uu.conf and current policy/release inputs, then writes only a proposal under RUNNER_TEMP. No --apply mode, repository metadata write, Git commit/push, or independent dispatch exists. Baseline metadata changes require a separately reviewed pull request."
     },
     {
       "id": "script_register_discovered_sources",
@@ -1074,7 +1077,8 @@
       "registry_dependencies": [
         "script_github_queue_store",
         "script_task_queue_runtime",
-        "script_task_queue"
+        "script_task_queue",
+        "storage_queue_store"
       ],
       "current_registry_inputs": [
         "registered task payload",
@@ -1230,6 +1234,37 @@
         "independent_verifier"
       ],
       "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_run_preflight_tests",
+      "path": "scripts/run_preflight_tests.py",
+      "declared_capabilities": [
+        "workflow_testing",
+        "preflight_validation"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "Repository tests directory and unittest discovery defaults."
+      ],
+      "current_registry_outputs": [
+        "Process exit status and unittest test report."
+      ],
+      "current_invocation": "python_module_or_workflow_step",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Current registry entry is recorded for inventory completeness. No independent dispatch is authorized; the adapter remains default-deny until a complete typed contract and runtime verification are reviewed."
     },
     {
       "id": "script_source_handoff_policy",
@@ -1471,6 +1506,36 @@
         "independent_verifier"
       ],
       "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
+    },
+    {
+      "id": "script_validate_automation_write_boundary",
+      "path": "scripts/validate_automation_write_boundary.py",
+      "declared_capabilities": [
+        "automation_write_boundary_validation"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "workflow YAML, baseline policy, release manifest, resource write inventory and modules/uu.conf"
+      ],
+      "current_registry_outputs": [
+        "Validation summary or non-zero exit on write-boundary drift"
+      ],
+      "current_invocation": "python_cli",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Current registry entry is recorded for inventory completeness. No independent dispatch is authorized; the adapter remains default-deny until a complete typed contract and runtime verification are reviewed."
     },
     {
       "id": "script_validate_config",
@@ -1785,6 +1850,75 @@
       "audit_note": "Registry-level metadata only; do not infer CLI contract or side effects from this record."
     },
     {
+      "id": "storage_artifact_store",
+      "path": "storage/v2/artifact_store.py",
+      "declared_capabilities": [
+        "storage_management_support",
+        "content_addressed_artifact_storage"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "bounded artifact bytes",
+        "provenance metadata",
+        "content-addressed manifests"
+      ],
+      "current_registry_outputs": [
+        "immutable artifact records",
+        "verified chunk manifests"
+      ],
+      "current_invocation": "imported by Storage Management artifact and handoff components; no independent workflow dispatch",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Current registry entry is recorded for inventory completeness. No independent dispatch is authorized; the adapter remains default-deny until a complete typed contract and runtime verification are reviewed."
+    },
+    {
+      "id": "storage_dashboard_snapshot",
+      "path": "storage/v2/dashboard_snapshot.py",
+      "declared_capabilities": [
+        "storage_management_support",
+        "read_only_dashboard_snapshot"
+      ],
+      "registry_dependencies": [
+        "storage_runtime"
+      ],
+      "current_registry_inputs": [
+        "read-only V2 storage state",
+        "migration manifest",
+        "archive inventory"
+      ],
+      "current_registry_outputs": [
+        "sanitized dashboard/v2/data.json snapshot"
+      ],
+      "current_invocation": "direct read-only CLI step in workflow_read_only_dashboard_pages",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Current registry entry is recorded for inventory completeness. No independent dispatch is authorized; the adapter remains default-deny until a complete typed contract and runtime verification are reviewed."
+    },
+    {
       "id": "storage_incident_store",
       "path": "storage/v2/incident_store.py",
       "declared_capabilities": [
@@ -1802,11 +1936,50 @@
         "incident state transition",
         "append-only event record"
       ],
-      "current_invocation": "only from workflow_storage_incident_management",
+      "current_invocation": "only from workflow_storage_management",
       "contract_status": "active_storage_management_incident_service",
       "dispatch_status": "disabled",
       "missing_contract_fields": [],
       "audit_note": "No direct GitHub Issues access. The only writable path is storage/v2/incidents.json through storage_queue_store."
+    },
+    {
+      "id": "storage_ingest_actions_artifacts",
+      "path": "storage/v2/ingest_actions_artifacts.py",
+      "declared_capabilities": [
+        "storage_management_support",
+        "actions_artifact_ingestion",
+        "artifact_provenance_catalog",
+        "verified_artifact_cleanup"
+      ],
+      "registry_dependencies": [
+        "storage_artifact_store"
+      ],
+      "current_registry_inputs": [
+        "completed main-branch workflow run ID",
+        "GitHub Actions artifact archives",
+        "source workflow and commit provenance"
+      ],
+      "current_registry_outputs": [
+        "content-addressed artifact manifests",
+        "immutable per-run artifact catalog",
+        "source artifact cleanup result"
+      ],
+      "current_invocation": "direct CLI step in Storage Management workflow_run handler and 15-minute scheduled artifact-recovery poll; no independent dispatch",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Current registry entry is recorded for inventory completeness. No independent dispatch is authorized; the adapter remains default-deny until a complete typed contract and runtime verification are reviewed."
     },
     {
       "id": "storage_migration",
@@ -1862,6 +2035,115 @@
       "audit_note": "Only automation/task_queue.json and storage/v2/incidents.json are allowlisted. Watchdog queue clients and the incident workflow call this single Storage Management writer; all writes use Contents API SHA-CAS and read-after-write verification. No Issues API, rulesets/** or modules/** writes."
     },
     {
+      "id": "storage_runtime",
+      "path": "storage/v2/runtime.py",
+      "declared_capabilities": [
+        "storage_management_support",
+        "event_sourced_state"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "validated V2 state",
+        "typed event payloads",
+        "revision and epoch identity"
+      ],
+      "current_registry_outputs": [
+        "hash-chained state transitions",
+        "deterministic task and resource projections"
+      ],
+      "current_invocation": "imported by Storage Management persistence and recovery components; read/init/append CLI is restricted to the Storage Management boundary",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Current registry entry is recorded for inventory completeness. No independent dispatch is authorized; the adapter remains default-deny until a complete typed contract and runtime verification are reviewed."
+    },
+    {
+      "id": "storage_snapshot_repository_integrity",
+      "path": "storage/v2/snapshot_repository_integrity.py",
+      "declared_capabilities": [
+        "repository_integrity_tracking",
+        "content_addressed_snapshot",
+        "protected_config_read_only"
+      ],
+      "registry_dependencies": [
+        "storage_artifact_store",
+        "storage_queue_store"
+      ],
+      "current_registry_inputs": [
+        "main Git tree and commit SHA",
+        "all open pull requests plus explicitly tracked closed PRs",
+        "paginated changed-file, review and review-comment metadata",
+        "modules/uu.conf Git blob and content"
+      ],
+      "current_registry_outputs": [
+        "immutable content-addressed repository integrity snapshot",
+        "SHA-CAS latest-snapshot projection under storage/v2/projections/"
+      ],
+      "current_invocation": "Storage Management scheduled job only; not independently dispatchable.",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Current registry entry is recorded for inventory completeness. No independent dispatch is authorized; the adapter remains default-deny until a complete typed contract and runtime verification are reviewed."
+    },
+    {
+      "id": "storage_source_handoff",
+      "path": "storage/v2/source_handoff.py",
+      "declared_capabilities": [
+        "storage_management_support",
+        "verified_source_handoff"
+      ],
+      "registry_dependencies": [
+        "storage_runtime",
+        "storage_artifact_store"
+      ],
+      "current_registry_inputs": [
+        "verified Discovery and Assessment artifact proofs",
+        "V2 epoch and artifact references"
+      ],
+      "current_registry_outputs": [
+        "verified handoff manifest",
+        "non-activating content-addressed artifact references"
+      ],
+      "current_invocation": "imported by Storage Management migration and handoff tooling; no independent dispatch",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Current registry entry is recorded for inventory completeness. No independent dispatch is authorized; the adapter remains default-deny until a complete typed contract and runtime verification are reviewed."
+    },
+    {
       "id": "storage_verify_archive_inventory",
       "path": "storage/v2/verify_archive_inventory.py",
       "declared_capabilities": [
@@ -1890,6 +2172,75 @@
         "independent_verifier"
       ],
       "audit_note": "No independent credential grant or workflow dispatch. Runtime write authority is determined by the calling four-system workflow and Storage Management allowlists."
+    },
+    {
+      "id": "storage_verify_auto_sync_recovery",
+      "path": "storage/v2/verify_auto_sync_recovery.py",
+      "declared_capabilities": [
+        "recovery_independent_verification"
+      ],
+      "registry_dependencies": [
+        "script_production_intent"
+      ],
+      "current_registry_inputs": [
+        "completed Auto Sync run metadata",
+        "Auto Sync audit and publish job metadata",
+        "durable task queue snapshot",
+        "current production input fingerprint"
+      ],
+      "current_registry_outputs": [
+        "verified recovery evidence JSON or non-zero exit on any identity, publication, queue, lease or fingerprint mismatch"
+      ],
+      "current_invocation": "python_cli",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Current registry entry is recorded for inventory completeness. No independent dispatch is authorized; the adapter remains default-deny until a complete typed contract and runtime verification are reviewed."
+    },
+    {
+      "id": "storage_watchdog_supervisor",
+      "path": "storage/v2/watchdog_supervisor.py",
+      "declared_capabilities": [
+        "storage_management_support",
+        "read_only_recovery_planning"
+      ],
+      "registry_dependencies": [
+        "storage_runtime"
+      ],
+      "current_registry_inputs": [
+        "read-only V2 state snapshot",
+        "timezone-aware observation timestamp"
+      ],
+      "current_registry_outputs": [
+        "non-mutating fenced recovery plan"
+      ],
+      "current_invocation": "read-only CLI/library for Watchdog supervision; recovery application remains owned by Storage Management",
+      "contract_status": "incomplete",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [
+        "input_schema",
+        "output_schema",
+        "read_resources",
+        "write_resources",
+        "transitive_side_effects",
+        "dependency_edges",
+        "idempotency_key",
+        "resource_lease_keys",
+        "success_predicate",
+        "independent_verifier"
+      ],
+      "audit_note": "Current registry entry is recorded for inventory completeness. No independent dispatch is authorized; the adapter remains default-deny until a complete typed contract and runtime verification are reviewed."
     }
   ],
   "workflow_capabilities": [
@@ -1992,9 +2343,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.21.1",
-    "execution_adapters_blob_sha": "6d1bfb61f6e6f7609ab99d7be27790b36ef4ee62",
+    "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
     "release_manifest_blob_sha": "b5d5d43be8c839da39c23de2eaaed90c86a951fd",
-    "program_registry_blob_sha": "0c0ad14b1caf9d0622dde806439c6d278e4404ba",
-    "note": "Historical V1 source-DAG / capability-write audit. Retained for traceability only; not an activation authority or current writer inventory. Current runtime topology is monolithic fallback across exactly four workflows. Do not infer active dispatch rights from this archival snapshot."
+    "program_registry_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6",
+    "note": "Historical V1 contract details remain traceable but are not activation authority. Counts and registered program paths are reconciled to the current 73-entry registry; source discovery/assessment uses monolithic fallback and independent Python dispatch remains disabled."
   }
 }
