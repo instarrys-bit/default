@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "inventory_id": "resource-write-sets-2026.11.07-source-dag-active1",
+  "inventory_id": "resource-write-sets-2026.11.25-monolithic-fallback",
   "status": "partial_static_entrypoint_review",
   "policy": {
     "lock_identity": "canonical logical resource path, not program ID",
@@ -25,7 +25,7 @@
       "production_automation_may_edit_content": false,
       "baseline_metadata_registration_may_edit_content": false
     },
-    "dispatch": "Evidence is not an execution grant. The reviewed independent Source Discovery → Assessment DAG and production workflow are Watchdog-owned and release-allowlisted; all unrelated Python capabilities remain deny-by-default."
+    "dispatch": "The active production topology is the four-workflow monolithic fallback. Auto Sync runs Discovery then Assessment as bounded same-run stages under the logical/production-pipeline lease. Independent Python dispatch is disabled; script_assess_sources has no allowed callers and no active task.assessment_checkpoint writer. Evidence is not an execution grant; unrelated Python capabilities remain deny-by-default."
   },
   "document_store_semantics": {
     "implementation": "scripts/json_document_store.py",
@@ -52,18 +52,18 @@
         "reports/self-healing/diagnosis.json"
       ],
       "side_effects": [
-        "Only two hard-coded repair IDs are accepted; changes are staged on a run-specific self-heal branch and opened as a pull request. No direct push to main."
+        "Only two hard-coded repair IDs are accepted. If explicitly invoked, the helper stages one allowlisted code/test path on a run-specific branch and opens a PR; the retired self-healing workflow is absent and no active workflow adapter/caller invokes this helper. No direct push to main."
       ],
-      "evidence": "apply_repair() writes either the auto_sync workflow or the named regression test based on the exact diagnosis repair_id; self-healing-agent.yml stages only the corresponding allowlisted path, validates staged paths and publishes a PR.",
+      "evidence": "apply_repair() can write either the auto_sync workflow or the named regression test for one of two exact repair IDs. The current four-workflow YAML has no self-healing-agent workflow or invocation; this helper is not an active production writer.",
       "lease_keys": [
         "self-healing-agent workflow concurrency group"
       ],
-      "lease_enforcement": "Changes are isolated to self-heal/run-<run_id> and submitted as a PR; main is not mutated directly. Concurrent runs use distinct run IDs, so same-target repair PR collision/branch coordination is not established.",
+      "lease_enforcement": "No active workflow caller is registered. Any future reviewed use must isolate the change on a run-specific branch and submit a PR; main is not mutated directly.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [
         "self-heal/run-<run_id> working tree and PR branch until reviewed/merged"
       ],
-      "write_boundary_fencing": "Repair recipes and staged-path allowlist restrict targets; publication requires PR review/merge. Do not classify this as a production writer."
+      "write_boundary_fencing": "The helper is non-dispatchable in the current topology. Any future use must retain the exact repair-ID and staged-path allowlist and require PR review/merge."
     },
     {
       "program_id": "script_assess_sources",
@@ -1165,17 +1165,6 @@
       "note": "Shared coarse mutex serializes workflow_auto_sync with the independently scheduled source assessor; each JSON/report output also has its own logical resource lease. The allowlisted publish restore is invoked by workflow_auto_sync and is implemented by script_restore_automation_state under this same mutex."
     },
     {
-      "resource": "logical/source-dag-supervision",
-      "writers": [
-        "workflow_source_discovery",
-        "script_assess_sources"
-      ],
-      "lock_key": "logical/source-dag-supervision",
-      "mode": "exclusive",
-      "enforcement": "The durable queue acquires this common resource lease atomically with a task claim and keeps it active through asynchronous workflow verification; monotonically increasing fencing tokens prevent stale workers from proceeding.",
-      "note": "Discovery and Assessment share one task-scoped fence. Watchdog jobs may run concurrently without losing pending events; CAS plus this common lease prevents two different source-DAG stages from executing simultaneously."
-    },
-    {
       "id": "rulesets/config_conflict_archive.json",
       "resource": "rulesets/config_conflict_archive.json",
       "paths": [
@@ -1293,12 +1282,12 @@
         "script_restore_automation_state",
         "workflow_auto_sync"
       ],
-      "lock_key": "logical/source-dag-supervision + logical/source-discovery-run + sources/discovered_sources.json + reports/source-discovery.md (exclusive logical document/report leases in monolithic mode; per-run RUNNER_TEMP isolation in independent mode)",
+      "lock_key": "logical/production-pipeline + logical/source-discovery-run + per-run AUTOMATION_ARTIFACT_ROOT",
       "mode": "exclusive",
-      "enforcement": "Current production builder and publish restore are serialized by the Watchdog logical production-pipeline live fence. The JSON document writer additionally uses its documented logical-document lease where explicitly asserted.",
-      "note": "Restore can write the same allowlisted base/manifest/shards/report; all dynamic document children and cleanup operations must remain within the same logical resource lease. The dedicated source-discovery workflow is registered but its adapter remains disabled. It uses the exact same discovered_sources.json and report resource leases as workflow_auto_sync; immutable run artifact handoff is verified by Watchdog before assessment enqueue.",
+      "enforcement": "The Auto Sync run holds the live logical/production-pipeline fence through the same-run Discovery → Assessment stages. Discovery output is isolated per run and verified before Assessment; restore is serialized under the same production fence.",
+      "note": "Discovery is a same-run Auto Sync stage. The dedicated source-discovery workflow is absent from the four-workflow set and independent dispatch is disabled. The artifact document is not committed under sources/**; only the candidate registry is published under rulesets/** by the fenced registry writer.",
       "known_writers": [
-        "workflow_source_discovery"
+        "workflow_auto_sync"
       ]
     },
     {
@@ -1357,12 +1346,12 @@
       ],
       "writers": [
         "storage_incident_store",
-        "workflow_storage_incident_management"
+        "workflow_storage_management"
       ],
       "lock_key": "contents-cas:storage/v2/incidents.json",
       "mode": "compare_and_swap",
       "enforcement": "Storage Management applies idempotent event IDs, validates the incident schema/revision, performs Contents API SHA-CAS and verifies the persisted revision after write. Verified recovery is required before lifecycle state changes to RECOVERED.",
-      "note": "85 open legacy incident records were imported with original issue number, title, body, labels and available run/source metadata. GitHub Issues are archival provenance only; no runtime code reads or writes Issues."
+      "note": "Storage Management is the sole durable incident-ledger writer. It uses idempotent event IDs, revision validation, Contents API SHA-CAS and read-after-write verification. GitHub Issue references are archival provenance only; no runtime code reads or writes Issues."
     }
   ],
   "not_yet_proven": [
@@ -1382,7 +1371,7 @@
     "release_manifest_blob_sha": "95fa47032f521315a46f62990eb7d4b3e3f0d0e6",
     "program_registry_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6",
     "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
-    "note": "Static inventory of all registered Python components and workflow-native write sites. No automated repository SHA inventory or baseline metadata writer is authorized; baseline observation produces a runner-local proposal only and approved Blob SHA/Release changes require a separately reviewed PR. Production publisher write scope remains rulesets/**; modules/uu.conf remains read-only."
+    "note": "Static entrypoint inventory for registered Python components and workflow-native write sites. It is not a complete transitive/runtime trace; remaining gaps are enumerated in not_yet_proven. No automated repository SHA inventory or baseline metadata writer is authorized. Production publisher write scope remains rulesets/**; modules/uu.conf remains read-only."
   },
   "scheduler_lock_contract": {
     "logical_resource_key": "logical/production-pipeline",
@@ -1636,7 +1625,7 @@
         "storage/v2/incidents.json idempotent incident event and recovery transitions"
       ],
       "file_writes": [],
-      "control_plane_boundary": "Called only by workflow_storage_incident_management. It cannot write outside storage/v2/incidents.json and cannot query or mutate GitHub Issues."
+      "control_plane_boundary": "Called only by workflow_storage_management. It may mutate only storage/v2/incidents.json through revisioned Contents API SHA-CAS and idempotent event IDs; it cannot write rulesets/**, modules/** or GitHub Issues."
     },
     {
       "program_id": "storage_queue_store",
