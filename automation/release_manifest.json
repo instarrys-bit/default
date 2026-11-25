@@ -82,11 +82,11 @@
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "27b662a5c3e9f91fedf7a24dd0aef461a69ed41f"
+      "git_blob_sha": "9a9d5045fca14dd4f63cb9cbb02241de9f0208a0"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "768255754cd64714cea3ce601018993d6be229f2"
+      "git_blob_sha": "a9c16670e974135240b2c39df140af9505ffa88c"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -191,7 +191,7 @@
     },
     "automation_write_boundary_validator": {
       "path": "scripts/validate_automation_write_boundary.py",
-      "git_blob_sha": "f6045c6ef392e9939b7c9f89afd263501861f740"
+      "git_blob_sha": "305bec3e997ff358e6ed720d80a17fd47cd210e3"
     },
     "repository_integrity_tracker": {
       "path": "storage/v2/snapshot_repository_integrity.py",
@@ -203,7 +203,7 @@
     },
     "storage_management_workflow": {
       "path": ".github/workflows/storage-management.yml",
-      "git_blob_sha": "39d75e1bb0cd1ee90359404f66e68cc50b010aed"
+      "git_blob_sha": "9e6a4173301ad0e0935f404e706d457c4b7cf5f3"
     },
     "repository_integrity_tests": {
       "path": "tests/v2/test_repository_integrity.py",
@@ -219,11 +219,12 @@
     },
     "baseline_registration_runtime": {
       "path": "scripts/register_config_baseline.py",
-      "git_blob_sha": "b0910633f5349325fd2a89118ec155c02a85ffdb"
+      "git_blob_sha": "e8134e9707b9f8211fa9358fff70c51bceb35057"
     },
     "baseline_metadata_publisher": {
       "path": "scripts/publish_config_baseline_metadata.sh",
-      "git_blob_sha": "fc07fa5c1e90a399283fd9ffb19d0e70a84d3335"
+      "git_blob_sha": "b33205a98db6f21f38b02a98732ad9bd2f3195a0",
+      "status": "disabled_no_repository_write"
     },
     "baseline_verifier": {
       "path": "scripts/verify_baseline.py",
@@ -244,22 +245,12 @@
     "reject_rule_publication_requires_explicit_approval": false,
     "python_adapter_default_deny": true,
     "watchdog_baseline_metadata_sync": {
-      "writer": "Storage Management / File Management",
-      "trigger": [
-        "push to main affecting modules/uu.conf",
-        "15-minute scheduled reconciliation",
-        "manual recovery dispatch"
-      ],
-      "authorization": "Explicit user authorization permits automatic registration of the latest stable main-branch modules/uu.conf Blob SHA, formal approved SHA and Release baseline SHA regardless of commit author attribution. Only the five metadata allowlist paths may be written; modules/uu.conf bytes remain read-only. Owner manual edits and specific user-authorized AI edits are permitted; that content-edit permission is separate from and does not expand the metadata-only writer's authority.",
-      "write_allowlist": [
-        "sources/policy.json",
-        "automation/release_manifest.json",
-        "automation/production_workflow_map.json",
-        "automation/resource_write_sets.json",
-        "reports/config-drift-audit.json"
-      ],
+      "writer": null,
+      "trigger": [],
+      "authorization": "No automated repository metadata synchronization is authorized. Baseline SHA and derived Release pin changes require a separately reviewed pull request. The baseline tool may emit only a RUNNER_TEMP proposal; no workflow or publisher may commit these metadata paths.",
+      "write_allowlist": [],
       "protected_config": "modules/uu.conf is byte-for-byte read-only to automation.",
-      "stale_main_guard": "Re-fetch latest main and config immediately before registration; abort and retry if main or uu.conf changes during the metadata transaction."
+      "stale_main_guard": "Proposal-only observation; no repository commit or push. A reviewed PR must reacquire and verify the latest main config blob before updating metadata."
     },
     "independent_python_dispatch": "disabled",
     "source_discovery_mode": "monolithic_fallback",
@@ -277,7 +268,7 @@
       "ai_edit_requires_specific_explicit_user_authorization": true,
       "production_automation_may_edit_content": false,
       "baseline_metadata_registration_may_edit_content": false,
-      "rule": "The owner may edit modules/uu.conf manually. AI may edit its contents only for a specific change explicitly authorized by the user. This is separate from unattended production automation and File Management baseline registration, neither of which may write config bytes. Standing authorization for SHA/baseline metadata updates is not content-edit authorization."
+      "rule": "The owner may edit modules/uu.conf manually. AI may edit its contents only for a specific change explicitly authorized by the user. Unattended automation may read/hash/diff and emit a runner-local proposal only. Approved Blob SHA and Release baseline metadata changes require a separate reviewed pull request; neither production automation nor Storage Management may write them."
     }
   },
   "known_gaps": [
@@ -287,7 +278,7 @@
     "The deterministic review-engine source revision is not yet pinned to a verified commit.",
     "The post-Assessment production dispatcher is newly wired and still requires a live Watchdog → auto_sync → ruleset publication run to establish end-to-end unattended production evidence.",
     "The historical independent Source Discovery → Assessment handoff is not the current production topology. Production runs discovery and assessment in the bounded auto_sync workflow; independent Python adapter dispatch remains deny-by-default.",
-    "Owner-authored uu.conf changes are automatically registered by Storage Management / File Management after GitHub author-history verification; metadata-only writes are allowlisted and modules/uu.conf remains byte-for-byte immutable."
+    "Observed uu.conf SHA changes produce runner-local proposals only. Approved baseline and derived Release metadata can change only through a separately reviewed pull request; no automatic File Management writer exists."
   ],
   "next_migration_gate": {
     "required_before_independent_python_dispatch": [
