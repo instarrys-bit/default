@@ -242,7 +242,7 @@
       "worker_id": "45693301151"
     }
   },
-  "revision": 336,
+  "revision": 337,
   "schema_version": 1,
   "tasks": [
     {
@@ -6414,6 +6414,36 @@
         "verified_at": "2026-11-25T20:33:39Z",
         "verifier_program_id": "script_task_result_verifier"
       }
+    },
+    {
+      "attempts": 0,
+      "capability": "deterministic_audit",
+      "created_at": "2026-11-25T20:34:16Z",
+      "execution_backend": "github_contents",
+      "idempotency_key": "production:input:2bd375f216df671d8274f877e4b594c8288755e244a310ff604e3bfe5b048ee8:b5d32925770ca7341be08b8ea33c74de7ee2d97e",
+      "input": {
+        "baseline_source_actor": "github-actions[bot]",
+        "baseline_source_before": "",
+        "baseline_source_event": "workflow_dispatch",
+        "baseline_source_sha": "b5d32925770ca7341be08b8ea33c74de7ee2d97e",
+        "production_decision": "INPUT_CHANGED",
+        "production_fingerprint": "2bd375f216df671d8274f877e4b594c8288755e244a310ff604e3bfe5b048ee8",
+        "production_reason": "current production input fingerprint differs from the last successful audit"
+      },
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 2,
+      "not_before": "2026-11-25T20:34:16Z",
+      "priority": 100,
+      "requester_program_id": "workflow_automation_watchdog",
+      "result": null,
+      "state_history": [
+        "QUEUED"
+      ],
+      "status": "QUEUED",
+      "target_program_id": "workflow_auto_sync",
+      "task_id": "task_dce1d72637fe48e0918a3313",
+      "trace_id": "bc1e56825d414746946235a0bea4faf9"
     }
   ]
 }
