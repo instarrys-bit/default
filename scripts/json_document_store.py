@@ -14,8 +14,8 @@ import zlib
 from pathlib import Path
 from typing import Any
 
-MAX_FILE_BYTES = 50_000_000
-SHARD_TARGET_BYTES = 45_000_000
+MAX_FILE_BYTES = 40_000_000
+SHARD_TARGET_BYTES = 40_000_000
 MANIFEST_SUFFIX = ".manifest.json"
 
 

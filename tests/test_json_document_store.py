@@ -13,6 +13,10 @@ import json_document_store as store
 
 
 class JsonDocumentStoreTests(unittest.TestCase):
+    def test_default_persistent_json_storage_limits_are_40mb(self):
+        self.assertEqual(store.MAX_FILE_BYTES, 40_000_000)
+        self.assertEqual(store.SHARD_TARGET_BYTES, 40_000_000)
+
     def test_legacy_json_remains_readable(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "ledger.json"

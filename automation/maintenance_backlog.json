@@ -17,11 +17,12 @@
       "status": "blocked_pending_live_run",
       "source_reference": "https://github.com/instarrys-bit/default/issues/719",
       "current_evidence": {
-        "capability_contract_status": "reviewed_scoped_source_dag_enabled_pending_live_e2e",
-        "dispatch_status": "enabled",
-        "latest_production_run_id": 45205570613,
+        "capability_contract_status": "not_independently_dispatchable_in_current_main",
+        "dispatch_status": "disabled",
+        "production_mode": "monolithic_fallback",
+        "latest_production_run_id": 45359028158,
         "latest_production_run_conclusion": "success",
-        "assessment_run_evidence": "not_yet_verified"
+        "assessment_run_evidence": "same-run_assessment_only; independent_chain_not_verified"
       },
       "acceptance": [
         "Run at least two distinct batches with no more than 20 URLs and 10 MB per batch",
@@ -30,7 +31,7 @@
         "Verify no automatic source activation or assessment-artifact publication",
         "Verify exact discovery fingerprint backlog is zero or partitioned into a new verified generation"
       ],
-      "next_action": "Use the registered Watchdog scheduler to dispatch and independently verify the exact Discovery → Assessment chain; do not bypass queue CAS or task/resource leases."
+      "next_action": "Reconcile production_control.json, program_registry.json, execution_adapters.json and release pins before any independent dispatch; then run two bounded batches with exact predecessor and cursor verification."
     },
     {
       "id": "legacy-failed-task-reconciliation",
@@ -43,11 +44,13 @@
         "task_d768a8dc3785408ea3bb00a8"
       ],
       "current_evidence": {
-        "queue_revision": 273,
+        "queue_revision": 324,
         "active_task_count": 0,
         "historical_failed_count": 3,
-        "latest_verified_successful_production_task": "task_023287316a4e4baea1162a1e",
-        "latest_verified_successful_run_id": 45205570613
+        "historical_cancelled_count": 22,
+        "historical_succeeded_count": 14,
+        "latest_verified_successful_production_task": "task_45ff08e2350e4a89843127c1",
+        "latest_verified_successful_run_id": 45359028158
       },
       "acceptance": [
         "Use supported queue CAS/scheduler lifecycle only",
@@ -60,7 +63,7 @@
     {
       "id": "storage-validation-and-file-management",
       "title": "Complete file-based maintenance management and fresh Storage Management validation",
-      "status": "in_progress",
+      "status": "complete",
       "source_reference": "https://github.com/instarrys-bit/default/issues/719",
       "acceptance": [
         "Keep engineering maintenance records in this file, not GitHub Issues",
@@ -68,7 +71,90 @@
         "Run full Storage Management validation on the latest main revision",
         "Record run ID, tested commit SHA and complete successful job evidence"
       ],
-      "next_action": "Validate this backlog file in Storage Management and obtain a fresh successful validation run."
+      "next_action": "Continue the remaining blocked maintenance items; this validation and file-based tracking milestone is complete.",
+      "current_evidence": {
+        "merged_pr": 721,
+        "merge_commit": "5e118c67b94bfb356954edd9e6372cc904ee897b",
+        "tested_commit": "6f77a1a52429cd9aac8b41c00ed38b5309a7595d",
+        "validation_run_id": 45685601314,
+        "validation_run_conclusion": "success",
+        "storage_regression_tests": "110 passed"
+      }
+    },
+    {
+      "id": "json-document-store-40mb-defaults",
+      "title": "Set shared JSON document-store default shard and file limits to 40 MB",
+      "status": "complete",
+      "current_evidence": {
+        "file": "scripts/json_document_store.py",
+        "max_file_bytes": 40000000,
+        "shard_target_bytes": 40000000,
+        "current_main_manifests": [
+          "rulesets/reject_review_queue.json.manifest.json",
+          "rulesets/source_candidate_registry.json.manifest.json"
+        ],
+        "both_existing_shards_below_limit": true
+      },
+      "acceptance": [
+        "New JSON document writes default to a maximum 40 MB file and 40 MB shard target",
+        "Existing manifests and shards remain readable and pass integrity checks",
+        "Tests assert the shared defaults"
+      ],
+      "next_action": "Keep monitoring manifests for oversized shards; legacy V2 event-state requires a separate segmented migration."
+    },
+    {
+      "id": "oversized-generated-report-cleanup",
+      "title": "Remove oversized generated overlap-audit report from the tracked main tree",
+      "status": "complete",
+      "current_evidence": {
+        "path": "reports/ruleset-config-overlap-audit.json",
+        "previous_blob_sha": "ec516223760a6bfb52c77f856e49fe7d8f03fe8d",
+        "previous_size_bytes": 72707534,
+        "classification": "generated audit output; runtime regenerates it; no production input consumer",
+        "historical_git_blob_preserved": true
+      },
+      "acceptance": [
+        "Generated report is not retained as a 72 MB tracked source-tree blob",
+        "Audit workflow continues to generate and upload the report as a run artifact",
+        "Frozen V1 inventory remains unchanged as historical provenance"
+      ],
+      "next_action": "Verify a fresh production audit still creates and uploads the report artifact."
+    },
+    {
+      "id": "storage-v2-event-state-segmentation",
+      "title": "Replace the monolithic V2 event-state file with bounded append-only segments and a verified manifest",
+      "status": "blocked_pending_supported_lifecycle",
+      "current_evidence": {
+        "runtime": "storage/v2/runtime.py",
+        "state_path": "storage/v2/state.json",
+        "current_max_state_bytes": 45000000,
+        "state_file_present_in_main": false,
+        "active_runtime_migration": "not yet proven"
+      },
+      "acceptance": [
+        "Every persisted event segment is at most 40 MB",
+        "Manifest verifies sequence, record count, byte count, hash chain and total event count",
+        "Append and recovery use CAS without losing concurrent events",
+        "No total data cap; historical events remain replayable"
+      ],
+      "next_action": "Implement and test segmented event-log storage and a backwards-compatible migration before enabling or changing the V2 state writer."
+    },
+    {
+      "id": "config-baseline-metadata-automatic-registration",
+      "title": "Enable owner-authorized automatic uu.conf SHA and derived Release baseline metadata registration",
+      "status": "open",
+      "current_evidence": {
+        "current_behavior": "runner-local proposal only; automatic repository metadata writer disabled",
+        "user_authorization": "user authorized updates to uu.conf Blob SHA, approved baseline SHA and derived Release baseline SHA; uu.conf bytes remain immutable to automation"
+      },
+      "acceptance": [
+        "Only explicit baseline metadata paths may be written",
+        "Every uu.conf content-changing commit must be attributable to the repository owner or explicitly authorized actor",
+        "Metadata commit must not stage or modify modules/uu.conf",
+        "Release, workflow-map and resource-write-set pins must remain mutually consistent",
+        "Storage Management CI verifies the metadata-only write boundary"
+      ],
+      "next_action": "Implement a fenced metadata-only writer with owner-commit verification and an exact path allowlist; preserve read-only access to uu.conf."
     }
   ],
   "closure_rule": "Do not mark an item complete without its stated evidence. Do not declare the overall automation closed until every item is complete and a fresh production audit, publish, remote verification and uu.conf SHA check all pass."
