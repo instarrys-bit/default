@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create a runner-local review proposal for owner-approved uu.conf baseline changes."""
+"""Create a runner-local review proposal for uu.conf baseline changes."""
 from __future__ import annotations
 
 
@@ -115,7 +115,7 @@ def write_baseline_proposal(proposal: dict) -> Path:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.parse_args()  # Deliberately exposes no --apply or repository-write option.
+    parser.parse_args()  # Deliberately exposes no repository-write option.
 
     policy = json.loads(POLICY.read_text(encoding="utf-8"))
     guard = policy["managed_config_guard"]
