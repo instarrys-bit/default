@@ -4,18 +4,14 @@
   "status": "partial_static_audit",
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
-    "registry_blob_sha": "968c1ae613aa7c83eb4392ddb9eff6f7c6622767",
-    "adapters_blob_sha": "af0f8d196c70a07fcd30cdc7f97eaba7a025cb56",
+    "registry_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6",
+    "adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
     "inspected_sources": [
       ".github/workflow_helpers/check_source_assessment_artifact.py",
-      ".github/workflows/assessment-completion-relay.yml",
       ".github/workflows/auto_sync.yml",
       ".github/workflows/automation-watchdog.yml",
       ".github/workflows/dashboard-pages.yml",
-      ".github/workflows/self-healing-agent.yml",
-      ".github/workflows/self-healing-tests.yml",
-      ".github/workflows/source-discovery.yml",
-      ".github/workflows/validate-config.yml",
+      ".github/workflows/storage-management.yml",
       "scripts/append_step_summary.py",
       "scripts/apply_safe_repair.py",
       "scripts/assess_sources.py",
@@ -32,6 +28,8 @@
       "scripts/build_rule_provenance.py",
       "scripts/build_rulesets.py",
       "scripts/build_source_candidates.py",
+      "scripts/collect_domains.py",
+      "scripts/deterministic_review.py",
       "scripts/diagnose_workflow_failure.py",
       "scripts/discover_sources.py",
       "scripts/domain_rule_engine.py",
@@ -44,6 +42,7 @@
       "scripts/lifecycle_gate.py",
       "scripts/persist_review_cursor.py",
       "scripts/production_intent.py",
+      "scripts/publish_config_baseline_metadata.sh",
       "scripts/refresh_ruleset_manifest.py",
       "scripts/register_config_baseline.py",
       "scripts/register_discovered_sources.py",
@@ -52,6 +51,7 @@
       "scripts/resource_lease_runtime.py",
       "scripts/restore_automation_state.py",
       "scripts/review_cursor.py",
+      "scripts/run_preflight_tests.py",
       "scripts/source_handoff_policy.py",
       "scripts/source_registry.py",
       "scripts/sync_ruleset_config_conflicts.py",
@@ -59,6 +59,7 @@
       "scripts/task_queue_runtime.py",
       "scripts/task_result_verifier.py",
       "scripts/task_scheduler.py",
+      "scripts/validate_automation_write_boundary.py",
       "scripts/validate_config.py",
       "scripts/validate_execution_adapters.py",
       "scripts/validate_program_registry.py",
@@ -69,6 +70,18 @@
       "scripts/verify_published_rulesets.py",
       "scripts/verify_recovery_run.py",
       "scripts/watchdog_recovery_policy.py",
+      "storage/v2/artifact_store.py",
+      "storage/v2/dashboard_snapshot.py",
+      "storage/v2/incident_store.py",
+      "storage/v2/ingest_actions_artifacts.py",
+      "storage/v2/migration.py",
+      "storage/v2/queue_store.py",
+      "storage/v2/runtime.py",
+      "storage/v2/snapshot_repository_integrity.py",
+      "storage/v2/source_handoff.py",
+      "storage/v2/verify_archive_inventory.py",
+      "storage/v2/verify_auto_sync_recovery.py",
+      "storage/v2/watchdog_supervisor.py",
       "tests/test_auto_activate_sources.py",
       "tests/test_config_baseline_registration.py",
       "tests/test_discovered_source_registry.py",
@@ -83,14 +96,10 @@
       "tests/test_task_scheduler.py",
       "tests/test_watchdog_recovery_workflow.py",
       "tests/test_workflow_config_guard_order.py",
-      "tests/test_workflow_native_write_inventory.py",
-      ".github/workflows/queue-snapshot-artifact.yml",
-      "storage/v2/queue_store.py",
-      "storage/v2/incident_store.py",
-      ".github/workflows/storage-incident-management.yml"
+      "tests/test_workflow_native_write_inventory.py"
     ],
     "limitation": "The active Source Discovery → Assessment DAG remains scoped to runner-local immutable artifacts and a fenced automation/task_queue.json checkpoint. A separate durable non-activating source-candidate registry is committed only as rulesets/source_candidate_registry.json by the existing single auto_sync publisher under the Watchdog logical/production-pipeline fence. Protected modules/** and JavaScript remain unwritable. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
-    "reviewed_at": "2026-11-07",
+    "reviewed_at": "2026-11-25",
     "isolated_ephemeral_outputs": [
       {
         "program_id": "script_assess_sources",
@@ -311,8 +320,8 @@
       ],
       "writers": [],
       "lease_key": "read-only config baseline; runner-local proposal artifact only",
-      "status": "no_repository_metadata_writer",
-      "note": "register_config_baseline.py verifies owner-authored modules/uu.conf changes and emits a review proposal only under RUNNER_TEMP. auto_sync uploads the proposal as an immutable artifact before verify_baseline fails closed on an unregistered change. It never writes sources/policy.json, release_manifest.json, production_workflow_map.json or resource_write_sets.json. No production writer is registered.",
+      "status": "runner_local_proposal_only_reviewed_pr_required",
+      "note": "The baseline tool emits a runner-local proposal only. Storage Management has no baseline metadata writer; approved SHA and release-pin changes require a separately reviewed pull request.",
       "known_writers": []
     },
     {
@@ -620,5 +629,5 @@
     ]
   },
   "limitation": "The active source DAG uses runner-local immutable artifacts and a Storage Management-owned automation/task_queue.json checkpoint. Incident state is held in storage/v2/incidents.json. No runtime workflow or script calls GitHub Issues. Production deliverables are limited to rulesets/**; modules/** remain read-only.",
-  "reviewed_at": "2026-11-18"
+  "reviewed_at": "2026-11-25"
 }
