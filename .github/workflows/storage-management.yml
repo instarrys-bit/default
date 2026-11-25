@@ -140,6 +140,7 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: read
+      pull-requests: read
     steps:
       - name: Checkout proposed Storage Management changes
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -204,6 +205,22 @@ jobs:
         run: python3 scripts/validate_program_registry.py
       - name: Validate automation write boundaries
         run: python3 scripts/validate_automation_write_boundary.py
+      - name: Verify separate human-reviewed config baseline metadata PR
+        if: ${{ github.event_name == 'pull_request' }}
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ github.token }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet "$BASE_SHA" "$HEAD_SHA" -- sources/policy.json automation/release_manifest.json; then
+            echo "No approved config baseline SHA transition in this pull request."
+          else
+            python3 scripts/verify_baseline.py --verify-registration --base "$BASE_SHA" --head "$HEAD_SHA"
+          fi
       - name: Validate execution adapter contracts
         run: python3 scripts/validate_execution_adapters.py
       - name: Validate file-based maintenance backlog
