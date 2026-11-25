@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Verify the protected uu.conf content and user-authorized baseline metadata."""
+"""Verify protected uu.conf content and reviewed-PR-only baseline metadata transitions."""
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
+import os
 import subprocess
 import sys
 from datetime import datetime
@@ -12,6 +13,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 POLICY = ROOT / "sources" / "policy.json"
+BASELINE_METADATA_PATHS = {
+    "sources/policy.json",
+    "automation/release_manifest.json",
+    "automation/production_workflow_map.json",
+    "automation/resource_write_sets.json",
+}
 
 
 def git_blob_sha(data: bytes) -> str:
@@ -37,13 +44,13 @@ def validate_registration_metadata(
     new = head_guard.get("approved_git_blob_sha")
     update = head_guard.get("last_user_approved_baseline_update")
     if not isinstance(update, dict):
-        raise ValueError("automatic baseline registration metadata is missing")
+        raise ValueError("reviewed baseline PR metadata is missing")
     if update.get("previous_blob_sha") != previous or update.get("new_blob_sha") != new:
         raise ValueError("baseline registration previous/new SHA does not match the policy transition")
     if new != actual_sha:
         raise ValueError("registered baseline SHA does not match the current uu.conf Git blob")
-    if update.get("approval_mode") != "user_authorized_automatic_sha_follow":
-        raise ValueError("baseline registration does not use the user-authorized automatic SHA-follow mode")
+    if update.get("approval_mode") != "reviewed_pull_request":
+        raise ValueError("baseline metadata must use reviewed_pull_request approval mode")
     if not isinstance(update.get("actor"), str) or not update.get("actor"):
         raise ValueError("baseline registration actor evidence is missing")
     if update.get("config_change_commits") != commits or not commits:
@@ -54,6 +61,22 @@ def validate_registration_metadata(
         datetime.fromisoformat(str(update.get("registered_at", "")).replace("Z", "+00:00"))
     except ValueError as exc:
         raise ValueError("baseline registration timestamp must be ISO-8601") from exc
+
+
+def verify_human_approval(repository: str, pr_number: str) -> None:
+    result = subprocess.run(
+        [
+            "gh", "api", f"repos/{repository}/pulls/{pr_number}/reviews",
+            "--jq", '[.[] | select(.state == "APPROVED" and .user.type != "Bot")] | length',
+        ],
+        cwd=ROOT, check=True, capture_output=True, text=True,
+    )
+    try:
+        approvals = int(result.stdout.strip() or "0")
+    except ValueError as exc:
+        raise ValueError("could not parse human PR approval count") from exc
+    if approvals < 1:
+        raise ValueError("baseline metadata PR requires at least one human APPROVED review")
 
 
 def verify_registration(base: str, head: str) -> None:
@@ -74,22 +97,31 @@ def verify_registration(base: str, head: str) -> None:
         or base_guard.get("last_user_approved_baseline_update")
         != head_guard.get("last_user_approved_baseline_update")
     )
-    semantic_keys = {
-        "immutable", "description", "content_immutable_to_automation",
-        "content_protection", "baseline_metadata_policy",
-    }
-    changed_keys = set(base_guard) ^ set(head_guard)
-    changed_keys.update(
-        key for key in set(base_guard) & set(head_guard)
-        if base_guard[key] != head_guard[key]
-    )
-    allowed = semantic_keys | {"path", "approved_git_blob_sha", "last_user_approved_baseline_update"}
-    if changed_keys - allowed:
-        raise ValueError("non-main validation changed an unsupported managed-config guard field")
-
     if not changed:
-        print("PASS: uu.conf and automatically followed baseline registration are unchanged.")
+        print("PASS: no approved uu.conf baseline metadata transition in this PR.")
         return
+
+    changed_paths = set(run_git("diff", "--name-only", base, head).splitlines())
+    unexpected = changed_paths - BASELINE_METADATA_PATHS
+    if unexpected:
+        raise ValueError(
+            "baseline metadata must be updated in a separate PR containing only the four approved metadata paths; "
+            f"unexpected paths: {sorted(unexpected)}"
+        )
+    changed_guard_fields = {
+        key for key in set(base_guard) | set(head_guard)
+        if base_guard.get(key) != head_guard.get(key)
+    }
+    if changed_guard_fields - {"approved_git_blob_sha", "last_user_approved_baseline_update"}:
+        raise ValueError("baseline metadata PR may change only the approved SHA and its registration record")
+
+    if os.environ.get("GITHUB_EVENT_NAME") != "pull_request":
+        raise ValueError("baseline metadata changes must be validated in a pull_request workflow")
+    repository = os.environ.get("GITHUB_REPOSITORY", "")
+    pr_number = os.environ.get("PR_NUMBER", "")
+    if not repository or not pr_number:
+        raise ValueError("baseline metadata PR identity is missing")
+    verify_human_approval(repository, pr_number)
 
     actual_sha = run_git("hash-object", "modules/uu.conf")
     anchor = str(base_guard.get("last_user_approved_baseline_update", {}).get("commit_sha", ""))
@@ -105,10 +137,24 @@ def verify_registration(base: str, head: str) -> None:
         raise ValueError("no intervening uu.conf commits were found; refusing baseline re-registration")
     validate_registration_metadata(base_guard, head_guard, actual_sha, commits)
 
+    metadata_policy = head_guard.get("baseline_metadata_policy", {})
+    for key in (
+        "automation_may_update_registered_blob_sha",
+        "automation_may_update_release_baseline_sha",
+        "automation_may_update_approved_baseline_sha",
+    ):
+        if metadata_policy.get(key) is not False:
+            raise ValueError(f"baseline metadata policy must deny {key}")
+    if metadata_policy.get("reviewed_pr_required") is not True:
+        raise ValueError("baseline metadata policy must require a reviewed PR")
+
     release = json.loads((ROOT / "automation/release_manifest.json").read_text(encoding="utf-8"))
     pin = release.get("implementation_pins", {}).get("config_baseline", {})
     if pin.get("path") != "modules/uu.conf" or pin.get("access") != "read_only" or pin.get("git_blob_sha") != actual_sha:
         raise ValueError("release manifest does not pin the verified read-only uu.conf blob")
+    sync = release.get("execution_policy", {}).get("watchdog_baseline_metadata_sync", {})
+    if sync.get("writer") is not None or sync.get("write_allowlist") != []:
+        raise ValueError("release manifest reintroduced an automated baseline metadata writer")
     release_sha = run_git("hash-object", "automation/release_manifest.json")
     workflow_map = json.loads((ROOT / "automation/production_workflow_map.json").read_text(encoding="utf-8"))
     write_sets = json.loads((ROOT / "automation/resource_write_sets.json").read_text(encoding="utf-8"))
@@ -117,7 +163,7 @@ def verify_registration(base: str, head: str) -> None:
     if write_sets.get("review_context", {}).get("release_manifest_blob_sha") != release_sha:
         raise ValueError("resource write inventory release-manifest pin is stale")
     print(
-        f"PASS: user-authorized uu.conf SHA history recorded ({len(commits)} commits); "
+        f"PASS: reviewed baseline PR records {len(commits)} uu.conf commits; "
         f"baseline {actual_sha}; config content unchanged in this PR."
     )
 
@@ -125,11 +171,11 @@ def verify_registration(base: str, head: str) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--allow-owner-push-change", action="store_true",
-                        help="Compatibility flag; owner attribution no longer gates authorized SHA following.")
+                        help="Deprecated compatibility flag; author attribution never grants metadata write permission.")
     parser.add_argument("--baseline-only", action="store_true",
                         help="Verify the managed config baseline without changing it.")
     parser.add_argument("--verify-registration", action="store_true",
-                        help="Verify user-authorized metadata-only baseline registration.")
+                        help="Verify a separate human-reviewed metadata-only baseline PR.")
     parser.add_argument("--base")
     parser.add_argument("--head")
     args = parser.parse_args()
@@ -147,8 +193,8 @@ def main() -> int:
     if actual != expected:
         print(
             f"OBSERVED CONFIG CHANGE: {guard['path']} current_blob_sha={actual} "
-            f"registered_baseline_sha={expected}. Continue read-only audit; "
-            "Storage Management must persist the observed SHA and reconcile the latest file."
+            f"registered_baseline_sha={expected}. Emit a runner-local proposal and continue read-only audit; "
+            "baseline metadata requires a separate human-reviewed PR."
         )
         return 0
     print(f"PASS: {guard['path']} matches the registered baseline ({actual}); read-only audit may proceed.")

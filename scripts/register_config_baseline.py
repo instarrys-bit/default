@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Automatically follow the latest main-branch uu.conf blob by updating metadata only."""
+"""Create a runner-local review proposal for uu.conf baseline changes."""
 from __future__ import annotations
+
 
 import argparse
 import hashlib
@@ -8,178 +9,204 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
-from audit_config_drift import build_report
-
 ROOT = Path(__file__).resolve().parents[1]
-CONFIG_PATH = "modules/uu.conf"
-ALLOWLIST = (
-    "sources/policy.json",
-    "automation/release_manifest.json",
-    "automation/production_workflow_map.json",
-    "automation/resource_write_sets.json",
-    "reports/config-drift-audit.json",
-)
+POLICY = ROOT / "sources" / "policy.json"
+CONFIG = ROOT / "modules" / "uu.conf"
 
 
 def git_blob_sha(data: bytes) -> str:
     return hashlib.sha1(b"blob " + str(len(data)).encode("ascii") + bytes([0]) + data).hexdigest()
 
 
-def run(args: list[str], *, check: bool = True) -> str:
-    result = subprocess.run(args, cwd=ROOT, check=check, capture_output=True, text=True)
-    return result.stdout.strip()
+def build_release_pin_updates(root: Path, config_path: str, config_sha: str) -> tuple[str, str, str]:
+    """Prepare consistent release, workflow-map, and write-inventory pins."""
+    release_path = root / "automation" / "release_manifest.json"
+    workflow_map_path = root / "automation" / "production_workflow_map.json"
+    write_sets_path = root / "automation" / "resource_write_sets.json"
+
+    release = json.loads(release_path.read_text(encoding="utf-8"))
+    pins = release.get("implementation_pins")
+    config_pin = pins.get("config_baseline") if isinstance(pins, dict) else None
+    if (not isinstance(config_pin, dict) or config_pin.get("path") != config_path
+            or config_pin.get("access") != "read_only"):
+        raise ValueError("release manifest must pin the same read-only owner config path")
+    config_pin["git_blob_sha"] = config_sha
+    # Explicitly deny automated baseline metadata writers.
+    policy = release.get("execution_policy")
+    if isinstance(policy, dict):
+        sync = policy.get("watchdog_baseline_metadata_sync")
+        if isinstance(sync, dict):
+            sync["writer"] = None
+            sync["trigger"] = []
+            sync["authorization"] = "No automated repository metadata synchronization is authorized."
+            sync["write_allowlist"] = []
+    release_text = json.dumps(release, ensure_ascii=False, indent=2) + "\n"
+    release_sha = git_blob_sha(release_text.encode("utf-8"))
+
+    workflow_map = json.loads(workflow_map_path.read_text(encoding="utf-8"))
+    review_context = workflow_map.get("review_context")
+    if not isinstance(review_context, dict) or not isinstance(review_context.get("release_manifest_blob_sha"), str):
+        raise ValueError("production workflow map is missing its release-manifest blob pin")
+    review_context["release_manifest_blob_sha"] = release_sha
+    workflow_map_text = json.dumps(workflow_map, ensure_ascii=False, indent=2) + "\n"
+
+    write_sets = json.loads(write_sets_path.read_text(encoding="utf-8"))
+    protected = write_sets.get("policy", {}).get("protected_config", {})
+    sync = protected.get("metadata_only_sync")
+    if isinstance(sync, dict):
+        sync["writer"] = None
+        sync["allowed_paths"] = []
+        sync["authorization"] = (
+            "Baseline SHA and release metadata changes require a separately reviewed pull request. "
+            "Automation may only emit a runner-local proposal."
+        )
+        sync["fence"] = "No automated repository writer; proposal is confined to RUNNER_TEMP."
+    write_context = write_sets.get("review_context")
+    if not isinstance(write_context, dict) or not isinstance(write_context.get("release_manifest_blob_sha"), str):
+        raise ValueError("resource write inventory is missing its release-manifest blob pin")
+    write_context["release_manifest_blob_sha"] = release_sha
+    write_sets_text = json.dumps(write_sets, ensure_ascii=False, indent=2) + "\n"
+    return release_text, workflow_map_text, write_sets_text
 
 
 def config_change_history(guard: dict) -> list[str]:
-    """Return config-changing commits for evidence; author identity never blocks SHA registration."""
-    if os.environ.get("GITHUB_REF") != "refs/heads/main":
-        return []
-    head = run(["git", "rev-parse", "HEAD"])
+    """Read the committed uu.conf history without author-based approval."""
+    path = str(guard.get("path", "modules/uu.conf"))
+    head = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=ROOT, check=True,
+        capture_output=True, text=True,
+    ).stdout.strip()
     anchor = str(guard.get("last_user_approved_baseline_update", {}).get("commit_sha", ""))
     if len(anchor) == 40:
         ancestry = subprocess.run(
             ["git", "merge-base", "--is-ancestor", anchor, head],
-            cwd=ROOT,
-            capture_output=True,
+            cwd=ROOT, check=False, capture_output=True, text=True,
         )
         if ancestry.returncode == 0:
-            commits = run(["git", "rev-list", f"{anchor}..{head}", "--", CONFIG_PATH]).splitlines()
-            return [item for item in commits if item]
-    latest = run(["git", "log", "-1", "--format=%H", "HEAD", "--", CONFIG_PATH], check=False)
+            history = subprocess.run(
+                ["git", "log", "--format=%H", f"{anchor}..{head}", "--", path],
+                cwd=ROOT, check=True, capture_output=True, text=True,
+            )
+            commits = [line.strip() for line in history.stdout.splitlines() if line.strip()]
+            if commits:
+                return commits
+    latest = subprocess.run(
+        ["git", "log", "-1", "--format=%H", "HEAD", "--", path],
+        cwd=ROOT, check=False, capture_output=True, text=True,
+    ).stdout.strip()
     return [latest] if latest else [head]
 
 
-def json_text(value: dict) -> str:
-    return json.dumps(value, ensure_ascii=False, indent=2) + "\n"
+def write_baseline_proposal(proposal: dict) -> Path:
+    temp_root = Path(os.environ.get("RUNNER_TEMP", tempfile.gettempdir())).resolve()
+    configured = os.environ.get("CONFIG_BASELINE_PROPOSAL_PATH")
+    destination = Path(configured).resolve() if configured else temp_root / "config-baseline-proposal.json"
+    if destination != temp_root and temp_root not in destination.parents:
+        raise ValueError("config baseline proposal must remain under RUNNER_TEMP")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(json.dumps(proposal, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return destination
 
-
-def prepare_metadata(actual: str, previous: str, commits: list[str]) -> dict[str, str]:
-    policy_path = ROOT / "sources/policy.json"
-    policy = json.loads(policy_path.read_text(encoding="utf-8"))
-    guard = policy["managed_config_guard"]
-    if guard.get("path") != CONFIG_PATH or guard.get("content_immutable_to_automation") is not True:
-        raise ValueError("managed config protection invariant is invalid")
-    actor = os.environ.get("GITHUB_ACTOR", "github-actions[bot]")
-    now = datetime.now(timezone.utc).isoformat()
-    guard["approved_git_blob_sha"] = actual
-    guard["last_user_approved_baseline_update"] = {
-        "previous_blob_sha": previous,
-        "new_blob_sha": actual,
-        "reason": "User-authorized automatic SHA follow on the latest stable main revision, independent of commit author attribution. Only baseline metadata and derived release pins are updated; uu.conf bytes are immutable to automation.",
-        "approval_mode": "user_authorized_automatic_sha_follow",
-        "config_change_commits": commits,
-        "actor": actor,
-        "commit_sha": commits[0],
-        "registered_at": now,
-    }
-
-    release_path = ROOT / "automation/release_manifest.json"
-    release = json.loads(release_path.read_text(encoding="utf-8"))
-    pin = release["implementation_pins"]["config_baseline"]
-    if pin.get("path") != CONFIG_PATH or pin.get("access") != "read_only":
-        raise ValueError("release manifest config pin is not read-only modules/uu.conf")
-    pin["git_blob_sha"] = actual
-    for key, path in (
-        ("baseline_registration_runtime", "scripts/register_config_baseline.py"),
-        ("automation_write_boundary_validator", "scripts/validate_automation_write_boundary.py"),
-        ("storage_management_workflow", ".github/workflows/storage-management.yml"),
-        ("baseline_metadata_publisher", "scripts/publish_config_baseline_metadata.sh"),
-    ):
-        if key in release.get("implementation_pins", {}):
-            release["implementation_pins"][key]["git_blob_sha"] = run(["git", "rev-parse", f"HEAD:{path}"])
-    release_text = json_text(release)
-    release_sha = git_blob_sha(release_text.encode("utf-8"))
-
-    workflow_map_path = ROOT / "automation/production_workflow_map.json"
-    workflow_map = json.loads(workflow_map_path.read_text(encoding="utf-8"))
-    workflow_map["review_context"]["release_manifest_blob_sha"] = release_sha
-
-    write_sets_path = ROOT / "automation/resource_write_sets.json"
-    write_sets = json.loads(write_sets_path.read_text(encoding="utf-8"))
-    write_sets["review_context"]["release_manifest_blob_sha"] = release_sha
-
-    report_path = ROOT / "reports/config-drift-audit.json"
-    config_bytes = (ROOT / CONFIG_PATH).read_bytes()
-    report = build_report(config_bytes, actual, CONFIG_PATH, policy.get("dns_invariants", {}))
-    report["owner_approved_change_pending_registration"] = False
-    report["registration"] = {
-        "status": "registered",
-        "registered_at": now,
-        "config_change_commits": commits,
-        "writer": "Storage Management / File Management",
-        "config_content_modified": False,
-    }
-
-    return {
-        "sources/policy.json": json_text(policy),
-        "automation/release_manifest.json": release_text,
-        "automation/production_workflow_map.json": json_text(workflow_map),
-        "automation/resource_write_sets.json": json_text(write_sets),
-        "reports/config-drift-audit.json": json_text(report),
-    }
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--apply", action="store_true", help="write only the explicit metadata allowlist in the checkout")
-    args = parser.parse_args()
-    policy = json.loads((ROOT / "sources/policy.json").read_text(encoding="utf-8"))
+    parser.parse_args()  # Deliberately exposes no repository-write option.
+
+    policy = json.loads(POLICY.read_text(encoding="utf-8"))
     guard = policy["managed_config_guard"]
-    if guard.get("path") != CONFIG_PATH or guard.get("content_immutable_to_automation") is not True:
-        raise ValueError("uu.conf must remain the immutable managed config")
-    config = ROOT / CONFIG_PATH
-    original = config.read_bytes()
-    actual = git_blob_sha(original)
-    previous = str(guard["approved_git_blob_sha"])
-    if os.environ.get("GITHUB_REF") != "refs/heads/main":
-        print(json.dumps({"status": "non_main_observation_only", "observed_blob_sha": actual, "registered_blob_sha": previous, "config_content_modified": False}, sort_keys=True))
-        return 0
+    if guard.get("path") != "modules/uu.conf" or guard.get("content_immutable_to_automation") is not True:
+        raise ValueError("managed config protection invariant is invalid")
+
+    config_bytes = CONFIG.read_bytes()
+    actual = git_blob_sha(config_bytes)
+    committed = subprocess.run(
+        ["git", "rev-parse", f"HEAD:{guard['path']}"],
+        cwd=ROOT, check=True, capture_output=True, text=True,
+    ).stdout.strip()
+    if actual != committed:
+        raise ValueError("working-tree modules/uu.conf differs from the committed Git blob; refusing proposal")
+
+    previous = str(guard.get("approved_git_blob_sha", ""))
     if actual == previous:
-        report_path = ROOT / "reports/config-drift-audit.json"
-        report = build_report(original, previous, CONFIG_PATH, policy.get("dns_invariants", {}))
-        report["owner_approved_change_pending_registration"] = False
-        update = guard.get("last_user_approved_baseline_update", {})
-        report["registration"] = {
-            "status": "registered",
-            "registered_at": update.get("registered_at"),
-            "config_change_commits": update.get("config_change_commits", []),
-            "writer": "Storage Management / File Management",
-            "config_content_modified": False,
-        }
-        changed_report = report != json.loads(report_path.read_text(encoding="utf-8"))
-        if changed_report and args.apply:
-            report_path.write_text(json_text(report), encoding="utf-8")
-        print(json.dumps({"status": "audit_report_refreshed" if changed_report and args.apply else "no_change", "blob_sha": actual, "audit_report_refresh_needed": changed_report, "config_content_modified": False}, sort_keys=True))
+        print(json.dumps({
+            "status": "no_change",
+            "blob_sha": actual,
+            "proposal_created": False,
+            "repository_files_modified": False,
+            "config_file_modified": False,
+        }, sort_keys=True))
         return 0
 
     commits = config_change_history(guard)
-    if not commits:
-        commits = [run(["git", "rev-parse", "HEAD"])]
-
-    if not args.apply:
-        print(json.dumps({"status": "automatic_sha_follow_ready", "previous_blob_sha": previous, "new_blob_sha": actual, "verified_commits": commits, "config_content_modified": False}, sort_keys=True))
-        return 0
-
-    updates = prepare_metadata(actual, previous, commits)
-    for relative, content in updates.items():
-        if relative not in ALLOWLIST:
-            raise ValueError(f"refusing non-allowlisted metadata path: {relative}")
-        (ROOT / relative).write_text(content, encoding="utf-8")
-    if config.read_bytes() != original:
-        raise RuntimeError("protected modules/uu.conf bytes changed during metadata registration")
-    changed = sorted(run(["git", "diff", "--name-only"]).splitlines())
-    if changed and any(path not in ALLOWLIST for path in changed):
-        raise RuntimeError(f"unexpected modified path outside metadata allowlist: {changed}")
-    print(json.dumps({
-        "status": "metadata_registered_pending_git_commit",
+    actor = os.environ.get("GITHUB_ACTOR", "unknown")
+    now = datetime.now(timezone.utc).isoformat()
+    metadata = guard.setdefault("baseline_metadata_policy", {})
+    metadata.update({
+        "automation_may_read_file": True,
+        "automation_may_identify_file": True,
+        "automation_may_hash_file": True,
+        "automation_may_diff_file": True,
+        "automation_may_update_registered_blob_sha": False,
+        "automation_may_update_release_baseline_sha": False,
+        "automation_may_update_approved_baseline_sha": False,
+        "reviewed_pr_required": True,
+        "proposal_generation_mode": "runner_local_only",
+        "update_authorization": (
+            "Only a separately reviewed pull request may update the approved uu.conf Blob SHA "
+            "or derived Release baseline pins. Automation may read, hash, diff and emit a proposal "
+            "under RUNNER_TEMP, but may not write repository metadata or modules/uu.conf."
+        ),
+        "registration_must_not_write_config_content": True,
+    })
+    guard["approved_git_blob_sha"] = actual
+    guard["last_user_approved_baseline_update"] = {
         "previous_blob_sha": previous,
         "new_blob_sha": actual,
+        "reason": "Observed config SHA change; baseline metadata requires a separately reviewed pull request.",
+        "approval_mode": "reviewed_pull_request",
         "config_change_commits": commits,
-        "modified_paths": changed,
-        "config_content_modified": False,
+        "actor": actor,
+        "commit_sha": commits[0] if commits else "",
+        "registered_at": now,
+    }
+
+    release_text, map_text, sets_text = build_release_pin_updates(ROOT, guard["path"], actual)
+    proposed = {
+        "sources/policy.json": policy,
+        "automation/release_manifest.json": json.loads(release_text),
+        "automation/production_workflow_map.json": json.loads(map_text),
+        "automation/resource_write_sets.json": json.loads(sets_text),
+    }
+    proposal = {
+        "schema_version": 1,
+        "status": "requires_reviewed_pr",
+        "path": guard["path"],
+        "previous_blob_sha": previous,
+        "new_blob_sha": actual,
+        "actor": actor,
+        "approval_mode": "reviewed_pull_request",
+        "config_change_commits": commits,
+        "proposed_updates": proposed,
+        "repository_files_modified": False,
+        "config_file_modified": False,
+    }
+    proposal_path = write_baseline_proposal(proposal)
+    print(json.dumps({
+        "status": "proposal_created_requires_reviewed_pr",
+        "proposal_created": True,
+        "proposal_path": str(proposal_path),
+        "path": guard["path"],
+        "previous_blob_sha": previous,
+        "new_blob_sha": actual,
+        "actor": actor,
+        "config_change_commits": commits,
+        "repository_files_modified": False,
+        "config_file_modified": False,
     }, ensure_ascii=False, sort_keys=True))
     return 0
 
@@ -187,6 +214,6 @@ def main() -> int:
 if __name__ == "__main__":
     try:
         raise SystemExit(main())
-    except (OSError, KeyError, ValueError, subprocess.CalledProcessError, json.JSONDecodeError, RuntimeError) as exc:
+    except (OSError, KeyError, ValueError, subprocess.CalledProcessError, json.JSONDecodeError) as exc:
         print("ERROR: " + str(exc), file=sys.stderr)
         raise SystemExit(1)

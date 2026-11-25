@@ -95,13 +95,51 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertIn("reports/project-status.md", entry["writes"])
         self.assertEqual(group["status"], "runner_local_artifacts_no_repository_publication")
 
-    def test_assessment_contract_declares_the_discovery_predecessor(self):
+    def test_assessment_contract_declares_same_run_predecessor_and_disabled_dispatch(self):
         registry = read_json("automation/program_registry.json")
+        adapters = read_json("automation/execution_adapters.json")
         contract = read_json("automation/capability_contracts/assess_sources.json")
         program = next(x for x in registry["programs"] if x["id"] == "script_assess_sources")
+        adapter = next(x for x in adapters["adapters"] if x["target_program_id"] == "script_assess_sources")
         self.assertIn("script_discover_sources", program["depends_on"])
         self.assertEqual(contract["dependency_edges"]["registry_dependency_program_id"], "script_discover_sources")
         self.assertEqual(contract["dependency_edges"]["required_predecessor_artifact"], "sources/discovered_sources.json")
+        self.assertEqual(contract["dependency_edges"]["edge_semantics"], "same_run_stage_with_verified_runner_local_artifact")
+        self.assertEqual(contract["dispatch_status"], "disabled")
+        self.assertFalse(contract["entrypoint"]["task_scheduler_compatible"])
+        self.assertFalse(adapter["enabled"])
+        self.assertEqual(adapter["allowed_callers"], [])
+        self.assertNotIn("Shadowrocket Source Discovery (Watchdog)", json.dumps(contract))
+        self.assertEqual(contract["inputs"]["task_input"]["required"], [])
+        self.assertIsNone(contract["inputs"]["task_input"]["predecessor_proof"])
+        self.assertIn("no per-url task.assessment_checkpoint", json.dumps(contract).lower())
+        release = read_json("automation/release_manifest.json")
+        self.assertEqual(contract["review_context"]["release_id"], release["release_id"])
+        self.assertEqual(contract["review_context"]["program_registry_blob_sha"], blob_sha("automation/program_registry.json"))
+        self.assertEqual(contract["review_context"]["execution_adapters_blob_sha"], blob_sha("automation/execution_adapters.json"))
+
+    def test_capability_inventory_does_not_claim_active_assessment_queue_checkpoint(self):
+        inventory = read_json("automation/capability_contract_inventory.json")
+        assessor = next(x for x in inventory["programs"] if x["id"] == "script_assess_sources")
+        outputs = " ".join(assessor["current_registry_outputs"]).lower()
+        self.assertIn("no automation/task_queue.json", outputs)
+        self.assertIn("monolithic_fallback_non_dispatchable", assessor["contract_status"])
+        self.assertEqual(assessor["dispatch_status"], "disabled")
+
+    def test_production_workflow_map_describes_monolithic_fallback_not_active_dag(self):
+        mapping = read_json("automation/production_workflow_map.json")
+        findings = " ".join(mapping["architecture_findings"]).lower()
+        self.assertIn("monolithic fallback", findings)
+        self.assertIn("independent", findings)
+        self.assertIn("disabled", findings)
+        self.assertNotIn("both adapters are enabled", findings)
+        self.assertEqual(mapping["independent_dags"], [])
+
+    def test_assessment_queue_checkpoint_is_dormant_in_resource_ownership_audit(self):
+        audit = read_json("automation/resource_ownership_audit.json")
+        group = next(x for x in audit["resource_groups"] if x["id"] == "independent_source_assessment_queue_checkpoint")
+        self.assertEqual(group["status"], "dormant_non_dispatchable")
+        self.assertEqual(group["clients"], [])
 
     def test_release_manifest_pins_current_registry_and_adapter_blobs(self):
         release = read_json("automation/release_manifest.json")
@@ -111,6 +149,11 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(release["implementation_pins"]["execution_adapters"]["git_blob_sha"], blob_sha("automation/execution_adapters.json"))
         self.assertEqual(release["implementation_pins"]["storage_management_workflow"]["git_blob_sha"], blob_sha(".github/workflows/storage-management.yml"))
         self.assertEqual(release["implementation_pins"]["storage_auto_sync_recovery_verifier"]["git_blob_sha"], blob_sha("storage/v2/verify_auto_sync_recovery.py"))
+        self.assertEqual(release["implementation_pins"]["assessment_checkpoint_contract"]["git_blob_sha"], blob_sha("automation/capability_contracts/assess_sources.json"))
+        self.assertEqual(release["implementation_pins"]["capability_contract_inventory"]["git_blob_sha"], blob_sha("automation/capability_contract_inventory.json"))
+        self.assertEqual(release["implementation_pins"]["resource_ownership_audit"]["git_blob_sha"], blob_sha("automation/resource_ownership_audit.json"))
+        self.assertEqual(read_json("automation/resource_write_sets.json")["review_context"]["release_manifest_blob_sha"], blob_sha("automation/release_manifest.json"))
+        self.assertEqual(read_json("automation/production_workflow_map.json")["review_context"]["release_manifest_blob_sha"], blob_sha("automation/release_manifest.json"))
         self.assertTrue(release["execution_policy"]["existing_adapter_enablement_unchanged"])
 
     def test_adapter_enablement_matches_registry_and_default_deny(self):
@@ -124,18 +167,45 @@ class CapabilityContractInventoryTests(unittest.TestCase):
                              program.get("orchestration", {}).get("enabled") is True)
         self.assertTrue(all(not adapter_by_id[x].get("enabled") for x in python_programs))
 
-    def test_owner_config_baseline_is_read_only_and_file_management_tracks_sha(self):
+    def test_owner_config_baseline_is_read_only_and_reviewed_pr_only(self):
         policy = read_json("sources/policy.json")
         guard = policy["managed_config_guard"]
+        metadata = guard["baseline_metadata_policy"]
         self.assertFalse(guard["content_protection"]["automation_may_modify_content"])
-        self.assertTrue(guard["baseline_metadata_policy"]["automation_may_hash_file"])
-        self.assertTrue(guard["baseline_metadata_policy"]["automation_may_update_registered_blob_sha"])
-        self.assertIn("File Management", guard["baseline_metadata_policy"]["update_authorization"])
+        self.assertTrue(metadata["automation_may_hash_file"])
+        self.assertFalse(metadata["automation_may_update_registered_blob_sha"])
+        self.assertFalse(metadata["automation_may_update_release_baseline_sha"])
+        self.assertTrue(metadata["reviewed_pr_required"])
+        self.assertEqual(metadata["proposal_generation_mode"], "runner_local_only")
+        self.assertIn("separately reviewed pull request", metadata["update_authorization"])
         script = (ROOT / "scripts/register_config_baseline.py").read_text(encoding="utf-8")
-        self.assertIn("config.read_bytes() != original", script)
-        self.assertIn("ALLOWLIST", script)
+        self.assertNotIn("--apply", script)
+        self.assertIn("write_baseline_proposal", script)
+        self.assertIn("RUNNER_TEMP", script)
         workflow = (ROOT / ".github/workflows/storage-management.yml").read_text(encoding="utf-8")
-        self.assertIn("reconcile-config-baseline:", workflow)
+        self.assertNotIn("reconcile-config-baseline:", workflow)
+        self.assertNotIn("publish_config_baseline_metadata.sh", workflow)
+        release = read_json("automation/release_manifest.json")
+        sync = release["execution_policy"]["watchdog_baseline_metadata_sync"]
+        self.assertIsNone(sync["writer"])
+        self.assertEqual(sync["write_allowlist"], [])
+
+    def test_capability_inventory_counts_and_dispatch_claims_match_current_registry(self):
+        inventory = read_json("automation/capability_contract_inventory.json")
+        registry = read_json("automation/program_registry.json")
+        adapters = read_json("automation/execution_adapters.json")
+        python_programs = [x for x in registry["programs"] if x["kind"] == "python_component"]
+        self.assertEqual(inventory["summary"]["registered_programs"], len(registry["programs"]))
+        self.assertEqual(inventory["summary"]["python_components"], len(python_programs))
+        self.assertEqual(inventory["summary"]["independently_dispatchable_python_components"], 0)
+        self.assertEqual(len(inventory["programs"]), len(python_programs))
+        assessor = next(x for x in inventory["programs"] if x["id"] == "script_assess_sources")
+        self.assertEqual(assessor["dispatch_status"], "disabled")
+        self.assertEqual(assessor["contract_status"], "monolithic_fallback_non_dispatchable")
+        baseline = next(x for x in inventory["programs"] if x["id"] == "script_register_config_baseline")
+        self.assertEqual(baseline["dispatch_status"], "disabled")
+        self.assertEqual(baseline["contract_status"], "reviewed_runner_local_proposal_only")
+        self.assertTrue(all(not x["enabled"] for x in adapters["adapters"] if x["target_kind"] == "python_component"))
 
     def test_durable_queue_writers_are_classified_as_control_plane_not_production_publishers(self):
         writes = read_json("automation/resource_write_sets.json")
@@ -210,6 +280,41 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(writer_ids | nonwriter_ids | control_ids, python_ids)
         self.assertEqual(len(python_ids), 69)
         self.assertEqual(writes["direct_mutation_scan"]["registered_component_count"], len(python_ids))
+
+
+    def test_active_write_inventories_match_monolithic_four_workflow_topology(self):
+        release = read_json("automation/release_manifest.json")
+        mapping = read_json("automation/production_workflow_map.json")
+        writes = read_json("automation/resource_write_sets.json")
+        audit = read_json("automation/resource_ownership_audit.json")
+
+        self.assertEqual(release["execution_policy"]["source_discovery_mode"], "monolithic_fallback")
+        self.assertEqual(release["execution_policy"]["independent_python_dispatch"], "disabled")
+        self.assertEqual(mapping["independent_dags"], [])
+        dispatch = writes["policy"]["dispatch"].lower()
+        self.assertIn("monolithic", dispatch)
+        self.assertIn("disabled", dispatch)
+        self.assertNotIn("reviewed independent source discovery", dispatch)
+
+        active_inventory = json.dumps({"writes": writes, "audit": audit}, sort_keys=True)
+        for retired_workflow in (
+            "workflow_source_discovery",
+            "workflow_queue_snapshot_artifact",
+            "workflow_storage_incident_management",
+            "workflow_self_healing_agent",
+        ):
+            self.assertNotIn(retired_workflow, active_inventory)
+
+        groups = {item["id"]: item for item in audit["resource_groups"]}
+        source = groups["monolithic_source_assessment_pipeline"]
+        self.assertEqual(source["status"], "same_run_stage_no_independent_dispatch")
+        self.assertIn("workflow_auto_sync", source["known_writers"])
+        self.assertIn("script_discover_sources", source["known_writers"])
+        self.assertIn("script_assess_sources", source["known_writers"])
+
+        incident = groups["storage_incident_ledger"]
+        self.assertIn("workflow_storage_management", incident["known_writers"])
+        self.assertNotIn("workflow_storage_incident_management", incident["known_writers"])
 
 
 if __name__ == "__main__":

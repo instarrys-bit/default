@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "inventory_id": "resource-write-sets-2026.11.07-source-dag-active1",
+  "inventory_id": "resource-write-sets-2026.11.25-monolithic-fallback",
   "status": "partial_static_entrypoint_review",
   "policy": {
     "lock_identity": "canonical logical resource path, not program ID",
@@ -11,16 +11,10 @@
       "access": "read_only",
       "writers_allowed": [],
       "metadata_only_sync": {
-        "writer": "Storage Management / File Management",
-        "allowed_paths": [
-          "sources/policy.json",
-          "automation/release_manifest.json",
-          "automation/production_workflow_map.json",
-          "automation/resource_write_sets.json",
-          "reports/config-drift-audit.json"
-        ],
-        "authorization": "Standing user authorization allows File Management to follow the latest stable main-branch uu.conf Blob SHA and update approved/release baseline metadata regardless of commit author attribution. It does not authorize config-content edits. Owner manual edits and specific user-authorized AI edits are allowed; production automation and baseline registration remain content-read-only.",
-        "fence": "Dedicated reconcile-config-baseline job; latest-main reacquisition; stable-SHA and byte-integrity checks; metadata-only five-path allowlist; no production publisher access.",
+        "writer": null,
+        "allowed_paths": [],
+        "authorization": "Only a separately reviewed pull request may update the approved uu.conf Blob SHA or derived Release baseline pins. Automation may emit a runner-local proposal but has no repository metadata write authority.",
+        "fence": "No automated repository writer or Storage Management baseline job; proposal output is confined to RUNNER_TEMP.",
         "never_write": [
           "modules/uu.conf"
         ]
@@ -31,7 +25,7 @@
       "production_automation_may_edit_content": false,
       "baseline_metadata_registration_may_edit_content": false
     },
-    "dispatch": "Evidence is not an execution grant. The reviewed independent Source Discovery → Assessment DAG and production workflow are Watchdog-owned and release-allowlisted; all unrelated Python capabilities remain deny-by-default."
+    "dispatch": "The active production topology is the four-workflow monolithic fallback. Auto Sync runs Discovery then Assessment as bounded same-run stages under the logical/production-pipeline lease. Independent Python dispatch is disabled; script_assess_sources has no allowed callers and no active task.assessment_checkpoint writer. Evidence is not an execution grant; unrelated Python capabilities remain deny-by-default."
   },
   "document_store_semantics": {
     "implementation": "scripts/json_document_store.py",
@@ -58,18 +52,18 @@
         "reports/self-healing/diagnosis.json"
       ],
       "side_effects": [
-        "Only two hard-coded repair IDs are accepted; changes are staged on a run-specific self-heal branch and opened as a pull request. No direct push to main."
+        "Only two hard-coded repair IDs are accepted. If explicitly invoked, the helper stages one allowlisted code/test path on a run-specific branch and opens a PR; the retired self-healing workflow is absent and no active workflow adapter/caller invokes this helper. No direct push to main."
       ],
-      "evidence": "apply_repair() writes either the auto_sync workflow or the named regression test based on the exact diagnosis repair_id; self-healing-agent.yml stages only the corresponding allowlisted path, validates staged paths and publishes a PR.",
+      "evidence": "apply_repair() can write either the auto_sync workflow or the named regression test for one of two exact repair IDs. The current four-workflow YAML has no self-healing-agent workflow or invocation; this helper is not an active production writer.",
       "lease_keys": [
         "self-healing-agent workflow concurrency group"
       ],
-      "lease_enforcement": "Changes are isolated to self-heal/run-<run_id> and submitted as a PR; main is not mutated directly. Concurrent runs use distinct run IDs, so same-target repair PR collision/branch coordination is not established.",
+      "lease_enforcement": "No active workflow caller is registered. Any future reviewed use must isolate the change on a run-specific branch and submit a PR; main is not mutated directly.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [
         "self-heal/run-<run_id> working tree and PR branch until reviewed/merged"
       ],
-      "write_boundary_fencing": "Repair recipes and staged-path allowlist restrict targets; publication requires PR review/merge. Do not classify this as a production writer."
+      "write_boundary_fencing": "The helper is non-dispatchable in the current topology. Any future use must retain the exact repair-ID and staged-path allowlist and require PR review/merge."
     },
     {
       "program_id": "script_assess_sources",
@@ -100,18 +94,14 @@
       ],
       "side_effects": [
         "HTTPS reads restricted to raw.githubusercontent.com with repository binding and same-host redirect validation.",
-        "Per-URL results are CAS-appended to automation/task_queue.json task.assessment_checkpoint under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences.",
-        "Reads prior per-URL content SHA, parser/policy metadata, domain fingerprints and assessment cursor from rulesets/source_candidate_registry.json; it never writes that registry."
+        "Active monolithic mode writes only runner-local assessment history/runtime/report artifacts; it does not mutate automation/task_queue.json.",
+        "The legacy independent task-input branch can conditionally CAS-append per-URL assessment_checkpoint data to automation/task_queue.json, but this branch is dormant because the adapter is disabled and has no allowed callers."
       ],
-      "evidence": "Independent task mode resolves the discovery predecessor from AUTOMATION_PREDECESSOR_ARTIFACT_ROOT and writes runtime/history/report documents only beneath AUTOMATION_ARTIFACT_ROOT. Monolithic mode reads the same durable, read-only per-source assessment fingerprints and cursor from rulesets/source_candidate_registry.json. write_document uses no repository resource lease because the assessment output is runner-local. Shared independent-task progress is written only through the fenced automation/task_queue.json CAS.",
+      "evidence": "Current Auto Sync invokes the assessor as a same-run stage without --task-input; its active writes are runner-local artifacts. The separate task checkpoint implementation remains a dormant conditional code path with no enabled adapter or allowed caller. The registry writer, not the assessor, updates rulesets/source_candidate_registry.json under the outer production fence.",
       "lease_keys": [
-        "logical/production-pipeline",
-        "sources/source_assessments.json",
-        "data/source_assessments_runtime.json",
-        "reports/source-assessment.md",
-        "logical/source-assessment-checkpoints"
+        "logical/production-pipeline"
       ],
-      "lease_enforcement": "The durable per-URL checkpoint is updated via append-only automation/task_queue.json CAS under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences. The 3600-second resource lease exceeds four 15-minute Watchdog reconciliation intervals; pending verification renews it before expiry. All assessment JSON and reports remain per-run immutable artifacts.",
+      "lease_enforcement": "The active monolithic stage is covered by the enclosing production-pipeline lease and writes only runner-local artifacts. The legacy task-checkpoint branch would require the task lease plus logical/source-assessment-checkpoints and logical/production-pipeline fences, but it is not an active writer.",
       "publish_resources": [],
       "ephemeral_unpublished_resources": [
         "sources/source_assessments.json (monolithic checkout workspace only)",
@@ -125,7 +115,14 @@
       "publication": "No repository publication for assessment artifacts; monolithic report is retained only as a run artifact, independent mode uploads immutable runner-local outputs. Production Git commits remain restricted to rulesets/**.",
       "write_boundary_fencing": "Assessment output documents remain isolated per-run artifacts. The monolithic workflow copies the verified runtime document, manifest and shard set into RUNNER_TEMP before historical-state restoration; script_register_discovered_sources consumes that exact snapshot and must fail closed if it is missing. The durable rulesets/source_candidate_registry.json is read-only to this component and is updated only by script_register_discovered_sources under the existing production-pipeline and logical-document lease.",
       "additional_serialized_writers": [],
-      "additional_writer_boundary": "Restore/publish paths do not publish source assessment history or reports to the repository; only the ruleset publisher may commit rulesets/**."
+      "additional_writer_boundary": "Restore/publish paths do not publish source assessment history or reports to the repository; only the ruleset publisher may commit rulesets/**.",
+      "dormant_side_effects": [
+        "automation/task_queue.json task.assessment_checkpoint via Contents API SHA-CAS"
+      ],
+      "dormant_lease_keys": [
+        "logical/source-assessment-checkpoints",
+        "logical/source-dag-supervision"
+      ]
     },
     {
       "program_id": "script_audit_config_drift",
@@ -1144,13 +1141,15 @@
       "lock_key": "contents-cas:automation/task_queue.json",
       "mode": "compare_and_swap",
       "enforcement": "Storage Management reads the current Contents Blob SHA and logical revision, validates task/resource fencing, conditionally writes the next revision, then verifies the persisted document and new blob SHA. Stale SHA/409 conflicts fail closed and are retried only within the bounded store retry policy.",
-      "note": "automation/task_queue_rebuild_seed.json is the read-only bootstrap. The live queue, assessment checkpoints and resource leases are a single repository JSON document owned by Storage Management; no Issue comments or Issue API are used.",
+      "note": "automation/task_queue.json is owned by Storage Management Contents API SHA-CAS. Active clients are the scheduler, Watchdog and resource-lease runtime; the legacy independent Assessment checkpoint path is dormant and non-dispatchable.",
       "clients": [
         "script_remote_task_queue_runtime",
         "script_resource_lease_runtime",
         "script_task_scheduler",
-        "workflow_automation_watchdog",
-        "script_assess_sources"
+        "workflow_automation_watchdog"
+      ],
+      "dormant_clients": [
+        "script_assess_sources (legacy independent mode; adapter disabled, no allowed callers)"
       ]
     },
     {
@@ -1164,17 +1163,6 @@
       "mode": "exclusive",
       "enforcement": "durable task queue lease with monotonically increasing fencing token; publish gate re-reads live queue before git push",
       "note": "Shared coarse mutex serializes workflow_auto_sync with the independently scheduled source assessor; each JSON/report output also has its own logical resource lease. The allowlisted publish restore is invoked by workflow_auto_sync and is implemented by script_restore_automation_state under this same mutex."
-    },
-    {
-      "resource": "logical/source-dag-supervision",
-      "writers": [
-        "workflow_source_discovery",
-        "script_assess_sources"
-      ],
-      "lock_key": "logical/source-dag-supervision",
-      "mode": "exclusive",
-      "enforcement": "The durable queue acquires this common resource lease atomically with a task claim and keeps it active through asynchronous workflow verification; monotonically increasing fencing tokens prevent stale workers from proceeding.",
-      "note": "Discovery and Assessment share one task-scoped fence. Watchdog jobs may run concurrently without losing pending events; CAS plus this common lease prevents two different source-DAG stages from executing simultaneously."
     },
     {
       "id": "rulesets/config_conflict_archive.json",
@@ -1294,12 +1282,12 @@
         "script_restore_automation_state",
         "workflow_auto_sync"
       ],
-      "lock_key": "logical/source-dag-supervision + logical/source-discovery-run + sources/discovered_sources.json + reports/source-discovery.md (exclusive logical document/report leases in monolithic mode; per-run RUNNER_TEMP isolation in independent mode)",
+      "lock_key": "logical/production-pipeline + logical/source-discovery-run + per-run AUTOMATION_ARTIFACT_ROOT",
       "mode": "exclusive",
-      "enforcement": "Current production builder and publish restore are serialized by the Watchdog logical production-pipeline live fence. The JSON document writer additionally uses its documented logical-document lease where explicitly asserted.",
-      "note": "Restore can write the same allowlisted base/manifest/shards/report; all dynamic document children and cleanup operations must remain within the same logical resource lease. The dedicated source-discovery workflow is registered but its adapter remains disabled. It uses the exact same discovered_sources.json and report resource leases as workflow_auto_sync; immutable run artifact handoff is verified by Watchdog before assessment enqueue.",
+      "enforcement": "The Auto Sync run holds the live logical/production-pipeline fence through the same-run Discovery → Assessment stages. Discovery output is isolated per run and verified before Assessment; restore is serialized under the same production fence.",
+      "note": "Discovery is a same-run Auto Sync stage. The dedicated source-discovery workflow is absent from the four-workflow set and independent dispatch is disabled. The artifact document is not committed under sources/**; only the candidate registry is published under rulesets/** by the fenced registry writer.",
       "known_writers": [
-        "workflow_source_discovery"
+        "workflow_auto_sync"
       ]
     },
     {
@@ -1358,12 +1346,12 @@
       ],
       "writers": [
         "storage_incident_store",
-        "workflow_storage_incident_management"
+        "workflow_storage_management"
       ],
       "lock_key": "contents-cas:storage/v2/incidents.json",
       "mode": "compare_and_swap",
       "enforcement": "Storage Management applies idempotent event IDs, validates the incident schema/revision, performs Contents API SHA-CAS and verifies the persisted revision after write. Verified recovery is required before lifecycle state changes to RECOVERED.",
-      "note": "85 open legacy incident records were imported with original issue number, title, body, labels and available run/source metadata. GitHub Issues are archival provenance only; no runtime code reads or writes Issues."
+      "note": "Storage Management is the sole durable incident-ledger writer. It uses idempotent event IDs, revision validation, Contents API SHA-CAS and read-after-write verification. GitHub Issue references are archival provenance only; no runtime code reads or writes Issues."
     }
   ],
   "not_yet_proven": [
@@ -1380,10 +1368,10 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
-    "release_manifest_blob_sha": "f65f29b179d807ca66b20f80666de2c8c0fdba98",
+    "release_manifest_blob_sha": "15bf5bef1987d615dee06d869d817d2179a8b688",
     "program_registry_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6",
     "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
-    "note": "Static inventory of all registered Python components and workflow-native write sites. File Management is the sole repository SHA inventory writer; production publisher write scope remains rulesets/**. The REJECT manual-approval ledger in production_control.json is read-only input; modules/uu.conf remains read-only."
+    "note": "Static entrypoint inventory for registered Python components and workflow-native write sites. It is not a complete transitive/runtime trace; remaining gaps are enumerated in not_yet_proven. No automated repository SHA inventory or baseline metadata writer is authorized. Production publisher write scope remains rulesets/**; modules/uu.conf remains read-only."
   },
   "scheduler_lock_contract": {
     "logical_resource_key": "logical/production-pipeline",
@@ -1460,7 +1448,7 @@
       "program_id": "script_register_config_baseline",
       "source": "scripts/register_config_baseline.py",
       "classification": "runner_local_config_baseline_review_proposal_non_dispatchable",
-      "evidence": "The script reads modules/uu.conf, sources/policy.json and release/workflow inventory inputs. It verifies owner-authored config changes and constructs proposed metadata updates in memory, then writes only $RUNNER_TEMP/config-baseline-proposal.json. The auto_sync workflow uploads that proposal as an immutable run artifact before baseline verification fails closed. It never writes sources/policy.json, release_manifest.json, production_workflow_map.json, resource_write_sets.json or modules/uu.conf."
+      "evidence": "The script reads modules/uu.conf, sources/policy.json and release/workflow inventory inputs, records the observed SHA and commit context, and writes only a proposal under RUNNER_TEMP. It does not write sources/policy.json, automation/release_manifest.json, automation/production_workflow_map.json, automation/resource_write_sets.json or modules/uu.conf. Any metadata update requires a separately reviewed pull request."
     },
     {
       "program_id": "script_resolve_source_artifacts",
@@ -1637,7 +1625,7 @@
         "storage/v2/incidents.json idempotent incident event and recovery transitions"
       ],
       "file_writes": [],
-      "control_plane_boundary": "Called only by workflow_storage_incident_management. It cannot write outside storage/v2/incidents.json and cannot query or mutate GitHub Issues."
+      "control_plane_boundary": "Called only by workflow_storage_management. It may mutate only storage/v2/incidents.json through revisioned Contents API SHA-CAS and idempotent event IDs; it cannot write rulesets/**, modules/** or GitHub Issues."
     },
     {
       "program_id": "storage_queue_store",

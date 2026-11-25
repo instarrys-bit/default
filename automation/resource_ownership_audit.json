@@ -1,21 +1,16 @@
 {
   "schema_version": 1,
-  "audit_id": "resource-ownership-audit-2026.11.10.source-registry-artifact-replay",
+  "audit_id": "resource-ownership-audit-2026.11.25-monolithic-fallback",
   "status": "partial_static_audit",
   "purpose": "Identify shared repository and control-plane write resources. Isolated RUNNER_TEMP artifacts are explicitly separated from repository resources; this audit remains partial for unrelated writers.",
   "evidence_scope": {
-    "registry_blob_sha": "968c1ae613aa7c83eb4392ddb9eff6f7c6622767",
-    "adapters_blob_sha": "af0f8d196c70a07fcd30cdc7f97eaba7a025cb56",
+    "registry_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6",
+    "adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
     "inspected_sources": [
-      ".github/workflow_helpers/check_source_assessment_artifact.py",
-      ".github/workflows/assessment-completion-relay.yml",
       ".github/workflows/auto_sync.yml",
       ".github/workflows/automation-watchdog.yml",
       ".github/workflows/dashboard-pages.yml",
-      ".github/workflows/self-healing-agent.yml",
-      ".github/workflows/self-healing-tests.yml",
-      ".github/workflows/source-discovery.yml",
-      ".github/workflows/validate-config.yml",
+      ".github/workflows/storage-management.yml",
       "scripts/append_step_summary.py",
       "scripts/apply_safe_repair.py",
       "scripts/assess_sources.py",
@@ -32,6 +27,8 @@
       "scripts/build_rule_provenance.py",
       "scripts/build_rulesets.py",
       "scripts/build_source_candidates.py",
+      "scripts/collect_domains.py",
+      "scripts/deterministic_review.py",
       "scripts/diagnose_workflow_failure.py",
       "scripts/discover_sources.py",
       "scripts/domain_rule_engine.py",
@@ -44,6 +41,7 @@
       "scripts/lifecycle_gate.py",
       "scripts/persist_review_cursor.py",
       "scripts/production_intent.py",
+      "scripts/publish_config_baseline_metadata.sh",
       "scripts/refresh_ruleset_manifest.py",
       "scripts/register_config_baseline.py",
       "scripts/register_discovered_sources.py",
@@ -52,6 +50,7 @@
       "scripts/resource_lease_runtime.py",
       "scripts/restore_automation_state.py",
       "scripts/review_cursor.py",
+      "scripts/run_preflight_tests.py",
       "scripts/source_handoff_policy.py",
       "scripts/source_registry.py",
       "scripts/sync_ruleset_config_conflicts.py",
@@ -59,6 +58,7 @@
       "scripts/task_queue_runtime.py",
       "scripts/task_result_verifier.py",
       "scripts/task_scheduler.py",
+      "scripts/validate_automation_write_boundary.py",
       "scripts/validate_config.py",
       "scripts/validate_execution_adapters.py",
       "scripts/validate_program_registry.py",
@@ -69,6 +69,18 @@
       "scripts/verify_published_rulesets.py",
       "scripts/verify_recovery_run.py",
       "scripts/watchdog_recovery_policy.py",
+      "storage/v2/artifact_store.py",
+      "storage/v2/dashboard_snapshot.py",
+      "storage/v2/incident_store.py",
+      "storage/v2/ingest_actions_artifacts.py",
+      "storage/v2/migration.py",
+      "storage/v2/queue_store.py",
+      "storage/v2/runtime.py",
+      "storage/v2/snapshot_repository_integrity.py",
+      "storage/v2/source_handoff.py",
+      "storage/v2/verify_archive_inventory.py",
+      "storage/v2/verify_auto_sync_recovery.py",
+      "storage/v2/watchdog_supervisor.py",
       "tests/test_auto_activate_sources.py",
       "tests/test_config_baseline_registration.py",
       "tests/test_discovered_source_registry.py",
@@ -83,14 +95,10 @@
       "tests/test_task_scheduler.py",
       "tests/test_watchdog_recovery_workflow.py",
       "tests/test_workflow_config_guard_order.py",
-      "tests/test_workflow_native_write_inventory.py",
-      ".github/workflows/queue-snapshot-artifact.yml",
-      "storage/v2/queue_store.py",
-      "storage/v2/incident_store.py",
-      ".github/workflows/storage-incident-management.yml"
+      "tests/test_workflow_native_write_inventory.py"
     ],
-    "limitation": "The active Source Discovery → Assessment DAG remains scoped to runner-local immutable artifacts and a fenced automation/task_queue.json checkpoint. A separate durable non-activating source-candidate registry is committed only as rulesets/source_candidate_registry.json by the existing single auto_sync publisher under the Watchdog logical/production-pipeline fence. Protected modules/** and JavaScript remain unwritable. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
-    "reviewed_at": "2026-11-07",
+    "limitation": "Current production uses the monolithic same-run Discovery → Assessment stages inside Auto Sync. Independent Python dispatch and the legacy task.assessment_checkpoint path are disabled/dormant. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
+    "reviewed_at": "2026-11-25",
     "isolated_ephemeral_outputs": [
       {
         "program_id": "script_assess_sources",
@@ -220,16 +228,14 @@
     },
     {
       "id": "durable_queue_snapshot_artifacts",
-      "status": "immutable_run_scoped_actions_artifacts",
+      "status": "retired_no_current_workflow_writer",
       "paths": [
         "GitHub Actions artifacts durable-queue-snapshot-<run_id>"
       ],
-      "known_writers": [
-        "workflow_queue_snapshot_artifact"
-      ],
+      "known_writers": [],
       "lock_key": "unique GitHub Actions run ID; immutable artifact name durable-queue-snapshot-<run_id>",
       "required_mode": "immutable_run_scoped_artifact",
-      "note": "The backup workflow reads the canonical automation/task_queue.json queue snapshot and uploads one immutable artifact per run. This is external Actions artifact storage, not a repository file writer or queue mutator."
+      "note": "The historical queue-snapshot workflow is not part of the current four-workflow set. The canonical queue remains automation/task_queue.json and is verified through Contents SHA-CAS; this archival artifact name is not a current writer or dispatch path."
     },
     {
       "id": "durable_task_queue_control_plane",
@@ -241,7 +247,7 @@
       ],
       "lease_key": "github-contents-cas:automation/task_queue.json",
       "status": "active_storage_management_json_sha_cas",
-      "note": "The live queue is the repository JSON file automation/task_queue.json. Storage Management uses Contents Blob SHA-CAS and read-after-write verification; task/resource leases and assessment checkpoints share this revisioned document. No Issue comment chain is used.",
+      "note": "The live queue is automation/task_queue.json. Storage Management uses Contents Blob SHA-CAS and read-after-write verification. Active clients are scheduler/Watchdog/resource-lease components; the legacy Assessment checkpoint path is dormant and non-dispatchable.",
       "known_writers": [
         "storage_queue_store"
       ],
@@ -251,8 +257,10 @@
         "script_remote_task_queue_runtime",
         "script_resource_lease_runtime",
         "script_task_scheduler",
-        "workflow_automation_watchdog",
-        "script_assess_sources"
+        "workflow_automation_watchdog"
+      ],
+      "dormant_clients": [
+        "script_assess_sources (legacy independent checkpoint branch; adapter disabled, no allowed callers)"
       ]
     },
     {
@@ -265,27 +273,27 @@
       ],
       "lock_key": "contents-cas:automation/task_queue.json + logical/production-pipeline + logical/source-assessment-checkpoints + logical/source-dag-supervision",
       "required_mode": "repository_json_contents_sha_cas_with_live_task_and_resource_fences",
-      "status": "bounded_task_checkpoint_fenced",
-      "note": "Per-URL results are stored only in the currently claimed task's assessment_checkpoint within automation/task_queue.json. Storage Management validates task identity, active task lease, exact predecessor run/digest and resource fencing tokens before SHA-CAS update.",
-      "clients": [
-        "script_assess_sources",
-        "script_remote_task_queue_runtime",
-        "workflow_automation_watchdog"
-      ]
+      "status": "dormant_non_dispatchable",
+      "note": "Potential legacy resource only. Current production_control.source_discovery_mode is monolithic_fallback, the script_assess_sources adapter is disabled with no allowed callers, and the Auto Sync workflow does not invoke the per-URL task checkpoint path. Do not count this as an active writer or dispatch edge.",
+      "clients": []
     },
     {
-      "id": "independent_source_dag_supervision",
+      "id": "monolithic_source_assessment_pipeline",
       "paths": [
-        "automation/task_queue.json resource_leases[logical/source-dag-supervision]"
+        "logical/production-pipeline",
+        "RUNNER_TEMP/AUTOMATION_ARTIFACT_ROOT/sources/discovered_sources.json",
+        "RUNNER_TEMP/AUTOMATION_ARTIFACT_ROOT/data/source_assessments_runtime.json",
+        "RUNNER_TEMP/AUTOMATION_ARTIFACT_ROOT/reports/source-assessment.md"
       ],
       "known_writers": [
-        "workflow_source_discovery",
+        "workflow_auto_sync",
+        "script_discover_sources",
         "script_assess_sources"
       ],
-      "lock_key": "logical/source-dag-supervision",
-      "required_mode": "exclusive_task_scoped_resource_lease",
-      "status": "fenced_at_claim_and_held_through_verification",
-      "note": "Discovery and Assessment adapters acquire this shared durable resource lease atomically with task claim. The lease remains active through asynchronous workflow verification and is released only after verified completion. Concurrent Watchdog runs may overlap; queue snapshot CAS, task claim and this common fencing lease permit only one source-DAG task to execute at a time. GitHub job concurrency is not used as the task serialization authority."
+      "lock_key": "logical/production-pipeline",
+      "required_mode": "exclusive_workflow_scoped_resource_lease",
+      "status": "same_run_stage_no_independent_dispatch",
+      "note": "The active four-workflow production topology is monolithic_fallback. Auto Sync runs Discovery then Assessment in one bounded run under the live logical/production-pipeline lease. The Assessment adapter is disabled with no allowed callers; there is no separate source-discovery workflow and no active assessment_checkpoint queue writer. Outputs remain runner-local immutable run artifacts; only the fenced registry writer publishes rulesets/source_candidate_registry.json."
     },
     {
       "id": "lifecycle_gate_state",
@@ -311,8 +319,8 @@
       ],
       "writers": [],
       "lease_key": "read-only config baseline; runner-local proposal artifact only",
-      "status": "no_repository_metadata_writer",
-      "note": "register_config_baseline.py verifies owner-authored modules/uu.conf changes and emits a review proposal only under RUNNER_TEMP. auto_sync uploads the proposal as an immutable artifact before verify_baseline fails closed on an unregistered change. It never writes sources/policy.json, release_manifest.json, production_workflow_map.json or resource_write_sets.json. No production writer is registered.",
+      "status": "runner_local_proposal_only_reviewed_pr_required",
+      "note": "The baseline tool emits a runner-local proposal only. Storage Management has no baseline metadata writer; approved SHA and release-pin changes require a separately reviewed pull request.",
       "known_writers": []
     },
     {
@@ -500,13 +508,12 @@
         "tests/test_workflow_config_guard_order.py"
       ],
       "known_writers": [
-        "script_apply_safe_repair",
-        "workflow_self_healing_agent"
+        "script_apply_safe_repair"
       ],
       "lock_key": "self-heal/run-<workflow_run_id>",
       "required_mode": "isolated_branch_then_pull_request",
-      "status": "allowlisted_pr_only_not_main_writer",
-      "note": "The repair script modifies only one of two hard-coded paths, then the workflow stages exactly the selected path and publishes a run-specific PR branch. No direct main write is performed."
+      "status": "dormant_non_dispatchable_helper",
+      "note": "The repair helper remains registered but the retired self-healing workflow is absent and no active workflow/adapter calls it. Any future reviewed use must stage only its exact allowlisted path on a run-specific branch and require PR review; it cannot push main."
     },
     {
       "id": "shared_json_document_store",
@@ -543,10 +550,10 @@
       "known_writers": [
         "script_assess_sources"
       ],
-      "lock_key": "logical/production-pipeline + logical/source-assessment-checkpoints + logical/source-dag-supervision + exact assessment output resource keys in monolithic mode; per-run RUNNER_TEMP isolation in independent mode",
+      "lock_key": "logical/production-pipeline + isolated per-run RUNNER_TEMP artifact workspace",
       "required_mode": "isolated_per_run_artifact_workspace",
-      "status": "active_runner_local_artifacts_and_fenced_repository_json_checkpoint",
-      "note": "Independent assessment JSON and report are per-run RUNNER_TEMP artifacts. Watchdog adds a provenance proof binding the exact Assessment task, verified Discovery predecessor, producer workflow run/head SHA and every artifact file digest before immutable upload. Production independently resolves and verifies that artifact; only the bounded task assessment_checkpoint is shared through automation/task_queue.json CAS. No assessment document is committed or published."
+      "status": "active_runner_local_artifacts_no_shared_queue_checkpoint",
+      "note": "In the active monolithic fallback, script_assess_sources writes only runner-local history/runtime/report artifacts. The exact same-run discovery artifact is digest-verified; script_register_discovered_sources later updates rulesets/source_candidate_registry.json under the production lease. No per-URL task checkpoint is written to automation/task_queue.json."
     },
     {
       "id": "source_candidate_artifacts",
@@ -567,19 +574,19 @@
     {
       "id": "source_discovery_artifacts",
       "paths": [
-        "sources/discovered_sources.json (monolithic checkout workspace only)",
-        "reports/source-discovery.md (monolithic checkout workspace only)",
-        "RUNNER_TEMP/source-discovery-workspace/sources/discovered_sources.json",
-        "RUNNER_TEMP/source-discovery-workspace/reports/source-discovery.md"
+        "sources/discovered_sources.json (monolithic checkout fallback only)",
+        "reports/source-discovery.md (monolithic checkout fallback only)",
+        "RUNNER_TEMP/AUTOMATION_ARTIFACT_ROOT/sources/discovered_sources.json",
+        "RUNNER_TEMP/AUTOMATION_ARTIFACT_ROOT/reports/source-discovery.md"
       ],
       "known_writers": [
         "script_discover_sources",
-        "workflow_source_discovery"
+        "workflow_auto_sync"
       ],
-      "lock_key": "logical/source-discovery-run + logical/source-dag-supervision + exact document/report leases in monolithic mode; per-run RUNNER_TEMP isolation in independent mode",
+      "lock_key": "logical/production-pipeline + per-run AUTOMATION_ARTIFACT_ROOT",
       "required_mode": "isolated_per_run_artifact_workspace",
-      "status": "monolithic_exact_path_leases_and_independent_runner_local",
-      "note": "Independent Discovery writes only to per-run RUNNER_TEMP and uploads an immutable artifact with producer identity and complete logical-document digest. Production downloads the exact predecessor artifact selected by the verified Assessment task and rechecks the digest before lineage audit and source admission. No discovery files are committed; production publication remains rulesets/** only."
+      "status": "monolithic_same_run_runner_local_artifact",
+      "note": "Current Auto Sync performs Discovery and Assessment as same-run stages. Discovery output is isolated under RUNNER_TEMP/AUTOMATION_ARTIFACT_ROOT and verified before Assessment. No dedicated source-discovery workflow or independent Python dispatch is active; no sources/** repository publication occurs."
     },
     {
       "id": "storage_incident_ledger",
@@ -588,12 +595,12 @@
       ],
       "known_writers": [
         "storage_incident_store",
-        "workflow_storage_incident_management"
+        "workflow_storage_management"
       ],
       "lock_key": "contents-cas:storage/v2/incidents.json",
       "required_mode": "repository_json_contents_sha_cas_with_idempotent_event_ids",
       "status": "active_storage_management_only_writer",
-      "note": "Storage Management is the sole durable incident-state owner. The ledger contains the migrated 85 open legacy incident records and new events; issue references are inert provenance only."
+      "note": "Storage Management is the sole durable incident-state owner. The ledger uses idempotent event IDs, revision checks, Contents API SHA-CAS and read-after-write verification. GitHub Issue references are archival provenance only; runtime code does not read or write Issues."
     },
     {
       "id": "watchdog_unregistered_path_registry",
@@ -619,6 +626,6 @@
       "Global dynamic path, third-party Action and cross-workflow runtime evidence remains required before enabling unrelated capabilities."
     ]
   },
-  "limitation": "The active source DAG uses runner-local immutable artifacts and a Storage Management-owned automation/task_queue.json checkpoint. Incident state is held in storage/v2/incidents.json. No runtime workflow or script calls GitHub Issues. Production deliverables are limited to rulesets/**; modules/** remain read-only.",
-  "reviewed_at": "2026-11-18"
+  "limitation": "The current four-workflow production topology is monolithic_fallback: Discovery and Assessment run in one bounded Auto Sync job under the production-pipeline lease. No independent source-discovery workflow, assessment queue task or assessment_checkpoint writer is active. The legacy checkpoint contract remains dormant. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
+  "reviewed_at": "2026-11-25"
 }

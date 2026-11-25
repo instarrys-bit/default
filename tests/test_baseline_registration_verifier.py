@@ -15,7 +15,7 @@ class BaselineRegistrationVerifierTests(unittest.TestCase):
             "last_user_approved_baseline_update": {
                 "previous_blob_sha": "a" * 40,
                 "new_blob_sha": "b" * 40,
-                "approval_mode": "user_authorized_automatic_sha_follow",
+                "approval_mode": "reviewed_pull_request",
                 "actor": "github-actions[bot]",
                 "config_change_commits": ["2" * 40, "3" * 40],
                 "commit_sha": "2" * 40,
@@ -24,7 +24,7 @@ class BaselineRegistrationVerifierTests(unittest.TestCase):
         }
         self.commits = ["2" * 40, "3" * 40]
 
-    def test_accepts_user_authorized_registration_from_non_owner_actor(self):
+    def test_accepts_metadata_transition_for_reviewed_pr_mode(self):
         validate_registration_metadata(self.base, self.head, "b" * 40, self.commits)
 
     def test_rejects_wrong_current_blob(self):
@@ -35,12 +35,12 @@ class BaselineRegistrationVerifierTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "every intervening"):
             validate_registration_metadata(self.base, self.head, "b" * 40, self.commits[:1])
 
-    def test_rejects_unapproved_mode(self):
-        self.head["last_user_approved_baseline_update"]["approval_mode"] = "manual"
-        with self.assertRaisesRegex(ValueError, "user-authorized automatic SHA-follow"):
+    def test_rejects_automatic_metadata_follow_mode(self):
+        self.head["last_user_approved_baseline_update"]["approval_mode"] = "user_authorized_automatic_sha_follow"
+        with self.assertRaisesRegex(ValueError, "reviewed_pull_request"):
             validate_registration_metadata(self.base, self.head, "b" * 40, self.commits)
 
-    def test_requires_actor_evidence_without_requiring_owner_identity(self):
+    def test_requires_actor_evidence(self):
         self.head["last_user_approved_baseline_update"]["actor"] = ""
         with self.assertRaisesRegex(ValueError, "actor evidence"):
             validate_registration_metadata(self.base, self.head, "b" * 40, self.commits)

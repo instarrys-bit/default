@@ -4,46 +4,40 @@
   "program_id": "script_assess_sources",
   "implementation_path": "scripts/assess_sources.py",
   "implementation_blob_sha": "1d7cdcc4cb1501818526c37d1ccce5b15450425a",
-  "review_status": "reviewed_scoped_source_dag_enabled_pending_live_e2e",
-  "dispatch_status": "enabled",
+  "review_status": "monolithic_fallback_non_dispatchable_pending_multi_batch_e2e",
+  "dispatch_status": "disabled",
   "entrypoint": {
     "command": [
       "python3",
-      "scripts/assess_sources.py",
-      "--task-input",
-      "<bounded-task-input-json>"
+      "scripts/assess_sources.py"
     ],
-    "cli_arguments": [
-      "--task-input"
-    ],
-    "current_adapter_argv_template": [
-      "--task-input",
-      "{task_input_file}"
-    ],
-    "task_scheduler_compatible": true,
-    "reason": "Watchdog-gated scheduler dispatch is enabled under the exact release allowlist; the assessor remains non-activating and writes only runner-local immutable artifacts plus the fenced automation/task_queue.json checkpoint."
+    "cli_arguments": [],
+    "current_adapter_argv_template": [],
+    "task_scheduler_compatible": false,
+    "reason": "The active four-workflow topology uses the monolithic Auto Sync fallback: discovery and assessment execute as ordered stages in the same bounded workflow. The independent Assessment adapter is disabled with no allowed callers; no separate workflow_run dispatch or task-input entrypoint is active."
   },
   "inputs": {
     "repository_snapshot": [
       {
         "path": "sources/discovered_sources.json",
-        "mode": "verified_external_runner_artifact_read",
+        "mode": "verified_same_run_runner_local_artifact",
         "format": "JSON document or json_document_store sharded document",
-        "collection_key": "candidates"
+        "collection_key": "candidates",
+        "purpose": "Exact same-run output from script_discover_sources; the Auto Sync workflow preserves and digest-verifies this runner-local artifact before script_assess_sources consumes it."
       },
       {
         "path": "sources/source_assessments.json",
         "mode": "read_only_baseline",
         "format": "JSON document or json_document_store sharded document",
         "collection_key": "assessments",
-        "purpose": "read-only historical baseline for drift comparison"
+        "purpose": "Read-only historical baseline for parser/policy drift comparison."
       },
       {
         "path": "rulesets/source_candidate_registry.json",
         "mode": "read_only_durable_cross_run_assessment_history",
-        "format": "typed JSONL shards verified by adjacent manifest and per-shard SHA-256",
+        "format": "JSONL shards verified by adjacent manifest and per-shard SHA-256",
         "collection_key": "records",
-        "purpose": "restore each source URL's previous content SHA, parser/policy metadata, domain fingerprints and assessment cursor for second-observation stability checks; assessor does not write this registry"
+        "purpose": "Read-only previous content SHA, parser/policy metadata, domain fingerprints and next cursor; the assessor does not write this registry."
       }
     ],
     "remote_inputs": {
@@ -53,57 +47,19 @@
       "redirect_policy": "final response must remain HTTPS on raw.githubusercontent.com",
       "per_url_max_bytes": 1000000,
       "aggregate_max_bytes": 10000000,
-      "max_urls_per_run": 20,
+      "max_urls_per_run": 100,
       "request_timeout_seconds": 10,
-      "max_batch_runtime_seconds": 240
+      "max_batch_runtime_seconds": 240,
+      "max_file_bytes": 1000000
     },
     "environment": {
-      "github_token_required": true,
-      "other_environment_inputs": "GitHub Contents API credential for append-only queue snapshots supplied by the parent scheduler to re-read live task/resource lease state before each write; no GitHub API write capability is used by the assessor."
+      "github_token_required": false,
+      "other_environment_inputs": "RUNNER_TEMP artifact root and the same-run discovery workspace only; the active assessor has no GitHub Contents API write capability and does not update task-queue checkpoints."
     },
     "task_input": {
-      "required": [
-        "max_urls",
-        "max_file_bytes",
-        "max_total_bytes",
-        "predecessor"
-      ],
-      "predecessor_proof": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": [
-          "program_id",
-          "workflow_name",
-          "workflow_run_id",
-          "workflow_head_sha",
-          "artifact_path",
-          "artifact_sha256"
-        ],
-        "properties": {
-          "program_id": {
-            "type": "string",
-            "const": "script_discover_sources"
-          },
-          "workflow_name": {
-            "type": "string",
-            "const": "Shadowrocket Source Discovery (Watchdog)"
-          },
-          "workflow_run_id": {
-            "type": "string"
-          },
-          "workflow_head_sha": {
-            "type": "string"
-          },
-          "artifact_path": {
-            "type": "string",
-            "const": "sources/discovered_sources.json"
-          },
-          "artifact_sha256": {
-            "type": "string"
-          }
-        }
-      },
-      "note": "The scheduler validates the predecessor proof. workflow_run_id plus artifact_sha256 deterministically selects the same bounded URL batch on every retry. Each completed URL result, including its domain fingerprints and SHA-256 digest, is persisted immediately in the claimed task's assessment_checkpoint using the durable task queue's append-only repository JSON SHA-CAS queue under the live task/resource fencing proof; a retry restores completed results and fetches only incomplete or failed URLs. Legacy manual execution continues to use the persisted rotation cursor."
+      "required": [],
+      "predecessor_proof": null,
+      "note": "No independent task input is accepted in the active monolithic fallback. The typed predecessor is script_discover_sources within the same Auto Sync run; its runner-local discovered_sources artifact is digest-verified before assessment. The legacy independent task-input branch is dormant and has no enabled adapter or allowed caller."
     }
   },
   "outputs": {
@@ -139,8 +95,9 @@
       }
     ],
     "document_store_side_effects": [
-      "Document-store base JSON, manifests, content-addressed shards and temporary staging are written only beneath the isolated RUNNER_TEMP artifact root.",
-      "No document-store output is committed, pushed, or written into the repository checkout."
+      "Assessment history, runtime, report, manifests, shards and staging are written only to the isolated runner-local artifact workspace.",
+      "The assessor does not mutate automation/task_queue.json or any repository document in the active monolithic fallback.",
+      "The later script_register_discovered_sources stage merges the verified runtime snapshot into rulesets/source_candidate_registry.json under the enclosing production lease."
     ],
     "protected_paths": {
       "modules/uu.conf": "not read or written by this entrypoint",
@@ -155,7 +112,7 @@
         "modules/uu.conf",
         "sources/domain_sources.json"
       ],
-      "method": "After independent artifact verification, upload the three assessment outputs as an immutable Actions artifact only. No repository filesystem write, Contents API write, commit, push, or source activation is permitted."
+      "method": "After the independent assessment-artifact verifier succeeds, upload the runner-local assessment outputs as an immutable Actions artifact. The assessor itself performs no repository filesystem write, Contents API write, commit, push or source activation; only the separate registry-writer stage updates rulesets/source_candidate_registry.json under the production fence."
     }
   },
   "resource_contract": {
@@ -166,105 +123,109 @@
     ],
     "exclusive_write_resources": [],
     "lease_keys": [
-      "logical/production-pipeline",
-      "logical/source-assessment-checkpoints"
+      "logical/production-pipeline"
     ],
-    "dynamic_children_share_parent_lease": true,
-    "lock_scope_note": "The only shared mutation is the bounded per-URL assessment_checkpoint in automation/task_queue.json, updated through append-only snapshot CAS under the active task lease and both logical resource fences. The three assessment documents are isolated runner-local artifacts; no repository filesystem write or Contents API publication occurs. The exact discovered_sources predecessor digest is read from the verified external artifact root before and after execution. The source candidate registry is read-only to the assessor; its assessment evidence is updated by the existing register_discovered_sources production stage under the same outer production fence.",
+    "dynamic_children_share_parent_lease": false,
+    "lock_scope_note": "The active monolithic stage is covered by the enclosing Auto Sync production-pipeline lease. Assessment outputs are isolated runner-local artifacts. No per-URL task.assessment_checkpoint or logical/source-assessment-checkpoints mutation occurs in the active topology; script_register_discovered_sources later updates rulesets/source_candidate_registry.json under the same production fence.",
     "required_predecessor_artifacts": [
       "sources/discovered_sources.json"
     ],
     "lease_seconds": 3600,
-    "publish_resources": []
+    "publish_resources": [],
+    "dormant_independent_mode": {
+      "enabled": false,
+      "adapter_enabled": false,
+      "allowed_callers": [],
+      "potential_checkpoint_resource": "automation/task_queue.json task.assessment_checkpoint",
+      "potential_lease_keys": [
+        "logical/source-assessment-checkpoints",
+        "logical/source-dag-supervision"
+      ],
+      "reason": "Retained legacy task-input/checkpoint code is not part of the current four-workflow monolithic production path."
+    }
   },
   "execution_semantics": {
     "network_access": true,
-    "side_effect_class": "bounded_network_read_and_durable_task_queue_checkpoint",
+    "side_effect_class": "bounded_network_read_and_runner_local_artifacts",
     "deterministic": false,
     "idempotent": false,
-    "idempotency_key": "task_id + predecessor workflow_run_id + predecessor artifact_sha256 + URL; completed URL results are immutable within the task checkpoint.",
-    "retry_policy": "Resume the same predecessor-bound batch from the durable task-queue checkpoint. Reuse every completed URL result; repeat network reads only for URLs not yet checkpointed or whose prior fetch failed before a result was stored.",
+    "idempotency_key": "No separate Assessment task exists in the active monolithic fallback. The enclosing workflow_auto_sync task is deduplicated by Watchdog; the registry manifest preserves the next_cursor_url for a later bounded batch. Automated cursor-driven continuation remains a separate unverified gate.",
+    "retry_policy": "Retry the enclosing Auto Sync task under the existing queue/lease/fencing policy. The current monolithic assessor does not checkpoint each URL into automation/task_queue.json; the next batch resumes from the last verified registry cursor only after the registry writer persists the completed batch.",
     "timeout_seconds": 300,
-    "timeout_note": "Task input caps each run at 20 URLs, 1 MB per URL and 10 MB aggregate. Each successful URL is checkpointed immediately by a fenced queue CAS. The adapter timeout is 300 seconds, within the scheduler's 1-300 second bound and shorter than the 900-second registered task lease; the 3600-second resource lease covers delayed workflow completion events plus independent artifact verification.",
+    "timeout_note": "The monolithic batch is bounded to 100 URLs, 1 MB per URL and 10 MB aggregate. The independent task adapter remains disabled; no separate task lease or per-URL queue checkpoint is used.",
     "success_predicate": [
       "Process exits with code 0 and stdout satisfies the reviewed output schema.",
       "activated equals 0.",
-      "Runner-local assessment history, runtime document and report pass schema and shard-integrity verification.",
-      "Protected config and all declared read-only repository baselines remain unchanged.",
-      "Independent artifact verifier returns valid=true.",
-      "Per-URL progress is stored in the durable task queue with live task and logical resource fencing; no repository artifact publication occurs."
+      "Runner-local assessment history, runtime and report pass scripts/verify_assess_sources_artifacts.py and digest/shard-integrity checks.",
+      "The same-run script_discover_sources artifact digest is unchanged before and after assessment.",
+      "Protected config and read-only baselines remain unchanged.",
+      "The later registry-writer stage persists only verified assessment results into rulesets/source_candidate_registry.json under the production lease."
     ],
     "independent_verifier": "scripts/verify_assess_sources_artifacts.py independently checks runner-local runtime/history/report consistency, fingerprints exclusion and non-activation.",
     "remote_fetches_may_repeat": true,
-    "repository_writes": "Assessment documents are runner-local immutable artifacts. The only repository mutation is the bounded per-URL checkpoint in automation/task_queue.json through Storage Management Contents API SHA-CAS under the active task lease and logical/source-assessment-checkpoints plus logical/production-pipeline fences."
+    "repository_writes": "None by the assessor in the active monolithic fallback. The separate script_register_discovered_sources stage writes rulesets/source_candidate_registry.json under the enclosing production-pipeline lease."
   },
   "dependency_edges": {
-    "required_predecessor": "script_discover_sources",
-    "edge_semantics": "The Watchdog workflow_run gate downloads the artifact from the exact successful main-branch Shadowrocket Source Discovery (Watchdog) run, validates producer run ID/head SHA and the logical-document digest, then enqueues Assessment idempotently.",
+    "required_predecessor": "script_discover_sources (same-run stage)",
+    "edge_semantics": "same_run_stage_with_verified_runner_local_artifact",
     "registry_dependency_declared": true,
-    "note": "The producer writes only to its isolated RUNNER_TEMP workspace and uploads the complete logical document as an immutable artifact. Watchdog verifies the exact run proof, downloaded artifact digest and embedded producer metadata; no sources/ commit or equality with the main-branch baseline is required.",
+    "note": "The four-workflow Auto Sync pipeline runs script_discover_sources before script_assess_sources. The exact runner-local sources/discovered_sources.json logical document and SHA-256 are preserved and verified in the same run; there is no separate Discovery workflow_run handoff or independent Assessment dispatch.",
     "registry_dependency_program_id": "script_discover_sources",
     "required_predecessor_artifact": "sources/discovered_sources.json",
-    "input_snapshot_validation": "The scheduler hashes the complete legacy/sharded discovered_sources document under the verified external predecessor artifact root before claim and after assessment; it rejects missing or changed artifact content.",
-    "scheduler_enforcement": "The Watchdog downloads the artifact using the exact workflow_run ID, verifies workflow name, numeric run ID, full producer commit SHA, allowlisted artifact path and complete logical-document digest, then sets AUTOMATION_PREDECESSOR_ARTIFACT_ROOT to the verified external artifact directory. enqueue_source_assessment_task and scheduler.build_execution_plan independently recheck that exact external artifact digest before claim; the assessor rechecks it before and after execution."
+    "input_snapshot_validation": "The monolithic workflow hashes the complete runner-local discovered_sources logical document before and after assessment and rejects missing or changed artifact content.",
+    "scheduler_enforcement": "The Auto Sync YAML orders discovery before assessment and invokes the assessor without --task-input. The independent adapter is disabled with no allowed callers; the separate enqueue_source_assessment_task path is not part of the active workflow."
   },
   "permission_boundary": {
-    "filesystem": "Active independent mode writes assessment documents only beneath AUTOMATION_ARTIFACT_ROOT under RUNNER_TEMP. The only shared mutation is the bounded automation/task_queue.json task checkpoint under the live task lease and both logical resource fences. No repository checkout file is modified.",
+    "filesystem": "Active assessment outputs are confined to the runner-local artifact workspace. The assessor does not write repository files; script_register_discovered_sources alone updates rulesets/source_candidate_registry.json under the production lease.",
     "network": "HTTPS raw.githubusercontent.com only, repository-bound URL and same-host redirect checks.",
-    "github_api": "The assessor may only read and CAS-update the current task's bounded checkpoint in the durable automation/task_queue.json queue using the scheduler-supplied token. It performs no writes outside automation/task_queue.json, Git commits, or pushes.",
+    "github_api": "No GitHub API write capability is used by the active monolithic assessor. It does not CAS-update automation/task_queue.json; the legacy independent checkpoint branch is dormant and non-dispatchable.",
     "protected_config": "modules/uu.conf is immutable and outside this capability's write set."
   },
   "blockers": [
-    "The existing durable queue contains two historical successful Assessment tasks for Discovery run 42373818238 (legacy and parser-v2 idempotency keys); the new predecessor-based resolver recognizes both and suppresses further duplicates. A fresh post-merge run is required to prove exactly one Assessment task for a new Discovery run.",
-    "Durable per-URL interruption/resume is unit-tested; live multi-run interruption/resume evidence remains pending.",
-    "The global transitive writer inventory for unrelated non-dispatchable capabilities, dynamic path aliases and cross-workflow effects remains partial; those capabilities remain deny-by-default.",
-    "Production ruleset publication must continue to pass the rulesets/** staged-path fence and independent remote verification; modules/uu.conf must remain byte-for-byte unchanged."
+    "Continuous multi-batch evidence is still pending. The latest verified monolithic run is 45359028158: 100 URLs assessed, 82 successful results persisted, 47,775 assessments remain pending, and the next cursor is the Adobe rules-list URL.",
+    "The current production_intent refresh interval is 691200 seconds (8 days) and does not treat pending assessment backlog as scheduler demand; cursor-driven continuation is not yet implemented.",
+    "A new verified Auto Sync run must prove the cursor advances and pending_assessment_count decreases before this capability can be marked end-to-end complete.",
+    "The global transitive writer inventory for unrelated non-dispatchable capabilities and dynamic aliases remains partial; those capabilities remain deny-by-default."
   ],
   "review_context": {
-    "release_id": "shadowrocket-automation-source-dag-active-2026.11.07.2",
-    "program_registry_blob_sha": "5105f2c04affc964b5b6caf1de09561c5f8ab644",
-    "execution_adapters_blob_sha": "dc058e31c9959bda6ffed7a25c38207c9ab0dc50",
+    "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
+    "program_registry_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6",
+    "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
     "added_after_release_baseline": true,
     "note": "The release manifest pins this contract's current blob; the contract intentionally does not reverse-pin the manifest to avoid a circular hash dependency. This is review provenance only."
   },
   "dependency_contract": {
     "predecessor_program_id": "script_discover_sources",
     "artifact_path": "sources/discovered_sources.json",
-    "producer_workflow_name": "Shadowrocket Source Discovery (Watchdog)",
-    "edge_type": "intended_successful_workflow_run_with_immutable_artifact_digest",
-    "enforcement": "The Watchdog reconciles the durable Discovery task correlation and independently verified workflow run evidence, validates the exact immutable artifact, then enqueues at most one Assessment task for that predecessor. Existing Assessment tasks are classified by predecessor.workflow_run_id and legacy idempotency-key prefix; only state=ready may enqueue with canonical key source-assessment:<workflow_run_id>. Already-assessed, pending, invalid-evidence, retry-required, or unresolved-predecessor states suppress replacement Discovery dispatch.",
+    "producer_workflow_name": "Auto Sync (same-run stage)",
+    "edge_type": "same_run_stage_with_immutable_runner_local_artifact_digest",
+    "enforcement": "The active Auto Sync YAML invokes discovery before assessment, preserves the exact runner-local artifact and verifies its complete logical-document digest before and after assessment. No separate workflow_run producer, independent queue dispatch or predecessor-bound Assessment task is active.",
+    "registry_dependency_declared": true,
     "assessment_task_deduplication": {
-      "identity": "exact predecessor.workflow_run_id",
-      "canonical_idempotency_key": "source-assessment:<workflow_run_id>",
-      "legacy_keys_recognized": [
-        "source-assessment:<workflow_run_id>",
-        "source-assessment:<workflow_run_id>:*"
-      ],
+      "enabled": false,
+      "identity": "not_applicable_in_monolithic_fallback",
+      "canonical_idempotency_key": null,
+      "legacy_keys_recognized": [],
       "verified_success_requires": [
-        "task.status=SUCCEEDED",
-        "task.verification.status=passed",
-        "task.result.artifact_verification.valid=true",
-        "task.result.artifact_verification.activation_count=0"
+        "same-run discovery artifact SHA verified",
+        "assessment artifact verifier valid=true",
+        "activated=0",
+        "registry writer persists verified results under production lease"
       ],
       "states": [
-        "ready",
-        "already_assessed",
-        "assessment_pending",
-        "assessment_evidence_invalid",
-        "assessment_retry_required",
-        "awaiting_discovery_run",
-        "awaiting_assessment_predecessor"
+        "monolithic_stage",
+        "waiting_for_auto_sync_verification"
       ],
-      "rule": "Only ready may enqueue Assessment. Every other state suppresses duplicate enqueue and replacement Discovery dispatch; retry-required remains visible for bounded recovery rather than silently creating a new Discovery run."
+      "rule": "No independent Assessment task is enqueued in the current topology. The enclosing workflow_auto_sync task owns discovery and assessment; the script_assess_sources adapter remains disabled with no allowed callers."
     }
   },
   "retry_policy": {
     "max_attempts": 3,
     "total_attempts_including_initial": true,
-    "identity": "workflow_run_id + artifact_sha256",
-    "batch_selection": "deterministic stable offset",
-    "resume": "durable per-URL result checkpoint in automation/task_queue.json via Storage Management Contents API SHA-CAS (repository bootstrap is read-only), atomically updated with queue repository JSON SHA-CAS queue under active task/resource fencing",
-    "remote_fetches_may_repeat": "only for URLs not yet checkpointed or whose previous fetch failed before a result was persisted",
-    "repository_writes": "per-URL durable queue checkpoint; final verified history/report outputs under live fenced leases"
+    "identity": "enclosing workflow_auto_sync task identity plus current production fingerprint",
+    "batch_selection": "bounded monolithic registry-cursor selection",
+    "resume": "The next Auto Sync run reads the persisted registry cursor after the previous verified run. The active monolithic path has no per-URL task-queue checkpoint; failed/unverified runs must not advance the durable registry cursor.",
+    "remote_fetches_may_repeat": true,
+    "repository_writes": "Assessment artifacts are runner-local. Only script_register_discovered_sources updates rulesets/source_candidate_registry.json under the active production lease."
   }
 }
