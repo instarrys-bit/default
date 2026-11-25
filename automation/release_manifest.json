@@ -191,7 +191,7 @@
     },
     "automation_write_boundary_validator": {
       "path": "scripts/validate_automation_write_boundary.py",
-      "git_blob_sha": "af73e9cec35836437262ff848836b1411e097c22"
+      "git_blob_sha": "59bceda9ebdcc090b0963a595cfb78815091b536"
     },
     "repository_integrity_tracker": {
       "path": "storage/v2/snapshot_repository_integrity.py",
