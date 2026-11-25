@@ -11,16 +11,10 @@
       "access": "read_only",
       "writers_allowed": [],
       "metadata_only_sync": {
-        "writer": "Storage Management / File Management",
-        "allowed_paths": [
-          "sources/policy.json",
-          "automation/release_manifest.json",
-          "automation/production_workflow_map.json",
-          "automation/resource_write_sets.json",
-          "reports/config-drift-audit.json"
-        ],
-        "authorization": "Standing user authorization allows File Management to follow the latest stable main-branch uu.conf Blob SHA and update approved/release baseline metadata regardless of commit author attribution. It does not authorize config-content edits. Owner manual edits and specific user-authorized AI edits are allowed; production automation and baseline registration remain content-read-only.",
-        "fence": "Dedicated reconcile-config-baseline job; latest-main reacquisition; stable-SHA and byte-integrity checks; metadata-only five-path allowlist; no production publisher access.",
+        "writer": null,
+        "allowed_paths": [],
+        "authorization": "Only a separately reviewed pull request may update the approved uu.conf Blob SHA or derived Release baseline pins. Automation may emit a runner-local proposal but has no repository metadata write authority.",
+        "fence": "No automated repository writer or Storage Management baseline job; proposal output is confined to RUNNER_TEMP.",
         "never_write": [
           "modules/uu.conf"
         ]
@@ -1460,7 +1454,7 @@
       "program_id": "script_register_config_baseline",
       "source": "scripts/register_config_baseline.py",
       "classification": "runner_local_config_baseline_review_proposal_non_dispatchable",
-      "evidence": "The script reads modules/uu.conf, sources/policy.json and release/workflow inventory inputs. It verifies owner-authored config changes and constructs proposed metadata updates in memory, then writes only $RUNNER_TEMP/config-baseline-proposal.json. The auto_sync workflow uploads that proposal as an immutable run artifact before baseline verification fails closed. It never writes sources/policy.json, release_manifest.json, production_workflow_map.json, resource_write_sets.json or modules/uu.conf."
+      "evidence": "The script reads modules/uu.conf, sources/policy.json and release/workflow inventory inputs, records the observed SHA and commit context, and writes only a proposal under RUNNER_TEMP. It does not write sources/policy.json, automation/release_manifest.json, automation/production_workflow_map.json, automation/resource_write_sets.json or modules/uu.conf. Any metadata update requires a separately reviewed pull request."
     },
     {
       "program_id": "script_resolve_source_artifacts",
