@@ -2,247 +2,247 @@
   "manual_authorizations": {},
   "resource_leases": {
     "data/candidates.json": {
-      "acquired_at": "2026-11-25T22:46:45Z",
-      "expires_at": "2026-11-25T22:58:12Z",
-      "fencing_token": 59,
-      "lease_id": "67d7b660850b3da79e1b21eb451172bb",
-      "released_at": "2026-11-25T22:58:12Z",
-      "renewed_at": "2026-11-25T22:47:29Z",
-      "status": "RELEASED",
-      "task_id": "task_acd0b130caeb4ab1a91a8115",
-      "task_lease_token": "c8c1e6ed07ae3502a0e090470e2feaab",
-      "worker_id": "45715940938"
+      "acquired_at": "2026-11-25T22:59:07Z",
+      "expires_at": "2026-11-26T04:59:07Z",
+      "fencing_token": 60,
+      "lease_id": "abb863059c0cbfa38b84864e39996415",
+      "released_at": null,
+      "renewed_at": "2026-11-25T22:59:07Z",
+      "status": "ACTIVE",
+      "task_id": "task_15e47d89ef294c6d8a2a5ae6",
+      "task_lease_token": "3285b7268ce4131b24244550d1b76f04",
+      "worker_id": "45717627014"
     },
     "data/domain_candidates.json": {
-      "acquired_at": "2026-11-25T22:46:45Z",
-      "expires_at": "2026-11-25T22:58:12Z",
-      "fencing_token": 59,
-      "lease_id": "67d7b660850b3da79e1b21eb451172bb",
-      "released_at": "2026-11-25T22:58:12Z",
-      "renewed_at": "2026-11-25T22:47:29Z",
-      "status": "RELEASED",
-      "task_id": "task_acd0b130caeb4ab1a91a8115",
-      "task_lease_token": "c8c1e6ed07ae3502a0e090470e2feaab",
-      "worker_id": "45715940938"
+      "acquired_at": "2026-11-25T22:59:07Z",
+      "expires_at": "2026-11-26T04:59:07Z",
+      "fencing_token": 60,
+      "lease_id": "abb863059c0cbfa38b84864e39996415",
+      "released_at": null,
+      "renewed_at": "2026-11-25T22:59:07Z",
+      "status": "ACTIVE",
+      "task_id": "task_15e47d89ef294c6d8a2a5ae6",
+      "task_lease_token": "3285b7268ce4131b24244550d1b76f04",
+      "worker_id": "45717627014"
     },
     "data/source_pending.json": {
-      "acquired_at": "2026-11-25T22:46:45Z",
-      "expires_at": "2026-11-25T22:58:12Z",
-      "fencing_token": 59,
-      "lease_id": "67d7b660850b3da79e1b21eb451172bb",
-      "released_at": "2026-11-25T22:58:12Z",
-      "renewed_at": "2026-11-25T22:47:29Z",
-      "status": "RELEASED",
-      "task_id": "task_acd0b130caeb4ab1a91a8115",
-      "task_lease_token": "c8c1e6ed07ae3502a0e090470e2feaab",
-      "worker_id": "45715940938"
+      "acquired_at": "2026-11-25T22:59:07Z",
+      "expires_at": "2026-11-26T04:59:07Z",
+      "fencing_token": 60,
+      "lease_id": "abb863059c0cbfa38b84864e39996415",
+      "released_at": null,
+      "renewed_at": "2026-11-25T22:59:07Z",
+      "status": "ACTIVE",
+      "task_id": "task_15e47d89ef294c6d8a2a5ae6",
+      "task_lease_token": "3285b7268ce4131b24244550d1b76f04",
+      "worker_id": "45717627014"
     },
     "logical/production-pipeline": {
-      "acquired_at": "2026-11-25T22:46:45Z",
-      "expires_at": "2026-11-25T22:58:12Z",
-      "fencing_token": 59,
-      "lease_id": "67d7b660850b3da79e1b21eb451172bb",
-      "released_at": "2026-11-25T22:58:12Z",
-      "renewed_at": "2026-11-25T22:47:29Z",
-      "status": "RELEASED",
-      "task_id": "task_acd0b130caeb4ab1a91a8115",
-      "task_lease_token": "c8c1e6ed07ae3502a0e090470e2feaab",
-      "worker_id": "45715940938"
+      "acquired_at": "2026-11-25T22:59:07Z",
+      "expires_at": "2026-11-26T04:59:07Z",
+      "fencing_token": 60,
+      "lease_id": "abb863059c0cbfa38b84864e39996415",
+      "released_at": null,
+      "renewed_at": "2026-11-25T22:59:07Z",
+      "status": "ACTIVE",
+      "task_id": "task_15e47d89ef294c6d8a2a5ae6",
+      "task_lease_token": "3285b7268ce4131b24244550d1b76f04",
+      "worker_id": "45717627014"
     },
     "reports/source-discovery.md": {
-      "acquired_at": "2026-11-25T22:46:45Z",
-      "expires_at": "2026-11-25T22:58:12Z",
-      "fencing_token": 59,
-      "lease_id": "67d7b660850b3da79e1b21eb451172bb",
-      "released_at": "2026-11-25T22:58:12Z",
-      "renewed_at": "2026-11-25T22:47:29Z",
-      "status": "RELEASED",
-      "task_id": "task_acd0b130caeb4ab1a91a8115",
-      "task_lease_token": "c8c1e6ed07ae3502a0e090470e2feaab",
-      "worker_id": "45715940938"
+      "acquired_at": "2026-11-25T22:59:07Z",
+      "expires_at": "2026-11-26T04:59:07Z",
+      "fencing_token": 60,
+      "lease_id": "abb863059c0cbfa38b84864e39996415",
+      "released_at": null,
+      "renewed_at": "2026-11-25T22:59:07Z",
+      "status": "ACTIVE",
+      "task_id": "task_15e47d89ef294c6d8a2a5ae6",
+      "task_lease_token": "3285b7268ce4131b24244550d1b76f04",
+      "worker_id": "45717627014"
     },
     "rulesets/config_conflict_archive.json": {
-      "acquired_at": "2026-11-25T22:46:45Z",
-      "expires_at": "2026-11-25T22:58:12Z",
-      "fencing_token": 59,
-      "lease_id": "67d7b660850b3da79e1b21eb451172bb",
-      "released_at": "2026-11-25T22:58:12Z",
-      "renewed_at": "2026-11-25T22:47:29Z",
-      "status": "RELEASED",
-      "task_id": "task_acd0b130caeb4ab1a91a8115",
-      "task_lease_token": "c8c1e6ed07ae3502a0e090470e2feaab",
-      "worker_id": "45715940938"
+      "acquired_at": "2026-11-25T22:59:07Z",
+      "expires_at": "2026-11-26T04:59:07Z",
+      "fencing_token": 60,
+      "lease_id": "abb863059c0cbfa38b84864e39996415",
+      "released_at": null,
+      "renewed_at": "2026-11-25T22:59:07Z",
+      "status": "ACTIVE",
+      "task_id": "task_15e47d89ef294c6d8a2a5ae6",
+      "task_lease_token": "3285b7268ce4131b24244550d1b76f04",
+      "worker_id": "45717627014"
     },
     "rulesets/deletion_archive.json": {
-      "acquired_at": "2026-11-25T22:46:45Z",
-      "expires_at": "2026-11-25T22:58:12Z",
-      "fencing_token": 59,
-      "lease_id": "67d7b660850b3da79e1b21eb451172bb",
-      "released_at": "2026-11-25T22:58:12Z",
-      "renewed_at": "2026-11-25T22:47:29Z",
-      "status": "RELEASED",
-      "task_id": "task_acd0b130caeb4ab1a91a8115",
-      "task_lease_token": "c8c1e6ed07ae3502a0e090470e2feaab",
-      "worker_id": "45715940938"
+      "acquired_at": "2026-11-25T22:59:07Z",
+      "expires_at": "2026-11-26T04:59:07Z",
+      "fencing_token": 60,
+      "lease_id": "abb863059c0cbfa38b84864e39996415",
+      "released_at": null,
+      "renewed_at": "2026-11-25T22:59:07Z",
+      "status": "ACTIVE",
+      "task_id": "task_15e47d89ef294c6d8a2a5ae6",
+      "task_lease_token": "3285b7268ce4131b24244550d1b76f04",
+      "worker_id": "45717627014"
     },
     "rulesets/direct.list": {
-      "acquired_at": "2026-11-25T22:46:45Z",
-      "expires_at": "2026-11-25T22:58:12Z",
-      "fencing_token": 59,
-      "lease_id": "67d7b660850b3da79e1b21eb451172bb",
-      "released_at": "2026-11-25T22:58:12Z",
-      "renewed_at": "2026-11-25T22:47:29Z",
-      "status": "RELEASED",
-      "task_id": "task_acd0b130caeb4ab1a91a8115",
-      "task_lease_token": "c8c1e6ed07ae3502a0e090470e2feaab",
-      "worker_id": "45715940938"
+      "acquired_at": "2026-11-25T22:59:07Z",
+      "expires_at": "2026-11-26T04:59:07Z",
+      "fencing_token": 60,
+      "lease_id": "abb863059c0cbfa38b84864e39996415",
+      "released_at": null,
+      "renewed_at": "2026-11-25T22:59:07Z",
+      "status": "ACTIVE",
+      "task_id": "task_15e47d89ef294c6d8a2a5ae6",
+      "task_lease_token": "3285b7268ce4131b24244550d1b76f04",
+      "worker_id": "45717627014"
     },
     "rulesets/lifecycle_observations.json": {
-      "acquired_at": "2026-11-25T22:46:45Z",
-      "expires_at": "2026-11-25T22:58:12Z",
-      "fencing_token": 59,
-      "lease_id": "67d7b660850b3da79e1b21eb451172bb",
-      "released_at": "2026-11-25T22:58:12Z",
-      "renewed_at": "2026-11-25T22:47:29Z",
-      "status": "RELEASED",
-      "task_id": "task_acd0b130caeb4ab1a91a8115",
-      "task_lease_token": "c8c1e6ed07ae3502a0e090470e2feaab",
-      "worker_id": "45715940938"
+      "acquired_at": "2026-11-25T22:59:07Z",
+      "expires_at": "2026-11-26T04:59:07Z",
+      "fencing_token": 60,
+      "lease_id": "abb863059c0cbfa38b84864e39996415",
+      "released_at": null,
+      "renewed_at": "2026-11-25T22:59:07Z",
+      "status": "ACTIVE",
+      "task_id": "task_15e47d89ef294c6d8a2a5ae6",
+      "task_lease_token": "3285b7268ce4131b24244550d1b76f04",
+      "worker_id": "45717627014"
     },
     "rulesets/lifecycle_state.json": {
-      "acquired_at": "2026-11-25T22:46:45Z",
-      "expires_at": "2026-11-25T22:58:12Z",
-      "fencing_token": 59,
-      "lease_id": "67d7b660850b3da79e1b21eb451172bb",
-      "released_at": "2026-11-25T22:58:12Z",
-      "renewed_at": "2026-11-25T22:47:29Z",
-      "status": "RELEASED",
-      "task_id": "task_acd0b130caeb4ab1a91a8115",
-      "task_lease_token": "c8c1e6ed07ae3502a0e090470e2feaab",
-      "worker_id": "45715940938"
+      "acquired_at": "2026-11-25T22:59:07Z",
+      "expires_at": "2026-11-26T04:59:07Z",
+      "fencing_token": 60,
+      "lease_id": "abb863059c0cbfa38b84864e39996415",
+      "released_at": null,
+      "renewed_at": "2026-11-25T22:59:07Z",
+      "status": "ACTIVE",
+      "task_id": "task_15e47d89ef294c6d8a2a5ae6",
+      "task_lease_token": "3285b7268ce4131b24244550d1b76f04",
+      "worker_id": "45717627014"
     },
     "rulesets/manifest.json": {
-      "acquired_at": "2026-11-25T22:46:45Z",
-      "expires_at": "2026-11-25T22:58:12Z",
-      "fencing_token": 59,
-      "lease_id": "67d7b660850b3da79e1b21eb451172bb",
-      "released_at": "2026-11-25T22:58:12Z",
-      "renewed_at": "2026-11-25T22:47:29Z",
-      "status": "RELEASED",
-      "task_id": "task_acd0b130caeb4ab1a91a8115",
-      "task_lease_token": "c8c1e6ed07ae3502a0e090470e2feaab",
-      "worker_id": "45715940938"
+      "acquired_at": "2026-11-25T22:59:07Z",
+      "expires_at": "2026-11-26T04:59:07Z",
+      "fencing_token": 60,
+      "lease_id": "abb863059c0cbfa38b84864e39996415",
+      "released_at": null,
+      "renewed_at": "2026-11-25T22:59:07Z",
+      "status": "ACTIVE",
+      "task_id": "task_15e47d89ef294c6d8a2a5ae6",
+      "task_lease_token": "3285b7268ce4131b24244550d1b76f04",
+      "worker_id": "45717627014"
     },
     "rulesets/pending_queue.json": {
-      "acquired_at": "2026-11-25T22:46:45Z",
-      "expires_at": "2026-11-25T22:58:12Z",
-      "fencing_token": 59,
-      "lease_id": "67d7b660850b3da79e1b21eb451172bb",
-      "released_at": "2026-11-25T22:58:12Z",
-      "renewed_at": "2026-11-25T22:47:29Z",
-      "status": "RELEASED",
-      "task_id": "task_acd0b130caeb4ab1a91a8115",
-      "task_lease_token": "c8c1e6ed07ae3502a0e090470e2feaab",
-      "worker_id": "45715940938"
+      "acquired_at": "2026-11-25T22:59:07Z",
+      "expires_at": "2026-11-26T04:59:07Z",
+      "fencing_token": 60,
+      "lease_id": "abb863059c0cbfa38b84864e39996415",
+      "released_at": null,
+      "renewed_at": "2026-11-25T22:59:07Z",
+      "status": "ACTIVE",
+      "task_id": "task_15e47d89ef294c6d8a2a5ae6",
+      "task_lease_token": "3285b7268ce4131b24244550d1b76f04",
+      "worker_id": "45717627014"
     },
     "rulesets/proxy.list": {
-      "acquired_at": "2026-11-25T22:46:45Z",
-      "expires_at": "2026-11-25T22:58:12Z",
-      "fencing_token": 59,
-      "lease_id": "67d7b660850b3da79e1b21eb451172bb",
-      "released_at": "2026-11-25T22:58:12Z",
-      "renewed_at": "2026-11-25T22:47:29Z",
-      "status": "RELEASED",
-      "task_id": "task_acd0b130caeb4ab1a91a8115",
-      "task_lease_token": "c8c1e6ed07ae3502a0e090470e2feaab",
-      "worker_id": "45715940938"
+      "acquired_at": "2026-11-25T22:59:07Z",
+      "expires_at": "2026-11-26T04:59:07Z",
+      "fencing_token": 60,
+      "lease_id": "abb863059c0cbfa38b84864e39996415",
+      "released_at": null,
+      "renewed_at": "2026-11-25T22:59:07Z",
+      "status": "ACTIVE",
+      "task_id": "task_15e47d89ef294c6d8a2a5ae6",
+      "task_lease_token": "3285b7268ce4131b24244550d1b76f04",
+      "worker_id": "45717627014"
     },
     "rulesets/reject.list": {
-      "acquired_at": "2026-11-25T22:46:45Z",
-      "expires_at": "2026-11-25T22:58:12Z",
-      "fencing_token": 59,
-      "lease_id": "67d7b660850b3da79e1b21eb451172bb",
-      "released_at": "2026-11-25T22:58:12Z",
-      "renewed_at": "2026-11-25T22:47:29Z",
-      "status": "RELEASED",
-      "task_id": "task_acd0b130caeb4ab1a91a8115",
-      "task_lease_token": "c8c1e6ed07ae3502a0e090470e2feaab",
-      "worker_id": "45715940938"
+      "acquired_at": "2026-11-25T22:59:07Z",
+      "expires_at": "2026-11-26T04:59:07Z",
+      "fencing_token": 60,
+      "lease_id": "abb863059c0cbfa38b84864e39996415",
+      "released_at": null,
+      "renewed_at": "2026-11-25T22:59:07Z",
+      "status": "ACTIVE",
+      "task_id": "task_15e47d89ef294c6d8a2a5ae6",
+      "task_lease_token": "3285b7268ce4131b24244550d1b76f04",
+      "worker_id": "45717627014"
     },
     "rulesets/reject_review_queue.json": {
-      "acquired_at": "2026-11-25T22:46:45Z",
-      "expires_at": "2026-11-25T22:58:12Z",
-      "fencing_token": 59,
-      "lease_id": "67d7b660850b3da79e1b21eb451172bb",
-      "released_at": "2026-11-25T22:58:12Z",
-      "renewed_at": "2026-11-25T22:47:29Z",
-      "status": "RELEASED",
-      "task_id": "task_acd0b130caeb4ab1a91a8115",
-      "task_lease_token": "c8c1e6ed07ae3502a0e090470e2feaab",
-      "worker_id": "45715940938"
+      "acquired_at": "2026-11-25T22:59:07Z",
+      "expires_at": "2026-11-26T04:59:07Z",
+      "fencing_token": 60,
+      "lease_id": "abb863059c0cbfa38b84864e39996415",
+      "released_at": null,
+      "renewed_at": "2026-11-25T22:59:07Z",
+      "status": "ACTIVE",
+      "task_id": "task_15e47d89ef294c6d8a2a5ae6",
+      "task_lease_token": "3285b7268ce4131b24244550d1b76f04",
+      "worker_id": "45717627014"
     },
     "sources/discovered_sources.json": {
-      "acquired_at": "2026-11-25T22:46:45Z",
-      "expires_at": "2026-11-25T22:58:12Z",
-      "fencing_token": 59,
-      "lease_id": "67d7b660850b3da79e1b21eb451172bb",
-      "released_at": "2026-11-25T22:58:12Z",
-      "renewed_at": "2026-11-25T22:47:29Z",
-      "status": "RELEASED",
-      "task_id": "task_acd0b130caeb4ab1a91a8115",
-      "task_lease_token": "c8c1e6ed07ae3502a0e090470e2feaab",
-      "worker_id": "45715940938"
+      "acquired_at": "2026-11-25T22:59:07Z",
+      "expires_at": "2026-11-26T04:59:07Z",
+      "fencing_token": 60,
+      "lease_id": "abb863059c0cbfa38b84864e39996415",
+      "released_at": null,
+      "renewed_at": "2026-11-25T22:59:07Z",
+      "status": "ACTIVE",
+      "task_id": "task_15e47d89ef294c6d8a2a5ae6",
+      "task_lease_token": "3285b7268ce4131b24244550d1b76f04",
+      "worker_id": "45717627014"
     },
     "sources/domain_reviews.json": {
-      "acquired_at": "2026-11-25T22:46:45Z",
-      "expires_at": "2026-11-25T22:58:12Z",
-      "fencing_token": 59,
-      "lease_id": "67d7b660850b3da79e1b21eb451172bb",
-      "released_at": "2026-11-25T22:58:12Z",
-      "renewed_at": "2026-11-25T22:47:29Z",
-      "status": "RELEASED",
-      "task_id": "task_acd0b130caeb4ab1a91a8115",
-      "task_lease_token": "c8c1e6ed07ae3502a0e090470e2feaab",
-      "worker_id": "45715940938"
+      "acquired_at": "2026-11-25T22:59:07Z",
+      "expires_at": "2026-11-26T04:59:07Z",
+      "fencing_token": 60,
+      "lease_id": "abb863059c0cbfa38b84864e39996415",
+      "released_at": null,
+      "renewed_at": "2026-11-25T22:59:07Z",
+      "status": "ACTIVE",
+      "task_id": "task_15e47d89ef294c6d8a2a5ae6",
+      "task_lease_token": "3285b7268ce4131b24244550d1b76f04",
+      "worker_id": "45717627014"
     },
     "sources/review_cursor.json": {
-      "acquired_at": "2026-11-25T22:46:45Z",
-      "expires_at": "2026-11-25T22:58:12Z",
-      "fencing_token": 59,
-      "lease_id": "67d7b660850b3da79e1b21eb451172bb",
-      "released_at": "2026-11-25T22:58:12Z",
-      "renewed_at": "2026-11-25T22:47:29Z",
-      "status": "RELEASED",
-      "task_id": "task_acd0b130caeb4ab1a91a8115",
-      "task_lease_token": "c8c1e6ed07ae3502a0e090470e2feaab",
-      "worker_id": "45715940938"
+      "acquired_at": "2026-11-25T22:59:07Z",
+      "expires_at": "2026-11-26T04:59:07Z",
+      "fencing_token": 60,
+      "lease_id": "abb863059c0cbfa38b84864e39996415",
+      "released_at": null,
+      "renewed_at": "2026-11-25T22:59:07Z",
+      "status": "ACTIVE",
+      "task_id": "task_15e47d89ef294c6d8a2a5ae6",
+      "task_lease_token": "3285b7268ce4131b24244550d1b76f04",
+      "worker_id": "45717627014"
     },
     "sources/rule_provenance.json": {
-      "acquired_at": "2026-11-25T22:46:45Z",
-      "expires_at": "2026-11-25T22:58:12Z",
-      "fencing_token": 59,
-      "lease_id": "67d7b660850b3da79e1b21eb451172bb",
-      "released_at": "2026-11-25T22:58:12Z",
-      "renewed_at": "2026-11-25T22:47:29Z",
-      "status": "RELEASED",
-      "task_id": "task_acd0b130caeb4ab1a91a8115",
-      "task_lease_token": "c8c1e6ed07ae3502a0e090470e2feaab",
-      "worker_id": "45715940938"
+      "acquired_at": "2026-11-25T22:59:07Z",
+      "expires_at": "2026-11-26T04:59:07Z",
+      "fencing_token": 60,
+      "lease_id": "abb863059c0cbfa38b84864e39996415",
+      "released_at": null,
+      "renewed_at": "2026-11-25T22:59:07Z",
+      "status": "ACTIVE",
+      "task_id": "task_15e47d89ef294c6d8a2a5ae6",
+      "task_lease_token": "3285b7268ce4131b24244550d1b76f04",
+      "worker_id": "45717627014"
     },
     "sources/source_candidates.json": {
-      "acquired_at": "2026-11-25T22:46:45Z",
-      "expires_at": "2026-11-25T22:58:12Z",
-      "fencing_token": 59,
-      "lease_id": "67d7b660850b3da79e1b21eb451172bb",
-      "released_at": "2026-11-25T22:58:12Z",
-      "renewed_at": "2026-11-25T22:47:29Z",
-      "status": "RELEASED",
-      "task_id": "task_acd0b130caeb4ab1a91a8115",
-      "task_lease_token": "c8c1e6ed07ae3502a0e090470e2feaab",
-      "worker_id": "45715940938"
+      "acquired_at": "2026-11-25T22:59:07Z",
+      "expires_at": "2026-11-26T04:59:07Z",
+      "fencing_token": 60,
+      "lease_id": "abb863059c0cbfa38b84864e39996415",
+      "released_at": null,
+      "renewed_at": "2026-11-25T22:59:07Z",
+      "status": "ACTIVE",
+      "task_id": "task_15e47d89ef294c6d8a2a5ae6",
+      "task_lease_token": "3285b7268ce4131b24244550d1b76f04",
+      "worker_id": "45717627014"
     }
   },
-  "revision": 403,
+  "revision": 404,
   "schema_version": 1,
   "tasks": [
     {
@@ -7391,7 +7391,7 @@
       }
     },
     {
-      "attempts": 0,
+      "attempts": 1,
       "capability": "deterministic_audit",
       "created_at": "2026-11-25T22:59:00Z",
       "execution_backend": "github_contents",
@@ -7406,16 +7406,109 @@
         "production_reason": "current production input fingerprint differs from the last successful audit"
       },
       "last_error": null,
-      "lease": null,
+      "lease": {
+        "expires_at": "2026-11-26T04:59:07Z",
+        "owner": "45717627014",
+        "token": "3285b7268ce4131b24244550d1b76f04"
+      },
       "max_attempts": 2,
       "not_before": "2026-11-25T22:59:00Z",
       "priority": 100,
       "requester_program_id": "workflow_automation_watchdog",
+      "resource_lease": {
+        "acquired_at": "2026-11-25T22:59:07Z",
+        "expires_at": "2026-11-26T04:59:07Z",
+        "lease_seconds": 21600,
+        "resources": {
+          "data/candidates.json": {
+            "fencing_token": 60,
+            "lease_id": "abb863059c0cbfa38b84864e39996415"
+          },
+          "data/domain_candidates.json": {
+            "fencing_token": 60,
+            "lease_id": "abb863059c0cbfa38b84864e39996415"
+          },
+          "data/source_pending.json": {
+            "fencing_token": 60,
+            "lease_id": "abb863059c0cbfa38b84864e39996415"
+          },
+          "logical/production-pipeline": {
+            "fencing_token": 60,
+            "lease_id": "abb863059c0cbfa38b84864e39996415"
+          },
+          "reports/source-discovery.md": {
+            "fencing_token": 60,
+            "lease_id": "abb863059c0cbfa38b84864e39996415"
+          },
+          "rulesets/config_conflict_archive.json": {
+            "fencing_token": 60,
+            "lease_id": "abb863059c0cbfa38b84864e39996415"
+          },
+          "rulesets/deletion_archive.json": {
+            "fencing_token": 60,
+            "lease_id": "abb863059c0cbfa38b84864e39996415"
+          },
+          "rulesets/direct.list": {
+            "fencing_token": 60,
+            "lease_id": "abb863059c0cbfa38b84864e39996415"
+          },
+          "rulesets/lifecycle_observations.json": {
+            "fencing_token": 60,
+            "lease_id": "abb863059c0cbfa38b84864e39996415"
+          },
+          "rulesets/lifecycle_state.json": {
+            "fencing_token": 60,
+            "lease_id": "abb863059c0cbfa38b84864e39996415"
+          },
+          "rulesets/manifest.json": {
+            "fencing_token": 60,
+            "lease_id": "abb863059c0cbfa38b84864e39996415"
+          },
+          "rulesets/pending_queue.json": {
+            "fencing_token": 60,
+            "lease_id": "abb863059c0cbfa38b84864e39996415"
+          },
+          "rulesets/proxy.list": {
+            "fencing_token": 60,
+            "lease_id": "abb863059c0cbfa38b84864e39996415"
+          },
+          "rulesets/reject.list": {
+            "fencing_token": 60,
+            "lease_id": "abb863059c0cbfa38b84864e39996415"
+          },
+          "rulesets/reject_review_queue.json": {
+            "fencing_token": 60,
+            "lease_id": "abb863059c0cbfa38b84864e39996415"
+          },
+          "sources/discovered_sources.json": {
+            "fencing_token": 60,
+            "lease_id": "abb863059c0cbfa38b84864e39996415"
+          },
+          "sources/domain_reviews.json": {
+            "fencing_token": 60,
+            "lease_id": "abb863059c0cbfa38b84864e39996415"
+          },
+          "sources/review_cursor.json": {
+            "fencing_token": 60,
+            "lease_id": "abb863059c0cbfa38b84864e39996415"
+          },
+          "sources/rule_provenance.json": {
+            "fencing_token": 60,
+            "lease_id": "abb863059c0cbfa38b84864e39996415"
+          },
+          "sources/source_candidates.json": {
+            "fencing_token": 60,
+            "lease_id": "abb863059c0cbfa38b84864e39996415"
+          }
+        },
+        "status": "ACTIVE"
+      },
       "result": null,
       "state_history": [
-        "QUEUED"
+        "QUEUED",
+        "CLAIMED"
       ],
-      "status": "QUEUED",
+      "status": "CLAIMED",
       "target_program_id": "workflow_auto_sync",
       "task_id": "task_15e47d89ef294c6d8a2a5ae6",
       "trace_id": "e34db6fe1d5e49fe9ced263cb039fc42"
