@@ -84,7 +84,7 @@
     {
       "id": "json-document-store-40mb-defaults",
       "title": "Set shared JSON document-store default shard and file limits to 40 MB",
-      "status": "complete",
+      "status": "in_progress",
       "current_evidence": {
         "file": "scripts/json_document_store.py",
         "max_file_bytes": 40000000,
@@ -93,7 +93,8 @@
           "rulesets/reject_review_queue.json.manifest.json",
           "rulesets/source_candidate_registry.json.manifest.json"
         ],
-        "both_existing_shards_below_limit": true
+        "both_existing_shards_below_limit": true,
+        "ci_and_runtime_verification": "pending"
       },
       "acceptance": [
         "New JSON document writes default to a maximum 40 MB file and 40 MB shard target",
@@ -105,13 +106,14 @@
     {
       "id": "oversized-generated-report-cleanup",
       "title": "Remove oversized generated overlap-audit report from the tracked main tree",
-      "status": "complete",
+      "status": "in_progress",
       "current_evidence": {
         "path": "reports/ruleset-config-overlap-audit.json",
         "previous_blob_sha": "ec516223760a6bfb52c77f856e49fe7d8f03fe8d",
         "previous_size_bytes": 72707534,
         "classification": "generated audit output; runtime regenerates it; no production input consumer",
-        "historical_git_blob_preserved": true
+        "historical_git_blob_preserved": true,
+        "ci_and_runtime_verification": "pending"
       },
       "acceptance": [
         "Generated report is not retained as a 72 MB tracked source-tree blob",
