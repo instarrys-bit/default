@@ -10,7 +10,7 @@ sys.path.insert(0, str(ROOT / "storage" / "v2"))
 
 from runtime import (
     Conflict, GitHubSegmentedBackend, append_event, assert_automation_write_allowed,
-    canonical_bytes, empty_state, project, sha256, validate_state,
+    canonical_bytes, empty_state, initialize_segmented_store, project, sha256, validate_state,
 )
 
 
@@ -333,6 +333,36 @@ class StorageV2Tests(unittest.TestCase):
         patch_calls = [call for call in backend._request.call_args_list if call.args[0] == "PATCH"]
         self.assertEqual(len(patch_calls), 1)
         self.assertFalse(patch_calls[0].args[2]["force"])
+
+    def test_init_retries_non_force_ref_cas_conflict_and_verifies_readback(self):
+        backend = Mock()
+        backend.read.side_effect = [
+            (None, None), (None, None), (self.state, "new-head"),
+        ]
+        backend.compare_and_swap.side_effect = [
+            Conflict("GitHub CAS conflict (422)"), "new-commit",
+        ]
+        backend._head_and_tree.return_value = ("new-head", "tree")
+        backend._read_at_head.return_value = (self.state, None, [], False)
+        result = initialize_segmented_store(
+            backend, epoch_id="test-epoch", actual_seed_sha="seed",
+            approved_seed_sha="seed",
+        )
+        self.assertTrue(result["initialized"])
+        self.assertEqual(result["epoch_id"], "test-epoch")
+        self.assertEqual(result["revision"], 0)
+        self.assertEqual(backend.compare_and_swap.call_count, 2)
+        self.assertEqual(backend.read.call_count, 3)
+
+    def test_init_rejects_unapproved_seed_before_remote_reads(self):
+        backend = Mock()
+        with self.assertRaisesRegex(ValueError, "approved seed SHA"):
+            initialize_segmented_store(
+                backend, epoch_id="test-epoch", actual_seed_sha="actual",
+                approved_seed_sha="different",
+            )
+        backend.read.assert_not_called()
+        backend.compare_and_swap.assert_not_called()
 
     def test_segmented_backend_migrates_legacy_history_without_changing_revision(self):
         backend = GitHubSegmentedBackend("owner/repo", "main", "token")
