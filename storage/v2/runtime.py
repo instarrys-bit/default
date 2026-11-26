@@ -940,6 +940,83 @@ def assert_automation_write_allowed(path: str, actor: str) -> None:
     raise PermissionError(f"automated write path is not allowlisted: {normalized}")
 
 
+def initialize_segmented_store(backend, *, epoch_id: str, actual_seed_sha: str, approved_seed_sha: str, max_attempts: int = 5) -> dict:
+    """Initialize or migrate the event log with bounded retries on main-ref CAS races.
+
+    Storage Management has other legitimate main-branch writers. A non-force ref
+    update can therefore lose a race even when the V2 event state itself did not
+    change. Re-read the canonical head and rebuild the Git tree on each retry.
+    """
+    if not secrets.compare_digest(actual_seed_sha, approved_seed_sha):
+        raise ValueError("approved seed SHA does not match checked-in V2 seed")
+    if isinstance(max_attempts, bool) or not isinstance(max_attempts, int) or max_attempts < 1:
+        raise ValueError("max_attempts must be a positive integer")
+
+    for attempt in range(max_attempts):
+        current, current_head = backend.read()
+        if current is not None:
+            head, root_sha = backend._head_and_tree()
+            observed, _, _, legacy = backend._read_at_head(head, root_sha)
+            if observed is None or observed != current:
+                if attempt + 1 == max_attempts:
+                    raise Conflict("V2 state changed while preparing initialization/migration")
+                continue
+            if not legacy:
+                return {
+                    "initialized": False, "already_initialized": True,
+                    "epoch_id": current["epoch_id"], "revision": current["revision"],
+                    "seed_sha256": actual_seed_sha,
+                }
+            try:
+                backend.compare_and_swap(
+                    current, expected_revision=current["revision"],
+                    expected_blob_sha=current_head,
+                    message="chore(v2): migrate legacy state to verified segments",
+                    allow_legacy_migration=True,
+                )
+            except Conflict:
+                if attempt + 1 == max_attempts:
+                    raise
+                continue
+            verified, _ = backend.read()
+            verify_head, verify_tree = backend._head_and_tree()
+            replayed, _, _, still_legacy = backend._read_at_head(verify_head, verify_tree)
+            if (still_legacy or replayed is None or replayed["epoch_id"] != current["epoch_id"]
+                    or replayed["revision"] < current["revision"]
+                    or replayed["events"][:current["revision"]] != current["events"]):
+                raise StorageError("legacy migration read-back did not preserve the complete event history")
+            return {
+                "initialized": False, "migrated": True,
+                "epoch_id": replayed["epoch_id"], "revision": replayed["revision"],
+                "event_count": len(replayed["events"]), "seed_sha256": actual_seed_sha,
+            }
+
+        candidate = empty_state(epoch_id)
+        try:
+            backend.compare_and_swap(
+                candidate, expected_revision=-1, expected_blob_sha=None,
+                message="chore(v2): initialize storage epoch",
+            )
+        except Conflict:
+            if attempt + 1 == max_attempts:
+                raise
+            continue
+        verified, _ = backend.read()
+        verify_head, verify_tree = backend._head_and_tree()
+        replayed, _, _, legacy = backend._read_at_head(verify_head, verify_tree)
+        if (legacy or replayed is None or replayed["epoch_id"] != candidate["epoch_id"]
+                or replayed["revision"] < candidate["revision"]
+                or replayed["events"][:candidate["revision"]] != candidate["events"]):
+            raise StorageError("new segmented event store failed read-back replay verification")
+        return {
+            "initialized": True, "epoch_id": replayed["epoch_id"],
+            "revision": replayed["revision"], "event_count": len(replayed["events"]),
+            "seed_sha256": actual_seed_sha,
+        }
+
+    raise Conflict("V2 initialization/migration exhausted its bounded CAS retries")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repository", default=os.environ.get("GITHUB_REPOSITORY", ""))
@@ -967,29 +1044,11 @@ def main() -> int:
             return 0
         backend = GitHubSegmentedBackend(args.repository, args.branch, args.token)
         if args.command == "init":
-            if not secrets.compare_digest(actual_seed_sha, args.approved_seed_sha):
-                raise ValueError("approved seed SHA does not match checked-in V2 seed")
-            current, current_head = backend.read()
-            if current is not None:
-                head, root_sha = backend._head_and_tree()
-                _, _, _, legacy = backend._read_at_head(head, root_sha)
-                if legacy:
-                    backend.compare_and_swap(
-                        current, expected_revision=current["revision"],
-                        expected_blob_sha=current_head,
-                        message="chore(v2): migrate legacy state to verified segments",
-                        allow_legacy_migration=True,
-                    )
-                    print(json.dumps({"initialized": False, "migrated": True, "epoch_id": current["epoch_id"],
-                                      "revision": current["revision"], "seed_sha256": actual_seed_sha}))
-                else:
-                    print(json.dumps({"initialized": False, "already_initialized": True,
-                                      "epoch_id": current["epoch_id"], "revision": current["revision"],
-                                      "seed_sha256": actual_seed_sha}))
-                return 0
-            candidate = empty_state(args.epoch_id)
-            backend.compare_and_swap(candidate, expected_revision=-1, expected_blob_sha=None, message="chore(v2): initialize storage epoch")
-            print(json.dumps({"initialized": True, "epoch_id": args.epoch_id, "seed_sha256": actual_seed_sha}))
+            result = initialize_segmented_store(
+                backend, epoch_id=args.epoch_id, actual_seed_sha=actual_seed_sha,
+                approved_seed_sha=args.approved_seed_sha,
+            )
+            print(json.dumps(result, sort_keys=True))
         elif args.command == "read":
             state, blob_sha = backend.read()
             if state is None:
