@@ -317,11 +317,15 @@
         "automation/production_workflow_map.json",
         "automation/resource_write_sets.json"
       ],
-      "writers": [],
+      "writers": [
+        "script_register_config_baseline"
+      ],
       "lease_key": "read-only config baseline; runner-local proposal artifact only",
       "status": "runner_local_proposal_only_reviewed_pr_required",
       "note": "The baseline tool emits a runner-local proposal only. Storage Management has no baseline metadata writer; approved SHA and release-pin changes require a separately reviewed pull request.",
-      "known_writers": []
+      "known_writers": [
+        "script_register_config_baseline"
+      ]
     },
     {
       "id": "policy_source_overlap_audit",

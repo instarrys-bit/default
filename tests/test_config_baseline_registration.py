@@ -172,7 +172,7 @@ class ConfigBaselineMetadataTests(unittest.TestCase):
             before = {path: path.read_bytes() for path in repo_files}
             with patch.object(baseline, "ROOT", repo), patch.object(baseline, "POLICY", policy_path), patch.object(
                 baseline, "CONFIG", config
-            ), patch.object(baseline, "config_change_history", return_value=["c" * 40]), patch.object(
+            ), patch.object(baseline, "owner_approved_config_history", return_value=["c" * 40]), patch.object(
                 baseline, "run", return_value=actual
             ), patch.dict(os.environ, {
                 "RUNNER_TEMP": str(runner), "GITHUB_ACTOR": "instarrys-bit",
@@ -200,7 +200,7 @@ class ConfigBaselineMetadataTests(unittest.TestCase):
             before_config = config.read_bytes()
             with patch.object(baseline, "ROOT", repo), patch.object(baseline, "POLICY", policy_path), patch.object(
                 baseline, "CONFIG", config
-            ), patch.object(baseline, "config_change_history", return_value=["c" * 40]), patch.object(
+            ), patch.object(baseline, "owner_approved_config_history", return_value=["c" * 40]), patch.object(
                 baseline, "run", side_effect=[actual, "", "\n".join(baseline.ALLOWLIST)]
             ), patch.dict(os.environ, {
                 "GITHUB_EVENT_NAME": "push", "GITHUB_REF": "refs/heads/main",

@@ -135,7 +135,7 @@
       "automation_may_hash_file": true,
       "automation_may_diff_file": true,
       "automation_may_update_registered_blob_sha": true,
-      "update_authorization": "The user explicitly authorizes Storage Management / File Management to update the observed Blob SHA, approved baseline SHA and derived Release SHA metadata after verifying every intervening uu.conf-changing commit is attributed to the repository owner as author or committer. Manual metadata PRs still require human review. No automation may write modules/uu.conf content.",
+      "update_authorization": "The user explicitly authorizes Storage Management / File Management to update the observed Blob SHA, approved baseline SHA and derived Release SHA metadata after verifying every intervening uu.conf-changing commit is owner-authored or owner-committed (GitHub author or committer login). Manual metadata PRs still require human review. No automation may write modules/uu.conf content.",
       "registration_must_not_write_config_content": true,
       "automation_may_update_release_baseline_sha": true,
       "automation_may_update_approved_baseline_sha": true,

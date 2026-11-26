@@ -196,7 +196,7 @@ def main() -> int:
         print(
             f"OBSERVED CONFIG CHANGE: {guard['path']} current_blob_sha={actual} "
             f"registered_baseline_sha={expected}. Emit a runner-local proposal and continue read-only audit; "
-            "baseline metadata requires a separate human-reviewed PR."
+            "baseline metadata registration requires owner-attributed commit history; unverified attribution remains pending."
         )
         return 0
     print(f"PASS: {guard['path']} matches the registered baseline ({actual}); read-only audit may proceed.")

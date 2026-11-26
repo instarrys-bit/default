@@ -24,7 +24,7 @@ class AutomationWriteBoundaryTests(unittest.TestCase):
         content = (ROOT / "scripts/register_config_baseline.py").read_text(encoding="utf-8")
         self.assertIn("--apply", content)
         self.assertIn("owner_approved_config_history", content)
-        self.assertIn("read_bytes() != config_bytes", content)
+        self.assertIn("config.read_bytes() != config_bytes", content)
         self.assertIn("ALLOWLIST", content)
         self.assertIn("write_baseline_proposal", content)
 

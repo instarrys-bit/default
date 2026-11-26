@@ -112,6 +112,14 @@ def validate_write_boundary(root: Path = ROOT) -> list[str]:
     sync = protected.get("metadata_only_sync", {})
     if sync.get("writer") != BASELINE_WRITER or set(sync.get("allowed_paths", [])) != BASELINE_ALLOWLIST:
         errors.append("resource write inventory metadata-only writer allowlist is invalid")
+    confirmed_writer = next((item for item in write_sets.get("confirmed_write_sets", []) if item.get("program_id") == "script_register_config_baseline"), None)
+    if not isinstance(confirmed_writer, dict) or set(confirmed_writer.get("writes", [])) != BASELINE_ALLOWLIST:
+        errors.append("confirmed write inventory is missing the exact baseline metadata writer scope")
+    if any(item.get("program_id") == "script_register_config_baseline" for item in write_sets.get("reviewed_non_writers", [])):
+        errors.append("baseline metadata writer is incorrectly classified as a non-writer")
+    workflow_writer = next((item for item in write_sets.get("workflow_native_write_sites", []) if item.get("workflow_path") == ".github/workflows/storage-management.yml" and item.get("step_name") == "Commit only allowlisted baseline metadata with stale-main protection"), None)
+    if not isinstance(workflow_writer, dict) or set(workflow_writer.get("resources", [])) != BASELINE_ALLOWLIST:
+        errors.append("workflow-native baseline metadata writer is missing its exact allowlist")
     if sync.get("never_write") != ["modules/uu.conf"]:
         errors.append("resource write inventory must explicitly forbid uu.conf content writes")
     if BASELINE_ALLOWLIST & {"modules/uu.conf"}:
