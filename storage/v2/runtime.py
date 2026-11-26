@@ -508,6 +508,227 @@ class GitHubContentsBackend:
 
 
 
+
+MAX_SEGMENT_BYTES = 40_000_000
+SEGMENT_MANIFEST_PATH = "storage/v2/state/manifest.json"
+SEGMENT_DIRECTORY = "storage/v2/state/segments"
+
+
+class GitHubSegmentedBackend(GitHubContentsBackend):
+    """Append-only JSONL event segments committed atomically with their manifest."""
+
+    def _head_and_tree(self):
+        url = "https://api.github.com/repos/" + self.repository + "/git/ref/heads/" + urllib.parse.quote(self.branch, safe="")
+        ref = self._request("GET", url)
+        if not isinstance(ref, dict) or not isinstance(ref.get("object"), dict):
+            raise StorageError("could not resolve storage branch head")
+        head = ref["object"].get("sha")
+        commit = self._request("GET", "https://api.github.com/repos/" + self.repository + "/git/commits/" + str(head))
+        if not isinstance(commit, dict) or not isinstance(commit.get("tree"), dict):
+            raise StorageError("could not resolve storage branch tree")
+        return head, commit["tree"]["sha"]
+
+    def _tree_entry(self, root_sha, path):
+        current = root_sha
+        parts = path.split("/")
+        for index, part in enumerate(parts):
+            tree = self._request("GET", "https://api.github.com/repos/" + self.repository + "/git/trees/" + current)
+            if not isinstance(tree, dict) or tree.get("truncated"):
+                raise StorageError("Git tree listing is unavailable or truncated")
+            entry = next((x for x in tree.get("tree", []) if x.get("path") == part), None)
+            if entry is None:
+                return None
+            if index == len(parts) - 1:
+                return entry
+            if entry.get("type") != "tree":
+                return None
+            current = entry["sha"]
+        return None
+
+    def _read_blob(self, blob_sha):
+        blob = self._request("GET", "https://api.github.com/repos/" + self.repository + "/git/blobs/" + blob_sha)
+        if not isinstance(blob, dict) or blob.get("encoding") != "base64" or not isinstance(blob.get("content"), str):
+            raise StorageError("Git blob API did not return base64 content")
+        try:
+            return base64.b64decode(blob["content"], validate=True)
+        except (ValueError, base64.binascii.Error) as exc:
+            raise StorageError("Git blob base64 content is invalid") from exc
+
+    def _read_at_head(self, head, root_sha):
+        manifest_entry = self._tree_entry(root_sha, SEGMENT_MANIFEST_PATH)
+        if manifest_entry is not None:
+            if manifest_entry.get("type") != "blob":
+                raise StorageError("segmented manifest path is not a blob")
+            try:
+                manifest = json.loads(self._read_blob(manifest_entry["sha"]).decode("utf-8"))
+            except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+                raise StorageError("segmented manifest is invalid JSON") from exc
+            if not isinstance(manifest, dict) or manifest.get("schema_version") != 1:
+                raise StorageError("unsupported segmented event manifest schema")
+            unsigned = {k: v for k, v in manifest.items() if k != "manifest_sha256"}
+            if manifest.get("manifest_sha256") != sha256(canonical_bytes(unsigned)):
+                raise StorageError("manifest SHA-256 mismatch")
+            records = manifest.get("segments")
+            if not isinstance(records, list) or manifest.get("segment_count") != len(records):
+                raise StorageError("manifest segment count mismatch")
+            directory_entry = self._tree_entry(root_sha, SEGMENT_DIRECTORY)
+            if records and (directory_entry is None or directory_entry.get("type") != "tree"):
+                raise StorageError("manifest references a missing segment directory")
+            directory = {}
+            if directory_entry is not None:
+                listing = self._request("GET", "https://api.github.com/repos/" + self.repository + "/git/trees/" + directory_entry["sha"])
+                if not isinstance(listing, dict) or listing.get("truncated"):
+                    raise StorageError("segment directory listing is unavailable or truncated")
+                directory = {x.get("path"): x for x in listing.get("tree", [])}
+            events, segments = [], []
+            expected_sequence = 1
+            for index, record in enumerate(records, start=1):
+                name = "segment-" + str(index).zfill(8) + ".jsonl"
+                path = SEGMENT_DIRECTORY + "/" + name
+                if not isinstance(record, dict) or record.get("index") != index or record.get("path") != path:
+                    raise StorageError("manifest segment order or path is invalid")
+                entry = directory.get(name)
+                if entry is None or entry.get("type") != "blob" or entry.get("sha") != record.get("git_blob_sha"):
+                    raise StorageError("manifest segment Git blob is missing or mismatched")
+                raw = self._read_blob(entry["sha"])
+                if len(raw) > MAX_SEGMENT_BYTES or len(raw) != record.get("byte_count"):
+                    raise StorageError("segment byte count exceeds the limit or does not match")
+                if sha256(raw) != record.get("sha256"):
+                    raise StorageError("segment SHA-256 mismatch")
+                lines = raw.splitlines()
+                if not lines or len(lines) != record.get("record_count"):
+                    raise StorageError("segment record count mismatch")
+                decoded = []
+                for line in lines:
+                    try:
+                        event = json.loads(line.decode("utf-8"))
+                    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+                        raise StorageError("segment contains invalid JSONL") from exc
+                    if not isinstance(event, dict) or event.get("sequence") != expected_sequence:
+                        raise StorageError("event sequence is discontinuous")
+                    decoded.append(event)
+                    events.append(event)
+                    expected_sequence += 1
+                if record.get("first_sequence") != decoded[0]["sequence"] or record.get("last_sequence") != decoded[-1]["sequence"]:
+                    raise StorageError("segment sequence range mismatch")
+                segments.append({"metadata": copy.deepcopy(record), "raw": raw})
+            if manifest.get("revision") != len(events) or manifest.get("total_event_count") != len(events):
+                raise StorageError("manifest aggregate event count mismatch")
+            terminal = events[-1]["event_sha256"] if events else "0" * 64
+            if manifest.get("last_event_sha256") != terminal:
+                raise StorageError("manifest terminal event hash mismatch")
+            state = {"schema_version": 1, "epoch_id": manifest.get("epoch_id"),
+                     "revision": len(events), "events": events, "created_at": manifest.get("created_at")}
+            return validate_state(state), manifest, segments, False
+
+        legacy = self._tree_entry(root_sha, STATE_PATH)
+        if legacy is None:
+            return None, None, [], False
+        if legacy.get("type") != "blob":
+            raise StorageError("legacy state path is not a blob")
+        raw = self._read_blob(legacy["sha"])
+        if len(raw) > MAX_STATE_BYTES:
+            raise StorageError("legacy state exceeds the migration read limit")
+        try:
+            state = validate_state(json.loads(raw.decode("utf-8")))
+        except (UnicodeDecodeError, json.JSONDecodeError, ValueError) as exc:
+            raise StorageError("legacy state failed integrity validation") from exc
+        return state, None, [], True
+
+    def read(self):
+        head, root_sha = self._head_and_tree()
+        state, _, _, _ = self._read_at_head(head, root_sha)
+        return state, head if state is not None else None
+
+    def _create_blob(self, raw):
+        result = self._request("POST", "https://api.github.com/repos/" + self.repository + "/git/blobs",
+                               {"content": base64.b64encode(raw).decode("ascii"), "encoding": "base64"})
+        if not isinstance(result, dict) or not isinstance(result.get("sha"), str):
+            raise StorageError("GitHub did not return a new segment blob SHA")
+        return result["sha"]
+
+    def compare_and_swap(self, candidate, *, expected_revision, expected_blob_sha, message):
+        validate_state(candidate)
+        head, root_sha = self._head_and_tree()
+        current, manifest, segments, legacy = self._read_at_head(head, root_sha)
+        current_revision = current["revision"] if current is not None else -1
+        current_token = head if current is not None else None
+        if current_revision != expected_revision or current_token != expected_blob_sha:
+            raise Conflict("segmented event log compare-and-swap failed")
+        if candidate.get("revision") != expected_revision + 1:
+            raise ValueError("candidate revision must advance exactly once")
+        if current is not None and candidate["events"][:-1] != current["events"]:
+            raise Conflict("candidate does not preserve the complete event prefix")
+        if current is None and candidate.get("revision") != 0:
+            raise Conflict("first segmented event-log commit must initialize revision zero")
+
+        changed, old_records = [], []
+        if current is not None and not legacy:
+            old_records = [copy.deepcopy(x["metadata"]) for x in segments]
+            changed = [(x["metadata"]["path"], x["raw"]) for x in segments]
+            events_to_append, created_at = [candidate["events"][-1]], manifest["created_at"]
+        elif current is not None:
+            events_to_append, created_at = candidate["events"], current["created_at"]
+        else:
+            events_to_append, created_at = [], candidate["created_at"]
+
+        for event in events_to_append:
+            line = canonical_bytes(event) + b"\n"
+            if len(line) > MAX_SEGMENT_BYTES:
+                raise StorageError("single event exceeds the 40 MB segment limit")
+            if changed and len(changed[-1][1]) + len(line) <= MAX_SEGMENT_BYTES:
+                path, raw = changed[-1]
+                changed[-1] = (path, raw + line)
+            else:
+                index = len(changed) + 1
+                path = SEGMENT_DIRECTORY + "/segment-" + str(index).zfill(8) + ".jsonl"
+                changed.append((path, line))
+
+        records, tree_entries = [], []
+        for index, (path, raw) in enumerate(changed, start=1):
+            old = old_records[index - 1] if index <= len(old_records) else None
+            if old and old.get("byte_count") == len(raw) and old.get("sha256") == sha256(raw):
+                blob_sha = old["git_blob_sha"]
+            else:
+                blob_sha = self._create_blob(raw)
+            if not raw or len(raw) > MAX_SEGMENT_BYTES:
+                raise StorageError("segment is empty or exceeds the 40 MB limit")
+            decoded = [json.loads(line.decode("utf-8")) for line in raw.splitlines()]
+            record = {"index": index, "path": path, "first_sequence": decoded[0]["sequence"],
+                      "last_sequence": decoded[-1]["sequence"], "record_count": len(decoded),
+                      "byte_count": len(raw), "sha256": sha256(raw), "git_blob_sha": blob_sha}
+            records.append(record)
+            tree_entries.append({"path": path, "mode": "100644", "type": "blob", "sha": blob_sha})
+
+        unsigned = {"schema_version": 1, "epoch_id": candidate["epoch_id"],
+                    "revision": candidate["revision"], "total_event_count": len(candidate["events"]),
+                    "segment_count": len(records),
+                    "last_event_sha256": candidate["events"][-1]["event_sha256"] if candidate["events"] else "0" * 64,
+                    "created_at": created_at, "updated_at": utc_now(), "segments": records}
+        manifest_out = dict(unsigned)
+        manifest_out["manifest_sha256"] = sha256(canonical_bytes(unsigned))
+        manifest_raw = (json.dumps(manifest_out, ensure_ascii=False, sort_keys=True, indent=2) + "\n").encode("utf-8")
+        manifest_blob = self._create_blob(manifest_raw)
+        tree_entries.append({"path": SEGMENT_MANIFEST_PATH, "mode": "100644", "type": "blob", "sha": manifest_blob})
+        if legacy:
+            tree_entries.append({"path": STATE_PATH, "mode": "100644", "type": "blob", "sha": None})
+
+        tree = self._request("POST", "https://api.github.com/repos/" + self.repository + "/git/trees",
+                             {"base_tree": root_sha, "tree": tree_entries})
+        if not isinstance(tree, dict) or not isinstance(tree.get("sha"), str):
+            raise StorageError("GitHub did not create the segmented event tree")
+        commit = self._request("POST", "https://api.github.com/repos/" + self.repository + "/git/commits",
+                               {"message": message, "tree": tree["sha"], "parents": [head]})
+        if not isinstance(commit, dict) or not isinstance(commit.get("sha"), str):
+            raise StorageError("GitHub did not create the segmented event commit")
+        ref_url = "https://api.github.com/repos/" + self.repository + "/git/refs/heads/" + urllib.parse.quote(self.branch, safe="")
+        self._request("PATCH", ref_url, {"sha": commit["sha"], "force": False})
+        verified, _ = self.read()
+        if verified is None or verified["revision"] < candidate["revision"] or verified["events"][:candidate["revision"]] != candidate["events"]:
+            raise StorageError("segmented event log read-back verification failed")
+        return commit["sha"]
+
+
 def apply_watchdog_recovery_plan(state: dict, plan: dict, *, actor: str) -> tuple[dict, dict]:
     """Apply one read-only Watchdog plan to an in-memory state as Storage Management.
 
@@ -680,6 +901,7 @@ def assert_automation_write_allowed(path: str, actor: str) -> None:
         raise PermissionError(f"{actor} cannot write repository files directly")
     exact = {
         "storage/v2/state.json",
+        "storage/v2/state/manifest.json",
         "rulesets/direct.list", "rulesets/proxy.list", "rulesets/reject.list",
         "rulesets/manifest.json", "rulesets/lifecycle_state.json",
         "rulesets/lifecycle_observations.json", "automation/release_manifest.json",
@@ -687,6 +909,9 @@ def assert_automation_write_allowed(path: str, actor: str) -> None:
     if normalized in exact:
         return
     parts = normalized.split("/")
+    if (len(parts) == 5 and parts[:4] == ["storage", "v2", "state", "segments"]
+            and re.fullmatch(r"segment-[0-9]{8}\.jsonl", parts[4])):
+        return
     if (len(parts) == 5 and parts[:4] == ["storage", "v2", "artifacts", "catalog"]
             and re.fullmatch(r"[0-9]{1,20}\.json", parts[4])):
         return
@@ -730,7 +955,7 @@ def main() -> int:
         if args.command == "seed-sha":
             print(actual_seed_sha)
             return 0
-        backend = GitHubContentsBackend(args.repository, args.branch, args.token)
+        backend = GitHubSegmentedBackend(args.repository, args.branch, args.token)
         if args.command == "init":
             if not secrets.compare_digest(actual_seed_sha, args.approved_seed_sha):
                 raise ValueError("approved seed SHA does not match checked-in V2 seed")
@@ -746,16 +971,35 @@ def main() -> int:
                 raise NotInitialized("V2 storage has not been initialized")
             print(json.dumps({"state": state, "projection": project(state), "blob_sha": blob_sha}, ensure_ascii=False))
         else:
-            state, blob_sha = backend.read()
-            if state is None:
-                raise NotInitialized("V2 storage has not been initialized")
-            candidate, result = append_event(
-                state, event_type=args.event_type, payload=json.loads(args.payload),
-                actor=args.actor, idempotency_key=args.idempotency_key,
-                expected_revision=args.expected_revision,
-            )
-            if result["created"]:
-                backend.compare_and_swap(candidate, expected_revision=state["revision"], expected_blob_sha=blob_sha, message=f"chore(v2): append {args.event_type}")
+            payload = json.loads(args.payload)
+            created_at = utc_now()
+            result = None
+            for attempt in range(5):
+                state, head_sha = backend.read()
+                if state is None:
+                    raise NotInitialized("V2 storage has not been initialized")
+                if attempt == 0 and state["revision"] != args.expected_revision:
+                    already_recorded = any(event["idempotency_key"] == args.idempotency_key for event in state["events"])
+                    if not already_recorded:
+                        raise Conflict(f"revision conflict: expected {args.expected_revision}, current {state['revision']}")
+                candidate, result = append_event(
+                    state, event_type=args.event_type, payload=payload,
+                    actor=args.actor, idempotency_key=args.idempotency_key,
+                    expected_revision=state["revision"], created_at=created_at,
+                )
+                if not result["created"]:
+                    break
+                try:
+                    backend.compare_and_swap(
+                        candidate, expected_revision=state["revision"],
+                        expected_blob_sha=head_sha,
+                        message=f"chore(v2): append {args.event_type}",
+                    )
+                    break
+                except Conflict:
+                    if attempt == 4:
+                        raise
+                    continue
             print(json.dumps(result, ensure_ascii=False))
     except (StorageError, ValueError, OSError, PermissionError) as exc:
         print(f"storage-v2: {exc}", file=sys.stderr)

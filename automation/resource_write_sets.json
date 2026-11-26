@@ -1368,7 +1368,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
-    "release_manifest_blob_sha": "69aca21d7e9ca4861d5b1104315be4dd3f8c9c56",
+    "release_manifest_blob_sha": "5a9f075d7d34acfe22e49af75c7e62df9faf250b",
     "program_registry_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6",
     "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
     "note": "Static entrypoint inventory for registered Python components and workflow-native write sites. It is not a complete transitive/runtime trace; remaining gaps are enumerated in not_yet_proven. No automated repository SHA inventory or baseline metadata writer is authorized. Production publisher write scope remains rulesets/**; modules/uu.conf remains read-only."
@@ -1643,10 +1643,12 @@
       "source": "storage/v2/runtime.py",
       "classification": "storage_v2_event_sourced_state_cas_writer",
       "side_effects": [
-        "storage/v2/state.json GitHub Contents API compare-and-swap writes for hash-chained V2 task/resource events and recovery transitions"
+        "storage/v2/state/manifest.json Git blob and SHA-256 verified segmented event manifest",
+        "storage/v2/state/segments/segment-*.jsonl immutable event segments, each no larger than 40,000,000 bytes",
+        "storage/v2/state.json read-only legacy migration input; removed only in the atomic manifest-install commit"
       ],
       "file_writes": [],
-      "control_plane_boundary": "Only Storage Management may apply typed state events. The runtime validates exact storage/v2/state.json authorization, expected revision and blob SHA, performs Contents API CAS, and independently reads back the committed revision/blob SHA. It cannot write modules/** or rulesets/**."
+      "control_plane_boundary": "Only Storage Management may apply typed V2 state events. The runtime commits changed segment blobs and the manifest in one Git tree commit, then performs a non-force main-branch ref update as CAS. Every read verifies manifest SHA-256, segment SHA-256, Git blob SHA, byte/record counts, sequence ranges and the complete event hash chain; successful writes are independently read back and replay-verified. Legacy storage/v2/state.json is read-only migration input. The runtime cannot write modules/** or rulesets/**."
     },
     {
       "program_id": "storage_artifact_store",
