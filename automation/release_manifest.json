@@ -86,7 +86,7 @@
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
-      "git_blob_sha": "69e87dc4354e142e93ece956575646d60983067a"
+      "git_blob_sha": "7b08fee50a287836fb2eff9f4df10317adfbb286"
     },
     "production_intent": {
       "path": "scripts/production_intent.py",
@@ -229,6 +229,10 @@
     "baseline_verifier": {
       "path": "scripts/verify_baseline.py",
       "git_blob_sha": "a5b3b67af8cafa374ada01d26e5e2336fe959e21"
+    },
+    "storage_runtime": {
+      "path": "storage/v2/runtime.py",
+      "git_blob_sha": "3c5e6b0344dffdcae9465a825a601fc3eeef9ead"
     }
   },
   "compatibility": {
@@ -278,7 +282,8 @@
     "The deterministic review-engine source revision is not yet pinned to a verified commit.",
     "The post-Assessment production dispatcher is newly wired and still requires a live Watchdog → auto_sync → ruleset publication run to establish end-to-end unattended production evidence.",
     "The historical independent Source Discovery → Assessment handoff is not the current production topology. Production runs discovery and assessment in the bounded auto_sync workflow; independent Python adapter dispatch remains deny-by-default.",
-    "Observed uu.conf SHA changes produce runner-local proposals only. Approved baseline and derived Release metadata can change only through a separately reviewed pull request; no automatic File Management writer exists."
+    "Observed uu.conf SHA changes produce runner-local proposals only. Approved baseline and derived Release metadata can change only through a separately reviewed pull request; no automatic File Management writer exists.",
+    "The segmented V2 event-log backend is implemented in code, but production state is not yet initialized or migrated; activation requires a verified read-only legacy snapshot, replay parity and a controlled Storage Management canary."
   ],
   "next_migration_gate": {
     "required_before_independent_python_dispatch": [
