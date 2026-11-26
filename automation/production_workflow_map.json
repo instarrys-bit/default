@@ -359,11 +359,12 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
-    "release_manifest_blob_sha": "5a9f075d7d34acfe22e49af75c7e62df9faf250b",
-    "program_registry_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6",
+    "release_manifest_blob_sha": "ec53f68648b9e4a528dd94421e24d5d7d55ec79e",
+    "program_registry_blob_sha": "adb2a19463f3a3f3fa2ec95bd004d0760360be08",
     "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
     "note": "Descriptive only; no additional write/dispatch authorization. Production publication is rulesets/** only. modules/uu.conf remains byte-for-byte read-only. Config baseline observation produces a runner-local proposal only; approved Blob SHA and derived Release metadata changes require a separate reviewed pull request. No automatic Storage Management baseline writer exists.",
-    "registry_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6"
+    "registry_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6",
+    "storage_management_workflow_blob_sha": "fd99e25252e3dc859cee5bf038eb10ee74fc5334"
   },
   "independent_dags": [],
   "production_deliverables": [
