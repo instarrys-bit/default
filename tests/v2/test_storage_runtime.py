@@ -1,3 +1,4 @@
+import base64
 import copy
 import json
 import sys
@@ -256,6 +257,18 @@ class StorageV2Tests(unittest.TestCase):
             assert_automation_write_allowed(
                 "storage/v2/artifacts/catalog/../task_queue.json", "storage_management"
             )
+
+    def test_git_blob_reader_accepts_github_wrapped_base64_but_validates_payload(self):
+        backend = GitHubSegmentedBackend("owner/repo", "main", "token")
+        raw = b'{"schema_version":1,"revision":0}\n'
+        encoded = base64.b64encode(raw).decode("ascii")
+        wrapped = encoded[:8] + "\n" + encoded[8:] + "\n"
+        backend._request = Mock(return_value={"encoding": "base64", "content": wrapped})
+        self.assertEqual(backend._read_blob("manifest-blob"), raw)
+
+        backend._request = Mock(return_value={"encoding": "base64", "content": "%%%invalid%%%"})
+        with self.assertRaisesRegex(Exception, "base64 content is invalid"):
+            backend._read_blob("bad-blob")
 
     def test_segmented_manifest_and_event_chain_are_verified_on_read(self):
         backend = GitHubSegmentedBackend("owner/repo", "main", "token")
