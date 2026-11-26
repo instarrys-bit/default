@@ -5,6 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "storage" / "v2"))
+sys.path.insert(0, str(ROOT / "tests" / "v2" / "support"))
 
 from runtime import append_event, empty_state
 from segmented_event_log import (
