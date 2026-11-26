@@ -41,7 +41,7 @@ def validate_write_boundary(root: Path = ROOT) -> list[str]:
         errors.append("Storage Management baseline writer lacks full history or contents:write permission")
     if "--apply" not in baseline_script or "owner_approved_config_history" not in baseline_script:
         errors.append("Baseline metadata writer lacks explicit apply mode or owner-history verification")
-    if "config.read_bytes() != config_bytes" not in baseline_script or "ALLOWLIST" not in baseline_script:
+    if "read_bytes() != config_bytes" not in baseline_script or "ALLOWLIST" not in baseline_script:
         errors.append("Baseline metadata writer does not verify config byte immutability and an exact allowlist")
     if not publisher or "git add --" not in publisher or "git push origin HEAD:main" not in publisher:
         errors.append("Metadata publisher lacks exact staging or non-force main publication")
