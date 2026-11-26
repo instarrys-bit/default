@@ -1,0 +1,12 @@
+{
+  "created_at": "2026-11-26T02:55:01Z",
+  "epoch_id": "v2-main-segmented",
+  "last_event_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "manifest_sha256": "b207a4f383852ab44b57eeb23eb8f4134047569ddca4dc45aac52f5f0e9337fc",
+  "revision": 0,
+  "schema_version": 1,
+  "segment_count": 0,
+  "segments": [],
+  "total_event_count": 0,
+  "updated_at": "2026-11-26T02:55:03Z"
+}
