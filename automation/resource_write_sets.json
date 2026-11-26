@@ -1368,10 +1368,10 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
-    "release_manifest_blob_sha": "5a9f075d7d34acfe22e49af75c7e62df9faf250b",
-    "program_registry_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6",
+    "release_manifest_blob_sha": "7fec60d5399c57939f1629ada854fe490da20741",
+    "program_registry_blob_sha": "adb2a19463f3a3f3fa2ec95bd004d0760360be08",
     "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
-    "note": "Static entrypoint inventory for registered Python components and workflow-native write sites. It is not a complete transitive/runtime trace; remaining gaps are enumerated in not_yet_proven. No automated repository SHA inventory or baseline metadata writer is authorized. Production publisher write scope remains rulesets/**; modules/uu.conf remains read-only."
+    "note": "Static entrypoint inventory for registered Python components and workflow-native write sites. It is not a complete transitive/runtime trace; remaining gaps are enumerated in not_yet_proven. Storage Management is the only V2 segmented event-state writer; the approved-config baseline metadata writer remains disabled pending a separate owner-authorized metadata-only implementation. Production publisher scope remains rulesets/**; modules/uu.conf content remains protected."
   },
   "scheduler_lock_contract": {
     "logical_resource_key": "logical/production-pipeline",
@@ -1866,6 +1866,23 @@
       ],
       "fence": "Storage Management scheduled job only. Immutable objects require exact SHA-256 addressing and read-back verification; the latest projection uses Contents API SHA-CAS. The tracker re-reads the full source tree, PR inventory and modules/uu.conf before and after staging and aborts on drift.",
       "boundary": "File Management control-plane writes only. All source files are read-only; modules/uu.conf is checked before/after and never written; production publication remains limited to rulesets/**."
+    },
+    {
+      "workflow_path": ".github/workflows/storage-management.yml",
+      "step_name": "Ensure segmented V2 event store is initialized or migrated",
+      "mutation_kinds": [
+        "github_git_data_api_create_blob",
+        "github_git_data_api_create_tree",
+        "github_git_data_api_create_commit",
+        "github_git_data_api_non_force_ref_cas"
+      ],
+      "resources": [
+        "storage/v2/state/manifest.json",
+        "storage/v2/state/segments/segment-*.jsonl",
+        "storage/v2/state.json (legacy read-only input and atomic migration deletion)"
+      ],
+      "fence": "Runs only on main push/schedule after validate-storage succeeds, with job-level contents:write. The runtime verifies the seed SHA, reads and validates all legacy or segmented state, writes only the exact manifest/segment paths, commits segment+manifest changes in one Git tree and updates main with force=false CAS. Every successful write is read back and replay-verified.",
+      "boundary": "V2 event-state paths only. No rulesets/**, modules/**, sources/**, or unrelated automation files are writable; legacy state.json is read-only except deletion in the same verified migration commit."
     }
   ],
   "workflow_native_scan": {

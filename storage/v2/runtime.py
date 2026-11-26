@@ -25,6 +25,7 @@ from typing import Any
 
 STATE_PATH = "storage/v2/state.json"
 MAX_STATE_BYTES = 45_000_000
+MAX_LEGACY_STATE_BYTES = 60_000_000
 EVENT_TYPES = {
     "TASK_ENQUEUED", "TASK_CLAIMED", "TASK_STARTED", "TASK_SUCCEEDED",
     "TASK_FAILED", "TASK_REQUEUED", "TASK_DEAD_LETTER", "TASK_CANCELLED",
@@ -476,7 +477,7 @@ class GitHubContentsBackend:
                 raise StorageError("Git blob API did not return base64 content")
             encoded = blob["content"]
         raw = base64.b64decode(encoded, validate=False)
-        if len(raw) > MAX_STATE_BYTES:
+        if len(raw) > MAX_LEGACY_STATE_BYTES:
             raise StorageError("state document exceeds the 45 MB safety limit")
         state = validate_state(json.loads(raw.decode("utf-8")))
         return state, result["sha"]
@@ -647,7 +648,7 @@ class GitHubSegmentedBackend(GitHubContentsBackend):
             raise StorageError("GitHub did not return a new segment blob SHA")
         return result["sha"]
 
-    def compare_and_swap(self, candidate, *, expected_revision, expected_blob_sha, message):
+    def compare_and_swap(self, candidate, *, expected_revision, expected_blob_sha, message, allow_legacy_migration=False):
         validate_state(candidate)
         head, root_sha = self._head_and_tree()
         current, manifest, segments, legacy = self._read_at_head(head, root_sha)
@@ -655,12 +656,17 @@ class GitHubSegmentedBackend(GitHubContentsBackend):
         current_token = head if current is not None else None
         if current_revision != expected_revision or current_token != expected_blob_sha:
             raise Conflict("segmented event log compare-and-swap failed")
-        if candidate.get("revision") != expected_revision + 1:
-            raise ValueError("candidate revision must advance exactly once")
-        if current is not None and candidate["events"][:-1] != current["events"]:
-            raise Conflict("candidate does not preserve the complete event prefix")
-        if current is None and candidate.get("revision") != 0:
-            raise Conflict("first segmented event-log commit must initialize revision zero")
+        migration_only = bool(current is not None and legacy and allow_legacy_migration and candidate == current)
+        if migration_only:
+            if candidate.get("revision") != expected_revision:
+                raise Conflict("legacy migration must preserve the current event revision")
+        else:
+            if candidate.get("revision") != expected_revision + 1:
+                raise ValueError("candidate revision must advance exactly once")
+            if current is not None and candidate["events"][:-1] != current["events"]:
+                raise Conflict("candidate does not preserve the complete event prefix")
+            if current is None and candidate.get("revision") != 0:
+                raise Conflict("first segmented event-log commit must initialize revision zero")
 
         changed, old_records = [], []
         if current is not None and not legacy:
@@ -686,6 +692,7 @@ class GitHubSegmentedBackend(GitHubContentsBackend):
 
         records, tree_entries = [], []
         for index, (path, raw) in enumerate(changed, start=1):
+            assert_automation_write_allowed(path, "storage_management")
             old = old_records[index - 1] if index <= len(old_records) else None
             if old and old.get("byte_count") == len(raw) and old.get("sha256") == sha256(raw):
                 blob_sha = old["git_blob_sha"]
@@ -705,6 +712,9 @@ class GitHubSegmentedBackend(GitHubContentsBackend):
                     "segment_count": len(records),
                     "last_event_sha256": candidate["events"][-1]["event_sha256"] if candidate["events"] else "0" * 64,
                     "created_at": created_at, "updated_at": utc_now(), "segments": records}
+        assert_automation_write_allowed(SEGMENT_MANIFEST_PATH, "storage_management")
+        if legacy:
+            assert_automation_write_allowed(STATE_PATH, "storage_management")
         manifest_out = dict(unsigned)
         manifest_out["manifest_sha256"] = sha256(canonical_bytes(unsigned))
         manifest_raw = (json.dumps(manifest_out, ensure_ascii=False, sort_keys=True, indent=2) + "\n").encode("utf-8")
@@ -959,9 +969,24 @@ def main() -> int:
         if args.command == "init":
             if not secrets.compare_digest(actual_seed_sha, args.approved_seed_sha):
                 raise ValueError("approved seed SHA does not match checked-in V2 seed")
-            current, _ = backend.read()
+            current, current_head = backend.read()
             if current is not None:
-                raise Conflict("V2 storage is already initialized")
+                head, root_sha = backend._head_and_tree()
+                _, _, _, legacy = backend._read_at_head(head, root_sha)
+                if legacy:
+                    backend.compare_and_swap(
+                        current, expected_revision=current["revision"],
+                        expected_blob_sha=current_head,
+                        message="chore(v2): migrate legacy state to verified segments",
+                        allow_legacy_migration=True,
+                    )
+                    print(json.dumps({"initialized": False, "migrated": True, "epoch_id": current["epoch_id"],
+                                      "revision": current["revision"], "seed_sha256": actual_seed_sha}))
+                else:
+                    print(json.dumps({"initialized": False, "already_initialized": True,
+                                      "epoch_id": current["epoch_id"], "revision": current["revision"],
+                                      "seed_sha256": actual_seed_sha}))
+                return 0
             candidate = empty_state(args.epoch_id)
             backend.compare_and_swap(candidate, expected_revision=-1, expected_blob_sha=None, message="chore(v2): initialize storage epoch")
             print(json.dumps({"initialized": True, "epoch_id": args.epoch_id, "seed_sha256": actual_seed_sha}))
