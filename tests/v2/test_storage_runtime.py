@@ -334,6 +334,34 @@ class StorageV2Tests(unittest.TestCase):
         self.assertEqual(len(patch_calls), 1)
         self.assertFalse(patch_calls[0].args[2]["force"])
 
+    def test_segmented_backend_migrates_legacy_history_without_changing_revision(self):
+        backend = GitHubSegmentedBackend("owner/repo", "main", "token")
+        current, _ = append_event(
+            self.state, event_type="TASK_ENQUEUED",
+            payload={"task_id": "legacy-task-1", "max_attempts": 2},
+            actor="test", idempotency_key="legacy-enqueue-1", expected_revision=0,
+        )
+        current, _ = append_event(
+            current, event_type="TASK_ENQUEUED",
+            payload={"task_id": "legacy-task-2", "max_attempts": 2},
+            actor="test", idempotency_key="legacy-enqueue-2", expected_revision=1,
+        )
+        backend._head_and_tree = Mock(return_value=("legacy-head", "legacy-tree"))
+        backend._read_at_head = Mock(return_value=(current, None, [], True))
+        backend._create_blob = Mock(side_effect=["segment-blob", "manifest-blob"])
+        backend._request = Mock(side_effect=[{"sha": "new-tree"}, {"sha": "new-commit"}, {}])
+        backend.read = Mock(return_value=(current, "new-commit"))
+        result = backend.compare_and_swap(
+            current, expected_revision=current["revision"], expected_blob_sha="legacy-head",
+            message="migrate legacy state", allow_legacy_migration=True,
+        )
+        self.assertEqual(result, "new-commit")
+        self.assertEqual(current["revision"], 2)
+        tree_payload = backend._request.call_args_list[0].args[2]["tree"]
+        self.assertTrue(any(x["path"] == "storage/v2/state.json" and x["sha"] is None for x in tree_payload))
+        self.assertTrue(any(x["path"] == "storage/v2/state/manifest.json" for x in tree_payload))
+        self.assertTrue(any(x["path"].startswith("storage/v2/state/segments/") for x in tree_payload))
+
 
 if __name__ == "__main__":
     unittest.main()
