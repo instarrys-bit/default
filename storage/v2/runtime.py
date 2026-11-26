@@ -946,7 +946,7 @@ def assert_automation_write_allowed(path: str, actor: str) -> None:
     raise PermissionError(f"automated write path is not allowlisted: {normalized}")
 
 
-def initialize_segmented_store(backend, *, epoch_id: str, actual_seed_sha: str, approved_seed_sha: str, max_attempts: int = MAX_CAS_ATTEMPTS)
+def initialize_segmented_store(backend, *, epoch_id: str, actual_seed_sha: str, approved_seed_sha: str, max_attempts: int = MAX_CAS_ATTEMPTS) -> dict:
     """Initialize or migrate the event log with bounded retries on main-ref CAS races.
 
     Storage Management has other legitimate main-branch writers. A non-force ref

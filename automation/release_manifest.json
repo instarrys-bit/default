@@ -232,7 +232,7 @@
     },
     "storage_runtime": {
       "path": "storage/v2/runtime.py",
-      "git_blob_sha": "6bc5cace4853d98f0726375bdbc39331daf671b5"
+      "git_blob_sha": "dbbcfc319dcb7ee4e87e1b25ddbc5b88c7153f5f"
     }
   },
   "compatibility": {
