@@ -1098,6 +1098,41 @@
         "rulesets/source_candidate_registry.json.parts-*/part-*.jsonl.gz"
       ],
       "ephemeral_unpublished_resources": []
+    },
+    {
+      "program_id": "script_register_config_baseline",
+      "source": "scripts/register_config_baseline.py",
+      "writes": [
+        "sources/policy.json",
+        "automation/release_manifest.json",
+        "automation/production_workflow_map.json",
+        "automation/resource_write_sets.json"
+      ],
+      "document_store": [],
+      "dynamic_children": [],
+      "read_resources": [
+        "modules/uu.conf Git Blob",
+        "sources/policy.json approved anchor",
+        "complete Git history for modules/uu.conf",
+        "GitHub author/committer metadata",
+        "automation/release_manifest.json",
+        "automation/production_workflow_map.json",
+        "automation/resource_write_sets.json"
+      ],
+      "side_effects": [
+        "Default invocation emits a RUNNER_TEMP proposal only. --apply is restricted to the Storage Management main push/schedule job and updates only the four metadata paths after owner attribution is verified. The separate publisher commits and pushes only those allowlisted paths; modules/uu.conf content is never written."
+      ],
+      "evidence": "The script verifies the working-tree config bytes equal the committed Git Blob, checks every intervening config-changing commit is attributed to the repository owner as author or committer, updates approved and Release-derived SHA metadata only, and verifies the config bytes remain unchanged.",
+      "lease_keys": [
+        "Storage Management main push/schedule concurrency group",
+        "Git main ref compare-and-swap"
+      ],
+      "lease_enforcement": "The job waits for all other Storage Management writers. The publisher checks HEAD==origin/main, verifies modules/uu.conf before/after, stages only the exact allowlist, verifies the parent still equals origin/main, and pushes non-force.",
+      "publish_resources": [],
+      "ephemeral_unpublished_resources": [
+        "RUNNER_TEMP/config-baseline-proposal.json when attribution is missing or invocation is read-only"
+      ],
+      "write_boundary_fencing": "Exact four-path metadata allowlist. modules/uu.conf is explicitly never written. Non-owner or missing attribution remains pending and does not update the approved baseline."
     }
   ],
   "confirmed_shared_write_groups": [
@@ -1450,12 +1485,6 @@
       "evidence": "Production Intent reads production_inputs.json and checked-in request observations, computes fingerprints and emits a JSON decision to stdout. All repository file-writing CLI modes were removed; no repository or external API writes."
     },
     {
-      "program_id": "script_register_config_baseline",
-      "source": "scripts/register_config_baseline.py",
-      "classification": "runner_local_config_baseline_review_proposal_non_dispatchable",
-      "evidence": "The script reads modules/uu.conf, sources/policy.json and release/workflow inventory inputs, records the observed SHA and commit context, and writes only a proposal under RUNNER_TEMP. It does not write sources/policy.json, automation/release_manifest.json, automation/production_workflow_map.json, automation/resource_write_sets.json or modules/uu.conf. Any metadata update requires a separately reviewed pull request."
-    },
-    {
       "program_id": "script_resolve_source_artifacts",
       "source": "scripts/resolve_source_artifacts.py",
       "classification": "runner_local_verified_artifact_resolver",
@@ -1726,7 +1755,7 @@
       "external filesystem/API effects not represented as literal Request methods",
       "unexecuted runtime branches and indirect dynamic imports",
       "The legacy local task_queue_runtime is explicitly non-dispatchable and restricted to runner/OS temporary storage; it is not a cross-runner queue.",
-      "Config baseline owner-approval script is proposal-only: all proposed metadata updates are emitted under RUNNER_TEMP and uploaded as an immutable artifact; no repository files are mutated or published."
+      "The authorized config baseline metadata writer uses workflow-native shell/Git mutations and is registered in confirmed_write_sets and workflow_native_write_sites. Its exact four-path allowlist excludes modules/uu.conf."
     ]
   },
   "workflow_native_write_sites": [
@@ -1888,6 +1917,23 @@
       ],
       "fence": "Runs only on main push/schedule after validate-storage succeeds, with job-level contents:write. The runtime verifies the seed SHA, reads and validates all legacy or segmented state, writes only the exact manifest/segment paths, commits segment+manifest changes in one Git tree and updates main with force=false CAS. Every successful write is read back and replay-verified.",
       "boundary": "V2 event-state paths only. No rulesets/**, modules/**, sources/**, or unrelated automation files are writable; legacy state.json is read-only except deletion in the same verified migration commit."
+    },
+    {
+      "workflow_path": ".github/workflows/storage-management.yml",
+      "step_name": "Commit only allowlisted baseline metadata with stale-main protection",
+      "mutation_kinds": [
+        "git_add_allowlisted_metadata_paths",
+        "git_commit",
+        "git_push_non_force"
+      ],
+      "resources": [
+        "sources/policy.json",
+        "automation/release_manifest.json",
+        "automation/production_workflow_map.json",
+        "automation/resource_write_sets.json"
+      ],
+      "fence": "Runs after all other Storage Management main writers; owner/committer history verification; clean main head; exact four-path staging allowlist; config Blob SHA before/after; non-force push.",
+      "boundary": "Control-plane metadata writer only. No modules/uu.conf bytes, rulesets, or production task queue records are written by this site."
     }
   ],
   "workflow_native_scan": {
