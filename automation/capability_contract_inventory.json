@@ -2345,7 +2345,8 @@
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
     "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
-    "program_registry_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6",
-    "note": "Historical V1 contract details are retained for traceability only and are not an activation authority. Counts and registered program paths are reconciled to the current 73-entry registry (69 Python components and four workflows). Current runtime topology is monolithic fallback; independent Python dispatch remains disabled. Baseline registration is runner-local proposal-only and metadata changes require a separate reviewed pull request."
+    "program_registry_blob_sha": "adb2a19463f3a3f3fa2ec95bd004d0760360be08",
+    "note": "Historical V1 contract details are retained for traceability only and are not an activation authority. Counts and registered program paths are reconciled to the current 73-entry registry (69 Python components and four workflows). Current runtime topology is monolithic fallback; independent Python dispatch remains disabled. Baseline registration is runner-local proposal-only and metadata changes require a separate reviewed pull request.",
+    "release_manifest_blob_sha": "1c206ebb95a8ce15074139e5adca0450183d6101"
   }
 }

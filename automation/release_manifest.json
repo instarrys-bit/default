@@ -8,7 +8,7 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6"
+      "git_blob_sha": "adb2a19463f3a3f3fa2ec95bd004d0760360be08"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
@@ -74,7 +74,7 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6"
+      "git_blob_sha": "adb2a19463f3a3f3fa2ec95bd004d0760360be08"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
@@ -203,7 +203,7 @@
     },
     "storage_management_workflow": {
       "path": ".github/workflows/storage-management.yml",
-      "git_blob_sha": "26b2a9c224386fb4094670000b50fcbe88c97d4f"
+      "git_blob_sha": "59eed0253594d8263348b78530f60ce46705ed9a"
     },
     "repository_integrity_tests": {
       "path": "tests/v2/test_repository_integrity.py",
