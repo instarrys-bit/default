@@ -53,7 +53,9 @@
         "rulesets/manifest.json",
         "rulesets/lifecycle_state.json",
         "rulesets/lifecycle_observations.json",
-        "automation/release_manifest.json"
+        "automation/release_manifest.json",
+        "storage/v2/state/manifest.json",
+        "storage/v2/state/segments/*.jsonl"
       ]
     },
     "independent_verifier": {

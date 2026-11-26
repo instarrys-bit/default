@@ -612,6 +612,22 @@
       "required_mode": "read_only_checked_in_policy",
       "status": "read_only_no_active_writer",
       "note": "The existing path classification registry is retained as read-only policy data. Unknown paths are recorded as Storage Management incident events; no workflow or script mutates this file."
+    },
+    {
+      "id": "v2_segmented_event_log",
+      "paths": [
+        "storage/v2/state/manifest.json",
+        "storage/v2/state/segments/segment-*.jsonl",
+        "storage/v2/state.json (legacy read-only migration source)"
+      ],
+      "known_writers": [
+        "storage_runtime",
+        "workflow_storage_management"
+      ],
+      "lock_key": "GitHub main branch ref non-force compare-and-swap",
+      "required_mode": "single Git tree commit containing changed segment and manifest blobs, followed by non-force branch-ref CAS and full read-after-write replay verification",
+      "status": "segmented_backend_implemented_pending_production_initialization",
+      "note": "New V2 writes are bounded JSONL segments no larger than 40,000,000 bytes. Manifest SHA-256, per-segment SHA-256, Git blob SHA, byte/record counts, sequence ranges and the complete event hash chain are verified on read. Legacy state.json is read-only migration input and is removed only in the same atomic tree commit that installs the verified segmented manifest."
     }
   ],
   "scheduling_gates": {
@@ -627,5 +643,5 @@
     ]
   },
   "limitation": "The current four-workflow production topology is monolithic_fallback: Discovery and Assessment run in one bounded Auto Sync job under the production-pipeline lease. No independent source-discovery workflow, assessment queue task or assessment_checkpoint writer is active. The legacy checkpoint contract remains dormant. Static/transitive inventory for unrelated capabilities, dynamic path aliases, third-party Action effects and all cross-workflow runtime combinations remains partial; those capabilities remain deny-by-default.",
-  "reviewed_at": "2026-11-25"
+  "reviewed_at": "2026-11-26"
 }
