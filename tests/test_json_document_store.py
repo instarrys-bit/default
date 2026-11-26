@@ -374,6 +374,41 @@ class JsonDocumentStoreTests(unittest.TestCase):
             path.write_text(json.dumps({"reviews": records}), encoding="utf-8")
             self.assertEqual(list(store.iter_document_records(path, "reviews")), records)
 
+    def test_legacy_oversized_shard_is_readable_and_rewritten_under_new_cap(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ledger.json"
+            payload = {"reviews": [{"id": i, "payload": "x" * 800} for i in range(8)]}
+            with patch.object(store, "MAX_FILE_BYTES", 4096), patch.object(store, "SHARD_TARGET_BYTES", 3500):
+                store.write_document(path, payload, "reviews", force_sharded=True,
+                                     max_file_bytes=4096, shard_target_bytes=3500)
+                old_manifest = json.loads(store.manifest_path(path).read_text(encoding="utf-8"))
+                old_directory = old_manifest["shard_directory"]
+                self.assertTrue(any(item["bytes"] > 2048 for item in old_manifest["shards"]))
+            with patch.object(store, "MAX_FILE_BYTES", 2048), patch.object(store, "SHARD_TARGET_BYTES", 2048):
+                restored = store.read_document(path, "reviews")
+                self.assertEqual(restored, payload)
+                result = store.write_document(path, restored, "reviews", force_sharded=True,
+                                              max_file_bytes=2048, shard_target_bytes=2048)
+                self.assertEqual(result["storage"], "jsonl-shards-v1")
+                new_manifest = json.loads(store.manifest_path(path).read_text(encoding="utf-8"))
+                self.assertNotEqual(new_manifest["shard_directory"], old_directory)
+                shard_dir = path.parent / new_manifest["shard_directory"]
+                self.assertTrue(all(item["bytes"] <= 2048 for item in new_manifest["shards"]))
+                self.assertTrue(all(p.stat().st_size <= 2048 for p in shard_dir.glob("*.jsonl")))
+                self.assertEqual(store.read_document(path, "reviews"), payload)
+
+    def test_content_addressed_shard_directory_reuse_checks_physical_hashes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "ledger.json"
+            payload = {"reviews": [{"id": i, "payload": "x" * 700} for i in range(8)]}
+            with patch.object(store, "MAX_FILE_BYTES", 4096), patch.object(store, "SHARD_TARGET_BYTES", 1800):
+                store.write_document(path, payload, "reviews", force_sharded=True)
+                manifest = json.loads(store.manifest_path(path).read_text(encoding="utf-8"))
+                shard = path.parent / manifest["shard_directory"] / manifest["shards"][0]["file"]
+                shard.write_bytes(b"corrupt")
+                with self.assertRaisesRegex(ValueError, "incomplete or corrupt"):
+                    store.write_document(path, payload, "reviews", force_sharded=True)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

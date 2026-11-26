@@ -88,9 +88,11 @@ def _verified_shard_payload(
     raw: bytes, shard: dict, shard_path: Path, compressed: bool,
     max_file_bytes: int = MAX_FILE_BYTES,
     max_uncompressed_bytes: int | None = None,
+    allow_legacy_oversize: bool = False,
 ) -> bytes:
     """Verify one physical shard and boundedly decode its logical JSONL payload."""
-    file_limit = min(MAX_FILE_BYTES, int(max_file_bytes))
+    hard_limit = 60_000_000 if allow_legacy_oversize else MAX_FILE_BYTES
+    file_limit = min(hard_limit, int(max_file_bytes))
     if file_limit <= 0:
         raise ValueError("shard file limit must be positive")
     if len(raw) > file_limit:
@@ -263,6 +265,7 @@ def iter_document_records(path: Path, collection_key: str):
                 shard_path.read_bytes(), shard, shard_path, compressed,
                 int(manifest.get("max_file_bytes", MAX_FILE_BYTES)),
                 int(manifest.get("max_uncompressed_file_bytes", manifest.get("max_file_bytes", MAX_FILE_BYTES))),
+                allow_legacy_oversize=int(manifest.get("max_file_bytes", MAX_FILE_BYTES)) > MAX_FILE_BYTES,
             )
             shard_count = 0
             for line in raw.splitlines():
@@ -326,6 +329,7 @@ def read_document(path: Path, collection_key: str, default: dict | None = None) 
                 shard_path.read_bytes(), shard, shard_path, compressed,
                 int(manifest.get("max_file_bytes", MAX_FILE_BYTES)),
                 int(manifest.get("max_uncompressed_file_bytes", manifest.get("max_file_bytes", MAX_FILE_BYTES))),
+                allow_legacy_oversize=int(manifest.get("max_file_bytes", MAX_FILE_BYTES)) > MAX_FILE_BYTES,
             )
         rows = [line for line in raw.splitlines() if line]
         if len(rows) != int(shard.get("records", -1)):
@@ -501,10 +505,23 @@ def write_document(
             )
 
         version = digest.hexdigest()[:16]
-        shard_directory = path.name + ".parts-" + version
+        layout_identity = {
+            "max_file_bytes": file_limit,
+            "shard_target_bytes": shard_limit,
+            "max_uncompressed_file_bytes": uncompressed_limit,
+            "compressed": compress_shards,
+            "shards": [{"file": item["file"], "bytes": item["bytes"], "sha256": item["sha256"]} for item in shard_entries],
+        }
+        layout_sha = hashlib.sha256(_compact_bytes(layout_identity)).hexdigest()[:10]
+        shard_directory = path.name + ".parts-" + version + "-" + layout_sha
         final_directory = path.parent / shard_directory
         if final_directory.exists():
-            # Same content-addressed version is already complete and may be live.
+            # Reuse only when the exact physical layout is already present and verified.
+            for item in shard_entries:
+                existing = final_directory / item["file"]
+                if (not existing.is_file() or existing.stat().st_size != item["bytes"]
+                        or hashlib.sha256(existing.read_bytes()).hexdigest() != item["sha256"]):
+                    raise ValueError(f"content-addressed shard directory is incomplete or corrupt: {existing}")
             _assert_document_lease(staging, lease_required)
             shutil.rmtree(staging)
         else:
