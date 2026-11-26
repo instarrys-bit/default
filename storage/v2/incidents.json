@@ -778,6 +778,17 @@
       "source_sha": "931850e1215abc3861956bd491f8ddacb78037a1",
       "summary": "The deterministic pipeline ended with audit=failure and publish=skipped.",
       "workflow": "auto_sync"
+    },
+    {
+      "classification": "PIPELINE_FAILURE",
+      "event_id": "auto-sync-failure-45738236885",
+      "incident_id": "6884c61c4af9779886f9-45738236885",
+      "operation": "record",
+      "run_id": "45738236885",
+      "run_url": "https://github.com/instarrys-bit/default/actions/runs/45738236885",
+      "source_sha": "45c64c0d913a2798f2cae6771bb413c73b04df1a",
+      "summary": "The deterministic pipeline ended with audit=failure and publish=skipped.",
+      "workflow": "auto_sync"
     }
   ],
   "incidents": [
@@ -6025,6 +6036,43 @@
       "summary": "The deterministic pipeline ended with audit=failure and publish=skipped.",
       "updated_at": "auto-sync-failure-45736549010",
       "workflow": "auto_sync"
+    },
+    {
+      "body": "The deterministic pipeline ended with audit=failure and publish=skipped.\n\n<!-- shadowrocket-incident-state:v1\n{\"classification\": \"PIPELINE_FAILURE\", \"history\": [\"DETECTED\", \"DIAGNOSING\", \"MANUAL_INTERVENTION\"], \"incident_id\": \"6884c61c4af9779886f9\", \"processed_events\": [\"auto-sync-failure-45738236885\"], \"revision\": 2, \"schema_version\": 1, \"source_sha\": \"45c64c0d913a2798f2cae6771bb413c73b04df1a\", \"state\": \"MANUAL_INTERVENTION\", \"verification\": null, \"workflow\": \"auto_sync\"}\n-->\n",
+      "classification": "PIPELINE_FAILURE",
+      "created_at": "auto-sync-failure-45738236885",
+      "diagnosis": null,
+      "events": [
+        "auto-sync-failure-45738236885"
+      ],
+      "identity_key": "6884c61c4af9779886f9",
+      "incident_id": "6884c61c4af9779886f9-45738236885",
+      "incident_state": {
+        "classification": "PIPELINE_FAILURE",
+        "history": [
+          "DETECTED",
+          "DIAGNOSING",
+          "MANUAL_INTERVENTION"
+        ],
+        "incident_id": "6884c61c4af9779886f9",
+        "processed_events": [
+          "auto-sync-failure-45738236885"
+        ],
+        "revision": 2,
+        "schema_version": 1,
+        "source_sha": "45c64c0d913a2798f2cae6771bb413c73b04df1a",
+        "state": "MANUAL_INTERVENTION",
+        "verification": null,
+        "workflow": "auto_sync"
+      },
+      "legacy_sources": [],
+      "lifecycle_status": "MANUAL_INTERVENTION",
+      "run_id": "45738236885",
+      "run_url": "https://github.com/instarrys-bit/default/actions/runs/45738236885",
+      "source_sha": "45c64c0d913a2798f2cae6771bb413c73b04df1a",
+      "summary": "The deterministic pipeline ended with audit=failure and publish=skipped.",
+      "updated_at": "auto-sync-failure-45738236885",
+      "workflow": "auto_sync"
     }
   ],
   "migration": {
@@ -6033,6 +6081,6 @@
     "records_imported": 85,
     "source": "GitHub Issues"
   },
-  "revision": 67,
+  "revision": 68,
   "schema_version": 1
 }
