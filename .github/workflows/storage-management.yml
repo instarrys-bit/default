@@ -304,6 +304,35 @@ jobs:
                             "event_count": len(state["events"]), "git_head_sha": result["blob_sha"],
                             "read_back_verified": True}, sort_keys=True))
           PY
+      - name: Run idempotent segmented-event CAS canary and verify full replay
+        env:
+          GITHUB_TOKEN: ${{ secrets.AUTOMATION_WRITE_TOKEN || github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          runtime=(python3 storage/v2/runtime.py --repository "$GITHUB_REPOSITORY" --branch main --token "$GITHUB_TOKEN")
+          actor="storage_management_v2_canary"
+          "${runtime[@]}" append --event-type TASK_ENQUEUED --payload '{"task_id":"v2-canary-segmented-cas-20261126","max_attempts":1,"input_artifact_ids":[]}' --actor "$actor" --idempotency-key "v2-canary-enqueue-20261126" --expected-revision 0
+          "${runtime[@]}" append --event-type TASK_ENQUEUED --payload '{"task_id":"v2-canary-segmented-cas-20261126","max_attempts":1,"input_artifact_ids":[]}' --actor "$actor" --idempotency-key "v2-canary-enqueue-20261126" --expected-revision 0
+          "${runtime[@]}" append --event-type TASK_CANCELLED --payload '{"task_id":"v2-canary-segmented-cas-20261126","reason":"segmented_storage_cas_canary_completed"}' --actor "$actor" --idempotency-key "v2-canary-cancel-20261126" --expected-revision 1
+          "${runtime[@]}" read > "$RUNNER_TEMP/v2-canary-readback.json"
+          python3 - "$RUNNER_TEMP/v2-canary-readback.json" <<'PY'
+          import json, sys
+          from pathlib import Path
+          result = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          state, projection = result["state"], result["projection"]
+          keys = [event["idempotency_key"] for event in state["events"]]
+          if keys.count("v2-canary-enqueue-20261126") != 1 or keys.count("v2-canary-cancel-20261126") != 1:
+              raise SystemExit("V2 canary idempotency keys are missing or duplicated")
+          task = projection["tasks"].get("v2-canary-segmented-cas-20261126")
+          if not isinstance(task, dict) or task.get("status") != "CANCELLED":
+              raise SystemExit("V2 canary task did not reach the expected terminal state")
+          if task.get("task_lease") is not None or any(lease.get("status") == "ACTIVE" and lease.get("task_id") == task["task_id"] for lease in projection.get("resource_leases", {}).values()):
+              raise SystemExit("V2 canary left an active task/resource lease")
+          if state["revision"] != projection["revision"] or len(result.get("blob_sha", "")) != 40:
+              raise SystemExit("V2 canary projection or Git head read-back is inconsistent")
+          print(json.dumps({"canary_task": task["task_id"], "status": task["status"], "event_count": len(state["events"]), "revision": state["revision"], "idempotency_verified": True, "read_back_verified": True}, sort_keys=True))
+          PY
 
   mutate-ledger:
     if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' }}
