@@ -2,14 +2,15 @@ import copy
 import json
 import sys
 import unittest
+from unittest.mock import Mock
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "storage" / "v2"))
 
 from runtime import (
-    Conflict, append_event, assert_automation_write_allowed, empty_state,
-    project, validate_state,
+    Conflict, GitHubSegmentedBackend, append_event, assert_automation_write_allowed,
+    canonical_bytes, empty_state, project, sha256, validate_state,
 )
 
 
@@ -110,6 +111,8 @@ class StorageV2Tests(unittest.TestCase):
     def test_storage_manager_has_narrow_exact_write_scope(self):
         allowed = [
             "storage/v2/state.json",
+            "storage/v2/state/manifest.json",
+            "storage/v2/state/segments/segment-00000001.jsonl",
             "storage/v2/artifacts/sha256/" + "a" * 64,
             "storage/v2/migration/manifests/" + "b" * 64 + ".json",
             "storage/v2/projections/queue.json",
@@ -140,6 +143,8 @@ class StorageV2Tests(unittest.TestCase):
         self.assertTrue(policy["enforcement"]["manual_user_edits_allowed"])
         manager_writes = policy["actors"]["storage_management"]["write"]
         self.assertIn("storage/v2/state.json", manager_writes)
+        self.assertIn("storage/v2/state/manifest.json", manager_writes)
+        self.assertIn("storage/v2/state/segments/*.jsonl", manager_writes)
         self.assertNotIn("storage/v2/queue_seed.json", manager_writes)
         self.assertNotIn("storage/v2/production_write_policy.json", manager_writes)
 
@@ -251,6 +256,83 @@ class StorageV2Tests(unittest.TestCase):
             assert_automation_write_allowed(
                 "storage/v2/artifacts/catalog/../task_queue.json", "storage_management"
             )
+
+    def test_segmented_manifest_and_event_chain_are_verified_on_read(self):
+        backend = GitHubSegmentedBackend("owner/repo", "main", "token")
+        state, _ = append_event(
+            self.state, event_type="TASK_ENQUEUED",
+            payload={"task_id": "task-1", "max_attempts": 2},
+            actor="test", idempotency_key="enqueue-1", expected_revision=0,
+            created_at="2026-11-17T00:00:00Z",
+        )
+        raw = canonical_bytes(state["events"][0]) + b"\n"
+        record = {
+            "index": 1, "path": "storage/v2/state/segments/segment-00000001.jsonl",
+            "first_sequence": 1, "last_sequence": 1, "record_count": 1,
+            "byte_count": len(raw), "sha256": sha256(raw), "git_blob_sha": "segment-blob",
+        }
+        unsigned = {
+            "schema_version": 1, "epoch_id": state["epoch_id"], "revision": 1,
+            "total_event_count": 1, "segment_count": 1,
+            "last_event_sha256": state["events"][-1]["event_sha256"],
+            "created_at": state["created_at"], "updated_at": state["created_at"],
+            "segments": [record],
+        }
+        manifest = dict(unsigned)
+        manifest["manifest_sha256"] = sha256(canonical_bytes(unsigned))
+        manifest_raw = json.dumps(manifest, sort_keys=True).encode("utf-8")
+        backend._tree_entry = Mock(side_effect=[
+            {"type": "blob", "sha": "manifest-blob"},
+            {"type": "tree", "sha": "segment-directory"},
+        ])
+        backend._request = Mock(return_value={
+            "tree": [{"path": "segment-00000001.jsonl", "type": "blob", "sha": "segment-blob"}]
+        })
+        backend._read_blob = Mock(side_effect=lambda sha: manifest_raw if sha == "manifest-blob" else raw)
+        restored, _, _, legacy = backend._read_at_head("head-sha", "root-tree")
+        self.assertFalse(legacy)
+        self.assertEqual(restored, state)
+
+    def test_segmented_backend_rejects_stale_head_token_before_any_write(self):
+        backend = GitHubSegmentedBackend("owner/repo", "main", "token")
+        current, _ = append_event(
+            self.state, event_type="TASK_ENQUEUED",
+            payload={"task_id": "task-1", "max_attempts": 2},
+            actor="test", idempotency_key="enqueue-1", expected_revision=0,
+        )
+        candidate, _ = append_event(
+            current, event_type="TASK_CLAIMED",
+            payload={"task_id": "task-1", "lease_id": "lease-1", "owner": "worker",
+                     "token": "t1", "expires_at": "2026-11-17T00:10:00Z"},
+            actor="test", idempotency_key="claim-1", expected_revision=1,
+        )
+        backend._head_and_tree = Mock(return_value=("current-head", "tree"))
+        backend._read_at_head = Mock(return_value=(current, None, [], False))
+        backend._request = Mock()
+        with self.assertRaises(Conflict):
+            backend.compare_and_swap(
+                candidate, expected_revision=1, expected_blob_sha="stale-head",
+                message="test stale CAS",
+            )
+        backend._request.assert_not_called()
+
+    def test_segmented_backend_initial_commit_uses_non_force_ref_update(self):
+        backend = GitHubSegmentedBackend("owner/repo", "main", "token")
+        backend._head_and_tree = Mock(return_value=("base-head", "base-tree"))
+        backend._read_at_head = Mock(return_value=(None, None, [], False))
+        backend._create_blob = Mock(return_value="manifest-blob")
+        backend._request = Mock(side_effect=[
+            {"sha": "new-tree"}, {"sha": "new-commit"}, {},
+        ])
+        backend.read = Mock(return_value=(self.state, "new-commit"))
+        result = backend.compare_and_swap(
+            self.state, expected_revision=-1, expected_blob_sha=None,
+            message="initialize segmented log",
+        )
+        self.assertEqual(result, "new-commit")
+        patch_calls = [call for call in backend._request.call_args_list if call.args[0] == "PATCH"]
+        self.assertEqual(len(patch_calls), 1)
+        self.assertFalse(patch_calls[0].args[2]["force"])
 
 
 if __name__ == "__main__":
