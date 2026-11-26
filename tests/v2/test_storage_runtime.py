@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "storage" / "v2"))
 
 from runtime import (
-    Conflict, GitHubSegmentedBackend, append_event, assert_automation_write_allowed,
+    Conflict, GitHubSegmentedBackend, StorageError, append_event, assert_automation_write_allowed,
     canonical_bytes, empty_state, initialize_segmented_store, project, sha256, validate_state,
 )
 
@@ -267,7 +267,7 @@ class StorageV2Tests(unittest.TestCase):
         self.assertEqual(backend._read_blob("manifest-blob"), raw)
 
         backend._request = Mock(return_value={"encoding": "base64", "content": "%%%invalid%%%"})
-        with self.assertRaisesRegex(Exception, "base64 content is invalid"):
+        with self.assertRaisesRegex(StorageError, "base64 content is invalid"):
             backend._read_blob("bad-blob")
 
     def test_segmented_manifest_and_event_chain_are_verified_on_read(self):
