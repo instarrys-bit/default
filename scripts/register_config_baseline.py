@@ -54,7 +54,7 @@ def owner_approved_config_history(guard: dict) -> list[str]:
     if not commits:
         return []
     for commit in commits:
-        login = run(["gh", "api", f"repos/{repository}/commits/{commit}", "--jq", ".author.login // empty"])
+        login = run(["gh", "api", f"repos/{repository}/commits/{commit}", "--jq", "if (.author.login == env.GITHUB_REPOSITORY_OWNER or .committer.login == env.GITHUB_REPOSITORY_OWNER) then env.GITHUB_REPOSITORY_OWNER else (.author.login // .committer.login // empty) end"])
         if login != owner:
             print(f"Pending baseline registration: commit {commit} is attributed to {login or '<unassociated>'}, not repository owner {owner}.", file=sys.stderr)
             return []

@@ -219,7 +219,7 @@
     },
     "baseline_registration_runtime": {
       "path": "scripts/register_config_baseline.py",
-      "git_blob_sha": "b6f2d38b47e16e13a67815efd398e2657211901e"
+      "git_blob_sha": "91e620beee156e87ac5d0982ec2cea46e9942d38"
     },
     "baseline_metadata_publisher": {
       "path": "scripts/publish_config_baseline_metadata.sh",
@@ -254,7 +254,7 @@
         "push",
         "schedule"
       ],
-      "authorization": "The user explicitly authorizes automatic updates to the approved modules/uu.conf Blob SHA, formal baseline SHA and derived Release SHA metadata. File Management may do so only after GitHub verifies every intervening uu.conf-changing commit since the prior approved anchor is authored by the repository owner. Only the four metadata paths in write_allowlist may be written. modules/uu.conf bytes are never writable.",
+      "authorization": "The user explicitly authorizes automatic updates to the approved modules/uu.conf Blob SHA, formal baseline SHA and derived Release SHA metadata. File Management may do so only after GitHub verifies every intervening uu.conf-changing commit since the prior approved anchor is attributed to the repository owner as author or committer. Only the four metadata paths in write_allowlist may be written. modules/uu.conf bytes are never writable.",
       "write_allowlist": [
         "sources/policy.json",
         "automation/release_manifest.json",
