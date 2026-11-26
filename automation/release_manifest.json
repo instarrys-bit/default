@@ -191,7 +191,7 @@
     },
     "automation_write_boundary_validator": {
       "path": "scripts/validate_automation_write_boundary.py",
-      "git_blob_sha": "59bceda9ebdcc090b0963a595cfb78815091b536"
+      "git_blob_sha": "bbda01944c8771669e9045cfe4b4e0a85e050827"
     },
     "repository_integrity_tracker": {
       "path": "storage/v2/snapshot_repository_integrity.py",
@@ -203,7 +203,7 @@
     },
     "storage_management_workflow": {
       "path": ".github/workflows/storage-management.yml",
-      "git_blob_sha": "3ebe557f0156153164a876a74c948a7a54d052b0"
+      "git_blob_sha": "00a8019660c13c1236d8761b19272fa0ffa600ce"
     },
     "repository_integrity_tests": {
       "path": "tests/v2/test_repository_integrity.py",
@@ -219,16 +219,16 @@
     },
     "baseline_registration_runtime": {
       "path": "scripts/register_config_baseline.py",
-      "git_blob_sha": "8b732105f47ca3ec1daea16bf40d0c5c057080c2"
+      "git_blob_sha": "2708236e25b14c0ee7f2a6086f1fd91f71ef3396"
     },
     "baseline_metadata_publisher": {
       "path": "scripts/publish_config_baseline_metadata.sh",
-      "git_blob_sha": "b33205a98db6f21f38b02a98732ad9bd2f3195a0",
-      "status": "disabled_no_repository_write"
+      "git_blob_sha": "8aefb22031d5ecd2e00e5bb0f3d474c73947138f",
+      "status": "active_metadata_only_allowlist"
     },
     "baseline_verifier": {
       "path": "scripts/verify_baseline.py",
-      "git_blob_sha": "a5b3b67af8cafa374ada01d26e5e2336fe959e21"
+      "git_blob_sha": "0dcbb2516cfaff408340caba788524622ce35616"
     },
     "storage_runtime": {
       "path": "storage/v2/runtime.py",
@@ -249,12 +249,20 @@
     "reject_rule_publication_requires_explicit_approval": false,
     "python_adapter_default_deny": true,
     "watchdog_baseline_metadata_sync": {
-      "writer": null,
-      "trigger": [],
-      "authorization": "No automated repository metadata synchronization is authorized. Baseline SHA and derived Release pin changes require a separately reviewed pull request. The baseline tool may emit only a RUNNER_TEMP proposal; no workflow or publisher may commit these metadata paths.",
-      "write_allowlist": [],
+      "writer": "Storage Management / File Management",
+      "trigger": [
+        "push",
+        "schedule"
+      ],
+      "authorization": "The user explicitly authorizes automatic updates to the approved modules/uu.conf Blob SHA, formal baseline SHA and derived Release SHA metadata. File Management may do so only after GitHub verifies every intervening uu.conf-changing commit since the prior approved anchor is authored by the repository owner. Only the four metadata paths in write_allowlist may be written. modules/uu.conf bytes are never writable.",
+      "write_allowlist": [
+        "sources/policy.json",
+        "automation/release_manifest.json",
+        "automation/production_workflow_map.json",
+        "automation/resource_write_sets.json"
+      ],
       "protected_config": "modules/uu.conf is byte-for-byte read-only to automation.",
-      "stale_main_guard": "Proposal-only observation; no repository commit or push. A reviewed PR must reacquire and verify the latest main config blob before updating metadata."
+      "stale_main_guard": "Require a clean checkout at current origin/main; verify the config blob before and after; stage only the exact metadata allowlist; publish with a non-force fast-forward push."
     },
     "independent_python_dispatch": "disabled",
     "source_discovery_mode": "monolithic_fallback",

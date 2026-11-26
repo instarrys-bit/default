@@ -143,18 +143,20 @@ def verify_registration(base: str, head: str) -> None:
         "automation_may_update_release_baseline_sha",
         "automation_may_update_approved_baseline_sha",
     ):
-        if metadata_policy.get(key) is not False:
-            raise ValueError(f"baseline metadata policy must deny {key}")
-    if metadata_policy.get("reviewed_pr_required") is not True:
-        raise ValueError("baseline metadata policy must require a reviewed PR")
+        if metadata_policy.get(key) is not True:
+            raise ValueError(f"baseline metadata policy must authorize the explicit metadata-only writer: {key}")
+    if metadata_policy.get("reviewed_pr_required") is not True or metadata_policy.get("owner_authored_config_history_required") is not True:
+        raise ValueError("manual metadata PRs must remain reviewed and automatic registration must verify owner-authored history")
 
     release = json.loads((ROOT / "automation/release_manifest.json").read_text(encoding="utf-8"))
     pin = release.get("implementation_pins", {}).get("config_baseline", {})
     if pin.get("path") != "modules/uu.conf" or pin.get("access") != "read_only" or pin.get("git_blob_sha") != actual_sha:
         raise ValueError("release manifest does not pin the verified read-only uu.conf blob")
     sync = release.get("execution_policy", {}).get("watchdog_baseline_metadata_sync", {})
-    if sync.get("writer") is not None or sync.get("write_allowlist") != []:
-        raise ValueError("release manifest reintroduced an automated baseline metadata writer")
+    if (sync.get("writer") != "Storage Management / File Management"
+            or sync.get("trigger") != ["push", "schedule"]
+            or set(sync.get("write_allowlist", [])) != BASELINE_METADATA_PATHS):
+        raise ValueError("release manifest metadata-only writer contract is inconsistent")
     release_sha = run_git("hash-object", "automation/release_manifest.json")
     workflow_map = json.loads((ROOT / "automation/production_workflow_map.json").read_text(encoding="utf-8"))
     write_sets = json.loads((ROOT / "automation/resource_write_sets.json").read_text(encoding="utf-8"))
