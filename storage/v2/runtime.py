@@ -551,7 +551,10 @@ class GitHubSegmentedBackend(GitHubContentsBackend):
         if not isinstance(blob, dict) or blob.get("encoding") != "base64" or not isinstance(blob.get("content"), str):
             raise StorageError("Git blob API did not return base64 content")
         try:
-            return base64.b64decode(blob["content"], validate=True)
+            # GitHub's Git Blob API may wrap base64 content across lines.
+            # Strip transport whitespace first, then keep strict alphabet/padding validation.
+            encoded = "".join(blob["content"].split())
+            return base64.b64decode(encoded, validate=True)
         except (ValueError, base64.binascii.Error) as exc:
             raise StorageError("Git blob base64 content is invalid") from exc
 
