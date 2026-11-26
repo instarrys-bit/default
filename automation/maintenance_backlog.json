@@ -22,7 +22,12 @@
         "production_mode": "monolithic_fallback",
         "latest_production_run_id": 45359028158,
         "latest_production_run_conclusion": "success",
-        "assessment_run_evidence": "same-run_assessment_only; independent_chain_not_verified"
+        "assessment_run_evidence": "same-run_assessment_only; independent_chain_not_verified",
+        "independent_permission_audit": "not passed; adapter disabled and allowed callers empty",
+        "write_scope": "active same-run Assessment outputs runner-local; dormant checkpoint code remains disabled",
+        "current_production_run_id": 45736549010,
+        "current_production_run_status": "in_progress",
+        "current_stage": "Discovery"
       },
       "acceptance": [
         "Run at least two distinct batches with no more than 20 URLs and 10 MB per batch",
@@ -31,7 +36,7 @@
         "Verify no automatic source activation or assessment-artifact publication",
         "Verify exact discovery fingerprint backlog is zero or partitioned into a new verified generation"
       ],
-      "next_action": "Reconcile production_control.json, program_registry.json, execution_adapters.json and release pins before any independent dispatch; then run two bounded batches with exact predecessor and cursor verification."
+      "next_action": "Complete global writer/checkpoint/lease/CAS audit; validate two bounded independent canary batches and interruption/resume before granting adapter permission."
     },
     {
       "id": "legacy-failed-task-reconciliation",
@@ -47,10 +52,21 @@
         "queue_revision": 324,
         "active_task_count": 0,
         "historical_failed_count": 3,
-        "historical_cancelled_count": 22,
+        "historical_cancelled_count": 33,
         "historical_succeeded_count": 14,
         "latest_verified_successful_production_task": "task_45ff08e2350e4a89843127c1",
-        "latest_verified_successful_run_id": 45359028158
+        "latest_verified_successful_run_id": 45359028158,
+        "latest_audit_queue_revision": 478,
+        "latest_queue_statuses": {
+          "FAILED": 3,
+          "CANCELLED": 33,
+          "SUCCEEDED": 14,
+          "VERIFYING": 1
+        },
+        "active_verifying_task_ids": [
+          "task_86004f1b7d754ea096ff177b"
+        ],
+        "history_policy": "FAILED/CANCELLED records retained; no relabeling or deletion"
       },
       "acceptance": [
         "Use supported queue CAS/scheduler lifecycle only",
@@ -58,7 +74,7 @@
         "Never relabel an actually failed production run as SUCCEEDED",
         "Preserve event history and ensure no stale active lease remains"
       ],
-      "next_action": "Add or use a schema-supported terminal resolution path for FAILED historical tasks, then reconcile using current successful-run evidence."
+      "next_action": "Use only schema-supported terminal disposition after each run provenance is verified; preserve original outcome and full state history."
     },
     {
       "id": "storage-validation-and-file-management",
@@ -84,7 +100,7 @@
     {
       "id": "json-document-store-40mb-defaults",
       "title": "Set shared JSON document-store default shard and file limits to 40 MB",
-      "status": "in_progress",
+      "status": "complete",
       "current_evidence": {
         "file": "scripts/json_document_store.py",
         "max_file_bytes": 40000000,
@@ -94,14 +110,16 @@
           "rulesets/source_candidate_registry.json.manifest.json"
         ],
         "both_existing_shards_below_limit": true,
-        "ci_and_runtime_verification": "pending"
+        "ci_and_runtime_verification": "passed",
+        "validation_run_id": 45687226543,
+        "post_merge_storage_management_run_id": 45687460111
       },
       "acceptance": [
         "New JSON document writes default to a maximum 40 MB file and 40 MB shard target",
         "Existing manifests and shards remain readable and pass integrity checks",
         "Tests assert the shared defaults"
       ],
-      "next_action": "Keep monitoring manifests for oversized shards; legacy V2 event-state requires a separate segmented migration."
+      "next_action": "Monitor future manifests for shards exceeding 40,000,000 bytes; V2 event-state segmentation remains separate."
     },
     {
       "id": "oversized-generated-report-cleanup",
@@ -125,13 +143,15 @@
     {
       "id": "storage-v2-event-state-segmentation",
       "title": "Replace the monolithic V2 event-state file with bounded append-only segments and a verified manifest",
-      "status": "blocked_pending_supported_lifecycle",
+      "status": "in_progress",
       "current_evidence": {
         "runtime": "storage/v2/runtime.py",
         "state_path": "storage/v2/state.json",
         "current_max_state_bytes": 45000000,
         "state_file_present_in_main": false,
-        "active_runtime_migration": "not yet proven"
+        "active_runtime_migration": "not yet proven",
+        "state_backend": "GitHub Contents API single-document CAS",
+        "manifest_and_segmented_cas": "not_implemented"
       },
       "acceptance": [
         "Every persisted event segment is at most 40 MB",
@@ -139,15 +159,16 @@
         "Append and recovery use CAS without losing concurrent events",
         "No total data cap; historical events remain replayable"
       ],
-      "next_action": "Implement and test segmented event-log storage and a backwards-compatible migration before enabling or changing the V2 state writer."
+      "next_action": "Implement and validate append-only 40 MB event segments, manifest SHA-256, full event-chain replay, and atomic Git-tree/ref CAS before switching the CLI backend."
     },
     {
       "id": "config-baseline-metadata-automatic-registration",
       "title": "Enable owner-authorized automatic uu.conf SHA and derived Release baseline metadata registration",
-      "status": "open",
+      "status": "in_progress",
       "current_evidence": {
         "current_behavior": "runner-local proposal only; automatic repository metadata writer disabled",
-        "user_authorization": "user authorized updates to uu.conf Blob SHA, approved baseline SHA and derived Release baseline SHA; uu.conf bytes remain immutable to automation"
+        "user_authorization": "explicitly reconfirmed 2026-11-26: approved Blob SHA, formal baseline SHA and Release-derived SHA may be updated",
+        "current_guard": "automatic writer disabled; modules/uu.conf content remains protected"
       },
       "acceptance": [
         "Only explicit baseline metadata paths may be written",
@@ -156,8 +177,53 @@
         "Release, workflow-map and resource-write-set pins must remain mutually consistent",
         "Storage Management CI verifies the metadata-only write boundary"
       ],
-      "next_action": "Implement a fenced metadata-only writer with owner-commit verification and an exact path allowlist; preserve read-only access to uu.conf."
+      "next_action": "Implement exact-path metadata-only writer with owner-authorized config-commit lineage verification; never stage or write modules/uu.conf."
+    },
+    {
+      "id": "remote-ruleset-production-audit-2026-11-26",
+      "title": "Audit published rulesets and verify fresh production release",
+      "status": "in_progress",
+      "current_evidence": {
+        "audited_main_sha": "e98dc90b762cce100fa176144be46b232c40b4a4",
+        "queue_revision": 478,
+        "queue_statuses": {
+          "FAILED": 3,
+          "CANCELLED": 33,
+          "SUCCEEDED": 14,
+          "VERIFYING": 1
+        },
+        "current_auto_sync_run_id": 45736549010,
+        "current_auto_sync_run_status": "in_progress",
+        "latest_watchdog_run_id": 45736564921,
+        "latest_watchdog_conclusion": "success",
+        "latest_storage_management_run_id": 45736388060,
+        "latest_storage_management_conclusion": "success",
+        "config_blob_sha": "a24d8c526394ebf28f0c74043d93d4f736272679",
+        "approved_and_release_sha_match": true,
+        "remote_rule_counts": {
+          "DIRECT": 137,
+          "PROXY": 3281,
+          "REJECT": 16626
+        },
+        "exact_duplicates": 0,
+        "exact_cross_policy_overlaps": 0,
+        "policy_conflicts": 454,
+        "baseline_conflict_holds": 37,
+        "retained_without_current_approval": 5,
+        "source_count": 13,
+        "current_sources": 9,
+        "quarantined_sources": 4
+      },
+      "acceptance": [
+        "Verify active production run completes audit and publish successfully",
+        "Verify generated overlap report is uploaded as an immutable artifact",
+        "Verify remote DIRECT/PROXY/REJECT files against final manifest and hashes",
+        "Resolve policy conflicts and baseline holds through reviewed decisions",
+        "Observe scheduled Watchdog continuation on current main lineage"
+      ],
+      "next_action": "Wait for run 45736549010, verify every job and artifact, then reconcile final remote manifest and published rule files."
     }
   ],
-  "closure_rule": "Do not mark an item complete without its stated evidence. Do not declare the overall automation closed until every item is complete and a fresh production audit, publish, remote verification and uu.conf SHA check all pass."
+  "closure_rule": "Do not mark an item complete without its stated evidence. Do not declare the overall automation closed until every item is complete and a fresh production audit, publish, remote verification and uu.conf SHA check all pass.",
+  "updated_at": "2026-11-26T01:40:00Z"
 }
