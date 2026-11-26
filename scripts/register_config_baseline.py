@@ -84,6 +84,7 @@ def build_release_pin_updates(root: Path, config_path: str, config_sha: str) -> 
         "storage_management_workflow": ".github/workflows/storage-management.yml",
         "baseline_metadata_publisher": "scripts/publish_config_baseline_metadata.sh",
         "baseline_verifier": "scripts/verify_baseline.py",
+        "storage_runtime": "storage/v2/runtime.py",
     }
     for key, path in pin_paths.items():
         pin = pins.get(key) if isinstance(pins, dict) else None

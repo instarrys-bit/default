@@ -258,8 +258,15 @@ jobs:
 
   initialize-v2-event-store:
     name: Ensure segmented V2 event store is initialized or migrated
-    needs: [validate-storage]
-    if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'schedule') }}
+    needs:
+      - validate-storage
+      - ensure-watchdog-enabled
+      - reconcile-verified-auto-sync-incidents
+      - poll-recent-actions-artifacts
+      - repository-integrity-snapshot
+      - ingest-actions-artifacts
+      - mutate-ledger
+    if: ${{ always() && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'schedule') && needs.validate-storage.result == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
