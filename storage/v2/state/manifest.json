@@ -1,12 +1,23 @@
 {
   "created_at": "2026-11-26T02:55:01Z",
   "epoch_id": "v2-main-segmented",
-  "last_event_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-  "manifest_sha256": "b207a4f383852ab44b57eeb23eb8f4134047569ddca4dc45aac52f5f0e9337fc",
-  "revision": 0,
+  "last_event_sha256": "672f32ee9a423c9db094e752c64f9dc34b383cfa206923ad4f009a1f22302127",
+  "manifest_sha256": "52bf196da917a21e7834de55f5823a7893e0794445f5de67cc10691a7bc02e82",
+  "revision": 1,
   "schema_version": 1,
-  "segment_count": 0,
-  "segments": [],
-  "total_event_count": 0,
-  "updated_at": "2026-11-26T02:55:03Z"
+  "segment_count": 1,
+  "segments": [
+    {
+      "byte_count": 437,
+      "first_sequence": 1,
+      "git_blob_sha": "815009e4984242a61c2b9545f860d6fcc2353bc3",
+      "index": 1,
+      "last_sequence": 1,
+      "path": "storage/v2/state/segments/segment-00000001.jsonl",
+      "record_count": 1,
+      "sha256": "efbb5e0af6a694faad758c261399995900501f4976de44738e280e0ecde09e41"
+    }
+  ],
+  "total_event_count": 1,
+  "updated_at": "2026-11-26T04:26:45Z"
 }
