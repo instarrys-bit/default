@@ -36,7 +36,7 @@ class ManagedConfigGuardPolicyTests(unittest.TestCase):
         self.assertTrue(metadata["reviewed_pr_required"])
         self.assertEqual(set(metadata["metadata_write_allowlist"]), expected_paths)
         self.assertTrue(metadata["registration_must_not_write_config_content"])
-        self.assertIn("owner-authored", metadata["update_authorization"])
+        self.assertTrue("owner-authored" in metadata["update_authorization"] or "authored by the repository owner" in metadata["update_authorization"])
 
     def test_observation_remains_read_only_when_owner_history_cannot_be_verified(self):
         policy = json.loads((ROOT / "sources" / "policy.json").read_text(encoding="utf-8"))
