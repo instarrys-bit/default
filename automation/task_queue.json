@@ -242,7 +242,7 @@
       "worker_id": "45948280690"
     }
   },
-  "revision": 582,
+  "revision": 583,
   "schema_version": 1,
   "tasks": [
     {
@@ -10103,6 +10103,11 @@
         "prepared_at": "2026-11-27T05:52:38Z",
         "ref": "main",
         "requested_head_sha": "d173df9ba9c228790ef4a8fe092e77aaac5e39fc",
+        "run_evidence": {
+          "html_url": "https://github.com/instarrys-bit/default/actions/runs/45948388530",
+          "run_id": 45948388530,
+          "status": "queued"
+        },
         "submitted_at": "2026-11-27T05:52:41Z",
         "task_id": "task_65678a5a62294bba874259a0",
         "workflow_id": 402712272,
