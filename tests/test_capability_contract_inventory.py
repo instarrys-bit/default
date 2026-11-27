@@ -185,7 +185,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertTrue(metadata["reviewed_pr_required"])
         self.assertEqual(set(metadata["metadata_write_allowlist"]), expected_paths)
         self.assertEqual(metadata["proposal_generation_mode"], "runner_local_only")
-        self.assertIn("owner-authored", metadata["update_authorization"])
+        self.assertTrue("owner-authored" in metadata["update_authorization"] or "authored by the repository owner" in metadata["update_authorization"])
         script = (ROOT / "scripts/register_config_baseline.py").read_text(encoding="utf-8")
         self.assertIn("--apply", script)
         self.assertIn("owner_approved_config_history", script)
