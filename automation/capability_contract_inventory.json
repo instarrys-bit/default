@@ -1015,14 +1015,20 @@
       ],
       "registry_dependencies": [],
       "current_registry_inputs": [
-        "CLI arguments and/or imported Python inputs as defined by the implementation"
+        "modules/uu.conf committed Git Blob and working-tree bytes",
+        "sources/policy.json last approved commit anchor and baseline metadata policy",
+        "complete Git history for modules/uu.conf plus GitHub author/committer attribution",
+        "automation/release_manifest.json and its derived release pins",
+        "automation/production_workflow_map.json and automation/resource_write_sets.json release-manifest references",
+        "Storage Management main push/schedule invocation context"
       ],
       "current_registry_outputs": [
-        "RUNNER_TEMP/config-baseline-proposal.json when the observed config Blob SHA differs from the registered baseline",
-        "stdout JSON summary; repository_files_modified=false; config_file_modified=false"
+        "Default/read-only mode: RUNNER_TEMP/config-baseline-proposal.json when the observed config Blob SHA differs from the registered baseline",
+        "--apply mode: exactly four metadata files (sources/policy.json, automation/release_manifest.json, automation/production_workflow_map.json, automation/resource_write_sets.json) after owner attribution verification",
+        "stdout JSON summary; modules/uu.conf bytes never modified; no independent task dispatch"
       ],
-      "current_invocation": "python_module_or_workflow_step",
-      "contract_status": "reviewed_runner_local_proposal_only",
+      "current_invocation": "Storage Management reconcile-config-baseline main push/schedule job; read-only proposal mode may also be invoked by Auto Sync",
+      "contract_status": "workflow_scoped_metadata_writer_owner_history_guarded",
       "dispatch_status": "disabled",
       "missing_contract_fields": [
         "input_schema",
@@ -1036,7 +1042,7 @@
         "success_predicate",
         "independent_verifier"
       ],
-      "audit_note": "Reads modules/uu.conf and current policy/release inputs, then writes only a proposal under RUNNER_TEMP. No --apply mode, repository metadata write, Git commit/push, or independent dispatch exists. Baseline metadata changes require a separately reviewed pull request."
+      "audit_note": "Default invocation is read-only and emits a RUNNER_TEMP proposal. The only repository write path is --apply under the Storage Management main push/schedule job after every intervening modules/uu.conf-changing commit is attributed to the repository owner as author or committer. It writes exactly the four metadata paths in the policy allowlist, verifies config bytes before/after, and never writes modules/uu.conf content. It is not an independently dispatchable Python component."
     },
     {
       "id": "script_register_discovered_sources",

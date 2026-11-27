@@ -16,6 +16,7 @@ import secrets
 import re
 import sys
 import tempfile
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -511,6 +512,8 @@ class GitHubContentsBackend:
 
 
 MAX_SEGMENT_BYTES = 40_000_000
+MAX_CAS_ATTEMPTS = 8
+CAS_RETRY_BASE_SECONDS = 0.25
 SEGMENT_MANIFEST_PATH = "storage/v2/state/manifest.json"
 SEGMENT_DIRECTORY = "storage/v2/state/segments"
 
@@ -943,7 +946,7 @@ def assert_automation_write_allowed(path: str, actor: str) -> None:
     raise PermissionError(f"automated write path is not allowlisted: {normalized}")
 
 
-def initialize_segmented_store(backend, *, epoch_id: str, actual_seed_sha: str, approved_seed_sha: str, max_attempts: int = 5) -> dict:
+def initialize_segmented_store(backend, *, epoch_id: str, actual_seed_sha: str, approved_seed_sha: str, max_attempts: int = MAX_CAS_ATTEMPTS) -> dict:
     """Initialize or migrate the event log with bounded retries on main-ref CAS races.
 
     Storage Management has other legitimate main-branch writers. A non-force ref
@@ -980,6 +983,7 @@ def initialize_segmented_store(backend, *, epoch_id: str, actual_seed_sha: str, 
             except Conflict:
                 if attempt + 1 == max_attempts:
                     raise
+                time.sleep(min(CAS_RETRY_BASE_SECONDS * (2 ** attempt), 2.0))
                 continue
             verified, _ = backend.read()
             verify_head, verify_tree = backend._head_and_tree()
@@ -1003,6 +1007,7 @@ def initialize_segmented_store(backend, *, epoch_id: str, actual_seed_sha: str, 
         except Conflict:
             if attempt + 1 == max_attempts:
                 raise
+            time.sleep(min(CAS_RETRY_BASE_SECONDS * (2 ** attempt), 2.0))
             continue
         verified, _ = backend.read()
         verify_head, verify_tree = backend._head_and_tree()
@@ -1061,7 +1066,7 @@ def main() -> int:
             payload = json.loads(args.payload)
             created_at = utc_now()
             result = None
-            for attempt in range(5):
+            for attempt in range(MAX_CAS_ATTEMPTS):
                 state, head_sha = backend.read()
                 if state is None:
                     raise NotInitialized("V2 storage has not been initialized")
@@ -1084,8 +1089,9 @@ def main() -> int:
                     )
                     break
                 except Conflict:
-                    if attempt == 4:
+                    if attempt == MAX_CAS_ATTEMPTS - 1:
                         raise
+                    time.sleep(min(CAS_RETRY_BASE_SECONDS * (2 ** attempt), 2.0))
                     continue
             print(json.dumps(result, ensure_ascii=False))
     except (StorageError, ValueError, OSError, PermissionError) as exc:

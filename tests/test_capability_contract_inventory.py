@@ -167,28 +167,37 @@ class CapabilityContractInventoryTests(unittest.TestCase):
                              program.get("orchestration", {}).get("enabled") is True)
         self.assertTrue(all(not adapter_by_id[x].get("enabled") for x in python_programs))
 
-    def test_owner_config_baseline_is_read_only_and_reviewed_pr_only(self):
+    def test_owner_config_baseline_is_read_only_with_explicit_metadata_only_writer(self):
         policy = read_json("sources/policy.json")
         guard = policy["managed_config_guard"]
         metadata = guard["baseline_metadata_policy"]
+        expected_paths = {
+            "sources/policy.json", "automation/release_manifest.json",
+            "automation/production_workflow_map.json", "automation/resource_write_sets.json",
+        }
         self.assertFalse(guard["content_protection"]["automation_may_modify_content"])
+        self.assertTrue(guard["content_immutable_to_automation"])
         self.assertTrue(metadata["automation_may_hash_file"])
-        self.assertFalse(metadata["automation_may_update_registered_blob_sha"])
-        self.assertFalse(metadata["automation_may_update_release_baseline_sha"])
+        self.assertTrue(metadata["automation_may_update_registered_blob_sha"])
+        self.assertTrue(metadata["automation_may_update_release_baseline_sha"])
+        self.assertTrue(metadata["automation_may_update_approved_baseline_sha"])
+        self.assertTrue(metadata["owner_authored_config_history_required"])
         self.assertTrue(metadata["reviewed_pr_required"])
+        self.assertEqual(set(metadata["metadata_write_allowlist"]), expected_paths)
         self.assertEqual(metadata["proposal_generation_mode"], "runner_local_only")
-        self.assertIn("separately reviewed pull request", metadata["update_authorization"])
+        self.assertIn("owner-authored", metadata["update_authorization"])
         script = (ROOT / "scripts/register_config_baseline.py").read_text(encoding="utf-8")
-        self.assertNotIn("--apply", script)
+        self.assertIn("--apply", script)
+        self.assertIn("owner_approved_config_history", script)
         self.assertIn("write_baseline_proposal", script)
         self.assertIn("RUNNER_TEMP", script)
         workflow = (ROOT / ".github/workflows/storage-management.yml").read_text(encoding="utf-8")
-        self.assertNotIn("reconcile-config-baseline:", workflow)
-        self.assertNotIn("publish_config_baseline_metadata.sh", workflow)
+        self.assertIn("reconcile-config-baseline:", workflow)
+        self.assertIn("publish_config_baseline_metadata.sh", workflow)
         release = read_json("automation/release_manifest.json")
         sync = release["execution_policy"]["watchdog_baseline_metadata_sync"]
-        self.assertIsNone(sync["writer"])
-        self.assertEqual(sync["write_allowlist"], [])
+        self.assertEqual(sync["writer"], "Storage Management / File Management")
+        self.assertEqual(set(sync["write_allowlist"]), expected_paths)
 
     def test_capability_inventory_counts_and_dispatch_claims_match_current_registry(self):
         inventory = read_json("automation/capability_contract_inventory.json")
@@ -204,7 +213,7 @@ class CapabilityContractInventoryTests(unittest.TestCase):
         self.assertEqual(assessor["contract_status"], "monolithic_fallback_non_dispatchable")
         baseline = next(x for x in inventory["programs"] if x["id"] == "script_register_config_baseline")
         self.assertEqual(baseline["dispatch_status"], "disabled")
-        self.assertEqual(baseline["contract_status"], "reviewed_runner_local_proposal_only")
+        self.assertEqual(baseline["contract_status"], "workflow_scoped_metadata_writer_owner_history_guarded")
         self.assertTrue(all(not x["enabled"] for x in adapters["adapters"] if x["target_kind"] == "python_component"))
 
     def test_durable_queue_writers_are_classified_as_control_plane_not_production_publishers(self):

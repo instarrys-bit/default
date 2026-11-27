@@ -101,7 +101,7 @@
   "managed_config_guard": {
     "path": "modules/uu.conf",
     "approved_git_blob_sha": "a24d8c526394ebf28f0c74043d93d4f736272679",
-    "description": "Authoritative owner-managed Shadowrocket config. Automation may read, identify, hash, diff and emit a runner-local proposal; baseline SHA and release metadata changes require a separate reviewed pull request. Automation must never rewrite uu.conf contents.",
+    "description": "Authoritative owner-managed Shadowrocket config. Storage Management may automatically register baseline SHA metadata only after verifying the complete owner-authored uu.conf commit history. Automation must never rewrite modules/uu.conf bytes.",
     "last_user_approved_baseline_update": {
       "previous_blob_sha": "86b87a33b07e881ff3bb1a32e852001b52708e97",
       "new_blob_sha": "a24d8c526394ebf28f0c74043d93d4f736272679",
@@ -119,7 +119,7 @@
       "owner_may_edit": true,
       "automation_may_modify_content": false,
       "protected_scope": "All bytes in modules/uu.conf are protected from autonomous/unattended production automation and baseline-metadata registration, including user-authored rules, section contents, DNS settings, and existing code or feature behavior. The repository owner may edit manually. An AI may edit config content only when the user explicitly authorizes a specific content change; that authorization does not grant general or future editing permission. No autonomous AI or production automation may infer permission.",
-      "reaction_model": "When the owner manually edits modules/uu.conf or explicitly authorizes a specific AI edit, observe the resulting Git blob SHA and commit context, reacquire the latest main-branch file, verify stability, and emit a runner-local proposal. Do not update the approved baseline SHA or derived release pins automatically; those changes require a separate reviewed pull request. Production automation continues only with read-only config access. If fetching is temporarily unavailable, preserve the observed SHA and continue read-only audit while retrying.",
+      "reaction_model": "When the owner manually edits modules/uu.conf or explicitly authorizes a specific AI edit, observe the resulting Git blob SHA and commit context. Storage Management may update only the approved baseline metadata after verifying every intervening config-changing commit is attributed to the repository owner as author or committer. If attribution is missing or any commit is not owner-authored, keep the approved baseline unchanged, preserve the observation in a RUNNER_TEMP proposal, and continue read-only audit. Never write config bytes.",
       "watchdog_near_real_time_reconciliation": true,
       "owner_manual_edits_allowed": true,
       "explicitly_user_authorized_ai_edits_allowed": true,
@@ -134,13 +134,21 @@
       "automation_may_identify_file": true,
       "automation_may_hash_file": true,
       "automation_may_diff_file": true,
-      "automation_may_update_registered_blob_sha": false,
-      "update_authorization": "Only a separately reviewed pull request may update the approved uu.conf Blob SHA or derived Release baseline pins. Automation may read, hash, diff and emit a proposal under RUNNER_TEMP, but may not write repository metadata or modules/uu.conf.",
+      "automation_may_update_registered_blob_sha": true,
+      "update_authorization": "The user explicitly authorizes Storage Management / File Management to update the observed Blob SHA, approved baseline SHA and derived Release SHA metadata after verifying every intervening uu.conf-changing commit is owner-authored or owner-committed (GitHub author or committer login). Manual metadata PRs still require human review. No automation may write modules/uu.conf content.",
       "registration_must_not_write_config_content": true,
-      "automation_may_update_release_baseline_sha": false,
-      "automation_may_update_approved_baseline_sha": false,
+      "automation_may_update_release_baseline_sha": true,
+      "automation_may_update_approved_baseline_sha": true,
       "reviewed_pr_required": true,
-      "proposal_generation_mode": "runner_local_only"
+      "proposal_generation_mode": "runner_local_only",
+      "owner_authored_config_history_required": true,
+      "metadata_writer": "Storage Management / File Management",
+      "metadata_write_allowlist": [
+        "sources/policy.json",
+        "automation/release_manifest.json",
+        "automation/production_workflow_map.json",
+        "automation/resource_write_sets.json"
+      ]
     }
   }
 }

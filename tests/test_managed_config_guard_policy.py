@@ -7,12 +7,15 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ManagedConfigGuardPolicyTests(unittest.TestCase):
-    def test_config_content_is_protected_and_baseline_metadata_requires_reviewed_pr(self):
+    def test_config_content_stays_protected_while_user_authorizes_metadata_only_sync(self):
         policy = json.loads((ROOT / "sources" / "policy.json").read_text(encoding="utf-8"))
         guard = policy["managed_config_guard"]
         content = guard["content_protection"]
         metadata = guard["baseline_metadata_policy"]
-
+        expected_paths = {
+            "sources/policy.json", "automation/release_manifest.json",
+            "automation/production_workflow_map.json", "automation/resource_write_sets.json",
+        }
         self.assertEqual(guard["path"], "modules/uu.conf")
         self.assertTrue(guard["content_immutable_to_automation"])
         self.assertTrue(content["owner_may_edit"])
@@ -26,20 +29,23 @@ class ManagedConfigGuardPolicyTests(unittest.TestCase):
         self.assertTrue(metadata["automation_may_identify_file"])
         self.assertTrue(metadata["automation_may_hash_file"])
         self.assertTrue(metadata["automation_may_diff_file"])
-        self.assertFalse(metadata["automation_may_update_registered_blob_sha"])
-        self.assertFalse(metadata["automation_may_update_release_baseline_sha"])
-        self.assertFalse(metadata["automation_may_update_approved_baseline_sha"])
+        self.assertTrue(metadata["automation_may_update_registered_blob_sha"])
+        self.assertTrue(metadata["automation_may_update_release_baseline_sha"])
+        self.assertTrue(metadata["automation_may_update_approved_baseline_sha"])
+        self.assertTrue(metadata["owner_authored_config_history_required"])
         self.assertTrue(metadata["reviewed_pr_required"])
-        self.assertEqual(metadata["proposal_generation_mode"], "runner_local_only")
-        self.assertIn("separately reviewed pull request", metadata["update_authorization"])
+        self.assertEqual(set(metadata["metadata_write_allowlist"]), expected_paths)
+        self.assertTrue(metadata["registration_must_not_write_config_content"])
+        self.assertIn("owner-authored", metadata["update_authorization"])
 
-    def test_observation_is_read_only_and_never_automatically_advances_baseline(self):
+    def test_observation_remains_read_only_when_owner_history_cannot_be_verified(self):
         policy = json.loads((ROOT / "sources" / "policy.json").read_text(encoding="utf-8"))
         guard = policy["managed_config_guard"]
         self.assertTrue(guard["content_protection"]["watchdog_near_real_time_reconciliation"])
-        self.assertIn("runner-local proposal", guard["content_protection"]["reaction_model"])
-        self.assertIn("separate reviewed pull request", guard["content_protection"]["reaction_model"])
-        self.assertNotIn("automatically update the registered baseline", guard["content_protection"]["reaction_model"])
+        reaction = guard["content_protection"]["reaction_model"]
+        self.assertIn("RUNNER_TEMP proposal", reaction)
+        self.assertIn("owner-authored", reaction)
+        self.assertIn("Never write config bytes", reaction)
 
 
 if __name__ == "__main__":
