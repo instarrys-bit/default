@@ -576,6 +576,12 @@ jobs:
     timeout-minutes: 8
     permissions:
       contents: write
+    # Serialize baseline metadata writes with Auto Sync's production snapshot.
+    # This prevents sources/policy.json (a declared production input) changing
+    # between Watchdog fingerprinting, audit execution, and publish validation.
+    concurrency:
+      group: shadowrocket-main-writer
+      cancel-in-progress: false
     steps:
       - name: Checkout latest main with complete config history
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
