@@ -106,7 +106,7 @@
       "lineage_status": "unverified",
       "upstream_repositories": [],
       "status": "STALE_QUARANTINED",
-      "error": "auto-johnshall-shadowrocket-adblock-rules-forever-4d665bed source drift exceeds automatic safety limit: 5586 added + 5211 removed = 10797; limit 5312",
+      "error": "auto-johnshall-shadowrocket-adblock-rules-forever-4d665bed source drift exceeds automatic safety limit: 5970 added + 5210 removed = 11180; limit 5312",
       "pending_confirmations": 1,
       "new_entries": 0,
       "removed_entries": 0,
@@ -115,7 +115,7 @@
     },
     {
       "id": "auto-johnshall-shadowrocket-adblock-rules-forever-68903a21",
-      "sha256": "125aff6bed5d3d9a4827c45b1eef9e091d53cd10ed24b4a73ec9d05f109ff302",
+      "sha256": "89a814918cb0dd8bf4fcd37e8b1b8565f1378c4c43dd10d60582ff3dee3ff985",
       "entries": 30192,
       "classification": "PROXY",
       "role": "primary_candidate_source",
@@ -255,7 +255,7 @@
         "zakird/crux-top-lists"
       ],
       "status": "STALE_QUARANTINED",
-      "error": "hagezi-domains-pro source drift exceeds automatic safety limit: 58147 added + 39586 removed = 97733; limit 22263",
+      "error": "hagezi-domains-pro source drift exceeds automatic safety limit: 56954 added + 39048 removed = 96002; limit 22263",
       "pending_confirmations": 1,
       "new_entries": 0,
       "removed_entries": 0,
@@ -320,11 +320,11 @@
   "lineage_not_fully_verified_sources": 13,
   "source_candidate_summary": {
     "DIRECT": {
-      "candidate_publishers": 0,
+      "candidate_publishers": 1,
       "eligible_publishers": 0,
       "independent_eligible_groups": 0,
-      "candidate_files": 0,
-      "cross_policy_conflict_count": 0,
+      "candidate_files": 1,
+      "cross_policy_conflict_count": 2,
       "activation_ready": false
     },
     "PROXY": {
@@ -332,15 +332,15 @@
       "eligible_publishers": 1,
       "independent_eligible_groups": 1,
       "candidate_files": 3,
-      "cross_policy_conflict_count": 1,
+      "cross_policy_conflict_count": 2,
       "activation_ready": false
     },
     "REJECT": {
-      "candidate_publishers": 11,
-      "eligible_publishers": 5,
-      "independent_eligible_groups": 5,
-      "candidate_files": 11,
-      "cross_policy_conflict_count": 1,
+      "candidate_publishers": 15,
+      "eligible_publishers": 7,
+      "independent_eligible_groups": 7,
+      "candidate_files": 15,
+      "cross_policy_conflict_count": 2,
       "activation_ready": true
     }
   },
