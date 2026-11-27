@@ -100,26 +100,27 @@
   },
   "managed_config_guard": {
     "path": "modules/uu.conf",
-    "approved_git_blob_sha": "a24d8c526394ebf28f0c74043d93d4f736272679",
+    "approved_git_blob_sha": "8c050087c28b6a4b023e06622f7c0c3a3df54a17",
     "description": "Authoritative owner-managed Shadowrocket config. Storage Management may automatically register baseline SHA metadata only after verifying the complete owner-authored uu.conf commit history. Automation must never rewrite modules/uu.conf bytes.",
     "last_user_approved_baseline_update": {
-      "previous_blob_sha": "86b87a33b07e881ff3bb1a32e852001b52708e97",
-      "new_blob_sha": "a24d8c526394ebf28f0c74043d93d4f736272679",
-      "reason": "Repository owner authorized automatic registration after GitHub verified the uu.conf change history. Only baseline metadata and derived release pins are updated; uu.conf bytes remain immutable to automation.",
+      "previous_blob_sha": "a24d8c526394ebf28f0c74043d93d4f736272679",
+      "new_blob_sha": "8c050087c28b6a4b023e06622f7c0c3a3df54a17",
+      "reason": "User-authorized automatic metadata registration after GitHub verified every intervening uu.conf-changing commit is repository-owner-authored. Config bytes remain immutable to automation.",
       "approval_mode": "owner_authored_config_history_with_user_authorization",
       "config_change_commits": [
-        "3d67f0bdb63321b1512c47d58db7d40407e7c4d7"
+        "d259bebdb4d98a9caeb4c9b837f4e5a157bf1dea",
+        "01c37de6a0cffc115e422efc4f22f0dfd7c32e4d"
       ],
       "actor": "instarrys-bit",
-      "commit_sha": "3d67f0bdb63321b1512c47d58db7d40407e7c4d7",
-      "registered_at": "2026-11-23T10:14:07.785Z"
+      "commit_sha": "d259bebdb4d98a9caeb4c9b837f4e5a157bf1dea",
+      "registered_at": "2026-11-27T14:11:52.920375+00:00"
     },
     "content_immutable_to_automation": true,
     "content_protection": {
       "owner_may_edit": true,
       "automation_may_modify_content": false,
       "protected_scope": "All bytes in modules/uu.conf are protected from autonomous/unattended production automation and baseline-metadata registration, including user-authored rules, section contents, DNS settings, and existing code or feature behavior. The repository owner may edit manually. An AI may edit config content only when the user explicitly authorizes a specific content change; that authorization does not grant general or future editing permission. No autonomous AI or production automation may infer permission.",
-      "reaction_model": "When the owner manually edits modules/uu.conf or explicitly authorizes a specific AI edit, observe the resulting Git blob SHA and commit context. Storage Management may update only the approved baseline metadata after verifying every intervening config-changing commit is attributed to the repository owner as author or committer. If attribution is missing or any commit is not owner-authored, keep the approved baseline unchanged, preserve the observation in a RUNNER_TEMP proposal, and continue read-only audit. Never write config bytes.",
+      "reaction_model": "When the owner manually edits modules/uu.conf or explicitly authorizes a specific AI edit, observe the resulting Git blob SHA and commit context. Storage Management may update only the approved baseline metadata after verifying every intervening config-changing commit is repository-owner-authored. If attribution is missing or any commit is not owner-authored, keep the approved baseline unchanged, preserve the observation in a RUNNER_TEMP proposal, and continue read-only audit. Never write config bytes.",
       "watchdog_near_real_time_reconciliation": true,
       "owner_manual_edits_allowed": true,
       "explicitly_user_authorized_ai_edits_allowed": true,
@@ -135,7 +136,7 @@
       "automation_may_hash_file": true,
       "automation_may_diff_file": true,
       "automation_may_update_registered_blob_sha": true,
-      "update_authorization": "The user explicitly authorizes Storage Management / File Management to update the observed Blob SHA, approved baseline SHA and derived Release SHA metadata after verifying every intervening uu.conf-changing commit is owner-authored or owner-committed (GitHub author or committer login). Manual metadata PRs still require human review. No automation may write modules/uu.conf content.",
+      "update_authorization": "The user explicitly authorizes Storage Management / File Management to update the observed Blob SHA, approved baseline SHA and derived Release SHA metadata after verifying every intervening uu.conf-changing commit is authored by the repository owner. Manual metadata PRs still require human review. No automation may write modules/uu.conf content.",
       "registration_must_not_write_config_content": true,
       "automation_may_update_release_baseline_sha": true,
       "automation_may_update_approved_baseline_sha": true,

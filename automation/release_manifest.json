@@ -37,7 +37,7 @@
     },
     "config_baseline": {
       "path": "modules/uu.conf",
-      "git_blob_sha": "a24d8c526394ebf28f0c74043d93d4f736272679",
+      "git_blob_sha": "8c050087c28b6a4b023e06622f7c0c3a3df54a17",
       "access": "read_only"
     },
     "source_assessor": {
@@ -254,7 +254,7 @@
         "push",
         "schedule"
       ],
-      "authorization": "The user explicitly authorizes automatic updates to the approved modules/uu.conf Blob SHA, formal baseline SHA and derived Release SHA metadata. File Management may do so only after GitHub verifies every intervening uu.conf-changing commit since the prior approved anchor is attributed to the repository owner as author or committer. Only the four metadata paths in write_allowlist may be written. modules/uu.conf bytes are never writable.",
+      "authorization": "The user explicitly authorizes automatic updates to the approved modules/uu.conf Blob SHA, formal baseline SHA and derived Release SHA metadata. File Management may do so only after GitHub verifies every intervening uu.conf-changing commit since the prior approved anchor is authored by the repository owner. Only the four metadata paths in write_allowlist may be written. modules/uu.conf bytes are never writable.",
       "write_allowlist": [
         "sources/policy.json",
         "automation/release_manifest.json",
