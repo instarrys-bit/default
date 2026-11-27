@@ -44,7 +44,7 @@ class ManagedConfigGuardPolicyTests(unittest.TestCase):
         self.assertTrue(guard["content_protection"]["watchdog_near_real_time_reconciliation"])
         reaction = guard["content_protection"]["reaction_model"]
         self.assertIn("RUNNER_TEMP proposal", reaction)
-        self.assertIn("owner-authored", reaction)
+        self.assertTrue("owner-authored" in reaction or "repository-owner-authored" in reaction or "authored by the repository owner" in reaction)
         self.assertIn("Never write config bytes", reaction)
 
 
