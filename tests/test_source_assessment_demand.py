@@ -62,5 +62,27 @@ class AssessmentBacklogDemandTests(unittest.TestCase):
             assessment_backlog_demand(manifest(pending=True), queue())
 
 
+    def test_watchdog_integrates_cursor_scoped_recovery_task(self):
+        from pathlib import Path
+        root = Path(__file__).resolve().parents[1]
+        workflow = (root / ".github/workflows/automation-watchdog.yml").read_text(encoding="utf-8")
+        scheduler = (root / "scripts/task_scheduler.py").read_text(encoding="utf-8")
+        self.assertIn("scripts/source_assessment_demand.py", workflow)
+        self.assertIn("source-assessment:cursor:", (root / "scripts/source_assessment_demand.py").read_text(encoding="utf-8"))
+        self.assertIn("INPUT_CHANGED|SCHEDULE_DUE|RECOVERY_REQUIRED", workflow)
+        self.assertIn('"RECOVERY_REQUIRED"', scheduler)
+        self.assertIn("assert_current_production_input", scheduler)
+
+    def test_manifest_backlog_missing_cursor_fails_closed(self):
+        result = assessment_backlog_demand(manifest(cursor=None), queue())
+        self.assertEqual(result["action"], "blocked")
+
+    def test_changed_cursor_does_not_replay_prior_terminal_batch(self):
+        first = assessment_backlog_demand(manifest(), queue())
+        prior = {"idempotency_key": first["idempotency_key"], "status": "SUCCEEDED"}
+        result = assessment_backlog_demand(manifest(cursor=CURSOR + "?next"), queue(prior))
+        self.assertEqual(result["action"], "enqueue")
+
+
 if __name__ == "__main__":
     unittest.main()
