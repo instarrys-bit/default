@@ -67,6 +67,14 @@ class AssessmentBacklogDemandTests(unittest.TestCase):
             assessment_backlog_demand(manifest(pending=True), queue())
 
 
+    def test_assessment_scheduler_helper_is_not_a_ruleset_input(self):
+        from production_intent import classify_paths, load_manifest
+        manifest_path = ROOT / "automation/production_inputs.json"
+        manifest = load_manifest(manifest_path)
+        result = classify_paths(["scripts/source_assessment_demand.py"], manifest)
+        self.assertEqual(result["status"], "NO_INPUT_CHANGE")
+        self.assertIn("scripts/source_assessment_demand.py", result["non_production_changes"])
+
     def test_watchdog_integrates_cursor_scoped_recovery_task(self):
         from pathlib import Path
         root = Path(__file__).resolve().parents[1]
