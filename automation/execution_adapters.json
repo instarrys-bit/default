@@ -2030,6 +2030,70 @@
       ],
       "write_resources": [],
       "publish_resources": []
+    },
+    {
+      "target_program_id": "script_source_assessment_demand",
+      "target_kind": "python_component",
+      "adapter_type": "python_cli",
+      "enabled": false,
+      "interface_status": "reviewed_read_only_workflow_helper_not_task_dispatchable",
+      "allowed_callers": [],
+      "entrypoint": {
+        "path": "scripts/source_assessment_demand.py",
+        "executable": "python3",
+        "argv_template": [
+          "--manifest",
+          "rulesets/source_candidate_registry.json.manifest.json",
+          "--queue",
+          "{queue_snapshot}"
+        ],
+        "shell": false
+      },
+      "input_contract": {
+        "required": [
+          "source candidate registry manifest",
+          "read-only durable task queue snapshot"
+        ],
+        "properties": {
+          "manifest": "verified JSON manifest",
+          "queue_snapshot": "verified JSON snapshot"
+        }
+      },
+      "output_contract": {
+        "required": [
+          "action"
+        ],
+        "properties": {
+          "action": [
+            "clear",
+            "enqueue",
+            "already_queued",
+            "in_progress",
+            "stalled",
+            "blocked"
+          ],
+          "idempotency_key": "cursor and discovery fingerprint scoped key"
+        }
+      },
+      "timeout_seconds": 30,
+      "retry": {
+        "max_attempts": 0,
+        "policy": "read-only deterministic helper invoked only by the registered Watchdog workflow; never a queued task adapter"
+      },
+      "completion": {
+        "success_condition": "valid deterministic JSON decision; invalid manifest or cursor fails closed",
+        "independent_verification_required": true
+      },
+      "read_only_resources": [
+        "rulesets/source_candidate_registry.json.manifest.json",
+        "automation/task_queue.json"
+      ],
+      "required_read_only_resources": [
+        "rulesets/source_candidate_registry.json.manifest.json",
+        "automation/task_queue.json"
+      ],
+      "write_resources": [],
+      "publish_resources": []
     }
   ]
 }
