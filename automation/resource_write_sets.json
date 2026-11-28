@@ -1408,7 +1408,7 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
-    "release_manifest_blob_sha": "e51be02e842f6d6469c8e8a084b9000d93a62cf9",
+    "release_manifest_blob_sha": "036c6c6495dcec750bfaec128b78e7f1b1d1ff52",
     "program_registry_blob_sha": "356b9d57093a034311ce5d3abe316d3a9b69d2c2",
     "execution_adapters_blob_sha": "0584538d21afb3993bf485896b30a69de298c5e6",
     "note": "Static entrypoint inventory for registered Python components and workflow-native write sites. It is not a complete transitive/runtime trace; remaining gaps are enumerated in not_yet_proven. Storage Management is the only V2 segmented event-state writer; the approved-config baseline metadata writer is active under owner-attributed history verification and the metadata-only allowlist. Production publisher scope remains rulesets/**; modules/uu.conf content remains protected."
