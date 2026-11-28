@@ -92,6 +92,7 @@ jobs:
             automation
             sources
             modules
+            rulesets/source_candidate_registry.json.manifest.json
             !/storage/v2/artifacts/sha256/
           sparse-checkout-cone-mode: false
           persist-credentials: false
