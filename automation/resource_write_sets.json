@@ -1627,6 +1627,12 @@
       "source": "storage/v2/verify_auto_sync_recovery.py",
       "classification": "read_only_recovery_verifier",
       "evidence": "Reads exact workflow run/job JSON, automation/task_queue.json, automation/production_inputs.json and the declared production inputs (including modules/uu.conf solely for integrity fingerprinting). It performs no GitHub API calls, repository writes, ruleset writes or configuration changes."
+    },
+    {
+      "program_id": "script_source_assessment_demand",
+      "source": "scripts/source_assessment_demand.py",
+      "classification": "read_only_watchdog_demand_classifier",
+      "evidence": "Reads only the source candidate registry manifest and the Watchdog's already-exported durable queue snapshot. Computes a cursor/discovery-scoped idempotency key and returns a decision to stdout; it has no network client, GitHub API client, repository write, queue mutation, source activation, ruleset publication or modules/uu.conf access. Queue writes remain exclusively in the registered Watchdog task-queue supervision job through the existing SHA-CAS and fencing path."
     }
   ],
   "control_plane_side_effects": [
