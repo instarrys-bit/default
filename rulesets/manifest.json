@@ -19,8 +19,8 @@
   "source_inventory": [
     {
       "id": "acl4ssr-china-domain",
-      "sha256": "362edd1f605742b360eaf138f151d7eea96cc17f20ef12da73acbfb80c350e08",
-      "entries": 605,
+      "sha256": "92f90e75ffc64dd2996552593a66e0d46a841ee0ff50c0efecbfc9d7cd6e2ed4",
+      "entries": 613,
       "classification": "DIRECT",
       "role": "primary_candidate_source",
       "lineage_status": "unverified",
@@ -28,7 +28,7 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 0,
+      "new_entries": 8,
       "removed_entries": 0,
       "baseline_initialized": false,
       "bootstrap_enqueued": false
@@ -83,8 +83,8 @@
     },
     {
       "id": "auto-gatework-surge-rules-da7f8038",
-      "sha256": "4647019b85d7871b8aaf0d569f1f930850dde90b4cf9b8e751a69ef6c3870ee5",
-      "entries": 4481,
+      "sha256": "a8c7b83648304bc10a0a2e20002120bee70f3716430ec26ea8defd7acab5a9d1",
+      "entries": 4484,
       "classification": "PROXY",
       "role": "primary_candidate_source",
       "lineage_status": "unverified",
@@ -92,7 +92,7 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 30,
+      "new_entries": 33,
       "removed_entries": 1,
       "baseline_initialized": false,
       "bootstrap_enqueued": false
@@ -106,7 +106,7 @@
       "lineage_status": "unverified",
       "upstream_repositories": [],
       "status": "STALE_QUARANTINED",
-      "error": "auto-johnshall-shadowrocket-adblock-rules-forever-4d665bed source drift exceeds automatic safety limit: 5970 added + 5210 removed = 11180; limit 5312",
+      "error": "auto-johnshall-shadowrocket-adblock-rules-forever-4d665bed source drift exceeds automatic safety limit: 6348 added + 5203 removed = 11551; limit 5312",
       "pending_confirmations": 1,
       "new_entries": 0,
       "removed_entries": 0,
@@ -115,8 +115,8 @@
     },
     {
       "id": "auto-johnshall-shadowrocket-adblock-rules-forever-68903a21",
-      "sha256": "89a814918cb0dd8bf4fcd37e8b1b8565f1378c4c43dd10d60582ff3dee3ff985",
-      "entries": 30192,
+      "sha256": "f71a11fcd62c852640d246d913a7502585431f2253c3c3e298acfde5af4fcc6a",
+      "entries": 30194,
       "classification": "PROXY",
       "role": "primary_candidate_source",
       "lineage_status": "unverified",
@@ -124,7 +124,7 @@
       "status": "CURRENT",
       "error": null,
       "pending_confirmations": 0,
-      "new_entries": 10,
+      "new_entries": 12,
       "removed_entries": 1,
       "baseline_initialized": false,
       "bootstrap_enqueued": false
@@ -255,7 +255,7 @@
         "zakird/crux-top-lists"
       ],
       "status": "STALE_QUARANTINED",
-      "error": "hagezi-domains-pro source drift exceeds automatic safety limit: 56954 added + 39048 removed = 96002; limit 22263",
+      "error": "hagezi-domains-pro source drift exceeds automatic safety limit: 56849 added + 40189 removed = 97038; limit 22263",
       "pending_confirmations": 1,
       "new_entries": 0,
       "removed_entries": 0,
@@ -328,28 +328,28 @@
       "activation_ready": false
     },
     "PROXY": {
-      "candidate_publishers": 3,
-      "eligible_publishers": 1,
+      "candidate_publishers": 6,
+      "eligible_publishers": 2,
       "independent_eligible_groups": 1,
-      "candidate_files": 3,
+      "candidate_files": 6,
       "cross_policy_conflict_count": 2,
       "activation_ready": false
     },
     "REJECT": {
-      "candidate_publishers": 15,
-      "eligible_publishers": 7,
-      "independent_eligible_groups": 7,
-      "candidate_files": 15,
+      "candidate_publishers": 16,
+      "eligible_publishers": 8,
+      "independent_eligible_groups": 8,
+      "candidate_files": 16,
       "cross_policy_conflict_count": 2,
       "activation_ready": true
     }
   },
   "rule_count": {
-    "DIRECT": 137,
-    "PROXY": 3281,
+    "DIRECT": 145,
+    "PROXY": 3283,
     "REJECT": 16626
   },
-  "published_rule_total": 20044,
+  "published_rule_total": 20054,
   "max_published_rules": 30000,
   "queued_rule_total": 0,
   "baseline_conflict_hold_count": 37,
@@ -729,23 +729,35 @@
   "rule_lifecycle": {
     "DIRECT": {
       "previous_count": 137,
-      "current_count": 137,
-      "added_count": 0,
+      "current_count": 145,
+      "added_count": 8,
       "removed_count": 0,
       "previous_sha256": "7de3eaef281a559a5f16878a0bdcc6b69b933f5eb6ba23ad00753ebdf0a2e09e",
-      "current_sha256": "7de3eaef281a559a5f16878a0bdcc6b69b933f5eb6ba23ad00753ebdf0a2e09e",
-      "added_sample": [],
+      "current_sha256": "4ffbbec5b2a039c1563c87d96efe28cfcf718f0b5560ea18936cfa7d74f45ed2",
+      "added_sample": [
+        "DOMAIN,cn.download.nvidia.com",
+        "DOMAIN,gstore.val.manlaxy.com",
+        "DOMAIN-SUFFIX,focuschina.com",
+        "DOMAIN-SUFFIX,gcloudsvcs.com",
+        "DOMAIN-SUFFIX,made-in-china.com",
+        "DOMAIN-SUFFIX,micstatic.com",
+        "DOMAIN-SUFFIX,trademessenger.com",
+        "DOMAIN-SUFFIX,vemic.com"
+      ],
       "removed_sample": [],
       "baseline_initialized": false
     },
     "PROXY": {
       "previous_count": 3281,
-      "current_count": 3281,
-      "added_count": 0,
+      "current_count": 3283,
+      "added_count": 2,
       "removed_count": 0,
       "previous_sha256": "976ae76aa9848aba51b3923d679299877e7e50c9a5f5260095e2dcefe9f910f5",
-      "current_sha256": "976ae76aa9848aba51b3923d679299877e7e50c9a5f5260095e2dcefe9f910f5",
-      "added_sample": [],
+      "current_sha256": "f88f61bb789dd0a1c242827181274f47086e8aacff45d0a72f93d0ef94b4a240",
+      "added_sample": [
+        "DOMAIN-SUFFIX,danmakus.com",
+        "DOMAIN-SUFFIX,spacedesk.net"
+      ],
       "removed_sample": [],
       "baseline_initialized": false
     },
@@ -761,15 +773,15 @@
       "baseline_initialized": false
     }
   },
-  "reviewed_total": 166712,
-  "approved_total": 20039,
-  "promoted_queue_total": 0,
+  "reviewed_total": 166714,
+  "approved_total": 20049,
+  "promoted_queue_total": 10,
   "publication_accounting": {
-    "published_rule_total": 20044,
-    "approved_review_total": 20039,
-    "approved_review_published_total": 20039,
+    "published_rule_total": 20054,
+    "approved_review_total": 20049,
+    "approved_review_published_total": 20049,
     "approved_review_not_published_total": 0,
-    "promoted_queue_total": 0,
+    "promoted_queue_total": 10,
     "promoted_queue_published_without_current_approval_total": 0,
     "promoted_queue_not_published_total": 0,
     "retained_published_without_current_approval_total": 5,
@@ -785,7 +797,7 @@
     "published_count_delta_vs_approved_review_total": 5,
     "accounting_reconciled": true
   },
-  "held_total": 146673,
+  "held_total": 146665,
   "reject_manual_approval_required": true,
   "manual_review_scope": "new_reject_rules_after_deterministic_secondary_review",
   "reject_automated_hold_count": 101797,
@@ -824,23 +836,23 @@
     "queue_max_file_bytes": 40000000
   },
   "status_count": {
-    "ALREADY_COVERED": 9629,
-    "APPROVED": 24602,
+    "ALREADY_COVERED": 9630,
+    "APPROVED": 24612,
     "CONFLICT": 33389,
     "POLICY_CONFLICT": 454,
-    "REVIEW": 98622,
+    "REVIEW": 98613,
     "RISK_HOLD": 16
   },
   "deterministic_review_progress": {
-    "candidate_total": 166712,
-    "approved_total": 20039,
-    "held_total": 146673,
+    "candidate_total": 166714,
+    "approved_total": 20049,
+    "held_total": 146665,
     "status_count": {
-      "ALREADY_COVERED": 9629,
-      "APPROVED": 24602,
+      "ALREADY_COVERED": 9630,
+      "APPROVED": 24612,
       "CONFLICT": 33389,
       "POLICY_CONFLICT": 454,
-      "REVIEW": 98622,
+      "REVIEW": 98613,
       "RISK_HOLD": 16
     }
   },

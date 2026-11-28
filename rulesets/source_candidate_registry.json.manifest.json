@@ -3,49 +3,49 @@
   "format": "jsonl-gzip-shards-v1",
   "logical_path": "source_candidate_registry.json",
   "collection_key": "records",
-  "record_count": 49962,
-  "total_shard_bytes": 8902480,
-  "total_document_bytes": 8903852,
+  "record_count": 50091,
+  "total_shard_bytes": 10847047,
+  "total_document_bytes": 10848399,
   "max_file_bytes": 40000000,
   "max_uncompressed_file_bytes": 160000000,
   "max_total_bytes": null,
-  "shard_directory": "source_candidate_registry.json.parts-b38f9fb012db763c-d298ebee41",
+  "shard_directory": "source_candidate_registry.json.parts-f0bfeb7b950fe1a1-fb3461a1cc",
   "metadata": {
     "registry_type": "discovered_source_candidates_non_activating",
-    "updated_at": "2026-11-27T15:13:58.109282+00:00",
+    "updated_at": "2026-11-28T11:37:28.763441+00:00",
     "latest_discovery": {
       "workflow_name": "Shadowrocket Deterministic Domain Audit (User Config Baseline)",
-      "workflow_run_id": "46019365742",
-      "workflow_head_sha": "ca1f1a1449f91a2372b55712ffbe3b1becbf8037",
-      "artifact_sha256": "ed32c499becc623d83d8e78f1fccd88d1906d98e5f7bf1a469ca394de18e7a7a",
+      "workflow_run_id": "46139293248",
+      "workflow_head_sha": "5abd888a8a6406ab2755f85b75ae1b5bf075f8a3",
+      "artifact_sha256": "639a90763cf9f31d295f0e71ad6808e93ddb17b90727b076e02c4cfcdb8bbd73",
       "mode": "monolithic_fallback",
-      "recorded_at": "2026-11-27T15:13:58.109282+00:00"
+      "recorded_at": "2026-11-28T11:37:28.763441+00:00"
     },
-    "repository_count": 1781,
-    "source_file_count": 48181,
-    "pending_assessment_count": 47937,
-    "discovery_fingerprint": "334de91115d2bf80713a093b5e38fd4d3145e0f2b630e165f2489ae5b6094b91",
+    "repository_count": 1787,
+    "source_file_count": 48304,
+    "pending_assessment_count": 47987,
+    "discovery_fingerprint": "18bf5ae03a98ab7f9119e0f47e28c3892897e379b409230e6181c14ef3a9909a",
     "latest_assessment": {
-      "workflow_run_id": "46019365742",
-      "updated_at": "2026-11-27T15:13:58.109282+00:00",
+      "workflow_run_id": "46139293248",
+      "updated_at": "2026-11-28T11:37:28.763441+00:00",
       "assessed_this_run_count": 100,
-      "persisted_success_count": 86,
-      "next_cursor_url": "https://raw.githubusercontent.com/tkgeeked/clash-rules-for-shadowrocket/main/loyalsoldier-blacklist.conf",
-      "batch_id": "2026-11-27T15:05:13.227637+00:00",
-      "candidate_url_count": 36559
+      "persisted_success_count": 84,
+      "next_cursor_url": "https://raw.githubusercontent.com/Hsiao0427/shadowrocket-rules/main/PlayStation.list",
+      "batch_id": "2026-11-28T11:28:48.275851+00:00",
+      "candidate_url_count": 36686
     },
     "policy_boundary": "This is a discovery and non-activating assessment evidence registry. It stores content hashes, parser/policy metadata and truncated domain fingerprints only; it does not activate sources, authorize routing policy or replace rule-level review.",
     "schema_version": 2,
     "storage_format": "typed-jsonl-shards-v1",
-    "record_count": 49962
+    "record_count": 50091
   },
   "shards": [
     {
       "file": "part-000000.jsonl.gz",
-      "records": 49962,
-      "bytes": 8902480,
-      "sha256": "aceefc9e469d06d2eda35d2e149b6ddcddeb177892e64a67abcd8c401a5ea1a7",
-      "uncompressed_bytes": 53184978
+      "records": 50091,
+      "bytes": 10847047,
+      "sha256": "82fb1fcff37e25541144374622c9c92aa1705fc6bbb269e4189f2d529c3b4c64",
+      "uncompressed_bytes": 56893030
     }
   ]
 }

@@ -1,4 +1,6 @@
+DOMAIN,cn.download.nvidia.com
 DOMAIN,dl.steam.clngaa.com
+DOMAIN,gstore.val.manlaxy.com
 DOMAIN,st.dl.bscstorage.net
 DOMAIN,st.dl.eccdnx.com
 DOMAIN,st.dl.pinyuncloud.com
@@ -58,7 +60,9 @@ DOMAIN-SUFFIX,dpfile.com
 DOMAIN-SUFFIX,duokan.com
 DOMAIN-SUFFIX,duowan.com
 DOMAIN-SUFFIX,edgesrv.com
+DOMAIN-SUFFIX,focuschina.com
 DOMAIN-SUFFIX,ganjistatic1.com
+DOMAIN-SUFFIX,gcloudsvcs.com
 DOMAIN-SUFFIX,go2map.com
 DOMAIN-SUFFIX,guazi.com
 DOMAIN-SUFFIX,gwdang.com
@@ -93,6 +97,8 @@ DOMAIN-SUFFIX,lizhi.fm
 DOMAIN-SUFFIX,lizhifm.com
 DOMAIN-SUFFIX,lvmama.com
 DOMAIN-SUFFIX,lxdns.com
+DOMAIN-SUFFIX,made-in-china.com
+DOMAIN-SUFFIX,micstatic.com
 DOMAIN-SUFFIX,migucloud.com
 DOMAIN-SUFFIX,mxhichina.com
 DOMAIN-SUFFIX,nruan.com
@@ -122,7 +128,9 @@ DOMAIN-SUFFIX,thundercdn.com
 DOMAIN-SUFFIX,todesk.com
 DOMAIN-SUFFIX,toutiao13.com
 DOMAIN-SUFFIX,toutiaopage.com
+DOMAIN-SUFFIX,trademessenger.com
 DOMAIN-SUFFIX,udache.com
+DOMAIN-SUFFIX,vemic.com
 DOMAIN-SUFFIX,videocc.net
 DOMAIN-SUFFIX,vipstatic.com
 DOMAIN-SUFFIX,weidian.com
