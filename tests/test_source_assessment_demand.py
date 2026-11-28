@@ -5,7 +5,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
-from source_assessment_demand import assessment_backlog_demand
+from source_assessment_demand import assessment_backlog_demand, main
 
 
 CURSOR = "https://raw.githubusercontent.com/example/rules/main/list.conf"
@@ -81,10 +81,22 @@ class AssessmentBacklogDemandTests(unittest.TestCase):
         workflow = (root / ".github/workflows/automation-watchdog.yml").read_text(encoding="utf-8")
         scheduler = (root / "scripts/task_scheduler.py").read_text(encoding="utf-8")
         self.assertIn("scripts/source_assessment_demand.py", workflow)
+        self.assertIn("rulesets/source_candidate_registry.json.manifest.json", workflow)
         self.assertIn("source-assessment:cursor:", (root / "scripts/source_assessment_demand.py").read_text(encoding="utf-8"))
         self.assertIn("INPUT_CHANGED|SCHEDULE_DUE|RECOVERY_REQUIRED", workflow)
         self.assertIn('"RECOVERY_REQUIRED"', scheduler)
         self.assertIn("assert_current_production_input", scheduler)
+
+    def test_cli_returns_structured_blocked_state_without_shell_failure(self):
+        import contextlib
+        import io
+        from unittest.mock import patch
+        output = io.StringIO()
+        with patch("sys.argv", ["source_assessment_demand.py", "--manifest", "/missing/manifest.json", "--queue", "/missing/queue.json"]):
+            with contextlib.redirect_stdout(output):
+                self.assertEqual(main(), 0)
+        import json
+        self.assertEqual(json.loads(output.getvalue())["action"], "blocked")
 
     def test_manifest_backlog_missing_cursor_fails_closed(self):
         result = assessment_backlog_demand(manifest(cursor=None), queue())
