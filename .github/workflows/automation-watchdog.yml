@@ -167,11 +167,39 @@ jobs:
 
           decision="$(jq -r '.decision' <<< "$intent_json")"
           fingerprint="$(jq -r '.fingerprint' <<< "$intent_json")"
+          assessment_demand_json="$(python3 scripts/source_assessment_demand.py \
+            --manifest rulesets/source_candidate_registry.json.manifest.json \
+            --queue "$AUTOMATION_QUEUE_SNAPSHOT")"
+          assessment_action="$(jq -r '.action' <<< "$assessment_demand_json")"
+          assessment_key="$(jq -r '.idempotency_key // empty' <<< "$assessment_demand_json")"
+          assessment_reason="$(jq -r '.reason // empty' <<< "$assessment_demand_json")"
           echo "$intent_json" >> "$GITHUB_STEP_SUMMARY"
-          echo "decision=$decision fingerprint=$fingerprint mode=$production_dispatch_mode"
+          echo "$assessment_demand_json" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$decision" = "ALREADY_SATISFIED" ]; then
+            case "$assessment_action" in
+              enqueue)
+                decision="RECOVERY_REQUIRED"
+                echo "Assessment backlog remains; scheduling next cursor-scoped bounded batch."
+                ;;
+              clear|already_queued|in_progress)
+                ;;
+              stalled|blocked)
+                echo "::error::Source assessment continuation is $assessment_action: $assessment_reason"
+                echo "queue_task_json=" >> "$GITHUB_OUTPUT"
+                echo "block_manifest=true" >> "$GITHUB_OUTPUT"
+                exit 1
+                ;;
+              *)
+                echo "::error::Unexpected assessment backlog action: $assessment_action" >&2
+                exit 1
+                ;;
+            esac
+          fi
+          echo "decision=$decision fingerprint=$fingerprint mode=$production_dispatch_mode assessment_action=$assessment_action"
 
           case "$decision" in
-            INPUT_CHANGED|SCHEDULE_DUE)
+            INPUT_CHANGED|SCHEDULE_DUE|RECOVERY_REQUIRED)
               if [ "$production_dispatch_mode" != "enabled" ]; then
                 echo "Production demand held by production_control.json"
                 echo "queue_task_json=" >> "$GITHUB_OUTPUT"
@@ -179,6 +207,9 @@ jobs:
                 exit 0
               fi
               reason="$(jq -r '.reason // empty' <<< "$intent_json")"
+              if [ "$decision" = "RECOVERY_REQUIRED" ]; then
+                reason="$assessment_reason"
+              fi
               audit_input_json="$(jq -cn \
                 --arg fingerprint "$fingerprint" \
                 --arg decision "$decision" \
@@ -187,8 +218,17 @@ jobs:
                 --arg actor "$ORIGIN_ACTOR" \
                 --arg before "${ORIGIN_BEFORE:-}" \
                 --arg sha "$ORIGIN_SHA" \
-                '{production_fingerprint:$fingerprint,production_decision:$decision,production_reason:$reason,baseline_source_event:$event,baseline_source_actor:$actor,baseline_source_before:$before,baseline_source_sha:$sha}')"
-              production_key="$(jq -r '.idempotency_key // empty' <<< "$intent_json")"
+                --arg assessment_key "$assessment_key" \
+                --arg assessment_cursor_sha256 "$(jq -r '.cursor_sha256 // empty' <<< "$assessment_demand_json")" \
+                --arg assessment_discovery_fingerprint "$(jq -r '.discovery_fingerprint // empty' <<< "$assessment_demand_json")" \
+                --arg assessment_pending_count "$(jq -r '.pending_assessment_count // 0' <<< "$assessment_demand_json")" \
+                '{production_fingerprint:$fingerprint,production_decision:$decision,production_reason:$reason,baseline_source_event:$event,baseline_source_actor:$actor,baseline_source_before:$before,baseline_source_sha:$sha} +
+                 (if $decision == "RECOVERY_REQUIRED" then {source_assessment_cursor_sha256:$assessment_cursor_sha256,source_assessment_discovery_fingerprint:$assessment_discovery_fingerprint,source_assessment_pending_count:($assessment_pending_count|tonumber)} else {} end)')"
+              if [ "$decision" = "RECOVERY_REQUIRED" ]; then
+                production_key="$assessment_key"
+              else
+                production_key="$(jq -r '.idempotency_key // empty' <<< "$intent_json")"
+              fi
               if [ -z "$production_key" ]; then
                 production_key="production:$fingerprint"
               fi

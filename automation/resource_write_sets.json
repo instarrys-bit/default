@@ -1408,9 +1408,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
-    "release_manifest_blob_sha": "cd88bc4b076b6aebf9099977896c32bfb9525910",
-    "program_registry_blob_sha": "adb2a19463f3a3f3fa2ec95bd004d0760360be08",
-    "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
+    "release_manifest_blob_sha": "c8585eeeddb9b18582fd9d285b5afb2a38c93a2c",
+    "program_registry_blob_sha": "356b9d57093a034311ce5d3abe316d3a9b69d2c2",
+    "execution_adapters_blob_sha": "0584538d21afb3993bf485896b30a69de298c5e6",
     "note": "Static entrypoint inventory for registered Python components and workflow-native write sites. It is not a complete transitive/runtime trace; remaining gaps are enumerated in not_yet_proven. Storage Management is the only V2 segmented event-state writer; the approved-config baseline metadata writer is active under owner-attributed history verification and the metadata-only allowlist. Production publisher scope remains rulesets/**; modules/uu.conf content remains protected."
   },
   "scheduler_lock_contract": {
@@ -1627,6 +1627,12 @@
       "source": "storage/v2/verify_auto_sync_recovery.py",
       "classification": "read_only_recovery_verifier",
       "evidence": "Reads exact workflow run/job JSON, automation/task_queue.json, automation/production_inputs.json and the declared production inputs (including modules/uu.conf solely for integrity fingerprinting). It performs no GitHub API calls, repository writes, ruleset writes or configuration changes."
+    },
+    {
+      "program_id": "script_source_assessment_demand",
+      "source": "scripts/source_assessment_demand.py",
+      "classification": "read_only_watchdog_demand_classifier",
+      "evidence": "Reads only the source candidate registry manifest and the Watchdog's already-exported durable queue snapshot. Computes a cursor/discovery-scoped idempotency key and returns a decision to stdout; it has no network client, GitHub API client, repository write, queue mutation, source activation, ruleset publication or modules/uu.conf access. Queue writes remain exclusively in the registered Watchdog task-queue supervision job through the existing SHA-CAS and fencing path."
     }
   ],
   "control_plane_side_effects": [
@@ -1736,7 +1742,7 @@
   "direct_mutation_scan": {
     "status": "partial_python_direct_callsite_scan",
     "scanner": "tests/test_transitive_write_site_inventory.py",
-    "registered_component_count": 69,
+    "registered_component_count": 70,
     "mutation_api_families": [
       "Path/open write modes",
       "Path write_text/write_bytes/unlink/mkdir/replace/rename/touch",

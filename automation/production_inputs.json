@@ -91,6 +91,7 @@
     "scripts/remote_task_queue_runtime.py",
     "scripts/resource_lease_runtime.py",
     "scripts/restore_inventory_from_chunks.py",
+    "scripts/source_assessment_demand.py",
     "scripts/source_handoff_policy.py",
     "scripts/task_queue.py",
     "scripts/task_queue_runtime.py",

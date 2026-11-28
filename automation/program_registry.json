@@ -1770,7 +1770,8 @@
       "depends_on": [
         "script_production_intent",
         "script_remote_task_queue_runtime",
-        "script_task_scheduler"
+        "script_task_scheduler",
+        "script_source_assessment_demand"
       ],
       "dispatches": [
         "workflow_auto_sync"
@@ -2177,6 +2178,35 @@
         "allowed_callers": [],
         "max_attempts": 0,
         "timeout_seconds": 300
+      }
+    },
+    {
+      "id": "script_source_assessment_demand",
+      "path": "scripts/source_assessment_demand.py",
+      "kind": "python_component",
+      "responsibility": "classify the durable source-assessment backlog and create cursor-scoped idempotent Watchdog demand without mutating queue or repository state",
+      "capabilities": [
+        "source_assessment_backlog_classification",
+        "cursor_scoped_idempotency"
+      ],
+      "invocation": "python_cli_from_watchdog_health_check",
+      "inputs": [
+        "rulesets/source_candidate_registry.json.manifest.json metadata.pending_assessment_count, metadata.discovery_fingerprint and metadata.latest_assessment.next_cursor_url",
+        "read-only automation/task_queue.json snapshot"
+      ],
+      "outputs": [
+        "deterministic JSON action: clear, enqueue, already_queued, in_progress, stalled or blocked",
+        "cursor SHA-256, discovery fingerprint and cursor-scoped idempotency key when enqueueable"
+      ],
+      "depends_on": [],
+      "dispatches": [],
+      "permission_boundary": "Pure read-only local classification. Reads only the verified candidate-registry manifest and queue snapshot; no GitHub API, network, queue mutation, repository write, source activation, ruleset write or modules/uu.conf access. Invalid state fails closed.",
+      "health_check": "Dedicated unit tests cover empty and pending backlog, cursor/discovery-scoped idempotency, duplicate suppression, cursor advancement, terminal no-progress stop, malformed metadata and approved raw.githubusercontent.com cursor origin.",
+      "orchestration": {
+        "enabled": false,
+        "allowed_callers": [],
+        "max_attempts": 0,
+        "timeout_seconds": 30
       }
     }
   ]

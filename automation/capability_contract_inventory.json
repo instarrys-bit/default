@@ -4,12 +4,12 @@
   "status": "retired_archival_snapshot",
   "source_registry_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6",
   "summary": {
-    "registered_programs": 73,
-    "python_components": 69,
-    "python_components_with_concrete_io_contract": 3,
+    "registered_programs": 74,
+    "python_components": 70,
+    "python_components_with_concrete_io_contract": 4,
     "python_components_with_declared_registry_dependencies": 20,
     "independently_dispatchable_python_components": 0,
-    "note": "Counts are reconciled to the current program registry. The repository has exactly four workflow entry points; independent Python dispatch remains disabled under the monolithic fallback."
+    "note": "Counts are reconciled to the current 74-entry registry (70 Python components and four workflows). The repository has exactly four workflow entry points; independent Python dispatch remains disabled under the monolithic fallback."
   },
   "policy": {
     "watchdog_is_top_level_orchestrator": true,
@@ -2248,6 +2248,28 @@
         "independent_verifier"
       ],
       "audit_note": "Current registry entry is recorded for inventory completeness. No independent dispatch is authorized; the adapter remains default-deny until a complete typed contract and runtime verification are reviewed."
+    },
+    {
+      "id": "script_source_assessment_demand",
+      "path": "scripts/source_assessment_demand.py",
+      "declared_capabilities": [
+        "source_assessment_backlog_classification",
+        "cursor_scoped_idempotency"
+      ],
+      "registry_dependencies": [],
+      "current_registry_inputs": [
+        "rulesets/source_candidate_registry.json.manifest.json pending count, discovery fingerprint and next assessment cursor",
+        "read-only automation/task_queue.json snapshot"
+      ],
+      "current_registry_outputs": [
+        "deterministic backlog decision",
+        "cursor/discovery-scoped idempotency key; no queue or repository mutation"
+      ],
+      "current_invocation": "read-only Watchdog health-check helper in the monolithic four-workflow topology",
+      "contract_status": "reviewed_read_only_workflow_helper",
+      "dispatch_status": "disabled",
+      "missing_contract_fields": [],
+      "audit_note": "Pure read-only helper. It does not independently dispatch Discovery or Assessment, mutate the durable queue, write rulesets or access modules/uu.conf. It prevents ALREADY_SATISFIED from hiding a non-zero assessment backlog and refuses infinite replay when the same cursor batch has reached a terminal task state."
     }
   ],
   "workflow_capabilities": [
@@ -2350,9 +2372,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
-    "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
-    "program_registry_blob_sha": "adb2a19463f3a3f3fa2ec95bd004d0760360be08",
-    "note": "Historical V1 contract details are retained for traceability only and are not an activation authority. Counts and registered program paths are reconciled to the current 73-entry registry (69 Python components and four workflows). Current runtime topology is monolithic fallback; independent Python dispatch remains disabled. Baseline registration is runner-local proposal-only and metadata changes require a separate reviewed pull request.",
+    "execution_adapters_blob_sha": "0584538d21afb3993bf485896b30a69de298c5e6",
+    "program_registry_blob_sha": "356b9d57093a034311ce5d3abe316d3a9b69d2c2",
+    "note": "Historical V1 contract details are retained for traceability only and are not an activation authority. Counts and registered program paths are reconciled to the current 74-entry registry (70 Python components and four workflows). Current runtime topology is monolithic fallback; independent Python dispatch remains disabled. Baseline registration is runner-local proposal-only and metadata changes require a separate reviewed pull request.",
     "release_manifest_blob_sha": "1c206ebb95a8ce15074139e5adca0450183d6101"
   }
 }

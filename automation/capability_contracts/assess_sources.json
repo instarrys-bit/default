@@ -189,8 +189,8 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
-    "program_registry_blob_sha": "adb2a19463f3a3f3fa2ec95bd004d0760360be08",
-    "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
+    "program_registry_blob_sha": "356b9d57093a034311ce5d3abe316d3a9b69d2c2",
+    "execution_adapters_blob_sha": "0584538d21afb3993bf485896b30a69de298c5e6",
     "added_after_release_baseline": true,
     "note": "The release manifest pins this contract's current blob; the contract intentionally does not reverse-pin the manifest to avoid a circular hash dependency. This is review provenance only."
   },

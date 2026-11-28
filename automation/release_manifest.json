@@ -8,12 +8,12 @@
     "program_registry": {
       "path": "automation/program_registry.json",
       "schema_version": 1,
-      "git_blob_sha": "adb2a19463f3a3f3fa2ec95bd004d0760360be08"
+      "git_blob_sha": "356b9d57093a034311ce5d3abe316d3a9b69d2c2"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
       "schema_version": 1,
-      "git_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0"
+      "git_blob_sha": "0584538d21afb3993bf485896b30a69de298c5e6"
     },
     "ruleset_manifest": {
       "path": "rulesets/manifest.json",
@@ -24,7 +24,7 @@
   "implementation_pins": {
     "watchdog_workflow": {
       "path": ".github/workflows/automation-watchdog.yml",
-      "git_blob_sha": "24dd44c85b7348a70b0d56619685b401b2985412"
+      "git_blob_sha": "08c0e0ca14a22cda224f1e93e2c504451e6de91a"
     },
     "production_workflow": {
       "path": ".github/workflows/auto_sync.yml",
@@ -54,7 +54,7 @@
     },
     "assessment_checkpoint_contract": {
       "path": "automation/capability_contracts/assess_sources.json",
-      "git_blob_sha": "e6b8c630eb1e2a3159f4fa089c4cf37e3a50bfec"
+      "git_blob_sha": "819d4706fa9ef2013e97968deaeb7116fb5e01fe"
     },
     "remote_task_queue_runtime": {
       "path": "scripts/remote_task_queue_runtime.py",
@@ -74,15 +74,15 @@
     },
     "program_registry": {
       "path": "automation/program_registry.json",
-      "git_blob_sha": "adb2a19463f3a3f3fa2ec95bd004d0760360be08"
+      "git_blob_sha": "356b9d57093a034311ce5d3abe316d3a9b69d2c2"
     },
     "execution_adapters": {
       "path": "automation/execution_adapters.json",
-      "git_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0"
+      "git_blob_sha": "0584538d21afb3993bf485896b30a69de298c5e6"
     },
     "capability_contract_inventory": {
       "path": "automation/capability_contract_inventory.json",
-      "git_blob_sha": "41f480aeed40343ea12bd58755bd21f2adc7dcbd"
+      "git_blob_sha": "d41ec5e37b8b2ce25ef6aa32a410b4ba7c7034ec"
     },
     "resource_ownership_audit": {
       "path": "automation/resource_ownership_audit.json",
@@ -102,7 +102,7 @@
     },
     "production_input_manifest": {
       "path": "automation/production_inputs.json",
-      "git_blob_sha": "2a47dbeda0acab2139a93ae8366c88d312b7631b"
+      "git_blob_sha": "bf0a01fd6dc5fb19c0bd7a69307a39405e5b3bf0"
     },
     "task_queue_store": {
       "path": "scripts/github_queue_store.py",
@@ -233,6 +233,10 @@
     "storage_runtime": {
       "path": "storage/v2/runtime.py",
       "git_blob_sha": "dbbcfc319dcb7ee4e87e1b25ddbc5b88c7153f5f"
+    },
+    "source_assessment_demand": {
+      "path": "scripts/source_assessment_demand.py",
+      "git_blob_sha": "269dbfbadb05c402e2c9693738206a9d16c923e0"
     }
   },
   "compatibility": {
