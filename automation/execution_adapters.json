@@ -2036,7 +2036,7 @@
       "target_kind": "python_component",
       "adapter_type": "python_cli",
       "enabled": false,
-      "interface_status": "reviewed_read_only_workflow_helper_not_task_dispatchable",
+      "interface_status": "reviewed",
       "allowed_callers": [],
       "entrypoint": {
         "path": "scripts/source_assessment_demand.py",
