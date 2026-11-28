@@ -78,8 +78,10 @@ def main() -> int:
         print(json.dumps(assessment_backlog_demand(manifest, queue), sort_keys=True))
         return 0
     except (OSError, json.JSONDecodeError, ValueError) as exc:
+        # Return a valid blocked decision to the workflow so it can emit the
+        # intended fail-closed diagnostic instead of aborting command substitution.
         print(json.dumps({"action": "blocked", "reason": str(exc)}, sort_keys=True))
-        return 2
+        return 0
 
 
 if __name__ == "__main__":
