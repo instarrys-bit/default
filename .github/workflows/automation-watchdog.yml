@@ -207,6 +207,9 @@ jobs:
                 exit 0
               fi
               reason="$(jq -r '.reason // empty' <<< "$intent_json")"
+              if [ "$decision" = "RECOVERY_REQUIRED" ]; then
+                reason="$assessment_reason"
+              fi
               audit_input_json="$(jq -cn \
                 --arg fingerprint "$fingerprint" \
                 --arg decision "$decision" \
