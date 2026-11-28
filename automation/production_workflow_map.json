@@ -2,7 +2,7 @@
   "schema_version": 1,
   "workflow_path": ".github/workflows/auto_sync.yml",
   "workflow_blob_sha": "54ee73a0abfcd72e2aa9453dd68ba7c51fd2b599",
-  "registry_blob_sha": "adb2a19463f3a3f3fa2ec95bd004d0760360be08",
+  "registry_blob_sha": "356b9d57093a034311ce5d3abe316d3a9b69d2c2",
   "status": "static_step_mapping_not_execution_authorization",
   "summary": {
     "job_count": 7,
@@ -359,9 +359,9 @@
   ],
   "review_context": {
     "release_id": "shadowrocket-automation-four-workflow-monolithic-2026.11.22.1",
-    "release_manifest_blob_sha": "cd88bc4b076b6aebf9099977896c32bfb9525910",
-    "program_registry_blob_sha": "adb2a19463f3a3f3fa2ec95bd004d0760360be08",
-    "execution_adapters_blob_sha": "8579ddd03ab2e37e7812e84e12df1ff46a28acb0",
+    "release_manifest_blob_sha": "e51be02e842f6d6469c8e8a084b9000d93a62cf9",
+    "program_registry_blob_sha": "356b9d57093a034311ce5d3abe316d3a9b69d2c2",
+    "execution_adapters_blob_sha": "0584538d21afb3993bf485896b30a69de298c5e6",
     "note": "Descriptive only; no additional write/dispatch authorization. Production publication is rulesets/** only. modules/uu.conf remains byte-for-byte read-only. Config baseline content remains read-only to automation. Storage Management may update only approved Blob SHA, approved baseline SHA and derived Release SHA metadata after owner-attributed history verification; manual metadata PRs require human review.",
     "registry_blob_sha": "f10eb04382073718b0a93df8d96bdc4a441b80a6",
     "storage_management_workflow_blob_sha": "9c9513d93dd62913906389e3c7da0ec79ba7c644"
