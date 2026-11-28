@@ -242,7 +242,7 @@
       "worker_id": "46139236900"
     }
   },
-  "revision": 795,
+  "revision": 796,
   "schema_version": 1,
   "tasks": [
     {
@@ -13333,6 +13333,39 @@
         "verified_at": "2026-11-28T11:39:22Z",
         "verifier_program_id": "script_task_result_verifier"
       }
+    },
+    {
+      "attempts": 0,
+      "capability": "deterministic_audit",
+      "created_at": "2026-11-28T12:45:07Z",
+      "execution_backend": "github_contents",
+      "idempotency_key": "source-assessment:cursor:b894420348ddabf2669ea5c57e5907827dfea8fda0e3d6fdf34b4720e964e0d8:18bf5ae03a98ab7f9119e0f47e28c3892897e379b409230e6181c14ef3a9909a",
+      "input": {
+        "baseline_source_actor": "instarrys-bit",
+        "baseline_source_before": "",
+        "baseline_source_event": "schedule",
+        "baseline_source_sha": "48ab7fd0f5a9b9cd76c3eb02dbd02faf488574a1",
+        "production_decision": "RECOVERY_REQUIRED",
+        "production_fingerprint": "bc8b529faf28730b3114a23b8579c07580f69b1a1f4687617959eb01341fca51",
+        "production_reason": "verified source assessment backlog remains after production inputs were already satisfied",
+        "source_assessment_cursor_sha256": "b894420348ddabf2669ea5c57e5907827dfea8fda0e3d6fdf34b4720e964e0d8",
+        "source_assessment_discovery_fingerprint": "18bf5ae03a98ab7f9119e0f47e28c3892897e379b409230e6181c14ef3a9909a",
+        "source_assessment_pending_count": 47987
+      },
+      "last_error": null,
+      "lease": null,
+      "max_attempts": 2,
+      "not_before": "2026-11-28T12:45:07Z",
+      "priority": 100,
+      "requester_program_id": "workflow_automation_watchdog",
+      "result": null,
+      "state_history": [
+        "QUEUED"
+      ],
+      "status": "QUEUED",
+      "target_program_id": "workflow_auto_sync",
+      "task_id": "task_1d6d0a44a8e141ba9cbe7949",
+      "trace_id": "ced2c30086fa4efd8aeed2c89d994f3e"
     }
   ]
 }
